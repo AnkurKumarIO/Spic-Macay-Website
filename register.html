@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register — SPIC MACAY 11th International Convention</title>
+  <meta name="description" content="Register for the 11th International Convention of SPIC MACAY. Join us at IIT Kharagpur, May 25–31, 2026."/>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    body { background: var(--surface-dim); }
+
+    .reg-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      min-height: 100dvh;
+    }
+    @media(min-width:1024px){
+      .reg-layout { grid-template-columns: 1fr 480px; }
+    }
+
+    /* Left panel — decorative */
+    .reg-left {
+      position: relative;
+      background: var(--surface-container);
+      display: none;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 60px;
+      overflow: hidden;
+    }
+    @media(min-width:1024px){ .reg-left { display: flex; } }
+    .reg-left img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+    }
+    .reg-left-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(19,19,19,0.95) 0%, rgba(19,19,19,0.3) 100%);
+    }
+    .reg-left-content { position: relative; z-index: 2; }
+
+    /* Right panel — form */
+    .reg-right {
+      background: var(--surface-dim);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+    }
+    @media(min-width:768px){ .reg-right { padding: 48px 40px; } }
+
+    /* Form card */
+    .form-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 16px;
+      padding: 32px;
+      margin-top: 32px;
+      flex: 1;
+    }
+
+    /* Step panel */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+    /* Type selector cards */
+    .type-card {
+      border: 2px solid rgba(245,240,232,0.12);
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .type-card:hover { border-color: rgba(232,119,34,0.4); }
+    .type-card.selected { border-color: var(--primary-container); background: rgba(232,119,34,0.08); }
+    .type-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(232,119,34,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0;
+    }
+
+    /* Checkbox group */
+    .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+    .checkbox-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid rgba(245,240,232,0.12);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .checkbox-item:hover { border-color: rgba(232,119,34,0.3); }
+    .checkbox-item input[type="checkbox"] { accent-color: var(--primary-container); width: 18px; height: 18px; }
+
+    /* Summary table */
+    .summary-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(245,240,232,0.08);
+      gap: 12px;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-key { font-size: 0.8125rem; color: var(--on-surface-variant); }
+    .summary-val { font-size: 0.9rem; color: var(--on-surface); text-align: right; }
+
+    /* Info pills on left panel */
+    .info-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: var(--radius-full);
+      background: rgba(245,240,232,0.08);
+      border: 1px solid rgba(245,240,232,0.12);
+      font-size: 0.8125rem;
+      margin: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav (minimal) ─────────────────────────────────── -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <a href="index.html" class="btn btn-secondary btn-sm">← Back to Home</a>
+    </div>
+  </header>
+
+  <div style="padding-top:65px;">
+    <div class="reg-layout">
+
+      <!-- ── Left Decorative Panel ─────────────────────── -->
+      <div class="reg-left">
+        <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=900&q=80" alt=""/>
+        <div class="reg-left-overlay"></div>
+        <div class="reg-left-content">
+          <span class="chip" style="margin-bottom:20px;">11th International Convention</span>
+          <h2 class="headline-lg" style="margin-bottom:16px;">Begin Your Journey Into<br/>Indian Classical Arts</h2>
+          <p class="body-md text-muted" style="margin-bottom:32px;">Join musicians, students, scholars, and enthusiasts from across the globe for seven transformative days.</p>
+
+          <div style="margin-bottom:32px;flex-wrap:wrap;display:flex;">
+            <span class="info-pill">📅 May 25–31, 2026</span>
+            <span class="info-pill">📍 IIT Kharagpur</span>
+            <span class="info-pill">🎵 100+ Sessions</span>
+            <span class="info-pill">🧘 Yoga & Meditation</span>
+          </div>
+
+          <div style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);border-radius:12px;padding:20px;">
+            <p class="label-sm text-muted" style="margin-bottom:8px;">NEED HELP?</p>
+            <p style="font-size:0.9rem;color:var(--on-surface);">Contact our helpline</p>
+            <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">registrations@spicmacay.com</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Right Form Panel ──────────────────────────── -->
+      <div class="reg-right">
+        <div>
+          <!-- Step Indicator -->
+          <div style="margin-bottom:8px;">
+            <p class="label-sm text-muted">REGISTRATION</p>
+          </div>
+          <div class="step-indicator" id="stepIndicator">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="step-dot active" id="dot1">1</div>
+              <span class="step-label">Type</span>
+            </div>
+            <div class="step-connector" id="conn1"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="step-dot" id="dot2">2</div>
+              <span class="step-label">Personal</span>
+            </div>
+            <div class="step-connector" id="conn2"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="step-dot" id="dot3">3</div>
+              <span class="step-label">Events</span>
+            </div>
+            <div class="step-connector" id="conn3"></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <div class="step-dot" id="dot4">4</div>
+              <span class="step-label">Summary</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+
+          <!-- ── Step 1: Registration Type ─────────────── -->
+          <div class="step-panel active" id="step1">
+            <h2 class="headline-md" style="margin-bottom:6px;">Choose Registration Type</h2>
+            <p class="body-md text-muted" style="margin-bottom:28px;">Select whether you're registering as an individual or on behalf of an institution.</p>
+
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="type-card selected" id="typeIndividual" onclick="selectType('individual')">
+                <div class="type-icon">👤</div>
+                <div>
+                  <h4 class="headline-sm" style="margin-bottom:4px;">Individual</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">One participant account. For students, scholars, and enthusiasts attending personally.</p>
+                </div>
+              </div>
+              <div class="type-card" id="typeInstitution" onclick="selectType('institution')">
+                <div class="type-icon">🏫</div>
+                <div>
+                  <h4 class="headline-sm" style="margin-bottom:4px;">Institution</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Register on behalf of a school or college. Coordinate multiple delegates under one account.</p>
+                </div>
+              </div>
+              <div class="type-card" id="typeVolunteer" onclick="selectType('volunteer')">
+                <div class="type-icon">🤝</div>
+                <div>
+                  <h4 class="headline-sm" style="margin-bottom:4px;">Volunteer</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Contribute your time and skills. Volunteers receive accommodation and all-access passes.</p>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-full btn-lg" style="margin-top:32px;" onclick="goToStep(2)">Next Step →</button>
+          </div>
+
+          <!-- ── Step 2: Personal Info ──────────────────── -->
+          <div class="step-panel" id="step2">
+            <h2 class="headline-md" style="margin-bottom:6px;">Heritage Seeker</h2>
+            <p class="body-md text-muted" style="margin-bottom:28px;">Begin your journey into the soul of Indian classical arts.</p>
+
+            <div style="display:flex;flex-direction:column;gap:20px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="input-group">
+                  <label class="input-label" for="firstName">First Name *</label>
+                  <input class="input-field" type="text" id="firstName" placeholder="Arjun" autocomplete="given-name"/>
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="lastName">Last Name *</label>
+                  <input class="input-field" type="text" id="lastName" placeholder="Sharma" autocomplete="family-name"/>
+                </div>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="email">Email Address *</label>
+                <input class="input-field" type="email" id="email" placeholder="arjun@example.com" autocomplete="email"/>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="phone">Phone Number *</label>
+                <input class="input-field" type="tel" id="phone" placeholder="+91 98765 43210" autocomplete="tel"/>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="institution">College / Institution *</label>
+                <input class="input-field" type="text" id="institution" placeholder="Indian Institute of Technology"/>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="city">City *</label>
+                <input class="input-field" type="text" id="city" placeholder="New Delhi"/>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="state">State</label>
+                <select class="input-field" id="state" style="appearance:none;">
+                  <option value="">Select State</option>
+                  <option>Delhi</option><option>Maharashtra</option><option>Karnataka</option>
+                  <option>Tamil Nadu</option><option>West Bengal</option><option>Uttar Pradesh</option>
+                  <option>Rajasthan</option><option>Gujarat</option><option>Kerala</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:32px;">
+              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(1)">← Back</button>
+              <button class="btn btn-primary" style="flex:2;" onclick="goToStep(3)">Next Step →</button>
+            </div>
+          </div>
+
+          <!-- ── Step 3: Event Preferences ─────────────── -->
+          <div class="step-panel" id="step3">
+            <h2 class="headline-md" style="margin-bottom:6px;">Choose Your Streams</h2>
+            <p class="body-md text-muted" style="margin-bottom:28px;">Select the events and streams you're most interested in attending.</p>
+
+            <div style="display:flex;flex-direction:column;gap:24px;">
+              <div>
+                <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">MUSIC STREAMS</p>
+                <div class="checkbox-group">
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="hindustani" checked/> <span>Hindustani Classical Vocal</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="carnatic"/> <span>Carnatic Music</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="instrumental"/> <span>Instrumental — Sitar, Sarod, Tabla</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="folk"/> <span>Folk & Regional Traditions</span></label>
+                </div>
+              </div>
+              <div>
+                <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">DANCE FORMS</p>
+                <div class="checkbox-group">
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="kathak"/> <span>Kathak</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="bharatanatyam" checked/> <span>Bharatanatyam</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="odissi"/> <span>Odissi</span></label>
+                </div>
+              </div>
+              <div>
+                <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">ACTIVITIES</p>
+                <div class="checkbox-group">
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="yoga" checked/> <span>Hatha Yoga & Naad Yoga (4:00 AM)</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="heritage"/> <span>Heritage Walks</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="craft"/> <span>Craft Workshops</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="film"/> <span>Film Screenings</span></label>
+                </div>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="dietary">Dietary Requirements</label>
+                <select class="input-field" id="dietary" style="appearance:none;">
+                  <option value="vegetarian">Vegetarian</option>
+                  <option value="vegan">Vegan</option>
+                  <option value="jain">Jain</option>
+                  <option value="non-veg">Non-Vegetarian</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <label class="input-label" for="message">Special Requests / Message</label>
+                <textarea class="input-field" id="message" rows="3" placeholder="Accessibility requirements, questions, etc." style="resize:vertical;"></textarea>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:32px;">
+              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(2)">← Back</button>
+              <button class="btn btn-primary" style="flex:2;" onclick="goToStep(4)">Review Summary →</button>
+            </div>
+          </div>
+
+          <!-- ── Step 4: Summary & Submit ───────────────── -->
+          <div class="step-panel" id="step4">
+            <h2 class="headline-md" style="margin-bottom:6px;">Review &amp; Submit</h2>
+            <p class="body-md text-muted" style="margin-bottom:28px;">Please verify your details before completing registration.</p>
+
+            <div style="background:var(--surface-container-high);border-radius:12px;padding:20px;margin-bottom:24px;">
+              <p class="label-md" style="margin-bottom:12px;color:var(--primary-container);">REGISTRATION SUMMARY</p>
+              <div id="summaryContent">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <div style="background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.2);border-radius:12px;padding:16px;margin-bottom:24px;">
+              <p style="font-size:0.875rem;color:var(--on-surface-variant);line-height:1.6;">
+                By submitting, you agree to the <a href="#" style="color:var(--primary);">Terms &amp; Conditions</a> and <a href="#" style="color:var(--primary);">Privacy Policy</a>. Accommodation details will be shared via email after registration approval.
+              </p>
+            </div>
+
+            <div style="display:flex;gap:12px;">
+              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(3)">← Edit</button>
+              <button class="btn btn-primary btn-lg" style="flex:2;" onclick="submitRegistration()" id="submitBtn">
+                Complete Registration ✓
+              </button>
+            </div>
+
+            <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:var(--on-surface-variant);">Need assistance? <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);">help@spicmacay.org</a></p>
+          </div>
+
+          <!-- ── Step 5: Success ────────────────────────── -->
+          <div class="step-panel" id="step5" style="text-align:center;padding:40px 0;">
+            <div style="font-size:4rem;margin-bottom:20px;">🎉</div>
+            <h2 class="headline-md" style="margin-bottom:12px;">Registration Submitted!</h2>
+            <p class="body-md text-muted" style="max-width:360px;margin:0 auto 28px;">Thank you for registering for the 11th International Convention of SPIC MACAY. You'll receive a confirmation email shortly.</p>
+            <div style="background:var(--surface-container-high);border-radius:12px;padding:20px;margin-bottom:28px;text-align:left;">
+              <p class="label-sm text-muted" style="margin-bottom:4px;">YOUR REGISTRATION ID</p>
+              <p class="headline-sm text-gradient" id="regId">SM-2026-XXXX</p>
+            </div>
+            <a href="index.html" class="btn btn-primary btn-lg">Back to Home</a>
+          </div>
+
+        </div><!-- /form-card -->
+      </div><!-- /reg-right -->
+    </div><!-- /reg-layout -->
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts/main.js"></script>
+  <script>
+    let currentStep = 1;
+    let regType = 'individual';
+
+    function selectType(type) {
+      regType = type;
+      document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+      const map = { individual:'typeIndividual', institution:'typeInstitution', volunteer:'typeVolunteer' };
+      document.getElementById(map[type]).classList.add('selected');
+    }
+
+    function goToStep(step) {
+      // Validate step 2
+      if (step === 3 && currentStep === 2) {
+        const fn = document.getElementById('firstName').value.trim();
+        const em = document.getElementById('email').value.trim();
+        const ph = document.getElementById('phone').value.trim();
+        if (!fn || !em || !ph) { showToast('Please fill in all required fields.', 'error'); return; }
+        if (!em.includes('@')) { showToast('Please enter a valid email.', 'error'); return; }
+      }
+      if (step === 4) buildSummary();
+
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('step' + step).classList.add('active');
+
+      // Update dots
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById('dot' + i);
+        dot.classList.remove('active','done');
+        if (i < step) dot.classList.add('done');
+        else if (i === step) dot.classList.add('active');
+      }
+      for (let i = 1; i <= 3; i++) {
+        const conn = document.getElementById('conn' + i);
+        conn.classList.remove('done');
+        if (i < step) conn.classList.add('done');
+      }
+      currentStep = step;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function buildSummary() {
+      const fn = document.getElementById('firstName').value;
+      const ln = document.getElementById('lastName').value;
+      const em = document.getElementById('email').value;
+      const ph = document.getElementById('phone').value;
+      const inst = document.getElementById('institution').value;
+      const city = document.getElementById('city').value;
+      const streams = [...document.querySelectorAll('input[name="stream"]:checked')].map(i=>i.value).join(', ') || '—';
+      const activities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i=>i.value).join(', ') || '—';
+
+      const rows = [
+        ['Registration Type', regType.charAt(0).toUpperCase()+regType.slice(1)],
+        ['Full Name', `${fn} ${ln}`],
+        ['Email', em],
+        ['Phone', ph],
+        ['Institution', inst || '—'],
+        ['City', city || '—'],
+        ['Music/Dance Streams', streams],
+        ['Activities', activities],
+        ['Convention Dates', 'May 25–31, 2026'],
+        ['Venue', 'IIT Kharagpur, West Bengal'],
+      ];
+      document.getElementById('summaryContent').innerHTML = rows.map(([k,v])=>`
+        <div class="summary-row">
+          <span class="summary-key">${k}</span>
+          <span class="summary-val">${v}</span>
+        </div>`).join('');
+    }
+
+    async function submitRegistration() {
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = 'Submitting…';
+      btn.disabled = true;
+      // Simulate API call
+      await new Promise(r => setTimeout(r, 2000));
+      const regId = 'SM-2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
+      document.getElementById('regId').textContent = regId;
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('step5').classList.add('active');
+      showToast('Registration successful! Check your email.', 'success');
+    }
+  </script>
+</body>
+</html>

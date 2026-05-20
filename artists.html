@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artists & Gurus — SPIC MACAY 11th International Convention</title>
+  <meta name="description" content="Meet the renowned maestros and classical artists performing at the 11th International Convention of SPIC MACAY, May 25–31, 2026."/>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    .artists-hero { height: 50vh; min-height: 400px; display: flex; align-items: flex-end; }
+    .artists-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    @media(min-width:600px) { .artists-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media(min-width:1024px){ .artists-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .artist-card { position: relative; }
+    .artist-card .img-wrap { position: relative; overflow: hidden; border-radius: 12px 12px 0 0; }
+    .artist-card .img-wrap img { width:100%; aspect-ratio:3/4; object-fit:cover; object-position:top; transition: transform var(--transition-slow); }
+    .artist-card:hover .img-wrap img { transform: scale(1.06); }
+    .artist-card .img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(19,19,19,0.9) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-base);
+      display: flex; align-items: flex-end; padding: 16px;
+    }
+    .artist-card:hover .img-overlay { opacity: 1; }
+
+    .featured-artist {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 60px;
+    }
+    @media(min-width:768px){ .featured-artist { grid-template-columns: 380px 1fr; } }
+    .featured-artist img { width:100%; height:100%; object-fit:cover; object-position:top; min-height:300px; }
+
+    .discipline-filter { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artists.html" class="active">Artists</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul></nav>
+      <div class="flex items-center gap-4">
+        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
+        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
+      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link">🏠 Home</a>
+    <a href="artists.html" class="drawer-link active">🎵 Artists</a>
+    <a href="schedule.html" class="drawer-link">📅 Schedule</a>
+    <a href="about.html" class="drawer-link">ℹ️ About</a>
+    <a href="faq.html" class="drawer-link">❓ FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;">Register Now</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero artists-hero">
+    <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1400&q=80" alt="Artists performing" class="hero-media"/>
+    <div class="hero-overlay"></div>
+    <div class="hero-content" style="padding-bottom:60px;width:100%;">
+      <div class="container">
+        <span class="chip reveal">MAESTROS & GURUS</span>
+        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;max-width:600px;">Artists &amp;<br/><span class="text-gradient">Gurus</span></h1>
+        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:520px;margin-top:16px;">Renowned maestros from across India and the world, bringing centuries of classical tradition to life.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Artist -->
+  <section class="section-gap">
+    <div class="container">
+      <p class="label-md text-primary-container reveal" style="margin-bottom:8px;">HEADLINE ARTIST</p>
+      <h2 class="headline-lg reveal reveal-delay-1" style="margin-bottom:36px;">Featured Guru</h2>
+
+      <div class="featured-artist reveal">
+        <div style="overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=600&q=80" alt="Pt. Hariprasad Chaurasia"/>
+        </div>
+        <div style="padding:40px;display:flex;flex-direction:column;justify-content:center;">
+          <span class="chip" style="margin-bottom:20px;align-self:flex-start;">Hindustani Instrumental</span>
+          <h3 class="headline-lg" style="margin-bottom:8px;">Pt. Hariprasad Chaurasia</h3>
+          <p class="label-md text-primary-container" style="margin-bottom:20px;">Bansuri Maestro · Padma Vibhushan</p>
+          <p class="body-md text-muted" style="margin-bottom:20px;line-height:1.8;">One of India's most celebrated flutists, Pandit Hariprasad Chaurasia has elevated the bansuri to global prominence. His music is a seamless weave of deep classical tradition and lyrical beauty, carrying the essence of ancient India into every performance.</p>
+          <p class="body-md text-muted" style="margin-bottom:28px;line-height:1.8;">He will be conducting an intimate Baithak session as well as an evening concert during the convention, offering participants a rare opportunity to witness a living legend in an immersive, ashram-like setting.</p>
+          <div class="flex gap-4" style="flex-wrap:wrap;">
+            <span class="chip">Bansuri</span>
+            <span class="chip">Hindustani</span>
+            <span class="chip">Raag Yaman</span>
+            <span class="chip">Padma Vibhushan</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="discipline-filter reveal">
+        <button class="filter-tab active" data-filter="all">All Artists</button>
+        <button class="filter-tab" data-filter="vocal">Vocal</button>
+        <button class="filter-tab" data-filter="instrumental">Instrumental</button>
+        <button class="filter-tab" data-filter="dance">Dance</button>
+        <button class="filter-tab" data-filter="craft">Craft & Folk</button>
+      </div>
+
+      <!-- Artists Grid -->
+      <div class="artists-grid" id="artistsGrid">
+
+        <!-- Artist 1 -->
+        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=400&q=80" alt="Vocalist"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Hindustani Vocal</p>
+            <p class="artist-name">Pt. Jasraj (Tribute)</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Mewati Gharana</p>
+          </div>
+        </div>
+
+        <!-- Artist 2 -->
+        <div class="artist-card card" data-discipline="instrumental" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80" alt="Sarod player"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Sarod</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Hindustani Instrumental</p>
+            <p class="artist-name">Ustad Amjad Ali Khan</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Sarod Maestro</p>
+          </div>
+        </div>
+
+        <!-- Artist 3 -->
+        <div class="artist-card card" data-discipline="dance" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=400&q=80" alt="Bharatanatyam dancer"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Dance</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Bharatanatyam</p>
+            <p class="artist-name">Smt. Alarmel Valli</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Padma Bhushan</p>
+          </div>
+        </div>
+
+        <!-- Artist 4 -->
+        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=400&q=80" alt="Carnatic vocalist"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Carnatic Vocal</p>
+            <p class="artist-name">M. S. Sheela</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Mysore Tradition</p>
+          </div>
+        </div>
+
+        <!-- Artist 5 -->
+        <div class="artist-card card" data-discipline="instrumental" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&q=80" alt="Tabla player"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Tabla</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Tabla</p>
+            <p class="artist-name">Pt. Zakir Hussain</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Padma Vibhushan</p>
+          </div>
+        </div>
+
+        <!-- Artist 6 -->
+        <div class="artist-card card" data-discipline="dance" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&q=80" alt="Kathak dancer"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Dance</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Kathak</p>
+            <p class="artist-name">Pt. Birju Maharaj (Legacy)</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Lucknow Gharana</p>
+          </div>
+        </div>
+
+        <!-- Artist 7 -->
+        <div class="artist-card card" data-discipline="craft" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=80" alt="Craft artist"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Craft</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Madhubani Painting</p>
+            <p class="artist-name">Sita Devi</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">National Award Awardee</p>
+          </div>
+        </div>
+
+        <!-- Artist 8 -->
+        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400&q=80" alt="Dhrupad vocalist"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Dhrupad</p>
+            <p class="artist-name">Ustad Wasifuddin Dagar</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Dagar Vani Tradition</p>
+          </div>
+        </div>
+
+        <!-- Artist 9 -->
+        <div class="artist-card card" data-discipline="dance" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=400&q=80" alt="Odissi dancer"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Dance</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Odissi</p>
+            <p class="artist-name">Smt. Sonal Mansingh</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Padma Vibhushan</p>
+          </div>
+        </div>
+
+        <!-- Artist 10 -->
+        <div class="artist-card card" data-discipline="instrumental" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80" alt="Sitar artist"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Sitar</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Sitar</p>
+            <p class="artist-name">Purbayan Chatterjee</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Maihar Gharana</p>
+          </div>
+        </div>
+
+        <!-- Artist 11 -->
+        <div class="artist-card card" data-discipline="craft" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="Puppetry master"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Craft</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Rajasthani Puppetry</p>
+            <p class="artist-name">Puran Bhat</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Kathputli Tradition</p>
+          </div>
+        </div>
+
+        <!-- Artist 12 -->
+        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
+          <div class="img-wrap">
+            <img src="https://images.unsplash.com/photo-1470019693664-1d202d2c0401?w=400&q=80" alt="Vocalist"/>
+            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+          </div>
+          <div style="padding:16px;">
+            <p class="artist-discipline">Khayal Vocal</p>
+            <p class="artist-name">Kaushiki Chakraborty</p>
+            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Patiala Gharana</p>
+          </div>
+        </div>
+
+      </div><!-- /artists-grid -->
+    </div>
+  </section>
+
+  <!-- CTA strip -->
+  <div style="background:var(--surface-container);border-top:1px solid rgba(245,240,232,0.07);padding:48px 0;">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+      <div>
+        <h3 class="headline-sm">Don't miss performing with the Maestros</h3>
+        <p class="body-md text-muted" style="margin-top:6px;">Baithaks and intimate workshops let you learn directly from the Gurus.</p>
+      </div>
+      <a href="register.html" class="btn btn-primary btn-lg">Register Now →</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div class="footer-logo">SPIC MACAY</div>
+        <div class="flex gap-4">
+          <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" target="_blank">▶</a>
+          <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" target="_blank">📷</a>
+          <a href="https://www.facebook.com/SPICMACAY/" class="social-link" target="_blank">f</a>
+          <a href="https://x.com/spicmacay" class="social-link" target="_blank">𝕏</a>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:28px;"></div>
+      <p class="label-sm text-muted text-center">© 2026 SPIC MACAY · <a href="index.html" style="color:var(--primary);">Home</a> · <a href="register.html" style="color:var(--primary);">Register</a> · <a href="faq.html" style="color:var(--primary);">FAQ</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts/main.js"></script>
+  <script>
+    // Discipline filter
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+        document.querySelectorAll('#artistsGrid .artist-card').forEach(card => {
+          const match = filter === 'all' || card.dataset.discipline === filter;
+          card.style.display = match ? '' : 'none';
+          if (match) card.style.animation = 'fadeIn 0.3s ease';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

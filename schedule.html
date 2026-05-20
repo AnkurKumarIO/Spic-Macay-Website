@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Convention Schedule — SPIC MACAY 2026</title>
+  <meta name="description" content="Full daily schedule of the 11th International Convention of SPIC MACAY, May 25–31, 2026 at IIT Kharagpur."/>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    .schedule-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
+    .day-tab {
+      padding:8px 20px; border-radius:var(--radius-full);
+      font-size:0.8125rem; font-weight:600;
+      border:1px solid rgba(245,240,232,0.15);
+      color:var(--on-surface-variant);
+      transition: all var(--transition-fast);
+      cursor:pointer;
+    }
+    .day-tab:hover { border-color:var(--primary-container); color:var(--primary); }
+    .day-tab.active { background:var(--primary-container); color:var(--on-primary-container); border-color:var(--primary-container); }
+
+    .day-view { display:none; animation:fadeIn 0.3s ease; }
+    .day-view.active { display:block; }
+
+    .session-block {
+      display:flex; gap:20px;
+      padding:20px 0;
+      border-bottom:1px solid rgba(245,240,232,0.07);
+    }
+    .session-block:last-child { border-bottom:none; }
+    .session-time {
+      min-width:90px;
+      font-family:var(--font-sans);
+      font-size:0.8125rem; font-weight:600;
+      color:var(--primary-container);
+      padding-top:3px;
+    }
+    .session-info {}
+    .session-title { font-family:var(--font-serif); font-size:1rem; font-weight:600; color:var(--on-surface); margin-bottom:4px; }
+    .session-desc  { font-size:0.875rem; color:var(--on-surface-variant); line-height:1.6; }
+    .session-tags  { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+
+    .day-header {
+      background:var(--surface-container);
+      border:1px solid rgba(245,240,232,0.08);
+      border-radius:16px;
+      padding:28px 32px;
+      margin-bottom:24px;
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    }
+
+    .stream-pill {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 14px; border-radius:var(--radius-full);
+      font-size:0.75rem; font-weight:600;
+      margin:3px;
+    }
+    .pill-yoga      { background:rgba(99,102,241,0.15); color:#a5b4fc; border:1px solid rgba(99,102,241,0.25); }
+    .pill-concert   { background:rgba(232,119,34,0.15); color:var(--primary); border:1px solid rgba(232,119,34,0.25); }
+    .pill-workshop  { background:rgba(74,222,128,0.1); color:#86efac; border:1px solid rgba(74,222,128,0.2); }
+    .pill-heritage  { background:rgba(251,191,36,0.1); color:#fcd34d; border:1px solid rgba(251,191,36,0.2); }
+    .pill-special   { background:rgba(244,114,182,0.1); color:#f9a8d4; border:1px solid rgba(244,114,182,0.2); }
+    .pill-ceremony  { background:rgba(245,240,232,0.08); color:var(--on-surface-variant); border:1px solid rgba(245,240,232,0.12); }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="schedule.html" class="active">Schedule</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul></nav>
+      <div class="flex items-center gap-4">
+        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
+        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
+      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link">🏠 Home</a>
+    <a href="artists.html" class="drawer-link">🎵 Artists</a>
+    <a href="schedule.html" class="drawer-link active">📅 Schedule</a>
+    <a href="about.html" class="drawer-link">ℹ️ About</a>
+    <a href="faq.html" class="drawer-link">❓ FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;">Register Now</a>
+  </div>
+
+  <div style="padding-top:65px;">
+
+    <!-- Page Header -->
+    <section style="background:var(--surface-container);border-bottom:1px solid rgba(245,240,232,0.07);padding:56px 0 40px;">
+      <div class="container">
+        <span class="chip reveal">📅 MAY 25 – 31, 2026 · IIT KHARAGPUR</span>
+        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;max-width:600px;">Convention<br/><span class="text-gradient">Schedule</span></h1>
+        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:520px;margin-top:16px;">7 immersive days — from 4 AM Naad Yoga to overnight grand finale concerts.</p>
+
+        <!-- Legend -->
+        <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:4px;" class="reveal reveal-delay-3">
+          <span class="stream-pill pill-yoga">🧘 Yoga</span>
+          <span class="stream-pill pill-concert">🎵 Concert</span>
+          <span class="stream-pill pill-workshop">🎨 Workshop</span>
+          <span class="stream-pill pill-heritage">🏛️ Heritage</span>
+          <span class="stream-pill pill-special">⭐ Special</span>
+          <span class="stream-pill pill-ceremony">🎗️ Ceremony</span>
+        </div>
+
+        <div style="margin-top:24px;" class="reveal">
+          <a href="#pdf" class="btn btn-secondary btn-sm">↓ Download Full PDF Schedule</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Arrival / Departure Info -->
+    <div style="background:rgba(232,119,34,0.07);border-bottom:1px solid rgba(232,119,34,0.15);padding:16px 0;">
+      <div class="container" style="display:flex;gap:32px;flex-wrap:wrap;">
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="font-size:1.25rem;">✈️</span>
+          <div>
+            <p class="label-sm" style="color:var(--primary-container);margin-bottom:2px;">ARRIVAL</p>
+            <p style="font-size:0.875rem;color:var(--on-surface);">4 PM on 24 May up to 7 AM on 25 May 2026</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;">
+          <span style="font-size:1.25rem;">🚂</span>
+          <div>
+            <p class="label-sm" style="color:var(--primary-container);margin-bottom:2px;">DEPARTURE</p>
+            <p style="font-size:0.875rem;color:var(--on-surface);">2 PM to 11 PM on 31 May 2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Body -->
+    <section class="section-gap">
+      <div class="container">
+
+        <!-- Day Tabs -->
+        <div class="schedule-tabs reveal">
+          <button class="day-tab active" onclick="showDay('day1',this)">Day 1 — May 25</button>
+          <button class="day-tab" onclick="showDay('day2',this)">Days 2–5</button>
+          <button class="day-tab" onclick="showDay('day6',this)">Day 6 — May 30</button>
+          <button class="day-tab" onclick="showDay('day7',this)">Day 7 — May 31</button>
+        </div>
+
+        <!-- ── Day 1 ─────────────────────────────────────── -->
+        <div class="day-view active" id="day1">
+          <div class="day-header">
+            <div>
+              <p class="label-sm text-muted">MONDAY</p>
+              <h2 class="headline-md">Day 1 · 25th May 2026</h2>
+              <p class="body-md text-muted" style="margin-top:6px;">Inauguration &amp; Opening Ceremonies</p>
+            </div>
+            <span class="chip">9 Events</span>
+          </div>
+          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
+            <div class="session-block">
+              <div class="session-time">7:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
+                <div class="session-desc">Time to settle in, freshen up, and enjoy a nourishing holistic meal.</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">8:30 AM</div>
+              <div class="session-info">
+                <div class="session-title">Morning Inauguration Ceremony</div>
+                <div class="session-desc">Welcome address and lighting of the ceremonial lamp.</div>
+                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">9:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Screening of 'The Making of the Mahatma'</div>
+                <div class="session-desc">Followed by an interactive session with Shri Rajit Kapur, the renowned actor-director.</div>
+                <div class="session-tags"><span class="stream-pill pill-special">⭐ Special</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">12:40 PM</div>
+              <div class="session-info">
+                <div class="session-title">Holistic Lunch</div>
+                <div class="session-desc">Nutritionally curated vegetarian meal in the community dining space.</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">2:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Orientation of All Delegates</div>
+                <div class="session-desc">General orientation followed by teachers' and volunteers' briefing sessions.</div>
+                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">4:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Nadaswaram Recital</div>
+                <div class="session-desc">An auspicious welcome performance on the traditional Nadaswaram instrument.</div>
+                <div class="session-tags"><span class="stream-pill pill-concert">🎵 Concert</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">5:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Holistic Dinner</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">6:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Formal Inauguration</div>
+                <div class="session-desc">Grand opening ceremony with distinguished dignitaries and Gurus.</div>
+                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">7:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Evening Classical Concerts</div>
+                <div class="session-desc">Opening night performances by leading maestros across multiple stages.</div>
+                <div class="session-tags"><span class="stream-pill pill-concert">🎵 Concert</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Days 2–5 ──────────────────────────────────── -->
+        <div class="day-view" id="day2">
+          <div class="day-header">
+            <div>
+              <p class="label-sm text-muted">TUESDAY – FRIDAY</p>
+              <h2 class="headline-md">Days 2–5 · 26–29 May 2026</h2>
+              <p class="body-md text-muted" style="margin-top:6px;">Core Immersive Cycle — repeated each day</p>
+            </div>
+            <span class="chip">7 Events Daily</span>
+          </div>
+          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
+            <div class="session-block">
+              <div class="session-time">4:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Hatha Yog / Naad Yog / Meditation</div>
+                <div class="session-desc">Dawn sessions at the open lawns. Three concurrent streams: Hatha Yoga, Naad (Sound) Yoga, and Silent Meditation.</div>
+                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">7:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Shramdaan (Collective Service)</div>
+                <div class="session-desc">15-minute collective campus cleaning — a tradition of selfless service.</div>
+                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Community</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">7:15 AM</div>
+              <div class="session-info">
+                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">9:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Morning Intensive Workshops</div>
+                <div class="session-desc">Parallel streams across 15+ venues: Vocal, Instrumental, Dance, Craft, Heritage Cinema. Students are guided by Guru-assigned batches.</div>
+                <div class="session-tags">
+                  <span class="stream-pill pill-workshop">🎨 Workshop</span>
+                  <span class="stream-pill pill-concert">🎵 Baithak</span>
+                </div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">1:10 PM</div>
+              <div class="session-info">
+                <div class="session-title">Yog Nidra (Yogic Sleep)</div>
+                <div class="session-desc">Guided deep relaxation session. Mandatory rest for all participants.</div>
+                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">2:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Afternoon Intensive Sessions</div>
+                <div class="session-desc">Continuation of morning workshops with senior Guru presentations, heritage walks, and open baithaks.</div>
+                <div class="session-tags">
+                  <span class="stream-pill pill-workshop">🎨 Workshop</span>
+                  <span class="stream-pill pill-heritage">🏛️ Heritage</span>
+                </div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">5:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Holistic Dinner</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">6:15 PM</div>
+              <div class="session-info">
+                <div class="session-title">Evening Classical Concerts</div>
+                <div class="session-desc">Curated concerts by the invited Gurus and senior artistes — Hindustani, Carnatic, and dance forms presented on the main stage.</div>
+                <div class="session-tags"><span class="stream-pill pill-concert">🎵 Concert</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Day 6 ──────────────────────────────────────── -->
+        <div class="day-view" id="day6">
+          <div class="day-header" style="border:1px solid rgba(232,119,34,0.3);">
+            <div>
+              <p class="label-sm text-muted">SATURDAY</p>
+              <h2 class="headline-md">Day 6 · 30th May 2026</h2>
+              <p class="body-md text-muted" style="margin-top:6px;">Grand Finale + Overnight Concert Marathon</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+              <span class="chip">7 Events</span>
+              <span style="background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;">⭐ OVERNIGHT</span>
+            </div>
+          </div>
+          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
+            <div class="session-block">
+              <div class="session-time">4:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Hatha Yog / Naad Yog / Meditation</div>
+                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">7:15 AM</div>
+              <div class="session-info">
+                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">1:10 PM</div>
+              <div class="session-info">
+                <div class="session-title">Participant Presentations</div>
+                <div class="session-desc">Delegates present their learning from the week across 6 different venues simultaneously. A showcase of growth and gratitude.</div>
+                <div class="session-tags"><span class="stream-pill pill-special">⭐ Special</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">4:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Yog Nidra</div>
+                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">8:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Acknowledgement Session</div>
+                <div class="session-desc">Heartfelt recognition of volunteers, artists, faculty, and participants.</div>
+                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
+              </div>
+            </div>
+            <div class="session-block" style="background:rgba(232,119,34,0.05);border-radius:12px;padding:16px;margin-top:8px;">
+              <div class="session-time" style="color:#fcd34d;">8:45 PM</div>
+              <div class="session-info">
+                <div class="session-title" style="color:#fcd34d;">⭐ Overnight Grand Finale Concert</div>
+                <div class="session-desc">An unbroken cycle of classical music from 8:45 PM to 6:00 AM — culminating in the sacred dawn ragas. The peak of spiritual and musical alignment. Not to be missed.</div>
+                <div class="session-tags">
+                  <span class="stream-pill pill-concert">🎵 Concert</span>
+                  <span style="background:rgba(239,194,0,0.15);color:#fcd34d;border:1px solid rgba(239,194,0,0.25);padding:4px 12px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">8:45 PM → 6:00 AM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Day 7 ──────────────────────────────────────── -->
+        <div class="day-view" id="day7">
+          <div class="day-header">
+            <div>
+              <p class="label-sm text-muted">SUNDAY</p>
+              <h2 class="headline-md">Day 7 · 31st May 2026</h2>
+              <p class="body-md text-muted" style="margin-top:6px;">Farewell &amp; Heritage Tours</p>
+            </div>
+            <span class="chip">2 Events</span>
+          </div>
+          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
+            <div class="session-block">
+              <div class="session-time">6:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
+                <div class="session-desc">The final shared meal. Time for goodbyes, reflections, and exchanging contacts.</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">9:00 AM</div>
+              <div class="session-info">
+                <div class="session-title">Heritage Tours of IIT Kharagpur</div>
+                <div class="session-desc">Guided heritage walks around the sprawling IIT-KGP campus — exploring its unique history, architecture, and cultural significance as one of India's oldest IITs.</div>
+                <div class="session-tags">
+                  <span class="stream-pill pill-heritage">🏛️ Heritage</span>
+                  <span class="stream-pill pill-special">⭐ Optional</span>
+                </div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-time">2:00 PM</div>
+              <div class="session-info">
+                <div class="session-title">Departure</div>
+                <div class="session-desc">Delegates depart between 2 PM and 11 PM. Safe travels and carry the music with you!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PDF Download anchor -->
+        <div id="pdf" style="margin-top:48px;background:var(--surface-container);border:1px solid rgba(232,119,34,0.2);border-radius:16px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;" class="reveal">
+          <div>
+            <h3 class="headline-sm">Download Full Schedule PDF</h3>
+            <p class="body-md text-muted" style="margin-top:6px;">Complete timetable with venue maps and session details — 8 pages.</p>
+          </div>
+          <a href="https://intcon.spicmacay.org/schedule/pdf/download" class="btn btn-primary" target="_blank">↓ Download PDF</a>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div class="footer-logo">SPIC MACAY</div>
+        <div class="flex gap-4">
+          <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" target="_blank">▶</a>
+          <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" target="_blank">📷</a>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:28px;"></div>
+      <p class="label-sm text-muted text-center">© 2026 SPIC MACAY · <a href="index.html" style="color:var(--primary);">Home</a> · <a href="register.html" style="color:var(--primary);">Register</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts/main.js"></script>
+  <script>
+    function showDay(id, btn) {
+      document.querySelectorAll('.day-view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — SPIC MACAY 11th International Convention</title>
+  <meta name="description" content="Learn about SPIC MACAY, its founder Dr. Kiran Seth, the hosting institution IIT Kharagpur, and the history of this legendary convention."/>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    .about-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:40px; }
+    .about-tab-panel { display:none; animation:fadeIn 0.35s ease; }
+    .about-tab-panel.active { display:block; }
+
+    .founder-layout {
+      display:grid; grid-template-columns:1fr; gap:40px;
+    }
+    @media(min-width:768px){ .founder-layout { grid-template-columns:340px 1fr; } }
+    .founder-img {
+      width:100%; border-radius:20px; aspect-ratio:3/4; object-fit:cover; object-position:top;
+      border:2px solid rgba(232,119,34,0.2);
+    }
+
+    .timeline-vertical { position:relative; padding-left:32px; }
+    .timeline-vertical::before {
+      content:''; position:absolute; left:7px; top:0; bottom:0;
+      width:2px; background:linear-gradient(to bottom, var(--primary-container), transparent);
+    }
+    .tv-item { position:relative; margin-bottom:36px; }
+    .tv-dot {
+      position:absolute; left:-32px; top:4px;
+      width:16px; height:16px; border-radius:50%;
+      background:var(--primary-container);
+      border:3px solid var(--surface);
+    }
+    .tv-year { font-family:var(--font-sans); font-size:0.75rem; font-weight:700; color:var(--primary-container); letter-spacing:0.08em; margin-bottom:4px; }
+    .tv-title { font-family:var(--font-serif); font-size:1rem; font-weight:600; color:var(--on-surface); margin-bottom:4px; }
+    .tv-desc { font-size:0.875rem; color:var(--on-surface-variant); line-height:1.6; }
+
+    .hosting-grid { display:grid; grid-template-columns:1fr; gap:24px; }
+    @media(min-width:768px){ .hosting-grid { grid-template-columns:1fr 1fr; } }
+
+    .key-contact-card {
+      background:var(--surface-container);
+      border:1px solid rgba(245,240,232,0.08);
+      border-radius:14px; padding:24px;
+      display:flex; gap:16px; align-items:flex-start;
+    }
+    .contact-avatar {
+      width:52px; height:52px; border-radius:50%;
+      background:rgba(232,119,34,0.15);
+      border:2px solid rgba(232,119,34,0.2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.25rem; flex-shrink:0;
+    }
+
+    .past-conv-card {
+      background:var(--surface-container);
+      border:1px solid rgba(245,240,232,0.07);
+      border-radius:12px; padding:20px;
+      transition:all var(--transition-base);
+    }
+    .past-conv-card:hover { border-color:rgba(232,119,34,0.3); transform:translateY(-4px); }
+    .past-conv-num { font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--primary-container); }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul></nav>
+      <div class="flex items-center gap-4">
+        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
+        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
+      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link">🏠 Home</a>
+    <a href="artists.html" class="drawer-link">🎵 Artists</a>
+    <a href="schedule.html" class="drawer-link">📅 Schedule</a>
+    <a href="about.html" class="drawer-link active">ℹ️ About</a>
+    <a href="faq.html" class="drawer-link">❓ FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;">Register Now</a>
+  </div>
+
+  <div style="padding-top:65px;">
+
+    <!-- Page Header -->
+    <section style="background:var(--surface-container);border-bottom:1px solid rgba(245,240,232,0.07);padding:56px 0 40px;">
+      <div class="container">
+        <span class="chip reveal">EST. 1977</span>
+        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">About <span class="text-gradient">SPIC MACAY</span></h1>
+        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:16px;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth — a voluntary youth movement since 1977.</p>
+
+        <!-- Tabs -->
+        <div class="about-tabs" style="margin-top:32px;">
+          <button class="filter-tab active" onclick="showAboutTab('convention',this)">The Convention</button>
+          <button class="filter-tab" onclick="showAboutTab('founder',this)">Founder</button>
+          <button class="filter-tab" onclick="showAboutTab('hosting',this)" id="hostingTab">Hosting Institute</button>
+          <button class="filter-tab" onclick="showAboutTab('past',this)">Past Conventions</button>
+          <button class="filter-tab" onclick="showAboutTab('contacts',this)">Key Contacts</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-gap">
+      <div class="container">
+
+        <!-- ── Convention Tab ─────────────────────────────── -->
+        <div class="about-tab-panel active" id="tab-convention">
+          <div style="display:grid;grid-template-columns:1fr;gap:48px;">
+            <div style="display:grid;grid-template-columns:1fr;gap:32px;">
+              <div class="reveal">
+                <h2 class="headline-lg" style="margin-bottom:20px;">About the Convention</h2>
+                <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
+                  The SPIC MACAY International Convention is a flagship gathering that brings together renowned maestros, young learners, and cultural enthusiasts for a transformative experience. The convention features dawn-to-dusk activities — from Naad Yoga and Hatha Yoga in the morning to classical music and dance performances in the evening.
+                </p>
+                <p class="body-md text-muted" style="line-height:1.85;">
+                  Workshops across music, dance, craft, and cinema classics run throughout the day. Heritage walks and baithaks offer intimate interactions with artists, while seva and volunteering foster community spirit. The ashram-like environment encourages participants to disconnect from the noise of daily life and reconnect with the timeless wisdom embedded in India's classical traditions.
+                </p>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;" class="reveal reveal-delay-1">
+                <div class="bento-cell" style="text-align:center;">
+                  <div style="font-size:2.5rem;margin-bottom:10px;">🎵</div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Concerts</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">World-class Hindustani, Carnatic, and dance performances nightly.</p>
+                </div>
+                <div class="bento-cell" style="text-align:center;">
+                  <div style="font-size:2.5rem;margin-bottom:10px;">🎨</div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Workshops</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Guru-led intensive sessions in music, dance, craft, and cinema.</p>
+                </div>
+                <div class="bento-cell" style="text-align:center;">
+                  <div style="font-size:2.5rem;margin-bottom:10px;">🏛️</div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Heritage Walks</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Guided exploration of IIT Kharagpur's historical and architectural heritage.</p>
+                </div>
+                <div class="bento-cell" style="text-align:center;">
+                  <div style="font-size:2.5rem;margin-bottom:10px;">🧘</div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Yoga & Meditation</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Dawn sessions of Hatha Yoga, Naad Yoga, and Silent Meditation.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- What makes it unique -->
+            <div class="reveal">
+              <h3 class="headline-md" style="margin-bottom:24px;">What Makes It Unique</h3>
+              <div style="display:flex;flex-direction:column;gap:16px;">
+                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <span style="font-size:1.5rem;flex-shrink:0;">🕰️</span>
+                  <div>
+                    <h4 class="headline-sm" style="margin-bottom:6px;">47 Years of Legacy</h4>
+                    <p class="body-md text-muted" style="font-size:0.875rem;">Founded in 1977, SPIC MACAY has presented over 15,000 programmes in 900+ cities, colleges, and rural areas across India and abroad.</p>
+                  </div>
+                </div>
+                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <span style="font-size:1.5rem;flex-shrink:0;">🌐</span>
+                  <div>
+                    <h4 class="headline-sm" style="margin-bottom:6px;">Global Community</h4>
+                    <p class="body-md text-muted" style="font-size:0.875rem;">Participants from over 40 countries have attended past International Conventions — a truly global celebration of India's living heritage.</p>
+                  </div>
+                </div>
+                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <span style="font-size:1.5rem;flex-shrink:0;">🤝</span>
+                  <div>
+                    <h4 class="headline-sm" style="margin-bottom:6px;">Volunteer-Driven</h4>
+                    <p class="body-md text-muted" style="font-size:0.875rem;">The convention runs almost entirely on the energy of student volunteers — making it one of the largest youth-led cultural events in Asia.</p>
+                  </div>
+                </div>
+                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <span style="font-size:1.5rem;flex-shrink:0;">🎓</span>
+                  <div>
+                    <h4 class="headline-sm" style="margin-bottom:6px;">Guru-Shishya Parampara</h4>
+                    <p class="body-md text-muted" style="font-size:0.875rem;">The ancient tradition of direct knowledge transmission from master to student is alive at SPIC MACAY — an experience unavailable in formal education.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Founder Tab ─────────────────────────────────── -->
+        <div class="about-tab-panel" id="tab-founder">
+          <div class="founder-layout reveal">
+            <div>
+              <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=500&q=80" alt="Dr. Kiran Seth" class="founder-img"/>
+              <div style="margin-top:16px;padding:16px;background:var(--surface-container);border-radius:12px;text-align:center;border:1px solid rgba(232,119,34,0.2);">
+                <p class="label-md" style="color:var(--primary-container);margin-bottom:4px;">FOUNDER</p>
+                <h3 class="headline-sm">Dr. Kiran Seth</h3>
+                <p class="body-md text-muted" style="font-size:0.875rem;margin-top:4px;">Professor Emeritus, IIT Delhi<br/>Padma Shri Awardee</p>
+              </div>
+            </div>
+            <div>
+              <span class="chip" style="margin-bottom:20px;display:inline-flex;">The Visionary</span>
+              <h2 class="headline-lg" style="margin-bottom:20px;">Dr. Kiran Seth</h2>
+              <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
+                Dr. Kiran Seth founded SPIC MACAY in 1977 as a student of IIT Delhi, driven by a profound concern that India's youth were drifting away from their extraordinary cultural heritage. What began as a small series of classical music programmes at IIT Delhi has grown into a global movement.
+              </p>
+              <p class="body-md text-muted" style="margin-bottom:20px;line-height:1.85;">
+                A Professor Emeritus of Mechanical Engineering, Dr. Seth has dedicated his life — beyond his academic responsibilities — to ensuring that India's intangible cultural heritage reaches every corner of the country. His philosophy is simple: expose young people to the depth and beauty of classical arts, and they will be transformed.
+              </p>
+              <p class="body-md text-muted" style="margin-bottom:32px;line-height:1.85;">
+                Dr. Seth was awarded the prestigious Padma Shri in 2009 in recognition of his extraordinary contribution to Indian classical arts. He continues to serve as the guiding spirit and tireless driving force behind SPIC MACAY's mission.
+              </p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
+                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">1977</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Founded SPIC MACAY</div>
+                </div>
+                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">2009</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Padma Shri Award</div>
+                </div>
+                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">900+</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Cities Reached</div>
+                </div>
+                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">15k+</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Programmes Held</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Hosting Institute Tab ───────────────────────── -->
+        <div class="about-tab-panel" id="tab-hosting">
+          <div class="reveal">
+            <div style="position:relative;border-radius:20px;overflow:hidden;height:300px;margin-bottom:40px;">
+              <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1200&q=80" alt="IIT Kharagpur" style="width:100%;height:100%;object-fit:cover;"/>
+              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,19,0.8) 0%,transparent 60%);display:flex;align-items:flex-end;padding:32px;">
+                <div>
+                  <span class="chip" style="margin-bottom:12px;">HOST INSTITUTION</span>
+                  <h2 class="headline-lg">Indian Institute of Technology<br/>Kharagpur</h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="hosting-grid">
+              <div>
+                <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
+                  IIT Kharagpur, established in 1951, is India's first IIT and one of its most prestigious technical institutions. Spread across a sprawling 2,100-acre campus, it is almost a self-contained town — with its own hospitals, markets, schools, and now, a rich cultural heritage.
+                </p>
+                <p class="body-md text-muted" style="line-height:1.85;margin-bottom:20px;">
+                  The campus provides the ideal setting for SPIC MACAY's immersive convention — with spacious lawns for dawn yoga, large auditoria for concerts, heritage buildings for walks, and hostels for accommodation. IIT-KGP's student community is one of the most active SPIC MACAY chapters in the country.
+                </p>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <p class="label-sm text-muted" style="margin-bottom:4px;">ESTABLISHED</p>
+                  <p class="headline-sm">1951 · First IIT of India</p>
+                </div>
+                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <p class="label-sm text-muted" style="margin-bottom:4px;">CAMPUS SIZE</p>
+                  <p class="headline-sm">2,100 Acres · A City in Itself</p>
+                </div>
+                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <p class="label-sm text-muted" style="margin-bottom:4px;">LOCATION</p>
+                  <p class="headline-sm">Kharagpur, West Bengal</p>
+                </div>
+                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
+                  <p class="label-sm text-muted" style="margin-bottom:4px;">NEAREST STATION</p>
+                  <p class="headline-sm">Kharagpur Junction (~3 km)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Past Conventions Tab ────────────────────────── -->
+        <div class="about-tab-panel" id="tab-past">
+          <div class="reveal">
+            <h2 class="headline-lg" style="margin-bottom:8px;">Past International Conventions</h2>
+            <p class="body-md text-muted" style="margin-bottom:36px;">A decade of transformative gatherings across India's premier institutions.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+              <div class="past-conv-card"><div class="past-conv-num">10th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2024</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Bombay, Mumbai</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">9th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2023</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Delhi, New Delhi</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">8th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2022</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Madras, Chennai</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">7th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2019</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Kanpur, Kanpur</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">6th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2018</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Roorkee, Roorkee</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">5th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2017</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Kharagpur</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">4th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2016</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Hyderabad</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">3rd</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2015</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Gandhinagar</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">2nd</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2014</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Delhi</p></div>
+              <div class="past-conv-card"><div class="past-conv-num">1st</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2013</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Bombay</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Key Contacts Tab ───────────────────────────── -->
+        <div class="about-tab-panel" id="tab-contacts">
+          <div class="reveal">
+            <h2 class="headline-lg" style="margin-bottom:8px;">Key Contacts</h2>
+            <p class="body-md text-muted" style="margin-bottom:36px;">Reach out to the right team for any queries regarding the convention.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+              <div class="key-contact-card">
+                <div class="contact-avatar">👤</div>
+                <div>
+                  <p class="label-sm text-muted" style="margin-bottom:2px;">GENERAL ENQUIRIES</p>
+                  <p class="headline-sm" style="margin-bottom:4px;">Registrations Team</p>
+                  <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">registrations@spicmacay.com</a>
+                </div>
+              </div>
+              <div class="key-contact-card">
+                <div class="contact-avatar">🎵</div>
+                <div>
+                  <p class="label-sm text-muted" style="margin-bottom:2px;">ARTIST RELATIONS</p>
+                  <p class="headline-sm" style="margin-bottom:4px;">Programme Committee</p>
+                  <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">artists@spicmacay.com</a>
+                </div>
+              </div>
+              <div class="key-contact-card">
+                <div class="contact-avatar">📰</div>
+                <div>
+                  <p class="label-sm text-muted" style="margin-bottom:2px;">MEDIA & PR</p>
+                  <p class="headline-sm" style="margin-bottom:4px;">Public Relations</p>
+                  <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">media@spicmacay.com</a>
+                </div>
+              </div>
+              <div class="key-contact-card">
+                <div class="contact-avatar">🤝</div>
+                <div>
+                  <p class="label-sm text-muted" style="margin-bottom:2px;">VOLUNTEERING</p>
+                  <p class="headline-sm" style="margin-bottom:4px;">Volunteer Coordinator</p>
+                  <a href="https://spicmacay.org/volunteer-with-us" style="color:var(--primary);font-size:0.875rem;" target="_blank">spicmacay.org/volunteer</a>
+                </div>
+              </div>
+              <div class="key-contact-card">
+                <div class="contact-avatar">🏛️</div>
+                <div>
+                  <p class="label-sm text-muted" style="margin-bottom:2px;">REGISTERED OFFICE</p>
+                  <p class="headline-sm" style="margin-bottom:4px;">New Delhi HQ</p>
+                  <p style="font-size:0.875rem;color:var(--on-surface-variant);">41/42 Lucknow Road, Near Vishwavidyalaya Metro, New Delhi – 110054</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div class="footer-logo">SPIC MACAY</div>
+        <div class="flex gap-4">
+          <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" target="_blank">▶</a>
+          <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" target="_blank">📷</a>
+          <a href="https://www.facebook.com/SPICMACAY/" class="social-link" target="_blank">f</a>
+          <a href="https://x.com/spicmacay" class="social-link" target="_blank">𝕏</a>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:28px;"></div>
+      <p class="label-sm text-muted text-center">© 2026 SPIC MACAY · <a href="index.html" style="color:var(--primary);">Home</a> · <a href="register.html" style="color:var(--primary);">Register</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts/main.js"></script>
+  <script>
+    function showAboutTab(id, btn) {
+      document.querySelectorAll('.about-tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.about-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+      // handle anchor
+      if (window.location.hash === '#hosting' && id !== 'hosting') return;
+    }
+    // Check hash on load
+    const hash = window.location.hash;
+    if (hash === '#founder') showAboutTab('founder', document.querySelectorAll('.filter-tab')[1]);
+    if (hash === '#hosting') showAboutTab('hosting', document.querySelectorAll('.filter-tab')[2]);
+    if (hash === '#past')    showAboutTab('past', document.querySelectorAll('.filter-tab')[3]);
+  </script>
+</body>
+</html>

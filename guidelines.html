@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guidelines — SPIC MACAY 11th International Convention</title>
+  <meta name="description" content="Convention and travel guidelines for the 11th International Convention of SPIC MACAY, May 25–31, 2026 at IIT Kharagpur."/>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    .guideline-card {
+      background:var(--surface-container);
+      border:1px solid rgba(245,240,232,0.07);
+      border-radius:14px;
+      padding:24px;
+      display:flex; gap:16px;
+    }
+    .guideline-icon { font-size:1.75rem; flex-shrink:0; margin-top:2px; }
+    .do-card  { border-left:3px solid #4ade80; }
+    .dont-card{ border-left:3px solid #f87171; }
+    .guideline-tag-do   { background:rgba(74,222,128,0.1); color:#86efac; border:1px solid rgba(74,222,128,0.2); padding:2px 10px; border-radius:var(--radius-full); font-size:0.7rem; font-weight:700; }
+    .guideline-tag-dont { background:rgba(248,113,113,0.1); color:#fca5a5; border:1px solid rgba(248,113,113,0.2); padding:2px 10px; border-radius:var(--radius-full); font-size:0.7rem; font-weight:700; }
+
+    .packing-item {
+      display:flex; align-items:center; gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(245,240,232,0.07);
+    }
+    .packing-item:last-child { border-bottom:none; }
+    .packing-check { color:#4ade80; font-size:1rem; flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="guidelines.html" class="active">Guidelines</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul></nav>
+      <div class="flex items-center gap-4">
+        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
+        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
+      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link">🏠 Home</a>
+    <a href="artists.html" class="drawer-link">🎵 Artists</a>
+    <a href="schedule.html" class="drawer-link">📅 Schedule</a>
+    <a href="about.html" class="drawer-link">ℹ️ About</a>
+    <a href="guidelines.html" class="drawer-link active">📋 Guidelines</a>
+    <a href="faq.html" class="drawer-link">❓ FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;">Register Now</a>
+  </div>
+
+  <div style="padding-top:65px;">
+
+    <!-- Header -->
+    <section style="background:var(--surface-container);border-bottom:1px solid rgba(245,240,232,0.07);padding:56px 0 40px;">
+      <div class="container">
+        <span class="chip reveal">IMPORTANT — PLEASE READ</span>
+        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">Convention<br/><span class="text-gradient">Guidelines</span></h1>
+        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:520px;margin-top:16px;">
+          These guidelines ensure a safe, respectful, and deeply enriching experience for all participants, Gurus, volunteers, and the host institution.
+        </p>
+        <!-- Quick nav -->
+        <div class="flex gap-4" style="margin-top:28px;flex-wrap:wrap;" class="reveal">
+          <a href="#convention" class="btn btn-secondary btn-sm">Convention Rules</a>
+          <a href="#travel" class="btn btn-secondary btn-sm">Travel Info</a>
+          <a href="#packing" class="btn btn-secondary btn-sm">What to Pack</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-gap" id="convention">
+      <div class="container" style="max-width:900px;">
+
+        <!-- Important notice -->
+        <div style="background:rgba(232,119,34,0.08);border:1px solid rgba(232,119,34,0.25);border-radius:16px;padding:24px 28px;margin-bottom:48px;display:flex;gap:16px;" class="reveal">
+          <span style="font-size:1.75rem;flex-shrink:0;">⚠️</span>
+          <div>
+            <h3 class="headline-sm" style="margin-bottom:8px;color:var(--primary);">Before You Register</h3>
+            <p class="body-md text-muted" style="line-height:1.75;">
+              The convention operates under strict guidelines to uphold the integrity of the ashram-like environment. Participants who do not comply with the code of conduct may be asked to leave without refund. Please read all guidelines carefully before registering.
+            </p>
+          </div>
+        </div>
+
+        <!-- Convention Guidelines Section -->
+        <h2 class="headline-md reveal" style="margin-bottom:8px;" id="conv-rules">📋 Convention Guidelines</h2>
+        <p class="body-md text-muted reveal reveal-delay-1" style="margin-bottom:32px;">The following norms apply throughout the 7-day convention.</p>
+
+        <div style="display:grid;grid-template-columns:1fr;gap:14px;" class="reveal reveal-delay-1">
+
+          <div class="guideline-card do-card">
+            <div class="guideline-icon">✅</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">Attend All Mandatory Sessions</h4>
+                <span class="guideline-tag-do">DO</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">4:00 AM Yoga, Shramdaan, and all assigned workshop sessions are mandatory. Regular absence without medical reason may result in removal from the convention.</p>
+            </div>
+          </div>
+
+          <div class="guideline-card do-card">
+            <div class="guideline-icon">✅</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">Maintain Silence During Performances</h4>
+                <span class="guideline-tag-do">DO</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">Concerts and baithaks demand complete silence and focused attention. Applause is welcome at appropriate moments. Whispering, phone use, or movement during performances is disrespectful.</p>
+            </div>
+          </div>
+
+          <div class="guideline-card do-card">
+            <div class="guideline-icon">✅</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">Dress Modestly &amp; Appropriately</h4>
+                <span class="guideline-tag-do">DO</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">Traditional Indian attire is strongly encouraged — kurta, salwar, saree, or dhoti. Western formal wear is acceptable. Revealing or immodest clothing is not permitted at any session.</p>
+            </div>
+          </div>
+
+          <div class="guideline-card do-card">
+            <div class="guideline-icon">✅</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">Participate in Shramdaan Wholeheartedly</h4>
+                <span class="guideline-tag-do">DO</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">The daily 15-minute collective cleaning is a spiritual practice, not a chore. Approach it with humility and a spirit of service. All participants — including faculty — are expected to participate.</p>
+            </div>
+          </div>
+
+          <div class="guideline-card dont-card">
+            <div class="guideline-icon">❌</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">No Alcohol, Tobacco, or Non-Vegetarian Food</h4>
+                <span class="guideline-tag-dont">DO NOT</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">The campus is strictly alcohol-free and tobacco-free during the convention. No non-vegetarian food is permitted on campus. Violation is grounds for immediate removal.</p>
+            </div>
+          </div>
+
+          <div class="guideline-card dont-card">
+            <div class="guideline-icon">❌</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">No Mobile Phones During Sessions</h4>
+                <span class="guideline-tag-dont">DO NOT</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">Mobile phones must be on silent and stowed away during all workshops, concerts, yoga sessions, and Shramdaan. Photography is only permitted during designated breaks and with prior permission.</p>
+            </div>
+          </div>
+
+          <div class="guideline-card dont-card">
+            <div class="guideline-icon">❌</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">No Leaving Campus Without Permission</h4>
+                <span class="guideline-tag-dont">DO NOT</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">Participants may not leave the IIT Kharagpur campus unaccompanied or without notifying the volunteer team. Safety is paramount, and the schedule is intensive enough that there should be no need to leave.</p>
+            </div>
+          </div>
+
+          <div class="guideline-card dont-card">
+            <div class="guideline-icon">❌</div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <h4 class="headline-sm">No Disrespect Toward Artists or Gurus</h4>
+                <span class="guideline-tag-dont">DO NOT</span>
+              </div>
+              <p class="body-md text-muted" style="font-size:0.9rem;">The Gurus and artists command the highest respect. Do not approach them uninvited, interrupt their practice, or request selfies during sessions. Wait for designated interaction times.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Divider -->
+        <div class="divider divider--ornate" style="margin-block:56px;" id="travel"></div>
+
+        <!-- Travel Guidelines -->
+        <h2 class="headline-md reveal" style="margin-bottom:8px;">🚂 Travel Guidelines</h2>
+        <p class="body-md text-muted reveal reveal-delay-1" style="margin-bottom:32px;">Everything you need to know about getting to IIT Kharagpur.</p>
+
+        <div style="display:grid;grid-template-columns:1fr;gap:24px;" class="reveal">
+
+          <div style="background:var(--surface-container);border-radius:16px;padding:28px;border:1px solid rgba(245,240,232,0.07);">
+            <h3 class="headline-sm" style="margin-bottom:16px;">🕐 Arrival Window</h3>
+            <div style="background:rgba(232,119,34,0.07);border-radius:10px;padding:16px;margin-bottom:16px;border:1px solid rgba(232,119,34,0.15);">
+              <p class="label-sm" style="color:var(--primary-container);margin-bottom:4px;">STRICTLY BETWEEN</p>
+              <p class="headline-sm">4:00 PM on 24 May 2026 — 7:00 AM on 25 May 2026</p>
+            </div>
+            <p class="body-md text-muted" style="font-size:0.9rem;">Arrival strictly outside this window cannot be accommodated. Plan your travel accordingly — book trains/flights well in advance. Participants arriving late may miss the opening ceremony.</p>
+          </div>
+
+          <div style="background:var(--surface-container);border-radius:16px;padding:28px;border:1px solid rgba(245,240,232,0.07);">
+            <h3 class="headline-sm" style="margin-bottom:16px;">✈️ Departure Window</h3>
+            <div style="background:rgba(99,102,241,0.07);border-radius:10px;padding:16px;margin-bottom:16px;border:1px solid rgba(99,102,241,0.2);">
+              <p class="label-sm" style="color:#a5b4fc;margin-bottom:4px;">STRICTLY BETWEEN</p>
+              <p class="headline-sm">2:00 PM — 11:00 PM on 31 May 2026</p>
+            </div>
+            <p class="body-md text-muted" style="font-size:0.9rem;">Rooms must be vacated by 1 PM on 31 May. Storage will be available for luggage until departure time. Do not book return travel before 3 PM to allow time to check out comfortably.</p>
+          </div>
+
+          <div style="background:var(--surface-container);border-radius:16px;padding:28px;border:1px solid rgba(245,240,232,0.07);">
+            <h3 class="headline-sm" style="margin-bottom:20px;">🗺️ How to Reach IIT Kharagpur</h3>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              <div style="display:flex;gap:14px;">
+                <span style="font-size:1.5rem;flex-shrink:0;">🚆</span>
+                <div>
+                  <p class="label-md" style="margin-bottom:4px;color:var(--on-surface);">By Train (Recommended)</p>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Kharagpur Junction is connected to all major cities. From the station, IIT campus is ~3 km by auto-rickshaw or cab. Trains from Kolkata take approximately 2 hours.</p>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;">
+                <span style="font-size:1.5rem;flex-shrink:0;">✈️</span>
+                <div>
+                  <p class="label-md" style="margin-bottom:4px;color:var(--on-surface);">By Air</p>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Fly into Netaji Subhas Chandra Bose International Airport, Kolkata (~120 km). Take a train from Kolkata or a cab directly to Kharagpur (~2.5 hours by road).</p>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;">
+                <span style="font-size:1.5rem;flex-shrink:0;">🚗</span>
+                <div>
+                  <p class="label-md" style="margin-bottom:4px;color:var(--on-surface);">By Road</p>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Kharagpur is on NH-16 (Mumbai–Kolkata highway). From Kolkata: ~2.5 hours. GPS: "IIT Kharagpur Main Gate, Kharagpur, West Bengal 721302".</p>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;">
+                <span style="font-size:1.5rem;flex-shrink:0;">🤝</span>
+                <div>
+                  <p class="label-md" style="margin-bottom:4px;color:var(--on-surface);">Pick-Up Assistance</p>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Volunteer pick-up will be available at Kharagpur Junction during the arrival window. Details will be shared with registered participants via email.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider divider--ornate" style="margin-block:56px;" id="packing"></div>
+
+        <!-- Packing List -->
+        <h2 class="headline-md reveal" style="margin-bottom:8px;">🎒 What to Pack</h2>
+        <p class="body-md text-muted reveal reveal-delay-1" style="margin-bottom:32px;">A practical checklist for a comfortable and prepared week at IIT Kharagpur.</p>
+
+        <div style="display:grid;grid-template-columns:1fr;gap:20px;" class="reveal">
+
+          <div style="background:var(--surface-container);border-radius:16px;padding:28px;border:1px solid rgba(245,240,232,0.07);">
+            <h3 class="headline-sm" style="margin-bottom:16px;color:var(--primary);">👕 Clothing</h3>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Comfortable traditional attire (kurtas, salwars, sarees) for 7 days</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Loose, comfortable clothing for 4 AM yoga sessions</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Light jacket or shawl (evenings can be cool)</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Walking shoes and sandals/chappals (IIT campus is large)</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Yoga mat (optional — some will be provided)</span></div>
+          </div>
+
+          <div style="background:var(--surface-container);border-radius:16px;padding:28px;border:1px solid rgba(245,240,232,0.07);">
+            <h3 class="headline-sm" style="margin-bottom:16px;color:var(--primary);">🧴 Essentials</h3>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Personal toiletries, towels, and bedsheet</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Water bottle (stay hydrated — the schedule is intense!)</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Any personal medications and a basic first-aid kit</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Torch/flashlight for early morning walks</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Notebook and pen for workshop notes</span></div>
+          </div>
+
+          <div style="background:var(--surface-container);border-radius:16px;padding:28px;border:1px solid rgba(245,240,232,0.07);">
+            <h3 class="headline-sm" style="margin-bottom:16px;color:var(--primary);">📄 Documents</h3>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Registration confirmation email (print or digital)</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Government-issued photo ID (Aadhaar, Passport, etc.)</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>College/institution ID card</span></div>
+            <div class="packing-item"><span class="packing-check">✓</span><span>Emergency contact information (physical copy)</span></div>
+          </div>
+
+          <div style="background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.2);border-radius:16px;padding:24px;">
+            <h3 class="headline-sm" style="margin-bottom:12px;color:#f87171;">❌ Do NOT Bring</h3>
+            <div class="packing-item" style="border-color:rgba(248,113,113,0.1);"><span style="color:#f87171;">✗</span><span>Alcohol or tobacco products</span></div>
+            <div class="packing-item" style="border-color:rgba(248,113,113,0.1);"><span style="color:#f87171;">✗</span><span>Non-vegetarian food items</span></div>
+            <div class="packing-item" style="border-color:rgba(248,113,113,0.1);"><span style="color:#f87171;">✗</span><span>Valuables or large amounts of cash (basic facilities available on campus)</span></div>
+            <div class="packing-item" style="border-color:rgba(248,113,113,0.1);border-bottom:none;"><span style="color:#f87171;">✗</span><span>Musical instruments (unless pre-approved as a performing artist)</span></div>
+          </div>
+
+        </div>
+
+        <!-- Final CTA -->
+        <div style="margin-top:56px;background:var(--surface-container);border:1px solid rgba(232,119,34,0.2);border-radius:20px;padding:40px;text-align:center;" class="reveal">
+          <h3 class="headline-md" style="margin-bottom:12px;">Ready to join us?</h3>
+          <p class="body-md text-muted" style="max-width:400px;margin:0 auto 28px;">Now that you're prepared, complete your registration and secure your place at this transformative gathering.</p>
+          <a href="register.html" class="btn btn-primary btn-lg">Register for the Convention →</a>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div class="footer-logo">SPIC MACAY</div>
+        <div class="flex gap-4">
+          <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" target="_blank">▶</a>
+          <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" target="_blank">📷</a>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:28px;"></div>
+      <p class="label-sm text-muted text-center">© 2026 SPIC MACAY · <a href="index.html" style="color:var(--primary);">Home</a> · <a href="register.html" style="color:var(--primary);">Register</a> · <a href="faq.html" style="color:var(--primary);">FAQ</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

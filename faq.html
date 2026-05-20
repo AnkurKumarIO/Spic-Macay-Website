@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ — SPIC MACAY 11th International Convention</title>
+  <meta name="description" content="Frequently asked questions about registration, accommodation, travel, and the SPIC MACAY 11th International Convention."/>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    .faq-categories { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:40px; }
+    .faq-section-title {
+      font-family:var(--font-serif);
+      font-size:1.375rem;
+      font-weight:600;
+      color:var(--primary-container);
+      margin-bottom:20px;
+      margin-top:48px;
+      padding-bottom:12px;
+      border-bottom:1px solid rgba(245,240,232,0.1);
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .contact-card {
+      background:var(--surface-container);
+      border:1px solid rgba(245,240,232,0.08);
+      border-radius:16px;
+      padding:28px;
+      text-align:center;
+    }
+    .contact-icon { font-size:2.5rem; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="faq.html" class="active">FAQ</a></li>
+      </ul></nav>
+      <div class="flex items-center gap-4">
+        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
+        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
+      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link">🏠 Home</a>
+    <a href="artists.html" class="drawer-link">🎵 Artists</a>
+    <a href="schedule.html" class="drawer-link">📅 Schedule</a>
+    <a href="about.html" class="drawer-link">ℹ️ About</a>
+    <a href="faq.html" class="drawer-link active">❓ FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;">Register Now</a>
+  </div>
+
+  <div style="padding-top:65px;">
+    <!-- Page Header -->
+    <section style="background:var(--surface-container);border-bottom:1px solid rgba(245,240,232,0.07);padding:56px 0 40px;">
+      <div class="container">
+        <span class="chip reveal">HELP & SUPPORT</span>
+        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">Frequently Asked<br/><span class="text-gradient">Questions</span></h1>
+        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:480px;margin-top:16px;">Everything you need to know about attending the 11th International Convention.</p>
+      </div>
+    </section>
+
+    <!-- Search Bar -->
+    <div style="padding:32px 0;background:var(--surface-dim);border-bottom:1px solid rgba(245,240,232,0.06);">
+      <div class="container">
+        <div style="position:relative;max-width:540px;">
+          <span style="position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--outline);font-size:1rem;">🔍</span>
+          <input class="input-field" type="search" id="faqSearch" placeholder="Search FAQ…" style="padding-left:44px;" oninput="filterFAQ(this.value)"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Body -->
+    <section class="section-gap">
+      <div class="container" style="max-width:820px;">
+
+        <!-- Registration -->
+        <div class="faq-section-title reveal">📝 Registration</div>
+        <div id="faq-registration">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              How do I register for the convention?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Visit the <a href="register.html" style="color:var(--primary);">Register page</a> and complete the three-step form. You'll receive a confirmation email with your unique Registration ID within 24 hours of submission.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Is registration open for international participants?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Yes! SPIC MACAY warmly welcomes participants from across the globe. International delegates should apply early and may need to arrange Indian visas independently. Contact <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);">registrations@spicmacay.com</a> for international delegate support.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Can institutions register multiple participants?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Yes. Choose the "Institution" option during registration. A single faculty coordinator can manage multiple student delegates under one account. Each delegate will receive their individual ID upon approval.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Is there a registration fee?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">The convention is organised on a nominal cost basis to cover accommodation, meals, and logistics. Scholarship provisions are available for deserving students. Please contact the team for fee details and scholarship applications.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              What is the deadline for registration?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Registration closes once capacity is reached or on 15th May 2026, whichever is earlier. Apply early — past conventions have filled up weeks in advance. Volunteer applications remain open until 20th May 2026.</div>
+          </div>
+        </div>
+
+        <!-- Accommodation -->
+        <div class="faq-section-title reveal">🏠 Accommodation & Meals</div>
+        <div id="faq-accommodation">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Where will participants stay?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Participants will be housed in the hostels of IIT Kharagpur. Accommodation is arranged in shared dormitory-style rooms, fostering a community living experience consistent with the ashram ethos of the convention.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              What type of food is served?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">All meals are vegetarian and holistically curated — nourishing, simple, and sattvic in nature. Breakfast, lunch, and dinner are provided. Jain and vegan options can be requested during registration. Outside food is discouraged during the convention.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              When should I arrive and depart?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">
+              <strong>Arrival:</strong> Strictly between 4:00 PM on 24th May and 7:00 AM on 25th May 2026.<br/>
+              <strong>Departure:</strong> Strictly between 2:00 PM and 11:00 PM on 31st May 2026.<br/>
+              Please do not arrive or depart outside these windows as campus access is restricted.
+            </div>
+          </div>
+        </div>
+
+        <!-- Schedule & Activities -->
+        <div class="faq-section-title reveal">📅 Schedule & Activities</div>
+        <div id="faq-schedule">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Is attendance at the 4 AM Yoga session mandatory?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Yes, Hatha Yoga / Naad Yoga at 4:00 AM is a core part of the convention experience and is expected of all participants (except for medical reasons). It is one of the most transformative aspects of the week — past participants consistently describe it as life-changing.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Can I choose which workshops to attend?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Participants are assigned to learning streams based on their preferences submitted during registration. You may indicate your preferred streams (music, dance, craft, film) and we do our best to accommodate your choices. Flexibility within the programme is allowed during afternoon open sessions.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              What is the Overnight Concert on Day 6?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">The Overnight Concert on the night of 30th May (Day 6) runs from 8:45 PM to 6:00 AM — an unbroken, spiritually charged cycle of classical music culminating in the sacred dawn ragas. It is the highlight of every convention. Sleeping is respectfully discouraged during this time!</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              What is Shramdaan?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Shramdaan (literal: donation of labour) is a 15-minute collective cleaning of the campus every morning. It reflects the Gandhian values of self-reliance, humility, and community spirit that are central to SPIC MACAY's philosophy.</div>
+          </div>
+        </div>
+
+        <!-- Travel -->
+        <div class="faq-section-title reveal">🚂 Travel & Getting There</div>
+        <div id="faq-travel">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              How do I get to IIT Kharagpur?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">
+              <strong>By Train:</strong> Kharagpur Junction is well-connected to Kolkata, Delhi, Mumbai, Chennai, and Bangalore. IIT-KGP campus is approximately 3 km from the station — autos and cabs are available.<br/><br/>
+              <strong>By Air:</strong> Nearest airport is Netaji Subhas Chandra Bose International Airport, Kolkata (about 120 km). From Kolkata, take a train to Kharagpur Junction.<br/><br/>
+              Detailed travel guidelines will be shared after registration is confirmed.
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Will transportation be arranged from the station?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Yes. Pick-up assistance will be available at Kharagpur Junction during the designated arrival window (4 PM–7 AM). Participants traveling in groups are encouraged to coordinate arrival times and share transport. Details will be communicated after registration.</div>
+          </div>
+        </div>
+
+        <!-- Volunteers -->
+        <div class="faq-section-title reveal">🤝 Volunteering</div>
+        <div id="faq-volunteers">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              What do volunteers do at the convention?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Volunteers are the backbone of the convention. Roles include logistics coordination, hospitality, artist liaison, media documentation, technical support, and seva (community service). Volunteering is a deeply fulfilling experience and volunteers get full access to all events.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFAQ(this)">
+              Do volunteers receive accommodation?
+              <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
+            </button>
+            <div class="faq-answer">Yes. Volunteers receive campus accommodation, all meals, and full access to all sessions and concerts — complimentary. Register as a Volunteer on the <a href="register.html" style="color:var(--primary);">registration page</a>.</div>
+          </div>
+        </div>
+
+        <!-- Contact cards -->
+        <div style="margin-top:56px;display:grid;grid-template-columns:1fr;gap:16px;" class="reveal">
+          <p class="headline-sm" style="margin-bottom:4px;">Still have questions?</p>
+          <p class="body-md text-muted" style="margin-bottom:20px;">Our team is happy to help. Reach out via any of the channels below.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+            <div class="contact-card">
+              <div class="contact-icon">📧</div>
+              <p class="label-md" style="margin-bottom:8px;color:var(--on-surface);">Email Us</p>
+              <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;word-break:break-all;">registrations@spicmacay.com</a>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">📍</div>
+              <p class="label-md" style="margin-bottom:8px;color:var(--on-surface);">Registered Office</p>
+              <p style="font-size:0.875rem;color:var(--on-surface-variant);">41/42 Lucknow Road, Near Vishwavidyalaya Metro, New Delhi – 110054</p>
+            </div>
+            <div class="contact-card">
+              <div class="contact-icon">🌐</div>
+              <p class="label-md" style="margin-bottom:8px;color:var(--on-surface);">Official Website</p>
+              <a href="https://intcon.spicmacay.org" target="_blank" style="color:var(--primary);font-size:0.875rem;">intcon.spicmacay.org</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div class="footer-logo">SPIC MACAY</div>
+        <div class="flex gap-4">
+          <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" target="_blank">▶</a>
+          <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" target="_blank">📷</a>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:28px;"></div>
+      <p class="label-sm text-muted text-center">© 2026 SPIC MACAY · <a href="index.html" style="color:var(--primary);">Home</a> · <a href="register.html" style="color:var(--primary);">Register</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts/main.js"></script>
+  <script>
+    function toggleFAQ(btn) {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+    function filterFAQ(query) {
+      const q = query.toLowerCase();
+      document.querySelectorAll('.faq-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

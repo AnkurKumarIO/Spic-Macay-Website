@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>11th International Convention — SPIC MACAY</title>
+  <meta name="description" content="A week-long immersion in Indian classical music and arts. Concerts, workshops, heritage walks, yoga, and more. May 25–31, 2026 at IIT Kharagpur."/>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    /* ── Home-page specific ─────────────────────── */
+    .hero-home { height: 100dvh; min-height: 600px; display: flex; align-items: flex-end; }
+    .hero-home .hero-content { padding-bottom: 80px; width: 100%; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media(min-width:768px){
+      .about-grid { grid-template-columns: repeat(12,1fr); grid-auto-rows: auto; }
+      .about-cell-main { grid-column: span 6; grid-row: span 2; }
+      .about-cell-3    { grid-column: span 3; }
+      .about-cell-accent { grid-column: span 3; }
+    }
+
+    .gallery-home {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: 180px;
+      gap: 10px;
+    }
+    @media(min-width:768px){
+      .gallery-home { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 250px; }
+      .gh-tall { grid-row: span 2; }
+      .gh-wide { grid-column: span 2; }
+    }
+
+    /* Marquee strip */
+    .marquee-track { overflow: hidden; white-space: nowrap; }
+    .marquee-inner { display: inline-flex; gap: 48px; animation: marquee 30s linear infinite; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .marquee-item { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; color: var(--outline); }
+    .marquee-item .dot { color: var(--primary-container); margin-right: 48px; }
+
+    /* CTA section */
+    .cta-section { position: relative; overflow: hidden; }
+    .cta-bg { position: absolute; inset:0; }
+    .cta-bg img { width:100%; height:100%; object-fit:cover; opacity:0.15; }
+    .cta-bg-overlay { position:absolute;inset:0; background: linear-gradient(135deg, var(--background) 40%, rgba(19,19,19,0.6) 100%); }
+
+    /* Video play button */
+    .play-btn {
+      position: absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      background: rgba(0,0,0,0.35); transition: background var(--transition-base);
+    }
+    .play-btn:hover { background: rgba(0,0,0,0.2); }
+    .play-circle {
+      width:64px; height:64px; border-radius:50%;
+      background: rgba(232,119,34,0.9);
+      display:flex; align-items:center; justify-content:center;
+      transition: transform var(--transition-base), box-shadow var(--transition-base);
+    }
+    .play-btn:hover .play-circle { transform: scale(1.1); box-shadow: 0 0 40px rgba(232,119,34,0.5); }
+  </style>
+</head>
+<body>
+  <!-- ══ Progress Bar ══════════════════════════════════ -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ══ Navigation ════════════════════════════════════ -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html" class="active">Home</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle">About ▾</a>
+            <div class="nav-dropdown-menu">
+              <a href="about.html">About the Convention</a>
+              <a href="about.html#founder">Founder</a>
+              <a href="about.html#hosting">Hosting Institute</a>
+              <a href="about.html#past">Past Conventions</a>
+            </div>
+          </li>
+          <li><a href="artists.html">Artists</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle">Guidelines ▾</a>
+            <div class="nav-dropdown-menu">
+              <a href="guidelines.html">Convention Guidelines</a>
+              <a href="guidelines.html#travel">Travel Guidelines</a>
+            </div>
+          </li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
+        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ Mobile Drawer ══════════════════════════════════ -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
+      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link active">
+      <span class="drawer-icon">🏠</span> Home
+    </a>
+    <a href="about.html" class="drawer-link">
+      <span class="drawer-icon">ℹ️</span> About
+    </a>
+    <a href="artists.html" class="drawer-link">
+      <span class="drawer-icon">🎵</span> Artists & Gurus
+    </a>
+    <a href="schedule.html" class="drawer-link">
+      <span class="drawer-icon">📅</span> Schedule
+    </a>
+    <a href="guidelines.html" class="drawer-link">
+      <span class="drawer-icon">📋</span> Guidelines
+    </a>
+    <a href="faq.html" class="drawer-link">
+      <span class="drawer-icon">❓</span> FAQ
+    </a>
+    <a href="register.html" class="btn btn-primary w-full mt-8" style="margin-top:auto;">Register Now</a>
+  </div>
+
+  <!-- ══ Hero Section ═══════════════════════════════════ -->
+  <section class="hero hero-home">
+    <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1400&q=80" alt="Indian classical music performance" class="hero-media"/>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="container">
+        <div class="hero-event-pill reveal">
+          <span class="dot"></span>
+          25 – 31 May 2026 &nbsp;·&nbsp; IIT Kharagpur
+        </div>
+        <h1 class="display-lg reveal reveal-delay-1" style="max-width:800px;">
+          11th International<br/>
+          <span class="text-gradient">Convention</span> SPIC MACAY
+        </h1>
+        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:20px;margin-bottom:36px;">
+          A week-long immersion in Indian classical music and arts — concerts, workshops, heritage walks, yoga, meditation, and wisdom sessions.
+        </p>
+        <div class="flex gap-4 reveal reveal-delay-3" style="flex-wrap:wrap;">
+          <a href="register.html" class="btn btn-primary btn-lg animate-pulse-glow">Register for Convention</a>
+          <a href="schedule.html" class="btn btn-secondary btn-lg">Explore Programme</a>
+        </div>
+
+        <!-- Countdown -->
+        <div style="margin-top:56px;" class="reveal reveal-delay-4">
+          <p class="label-sm text-muted" style="margin-bottom:14px;">COUNTDOWN TO 25 MAY 2026</p>
+          <div class="countdown-grid" style="max-width:340px;">
+            <div class="countdown-cell"><div class="countdown-num" id="cdDays">--</div><div class="countdown-lbl">Days</div></div>
+            <div class="countdown-cell"><div class="countdown-num" id="cdHours">--</div><div class="countdown-lbl">Hours</div></div>
+            <div class="countdown-cell"><div class="countdown-num" id="cdMins">--</div><div class="countdown-lbl">Mins</div></div>
+            <div class="countdown-cell"><div class="countdown-num" id="cdSecs">--</div><div class="countdown-lbl">Secs</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:3;">
+      <div class="scroll-indicator">
+        <span>Scroll</span>
+        <svg width="16" height="24" viewBox="0 0 16 24" fill="none"><path d="M8 0v20M1 14l7 8 7-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Marquee Strip ══════════════════════════════════ -->
+  <div style="padding-block:20px;border-block:1px solid rgba(245,240,232,0.08);background:var(--surface-container);">
+    <div class="marquee-track">
+      <div class="marquee-inner">
+        <span class="marquee-item">Hindustani Classical</span>
+        <span class="marquee-item"><span class="dot">◆</span>Carnatic Music</span>
+        <span class="marquee-item"><span class="dot">◆</span>Bharatanatyam</span>
+        <span class="marquee-item"><span class="dot">◆</span>Kathak</span>
+        <span class="marquee-item"><span class="dot">◆</span>Odissi</span>
+        <span class="marquee-item"><span class="dot">◆</span>Sitar</span>
+        <span class="marquee-item"><span class="dot">◆</span>Tabla</span>
+        <span class="marquee-item"><span class="dot">◆</span>Naad Yoga</span>
+        <span class="marquee-item"><span class="dot">◆</span>Heritage Walks</span>
+        <span class="marquee-item"><span class="dot">◆</span>Craft Workshops</span>
+        <!-- duplicate for seamless loop -->
+        <span class="marquee-item"><span class="dot">◆</span>Hindustani Classical</span>
+        <span class="marquee-item"><span class="dot">◆</span>Carnatic Music</span>
+        <span class="marquee-item"><span class="dot">◆</span>Bharatanatyam</span>
+        <span class="marquee-item"><span class="dot">◆</span>Kathak</span>
+        <span class="marquee-item"><span class="dot">◆</span>Odissi</span>
+        <span class="marquee-item"><span class="dot">◆</span>Sitar</span>
+        <span class="marquee-item"><span class="dot">◆</span>Tabla</span>
+        <span class="marquee-item"><span class="dot">◆</span>Naad Yoga</span>
+        <span class="marquee-item"><span class="dot">◆</span>Heritage Walks</span>
+        <span class="marquee-item"><span class="dot">◆</span>Craft Workshops</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ About Bento Section ════════════════════════════ -->
+  <section class="section-gap" id="about">
+    <div class="container">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:48px;">
+        <div>
+          <p class="label-md text-primary-container reveal" style="margin-bottom:8px;">ABOUT THE CONVENTION</p>
+          <h2 class="headline-lg reveal reveal-delay-1" style="max-width:500px;">Merging Heritage<br/>with Innovation</h2>
+        </div>
+        <p class="body-md text-muted reveal reveal-delay-2" style="max-width:380px;">
+          The SPIC MACAY International Convention brings together maestros, learners, and cultural enthusiasts for a transformative experience — since 1977.
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <!-- Main large cell -->
+        <div class="bento-cell about-cell-main reveal" style="display:flex;flex-direction:column;justify-content:space-between;min-height:280px;">
+          <div>
+            <div style="font-size:2.5rem;margin-bottom:20px;">🎵</div>
+            <h3 class="headline-sm" style="margin-bottom:12px;">The Guru-Shishya Tradition</h3>
+            <p class="body-md text-muted">Experience an ashram-like peek into the classical parampara. Engage in Naad Yoga at dawn and meditation sessions that bridge ancient wisdom with digital-era focus. Every interaction is curated to bring you closer to the heart of India's artistic heritage.</p>
+          </div>
+          <div class="flex gap-4" style="margin-top:28px;flex-wrap:wrap;">
+            <span class="chip">Meditation</span>
+            <span class="chip">Philosophy</span>
+            <span class="chip">Guru Parampara</span>
+          </div>
+        </div>
+
+        <!-- Cell 2 -->
+        <div class="bento-cell about-cell-3 reveal reveal-delay-1" style="display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="font-size:1.75rem;margin-bottom:14px;">🎶</div>
+            <h4 class="headline-sm" style="margin-bottom:8px;">100+ Sessions</h4>
+            <p class="body-md text-muted" style="font-size:0.9rem;">Concerts and intimate baithaks featuring world-class classical musicians.</p>
+          </div>
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(245,240,232,0.1);">
+            <a href="schedule.html" class="btn btn-ghost" style="font-size:0.8125rem;padding:0;">VIEW LINEUP →</a>
+          </div>
+        </div>
+
+        <!-- Cell 3 Accent -->
+        <div class="bento-cell about-cell-accent bento-cell--accent reveal reveal-delay-2" style="display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-size:4rem;font-family:var(--font-serif);font-weight:700;line-height:1;">7</div>
+          <p class="headline-sm" style="margin-top:8px;">Immersive Days</p>
+          <p style="margin-top:12px;font-size:0.875rem;opacity:0.8;">Sunrise yoga to late-evening classical performances — every hour dedicated to cultural enrichment.</p>
+        </div>
+
+        <!-- Cell 4 -->
+        <div class="bento-cell about-cell-3 reveal reveal-delay-1" style="display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="font-size:1.75rem;margin-bottom:14px;">🏛️</div>
+            <h4 class="headline-sm" style="margin-bottom:8px;">Heritage Walks</h4>
+            <p class="body-md text-muted" style="font-size:0.9rem;">Exploring the architectural marvels and hidden histories surrounding IIT Kharagpur.</p>
+          </div>
+        </div>
+
+        <!-- Cell 5 -->
+        <div class="bento-cell about-cell-3 reveal reveal-delay-2" style="display:flex;flex-direction:column;gap:12px;">
+          <div class="flex items-center gap-4" style="font-size:0.8rem;font-weight:600;color:#4ade80;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse-glow 2s infinite;"></span>
+            LIVE SESSIONS
+          </div>
+          <h4 class="headline-sm">Tech Hub</h4>
+          <p class="body-md text-muted" style="font-size:0.9rem;">Digital archival and acoustics workshops integrating high-tech tools with heritage arts.</p>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="divider divider--ornate" style="margin-top:64px;margin-bottom:48px;"></div>
+      <div class="stats-bar">
+        <div class="stat-cell reveal"><div class="stat-num" data-target="800">0</div><div class="stat-label">Participants</div></div>
+        <div class="stat-cell reveal reveal-delay-1"><div class="stat-num" data-target="120">0</div><div class="stat-label">Artists & Gurus</div></div>
+        <div class="stat-cell reveal reveal-delay-2"><div class="stat-num" data-target="100">0</div><div class="stat-label">Sessions</div></div>
+        <div class="stat-cell reveal reveal-delay-3"><div class="stat-num" data-target="15">0</div><div class="stat-label">Heritage Walks</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Schedule Preview ═══════════════════════════════ -->
+  <section style="background:var(--surface-container);border-block:1px solid rgba(245,240,232,0.06);" id="schedule">
+    <div class="container section-gap">
+      <div class="flex items-center justify-between" style="flex-wrap:wrap;gap:16px;margin-bottom:40px;">
+        <div>
+          <p class="label-md text-primary-container reveal" style="margin-bottom:8px;">📅 MAY 25 – MAY 31, 2026</p>
+          <h2 class="headline-lg reveal reveal-delay-1">Convention Schedule</h2>
+        </div>
+        <a href="schedule.html" class="btn btn-secondary reveal reveal-delay-2">Full Schedule →</a>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <!-- Day 1 -->
+        <div class="timeline-item reveal">
+          <div class="timeline-header">
+            <div class="timeline-day-num">25</div>
+            <div style="flex:1;">
+              <p class="label-sm text-muted">MONDAY, MAY 25</p>
+              <p class="headline-sm" style="margin-top:4px;">Inauguration Day</p>
+            </div>
+            <span style="color:var(--outline);font-size:1.25rem;">›</span>
+          </div>
+          <div class="timeline-body">
+            <div class="event-row">
+              <div class="event-time">9:00 AM</div>
+              <div><div class="event-name">Mahatma Film Screening</div><div class="event-desc">Interaction with Shri Rajit Kapur</div></div>
+            </div>
+            <div class="event-row">
+              <div class="event-time">4:00 PM</div>
+              <div><div class="event-name">Nadaswaram Recital</div><div class="event-desc">Evening Welcome Music</div></div>
+            </div>
+            <div class="event-row">
+              <div class="event-time">7:00 PM</div>
+              <div><div class="event-name">Formal Inauguration + Evening Concerts</div><div class="event-desc">Grand opening ceremony</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day 2-5 -->
+        <div class="timeline-item reveal reveal-delay-1">
+          <div class="timeline-header">
+            <div class="timeline-day-num">26–29</div>
+            <div style="flex:1;">
+              <p class="label-sm text-muted">TUE–FRI · CORE CYCLE</p>
+              <p class="headline-sm" style="margin-top:4px;">Intensive Immersion Days</p>
+            </div>
+            <span style="color:var(--outline);font-size:1.25rem;">›</span>
+          </div>
+          <div class="timeline-body">
+            <div class="event-row">
+              <div class="event-time">4:00 AM</div>
+              <div><div class="event-name">Hatha Yog / Naad Yog / Meditation</div></div>
+            </div>
+            <div class="event-row">
+              <div class="event-time">2:00 PM</div>
+              <div><div class="event-name">Afternoon Intensive Sessions</div><div class="event-desc">Music, Dance, Craft across 15+ venues</div></div>
+            </div>
+            <div class="event-row">
+              <div class="event-time">6:15 PM</div>
+              <div><div class="event-name">Evening Classical Concerts</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day 6 — Overnight -->
+        <div class="timeline-item reveal reveal-delay-2" style="position:relative;">
+          <span style="position:absolute;top:16px;right:20px;background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;letter-spacing:0.08em;">OVERNIGHT</span>
+          <div class="timeline-header">
+            <div class="timeline-day-num">30</div>
+            <div style="flex:1;">
+              <p class="label-sm text-muted">SATURDAY</p>
+              <p class="headline-sm" style="margin-top:4px;">Grand Finale — Overnight Concert</p>
+            </div>
+            <span style="color:var(--outline);font-size:1.25rem;">›</span>
+          </div>
+          <div class="timeline-body">
+            <div class="event-row">
+              <div class="event-time">8:45 PM</div>
+              <div><div class="event-name">Overnight Music Marathon</div><div class="event-desc">Unbroken cycle of music culminating in dawn ragas — till 6:00 AM</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:32px;text-align:center;">
+        <a href="schedule.html#pdf" class="btn btn-ghost">↓ Download Full PDF Schedule</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Gallery Section ════════════════════════════════ -->
+  <section class="section-gap" id="gallery">
+    <div class="container">
+      <h2 class="headline-lg text-center reveal" style="margin-bottom:12px;">Capturing the <span class="text-gradient">Soul</span> of SPIC MACAY</h2>
+      <p class="body-md text-muted text-center reveal reveal-delay-1" style="margin-bottom:48px;">Moments of devotion, artistry, and timeless tradition from previous conventions.</p>
+
+      <div class="gallery-home">
+        <div class="gallery-item gh-tall reveal">
+          <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=600&q=80" alt="Classical Performance"/>
+          <div class="overlay"><p class="headline-sm" style="color:white;">The Resonance of Performance</p></div>
+        </div>
+        <div class="gallery-item gh-wide reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80" alt="Musical gathering"/>
+          <div class="overlay"><p class="headline-sm" style="color:white;">Artistry in Community</p></div>
+        </div>
+        <div class="gallery-item reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Sitar"/>
+          <div class="overlay"><p style="color:white;font-size:0.9rem;">Instruments of the Soul</p></div>
+        </div>
+        <div class="gallery-item reveal reveal-delay-3">
+          <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage walk"/>
+          <div class="overlay"><p style="color:white;font-size:0.9rem;">Heritage Walks</p></div>
+        </div>
+        <div class="gallery-item gh-wide reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?w=800&q=80" alt="Concert night"/>
+          <div class="overlay"><p class="headline-sm" style="color:white;">Evening Concerts</p></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;">
+        <a href="gallery.html" class="btn btn-secondary">View All 2,400+ Media Files →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CTA Section ════════════════════════════════════ -->
+  <section class="cta-section section-gap">
+    <div class="cta-bg">
+      <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1400&q=80" alt=""/>
+      <div class="cta-bg-overlay"></div>
+    </div>
+    <div class="container" style="position:relative;z-index:2;">
+      <div style="display:flex;flex-direction:column;gap:24px;align-items:flex-start;">
+        <div>
+          <h2 class="display-lg reveal" style="max-width:600px;">
+            Ready to Experience <span class="text-gradient">the Magic?</span>
+          </h2>
+          <p class="body-lg text-muted reveal reveal-delay-1" style="max-width:520px;margin-top:20px;">
+            Join thousands of participants from across the globe for an unforgettable week of cultural immersion.
+          </p>
+        </div>
+        <div class="flex gap-4 reveal reveal-delay-2" style="flex-wrap:wrap;">
+          <a href="register.html" class="btn btn-primary btn-lg">Register Now</a>
+          <a href="register.html#volunteer" class="btn btn-secondary btn-lg">Volunteer with Us</a>
+        </div>
+        <div class="flex gap-4 reveal reveal-delay-3" style="flex-wrap:wrap;margin-top:8px;">
+          <div style="text-align:center;">
+            <div class="label-sm text-muted">Email</div>
+            <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.9rem;">registrations@spicmacay.com</a>
+          </div>
+          <div style="width:1px;background:rgba(245,240,232,0.15);"></div>
+          <div style="text-align:center;">
+            <div class="label-sm text-muted">Venue</div>
+            <span style="font-size:0.9rem;color:var(--on-surface);">IIT Kharagpur, West Bengal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Footer ═════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
+        <div>
+          <div class="footer-logo">SPIC MACAY</div>
+          <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.9rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
+          <div class="flex gap-4" style="margin-top:20px;">
+            <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank">▶</a>
+            <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" aria-label="Instagram" target="_blank">📷</a>
+            <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank">f</a>
+            <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank">𝕏</a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="artists.html">Artists</a></li>
+              <li><a href="schedule.html">Schedule</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="about.html">About Founder</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Legal</div>
+            <ul class="footer-links">
+              <li><a href="#">Terms &amp; Conditions</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">GDPR Compliance</a></li>
+              <li><a href="guidelines.html">Convention Guidelines</a></li>
+              <li><a href="guidelines.html#travel">Travel Guidelines</a></li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Contact Us</div>
+          <address style="font-style:normal;font-size:0.9rem;color:var(--on-surface-variant);line-height:1.8;">
+            41/42 Lucknow Road,<br/>
+            Near Vishwavidyalaya Metro Station<br/>
+            New Delhi – 110054
+          </address>
+          <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.9rem;display:block;margin-top:12px;">registrations@spicmacay.com</a>
+          <div style="margin-top:20px;">
+            <div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
+            <div class="flex gap-4">
+              <input type="email" class="input-field" placeholder="your@email.com" style="font-size:0.875rem;padding:10px 14px;" id="newsletterEmail"/>
+              <button class="btn btn-primary btn-sm" onclick="subscribeNewsletter()">Join</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:40px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
+        <p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
+        <p class="label-sm text-muted">Made with ♥ by <a href="https://www.linkedin.com/in/veda-moola-57ab422b1/" style="color:var(--primary);" target="_blank">Veda Moola</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ Toast ══════════════════════════════════════════ -->
+  <div class="toast" id="toast"></div>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>
