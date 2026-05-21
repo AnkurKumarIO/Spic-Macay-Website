@@ -295,58 +295,35 @@
       .cta-bg-overlay { background: radial-gradient(ellipse at center, rgba(6,6,6,0.45) 0%, var(--background) 78%); }
     }
 
-    /* ── Bottom Mobile Navigation ──────────────────────────── */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      z-index: 150;
-      background: rgba(7, 7, 7, 0.96);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(245,240,232,0.1);
-      display: flex;
-      align-items: stretch;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-    }
-    @media (min-width: 768px) { .bottom-nav { display: none; } }
-
-    .bottom-nav-item {
-      flex: 1;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 3px;
-      padding: 9px 2px 11px;
-      color: var(--outline);
-      font-size: 0.55rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    /* ── Mobile Header Buttons ─────────────────────────────── */
+    .nav-mobile-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      border-radius: var(--radius-full);
       text-decoration: none;
-      transition: color var(--transition-fast);
-      position: relative;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
     }
-    .bottom-nav-item::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 25%; right: 25%;
-      height: 2px;
+    .nav-mobile-btn--about {
+      background: rgba(245,240,232,0.08);
+      border: 1px solid rgba(245,240,232,0.15);
+      color: var(--on-surface-variant);
+    }
+    .nav-mobile-btn--about:hover { background: rgba(245,240,232,0.14); color: var(--on-surface); }
+    .nav-mobile-btn--register {
       background: var(--primary-container);
-      border-radius: 0 0 3px 3px;
-      transform: scaleX(0);
-      transition: transform var(--transition-fast);
+      border: 1px solid var(--primary-container);
+      color: var(--on-primary-container);
     }
-    .bottom-nav-item:hover, .bottom-nav-item.active { color: var(--primary); }
-    .bottom-nav-item.active::before { transform: scaleX(1); }
-    .bottom-nav-icon { font-size: 1.3rem; line-height: 1; }
-    .bottom-nav-register {
-      background: var(--primary-container);
-      color: var(--on-primary-container) !important;
-      margin: 5px;
-      border-radius: var(--radius-lg);
-      font-weight: 700;
+    .nav-mobile-btn--register:hover { filter: brightness(1.1); }
+    @media (min-width: 768px) {
+      .nav-mobile-btn { display: none; }
     }
-    .bottom-nav-register::before { display: none; }
-    .bottom-nav-register:hover { filter: brightness(1.1); color: var(--on-primary-container) !important; }
   </style>
 </head>
 <body>
@@ -385,6 +362,8 @@
 
       <div class="nav-actions">
         <a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
+        <a href="about.html" class="nav-mobile-btn nav-mobile-btn--about">About</a>
+        <a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
         <button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
           <span class="hamburger-bar"></span>
           <span class="hamburger-bar"></span>
@@ -410,29 +389,7 @@
     <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
   </nav>
 
-  <!-- ══ Bottom Mobile Navigation Bar ════════════════ -->
-  <nav class="bottom-nav" aria-label="Bottom navigation">
-    <a href="index.html" class="bottom-nav-item active">
-      <span class="bottom-nav-icon">🏠</span>
-      <span>Home</span>
-    </a>
-    <a href="schedule.html" class="bottom-nav-item">
-      <span class="bottom-nav-icon">📅</span>
-      <span>Events</span>
-    </a>
-    <a href="artists.html" class="bottom-nav-item">
-      <span class="bottom-nav-icon">🎵</span>
-      <span>Artists</span>
-    </a>
-    <a href="about.html" class="bottom-nav-item">
-      <span class="bottom-nav-icon">ℹ️</span>
-      <span>About</span>
-    </a>
-    <a href="register.html" class="bottom-nav-item bottom-nav-register">
-      <span class="bottom-nav-icon">✍️</span>
-      <span>Register</span>
-    </a>
-  </nav>
+
 
   <!-- ══ Hero Section ══════════════════════════════════ -->
   <section class="hero hero-home" id="home" aria-label="Convention hero">
@@ -610,7 +567,7 @@
 
         <!-- 7 Days Accent -->
         <div class="bento-cell about-cell-accent bento-cell--accent reveal reveal-delay-2 bento-img-cell" style="display:flex;flex-direction:column;justify-content:center;">
-          <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=400&q=75" alt="" class="bento-bg-img" style="opacity:0.12;" aria-hidden="true"/>
+          <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=400&q=75" alt="" class="bento-bg-img" style="opacity:0.12;" aria-hidden="true"/>
           <div class="bento-cell-content">
             <div style="font-size:4.5rem;font-family:var(--font-display);font-weight:400;line-height:1;letter-spacing:0.02em;">7</div>
             <p class="headline-sm" style="margin-top:8px;">Immersive Days</p>
@@ -754,7 +711,7 @@
   </section>
 
   <!-- ══ Footer ═════════════════════════════════════════ -->
-  <footer class="footer" style="padding-bottom:calc(80px + env(safe-area-inset-bottom, 0px));">
+  <footer class="footer">
     <div class="container">
       <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
         <div>
@@ -762,7 +719,7 @@
           <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
           <div class="flex gap-4" style="margin-top:20px;">
             <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
-            <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
+            <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
             <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">f</a>
             <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank" rel="noopener">𝕏</a>
           </div>
@@ -781,9 +738,9 @@
           <div>
             <div class="footer-heading">Legal</div>
             <ul class="footer-links">
-              <li><a href="#">Terms &amp; Conditions</a></li>
-              <li><a href="#">Privacy Policy</a></li>
-              <li><a href="#">GDPR Compliance</a></li>
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="gdpr.html">GDPR Compliance</a></li>
               <li><a href="guidelines.html">Guidelines</a></li>
             </ul>
           </div>
@@ -808,7 +765,7 @@
       <div class="divider" style="margin-block:40px;"></div>
       <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
         <p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
-        <p class="label-sm text-muted">Made with ♥ by <a href="https://www.linkedin.com/in/veda-moola-57ab422b1/" style="color:var(--primary);" target="_blank" rel="noopener">Veda Moola</a></p>
+        <p class="label-sm text-muted">Made by <a href="#" style="color:var(--primary);">ACM Student Chapter, VNIT</a></p>
       </div>
     </div>
   </footer>
