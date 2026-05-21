@@ -279,11 +279,20 @@
     /* ── CTA Section ───────────────────────────────────────── */
     .cta-section { position: relative; overflow: hidden; }
     .cta-bg { position: absolute; inset: 0; }
-    .cta-bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.10; }
+    .cta-bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.14; }
     .cta-bg-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, var(--background) 40%, rgba(6,6,6,0.7) 100%); }
-    @media (max-width: 600px) {
+    .cta-inner { display:flex; flex-direction:column; gap:24px; align-items:flex-start; }
+    @media(max-width: 600px) {
       .cta-btn-group { flex-direction: column !important; gap: 10px !important; }
       .cta-btn-group .btn { width: 100%; justify-content: center; }
+    }
+    @media(min-width: 768px) {
+      .cta-inner { align-items: center; text-align: center; width: 100%; }
+      .cta-inner h2 { max-width: none !important; }
+      .cta-inner p  { max-width: none !important; }
+      .cta-inner .cta-btn-group { justify-content: center; }
+      .cta-inner .cta-meta  { justify-content: center; }
+      .cta-bg-overlay { background: radial-gradient(ellipse at center, rgba(6,6,6,0.45) 0%, var(--background) 78%); }
     }
 
     /* ── Bottom Mobile Navigation ──────────────────────────── */
@@ -716,7 +725,7 @@
       <div class="cta-bg-overlay"></div>
     </div>
     <div class="container" style="position:relative;z-index:2;">
-      <div style="display:flex;flex-direction:column;gap:24px;align-items:flex-start;">
+      <div class="cta-inner">
         <div>
           <h2 class="display-lg reveal" style="max-width:560px;">
             Ready to Experience <span class="text-gradient">the Magic?</span>
@@ -729,7 +738,7 @@
           <a href="register.html" class="btn btn-primary btn-lg">Register Now</a>
           <a href="schedule.html" class="btn btn-secondary btn-lg">Explore Events</a>
         </div>
-        <div class="flex gap-4 reveal reveal-delay-3" style="flex-wrap:wrap;align-items:center;">
+        <div class="flex gap-4 reveal reveal-delay-3 cta-meta" style="flex-wrap:wrap;align-items:center;">
           <div>
             <div class="label-sm text-muted">Email</div>
             <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);font-size:0.875rem;">spicmacay@vnit.ac.in</a>
