@@ -60,6 +60,30 @@
   --transition-slow:   700ms ease;
 }
 
+/* ─── Light Theme ────────────────────────────────────────── */
+[data-theme="light"] {
+  --surface:                   #f5f0e8;
+  --surface-dim:               #ebe6dc;
+  --surface-container:         #fffcf7;
+  --surface-container-low:     #f9f5ed;
+  --surface-container-high:    #eee9df;
+  --surface-container-highest: #e4dfd5;
+
+  --primary:              #9a4e0c;
+  --primary-container:    #e87722;
+  --on-primary:           #ffffff;
+  --on-primary-container: #ffffff;
+
+  --on-surface:           #1c1b1a;
+  --on-surface-variant:   #5c4d42;
+  --on-background:        #1c1b1a;
+
+  --outline:              #8d7b6f;
+  --outline-variant:      #d5c8bc;
+
+  --background:           #f8f4ec;
+}
+
 /* ─── Reset & Base ──────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -73,6 +97,7 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 img { display: block; max-width: 100%; }

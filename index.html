@@ -324,6 +324,80 @@
     @media (min-width: 768px) {
       .nav-mobile-btn { display: none; }
     }
+
+    /* ── Theme Toggle ─────────────────────────────────────── */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(245,240,232,0.15);
+      background: rgba(245,240,232,0.06);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { background: rgba(245,240,232,0.14); transform: scale(1.08); }
+    [data-theme="light"] .theme-toggle {
+      border-color: rgba(28,27,26,0.15);
+      background: rgba(28,27,26,0.06);
+    }
+    [data-theme="light"] .theme-toggle:hover { background: rgba(28,27,26,0.12); }
+    .theme-toggle-icon {
+      font-size: 1.05rem;
+      line-height: 1;
+      transition: transform 0.35s ease, opacity 0.3s ease;
+    }
+    .theme-toggle .icon-sun  { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+    [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+    /* Light mode overrides for hardcoded rgba elements */
+    [data-theme="light"] .nav {
+      background: rgba(248,244,236,0.92) !important;
+      border-bottom-color: rgba(28,27,26,0.08) !important;
+    }
+    [data-theme="light"] .hamburger-bar { background: #1c1b1a !important; }
+    [data-theme="light"] .hamburger-btn {
+      background: rgba(28,27,26,0.06) !important;
+      border-color: rgba(28,27,26,0.12) !important;
+    }
+    [data-theme="light"] .drawer {
+      background: #f5f0e8 !important;
+      border-left-color: rgba(28,27,26,0.08) !important;
+    }
+    [data-theme="light"] .hero-overlay-home {
+      background: linear-gradient(to bottom, rgba(248,244,236,0.3) 0%, rgba(248,244,236,0.85) 60%, rgba(248,244,236,1) 100%) !important;
+    }
+    [data-theme="light"] .text-gradient {
+      background: linear-gradient(135deg, #c45e0a 0%, #e87722 50%, #9a4e0c 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+    [data-theme="light"] .footer {
+      background: var(--surface-dim) !important;
+      border-top: 1px solid rgba(28,27,26,0.08);
+    }
+    [data-theme="light"] .social-link {
+      background: rgba(28,27,26,0.06) !important;
+      border-color: rgba(28,27,26,0.1) !important;
+    }
+    [data-theme="light"] .divider {
+      background: rgba(28,27,26,0.08) !important;
+    }
+    [data-theme="light"] .progress-bar {
+      background: var(--primary-container) !important;
+    }
+    [data-theme="light"] .bento-cell {
+      border-color: rgba(28,27,26,0.08) !important;
+    }
+    [data-theme="light"] .nav-mobile-btn--register {
+      color: #fff !important;
+    }
   </style>
 </head>
 <body>
@@ -361,8 +435,11 @@
       </nav>
 
       <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="theme-toggle-icon icon-moon">☾</span>
+          <span class="theme-toggle-icon icon-sun">☀</span>
+        </button>
         <a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
-        <a href="about.html" class="nav-mobile-btn nav-mobile-btn--about">About</a>
         <a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
         <button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
           <span class="hamburger-bar"></span>
@@ -772,5 +849,27 @@
 
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
   <script src="scripts/main.js"></script>
+  <script>
+    /* ── Theme Toggle ───────────────────────────── */
+    (function() {
+      const saved = localStorage.getItem('spicmacay-theme');
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
+
+      const btn = document.getElementById('themeToggle');
+      if (!btn) return;
+
+      btn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'light' ? 'dark' : 'light';
+        if (next === 'dark') {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('spicmacay-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          localStorage.setItem('spicmacay-theme', 'light');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
