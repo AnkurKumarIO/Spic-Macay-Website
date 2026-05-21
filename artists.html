@@ -3,46 +3,400 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Artists & Gurus — SPIC MACAY 11th International Convention</title>
+  <title>Artists &amp; Gurus — SPIC MACAY 11th International Convention</title>
   <meta name="description" content="Meet the renowned maestros and classical artists performing at the 11th International Convention of SPIC MACAY, May 25–31, 2026."/>
   <link rel="stylesheet" href="styles/main.css"/>
   <style>
+    /* ── Hero ─────────────────────────────────── */
     .artists-hero { height: 50vh; min-height: 400px; display: flex; align-items: flex-end; }
+
+    /* ── Filter bar ───────────────────────────── */
+    .discipline-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    /* ── Blog List Stack ──────────────────────── */
     .artists-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
-    @media(min-width:600px) { .artists-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media(min-width:1024px){ .artists-grid { grid-template-columns: repeat(4, 1fr); } }
 
-    .artist-card { position: relative; }
-    .artist-card .img-wrap { position: relative; overflow: hidden; border-radius: 12px 12px 0 0; }
-    .artist-card .img-wrap img { width:100%; aspect-ratio:3/4; object-fit:cover; object-position:top; transition: transform var(--transition-slow); }
-    .artist-card:hover .img-wrap img { transform: scale(1.06); }
-    .artist-card .img-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(19,19,19,0.9) 0%, transparent 55%);
-      opacity: 0;
-      transition: opacity var(--transition-base);
-      display: flex; align-items: flex-end; padding: 16px;
-    }
-    .artist-card:hover .img-overlay { opacity: 1; }
-
-    .featured-artist {
+    /* ── Blog Card ────────────────────────────── */
+    .artist-card {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 40px;
+      grid-template-columns: 340px 1fr;
+      min-height: 260px;
       background: var(--surface-container);
-      border: 1px solid rgba(245,240,232,0.08);
-      border-radius: 20px;
+      border: 1px solid rgba(245, 240, 232, 0.06);
+      border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 60px;
+      cursor: pointer;
+      transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+      text-decoration: none;
     }
-    @media(min-width:768px){ .featured-artist { grid-template-columns: 380px 1fr; } }
-    .featured-artist img { width:100%; height:100%; object-fit:cover; object-position:top; min-height:300px; }
+    .artist-card:hover {
+      border-color: rgba(232, 119, 34, 0.35);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
+      transform: translateY(-3px);
+    }
 
-    .discipline-filter { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+    /* ── Card Image Pane ──────────────────────── */
+    .artist-card .card-img-wrap {
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .artist-card .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+      transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .artist-card:hover .card-img-wrap img {
+      transform: scale(1.06);
+    }
+    /* subtle side-fade so image melts into card body */
+    .artist-card .card-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 70%, var(--surface-container) 100%);
+      pointer-events: none;
+    }
+
+    /* ── Card Content Pane ────────────────────── */
+    .artist-card .card-body {
+      padding: 36px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    /* Category tag */
+    .artist-card .blog-category {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .artist-card .blog-category::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* Artist name */
+    .artist-card .artist-name {
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 700;
+      color: #f5f0e8;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    /* Subtitle */
+    .artist-card .artist-meta-desc {
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: 0.04em;
+      margin: 0;
+      opacity: 0.85;
+    }
+
+    /* Bio excerpt */
+    .artist-card .blog-excerpt {
+      font-family: var(--font-serif);
+      font-size: 0.975rem;
+      color: rgba(245, 240, 232, 0.62);
+      line-height: 1.75;
+      margin: 0;
+      /* clamp to ~3 lines */
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Read more cue */
+    .artist-card .blog-read-more {
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      transition: gap 0.2s ease;
+    }
+    .artist-card:hover .blog-read-more {
+      gap: 12px;
+    }
+
+    /* ── Hidden full bio (modal source) ──────── */
+    .hidden-full-desc { display: none; }
+
+    /* ── Mobile: stack vertically ─────────────── */
+    @media (max-width: 768px) {
+      .artist-card {
+        grid-template-columns: 1fr;
+        grid-template-rows: 240px auto;
+        min-height: unset;
+      }
+      .artist-card .card-img-wrap::after {
+        /* swap fade direction for stacked layout */
+        background: linear-gradient(to bottom, transparent 60%, var(--surface-container) 100%);
+      }
+      .artist-card .card-body {
+        padding: 24px 24px 28px;
+        gap: 10px;
+      }
+      .artist-card .artist-name {
+        font-size: 1.35rem;
+      }
+    }
+
+    /* ── Alternating image side on large screens ─ */
+    @media (min-width: 1024px) {
+      .artist-card:nth-child(even) {
+        grid-template-columns: 1fr 340px;
+      }
+      .artist-card:nth-child(even) .card-img-wrap {
+        order: 2;
+      }
+      .artist-card:nth-child(even) .card-img-wrap::after {
+        background: linear-gradient(to left, transparent 70%, var(--surface-container) 100%);
+      }
+      .artist-card:nth-child(even) .card-body {
+        order: 1;
+      }
+    }
+
+    /* ── Section divider label ────────────────── */
+    .blog-section-label {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .blog-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(245, 240, 232, 0.08);
+    }
+
+    /* ── Wikipedia-style Premium Modal ──────────────── */
+    .wiki-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .wiki-modal.active { display: flex; }
+    .wiki-modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 12, 10, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      animation: fadeIn 0.3s ease;
+    }
+    
+    /* Default / Mobile Stacked Layout (max-width: 768px) */
+    .wiki-modal-container {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      max-height: 85vh;
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.08);
+      border-radius: 20px;
+      overflow-y: auto;
+      z-index: 1002;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .wiki-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(15, 12, 10, 0.6);
+      border: 1px solid rgba(245, 240, 232, 0.15);
+      color: var(--on-surface);
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 1003;
+      backdrop-filter: blur(4px);
+    }
+    .wiki-modal-close:hover {
+      background: rgba(232, 119, 34, 0.25);
+      color: var(--primary);
+      border-color: rgba(232, 119, 34, 0.5);
+      transform: rotate(90deg);
+    }
+    .wiki-modal-hero {
+      position: relative;
+      width: 100%;
+      height: 280px; /* Reasonable mobile stacked height so faces aren't cut off */
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .wiki-modal-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+    }
+    .wiki-modal-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 30%, rgba(15, 12, 10, 0.4) 65%, var(--surface-container) 100%);
+    }
+    .wiki-modal-content { 
+      padding: 32px 24px; 
+    }
+    .wiki-modal-header {
+      border-bottom: 1px solid rgba(245, 240, 232, 0.1);
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    .wiki-modal-title {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f5f0e8;
+      line-height: 1.2;
+    }
+    .wiki-modal-meta {
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 8px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .wiki-modal-body {
+      font-family: var(--font-serif);
+      font-size: 1.025rem;
+      color: rgba(245, 240, 232, 0.8);
+      line-height: 1.8;
+    }
+    .wiki-modal-body p { margin-bottom: 20px; }
+    .wiki-modal-body h4 {
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #f5f0e8;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      border-left: 3px solid var(--primary-container);
+      padding-left: 12px;
+    }
+    .wiki-modal-body ul {
+      margin-top: 12px;
+      margin-bottom: 24px;
+      padding-left: 20px;
+      list-style-type: square;
+    }
+    .wiki-modal-body li {
+      font-size: 0.95rem;
+      color: rgba(245, 240, 232, 0.75);
+      line-height: 1.65;
+      margin-bottom: 8px;
+    }
+    .wiki-modal-body li strong { color: #f5f0e8; }
+
+    /* Desktop Side-by-Side Grid Layout (min-width: 769px) */
+    @media (min-width: 769px) {
+      .wiki-modal-container {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        max-width: 950px;
+        height: 75vh;
+        min-height: 500px;
+        max-height: 680px;
+        overflow: hidden;
+        flex-direction: row; /* reset flex if any */
+      }
+      .wiki-modal-close {
+        /* Anchor to top-right of the overall container, safely away from text */
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        background: rgba(15, 12, 10, 0.4);
+      }
+      .wiki-modal-hero {
+        height: 100%;
+        width: 100%;
+      }
+      .wiki-modal-hero img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+      }
+      .wiki-modal-hero-overlay {
+        background: linear-gradient(to right, transparent 40%, rgba(15, 12, 10, 0.6) 75%, var(--surface-container) 100%);
+      }
+      .wiki-modal-content {
+        padding: 48px;
+        padding-right: 56px; /* spacing to keep text safe from close button */
+        overflow-y: auto;
+        height: 100%;
+      }
+      .wiki-modal-title {
+        font-size: 2.25rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .wiki-modal-hero { height: 220px; }
+      .wiki-modal-content { padding: 24px 20px; }
+      .wiki-modal-title { font-size: 1.65rem; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -117,36 +471,20 @@
     <div class="hero-overlay"></div>
     <div class="hero-content" style="padding-bottom:60px;width:100%;">
       <div class="container">
-        <span class="chip reveal">MAESTROS & GURUS</span>
+        <span class="chip reveal">MAESTROS &amp; GURUS</span>
         <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;max-width:600px;">Artists &amp;<br/><span class="text-gradient">Gurus</span></h1>
         <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:520px;margin-top:16px;">Renowned maestros from across India and the world, bringing centuries of classical tradition to life.</p>
       </div>
     </div>
   </section>
 
-  <!-- Featured Artist -->
+  <!-- Blog List Section -->
   <section class="section-gap">
     <div class="container">
-      <p class="label-md text-primary-container reveal" style="margin-bottom:8px;">HEADLINE ARTIST</p>
-      <h2 class="headline-lg reveal reveal-delay-1" style="margin-bottom:36px;">Featured Guru</h2>
 
-      <div class="featured-artist reveal">
-        <div style="overflow:hidden;">
-          <img src="https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?w=600&q=80" alt="Pt. Hariprasad Chaurasia"/>
-        </div>
-        <div style="padding:40px;display:flex;flex-direction:column;justify-content:center;">
-          <span class="chip" style="margin-bottom:20px;align-self:flex-start;">Hindustani Instrumental</span>
-          <h3 class="headline-lg" style="margin-bottom:8px;">Pt. Hariprasad Chaurasia</h3>
-          <p class="label-md text-primary-container" style="margin-bottom:20px;">Bansuri Maestro · Padma Vibhushan</p>
-          <p class="body-md text-muted" style="margin-bottom:20px;line-height:1.8;">One of India's most celebrated flutists, Pandit Hariprasad Chaurasia has elevated the bansuri to global prominence. His music is a seamless weave of deep classical tradition and lyrical beauty, carrying the essence of ancient India into every performance.</p>
-          <p class="body-md text-muted" style="margin-bottom:28px;line-height:1.8;">He will be conducting an intimate Baithak session as well as an evening concert during the convention, offering participants a rare opportunity to witness a living legend in an immersive, ashram-like setting.</p>
-          <div class="flex gap-4" style="flex-wrap:wrap;">
-            <span class="chip">Bansuri</span>
-            <span class="chip">Hindustani</span>
-            <span class="chip">Raag Yaman</span>
-            <span class="chip">Padma Vibhushan</span>
-          </div>
-        </div>
+      <!-- Section label + filter -->
+      <div class="blog-section-label reveal">
+        <p class="label-md text-primary-container" style="margin:0;">PERFORMING ARTISTS</p>
       </div>
 
       <!-- Filter Tabs -->
@@ -155,165 +493,333 @@
         <button class="filter-tab" data-filter="vocal">Vocal</button>
         <button class="filter-tab" data-filter="instrumental">Instrumental</button>
         <button class="filter-tab" data-filter="dance">Dance</button>
-        <button class="filter-tab" data-filter="craft">Craft & Folk</button>
+        <button class="filter-tab" data-filter="craft">Craft &amp; Folk</button>
       </div>
 
-      <!-- Artists Grid -->
+      <!-- Artists Blog List -->
       <div class="artists-grid" id="artistsGrid">
 
         <!-- Artist 1 -->
-        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=400&q=80" alt="Vocalist"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+        <div class="artist-card" data-discipline="vocal" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=800&q=80" alt="Pt. Jasraj"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Hindustani Vocal</p>
-            <p class="artist-name">Pt. Jasraj (Tribute)</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Mewati Gharana</p>
+          <div class="card-body">
+            <span class="blog-category">Hindustani Vocal</span>
+            <h2 class="artist-name">Pt. Jasraj <span style="opacity:0.45;font-size:0.7em;">(Tribute)</span></h2>
+            <p class="artist-meta-desc">Mewati Gharana Legend</p>
+            <p class="blog-excerpt">Pandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance. Born into a family of traditional musicians, he created a unique style that blended classical rigor with intense spiritual devotion over a career spanning seven decades.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Gharana &amp; Musical Lineage</h4>
+            <p>Pandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance. Born into a family of traditional musicians, he was initiated into vocal training by his elder brother, Pandit Maniram, after originally training as a tabla player. Over a career spanning seven decades, he created a unique style that blended classical rigor with intense spiritual devotion.</p>
+            <h4>Key Contributions &amp; Legacy</h4>
+            <p>Pandit Jasraj introduced the "Jasrangi" jugalbandi, a unique style of duet singing where a male and a female vocalist sing different ragas simultaneously in their respective scales, transitioning smoothly between them. He was also a pioneer in presenting devotional semi-classical forms like Haveli Sangeet to concert audiences, elevating devotional compositions into the high classical realm.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Vibhushan (2000)</strong> - India's second-highest civilian honor for outstanding classical contributions.</li>
+              <li><strong>Sangeet Natak Akademi Fellowship (2010)</strong> - The highest cultural honor bestowed by India's National Academy of Music.</li>
+              <li><strong>Minor Planet "Panditjasraj" (2019)</strong> - Honored by the International Astronomical Union with a minor planet named after him, located between Mars and Jupiter.</li>
+              <li><strong>Jasrangi Jugalbandi</strong> - Developed the unique, pathbreaking gender-balanced duet style in Hindustani classical vocals.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 2 -->
-        <div class="artist-card card" data-discipline="instrumental" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80" alt="Sarod player"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Sarod</span></div>
+        <div class="artist-card" data-discipline="instrumental" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80" alt="Ustad Amjad Ali Khan"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Hindustani Instrumental</p>
-            <p class="artist-name">Ustad Amjad Ali Khan</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Sarod Maestro</p>
+          <div class="card-body">
+            <span class="blog-category">Hindustani Instrumental</span>
+            <h2 class="artist-name">Ustad Amjad Ali Khan</h2>
+            <p class="artist-meta-desc">Sarod Maestro · Padma Vibhushan</p>
+            <p class="blog-excerpt">Ustad Amjad Ali Khan is the sixth-generation descendant of the illustrious Bangash lineage of musicians, credited with inventing and modifying the Sarod from the ancient Afghan Rabab. He gave his first solo recital at the age of six, exhibiting a natural mastery over the instrument that would define the modern era of classical instrumental music.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Gharana &amp; Musical Lineage</h4>
+            <p>Ustad Amjad Ali Khan is the sixth-generation descendant of the illustrious Bangash lineage of musicians, who are credited with inventing and modifying the Sarod from the ancient Afghan Rabab. Born to the legendary Ustad Hafiz Ali Khan, he gave his first solo recital at the age of six, exhibiting a natural mastery over the instrument that would define the modern era of classical instrumental music.</p>
+            <h4>Artistic Philosophy &amp; Performance Style</h4>
+            <p>He is celebrated for his unique "ekhara taans"—rapid, crystal-clear musical passages—and for infusing the Sarod with a vocal quality (gayaki ang) that mimics the human voice. His performances are known for their emotional intensity, ranging from meditative alap to blazing, virtuoso climaxes. He has expanded the boundaries of traditional ragas, creating new ones such as Kiran Ranjani, Haripriya, and Lalit Dhwani.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Vibhushan (2001)</strong> - Bestowed for his monumental impact and lifetime preservation of the Sarod tradition.</li>
+              <li><strong>Fukuoka Asian Culture Prize (2004)</strong> - International recognition for outstanding contributions to Asian art and culture.</li>
+              <li><strong>Grammy Nomination</strong> - Nominated for his collaborative music album, showcasing classical Indian fusion globally.</li>
+              <li><strong>Sarang Ragas Creation</strong> - Created new classical ragas, including <em>Kiran Ranjani</em>, <em>Haripriya</em>, and <em>Lalit Dhwani</em>.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 3 -->
-        <div class="artist-card card" data-discipline="dance" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=400&q=80" alt="Bharatanatyam dancer"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Dance</span></div>
+        <div class="artist-card" data-discipline="dance" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=800&q=80" alt="Smt. Alarmel Valli"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Bharatanatyam</p>
-            <p class="artist-name">Smt. Alarmel Valli</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Padma Bhushan</p>
+          <div class="card-body">
+            <span class="blog-category">Bharatanatyam</span>
+            <h2 class="artist-name">Smt. Alarmel Valli</h2>
+            <p class="artist-meta-desc">Pandanallur Exponent</p>
+            <p class="blog-excerpt">Smt. Alarmel Valli is a leading exponent of the Pandanallur style of Bharatanatyam, training under legendary gurus Pandanallur Chokkalingam Pillai and Subbaraya Pillai. Her dance is a seamless synthesis of traditional rigor and personal, poetic expression — noted for its grace, fluid lines, and dynamic energy.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Gharana &amp; Style</h4>
+            <p>Smt. Alarmel Valli is a leading exponent of the Pandanallur style of Bharatanatyam, training under legendary gurus Pandanallur Chokkalingam Pillai and Subbaraya Pillai. Her dance is a seamless synthesis of traditional rigor and personal, poetic expression, noted for its grace, fluid lines, and dynamic energy. She has pioneered a deeply expressive, lyrical approach that elevates the traditional classical form into a contemporary art medium.</p>
+            <h4>Choreography &amp; Creative Vision</h4>
+            <p>As a choreographer, she has explored classical Sangam poetry, Sanskrit texts, and contemporary themes, crafting solo and group choreographies that have won international acclaim. Her work bridges the ancient and the modern, proving that classical Bharatanatyam is a living, evolving language of the soul. She has also studied under the legendary singer T. Muktha to deepen her command of Padams and Javalis (expressive musical narratives).</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Bhushan (2004)</strong> - Conferred for her exemplary dedication and international propagation of Bharatanatyam.</li>
+              <li><strong>Chevalier of Arts and Letters (2004)</strong> - Awarded by the Government of France for international cultural leadership.</li>
+              <li><strong>Sangeet Natak Akademi Award (2001)</strong> - Highly prestigious national recognition in Indian classical dance.</li>
+              <li><strong>Lyrical Pandanallur Pioneer</strong> - Globally recognized for elevating ancient Sangam literature through elegant dance choreography.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 4 -->
-        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=400&q=80" alt="Carnatic vocalist"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+        <div class="artist-card" data-discipline="vocal" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1519692933481-e162a57d6721?w=800&q=80" alt="M. S. Sheela"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Carnatic Vocal</p>
-            <p class="artist-name">M. S. Sheela</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Mysore Tradition</p>
+          <div class="card-body">
+            <span class="blog-category">Carnatic Vocal</span>
+            <h2 class="artist-name">M. S. Sheela</h2>
+            <p class="artist-meta-desc">Mysore Tradition Flagbearer</p>
+            <p class="blog-excerpt">M. S. Sheela began her training under her mother, the eminent vocalist M. N. Rathna, and later polished her artistry under Sangeetha Kalanidhi Dr. R. K. Srikantan. Inheriting the pure and structured Mysore tradition, she is renowned for her pitch perfection and meticulous handling of complex ragas and rhythmic structures.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Training &amp; Musical Pedigree</h4>
+            <p>M. S. Sheela began her training under her mother, the eminent vocalist M. N. Rathna, and later polished her artistry under the guidance of Sangeetha Kalanidhi Dr. R. K. Srikantan. Inheriting the pure and structured Mysore tradition, she is renowned for her unwavering adherence to classical values, pitch perfection (sruti suddham), and meticulous handling of complex ragas and rhythmic structures.</p>
+            <h4>Performances &amp; Achievements</h4>
+            <p>She is a top-grade artist of All India Radio and has travelled extensively across India, North America, Europe, and the Middle East, winning hearts with her devotional fervor and technical virtuosity. A key figure in the popularization of Kannada Haridasa Sahitya (devotional literature), she has set hundreds of devotional compositions to music, preserving Karnataka's rich cultural legacy.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Sangeet Natak Akademi Award (2019)</strong> - Bestowed for outstanding achievements in Carnatic vocal music.</li>
+              <li><strong>Sangeetha Kalarathna</strong> - Prestigious state honor recognizing her as a master of classical performance and pedagogy.</li>
+              <li><strong>Haridasa Sahitya Preservation</strong> - Set over 500 devotional Kannada compositions to classical ragas, preserving vital regional heritage.</li>
+              <li><strong>Global Tour Ambassador</strong> - Successfully promoted Mysore-style Carnatic traditions across North America, Europe, and the Middle East.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 5 -->
-        <div class="artist-card card" data-discipline="instrumental" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=400&q=80" alt="Tabla player"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Tabla</span></div>
+        <div class="artist-card" data-discipline="instrumental" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?w=800&q=80" alt="Pt. Zakir Hussain"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Tabla</p>
-            <p class="artist-name">Pt. Zakir Hussain</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Padma Vibhushan</p>
+          <div class="card-body">
+            <span class="blog-category">Tabla</span>
+            <h2 class="artist-name">Pt. Zakir Hussain</h2>
+            <p class="artist-meta-desc">Tabla Maestro · Padma Vibhushan</p>
+            <p class="blog-excerpt">Ustad Zakir Hussain is the eldest son of the legendary tabla pioneer Ustad Alla Rakha of the Punjab Gharana. A child prodigy who began touring at age twelve, he elevated the art of tabla accompaniment and solo performance to unprecedented heights through flawless technique and deep understanding of cross-rhythms.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Family Lineage &amp; Guru</h4>
+            <p>Ustad Zakir Hussain is the eldest son of the legendary tabla pioneer Ustad Alla Rakha (of the Punjab Gharana). A child prodigy, he began touring at the age of twelve and quickly established himself as a virtuoso capable of elevating the art of tabla accompaniment and solo performance to unprecedented heights. His flawless technique, lightning-fast speed, and deep understanding of cross-rhythms have made him a household name.</p>
+            <h4>Global Collaborations &amp; Fusion</h4>
+            <p>Zakir Hussain is widely regarded as a chief architect of the global fusion music movement. His groundbreaking work with Shakti (with John McLaughlin), the Diga Rhythm Band, and Planet Drum (with Mickey Hart of the Grateful Dead) earned him a Grammy Award and global recognition. He has collaborated with artists from diverse genres, from jazz to symphony orchestras, while maintaining absolute classical integrity in his traditional Indian performances.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Vibhushan (2023)</strong> - Bestowed for his immense lifetime achievements and globalizing of Indian percussion.</li>
+              <li><strong>Multiple Grammy Awards</strong> - Honored for pioneering international world-music collaborations, including the landmark <em>Planet Drum</em>.</li>
+              <li><strong>National Heritage Fellowship (1999)</strong> - The highest honor awarded by the United States to traditional and folk artists.</li>
+              <li><strong>Shakti Global Fusion</strong> - Co-founded the legendary East-West fusion group <em>Shakti</em> with maestro John McLaughlin.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 6 -->
-        <div class="artist-card card" data-discipline="dance" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&q=80" alt="Kathak dancer"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Dance</span></div>
+        <div class="artist-card" data-discipline="dance" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?w=800&q=80" alt="Pt. Birju Maharaj"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Kathak</p>
-            <p class="artist-name">Pt. Birju Maharaj (Legacy)</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Lucknow Gharana</p>
+          <div class="card-body">
+            <span class="blog-category">Kathak</span>
+            <h2 class="artist-name">Pt. Birju Maharaj <span style="opacity:0.45;font-size:0.7em;">(Legacy)</span></h2>
+            <p class="artist-meta-desc">Kalka-Bindadin Gharana Doyen</p>
+            <p class="blog-excerpt">Pandit Birju Maharaj was the legendary torchbearer of the Kalka-Bindadin Gharana of Lucknow, tracing his ancestry to the great gurus of the royal courts of Awadh. He inherited a rich legacy of dramatic storytelling (abhinaya) and complex footwork (tatkar), which he refined into a highly sophisticated visual art.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>The Lucknow Legend</h4>
+            <p>Pandit Birju Maharaj was the legendary torchbearer of the Kalka-Bindadin Gharana of Lucknow, tracing his ancestry to the great gurus of the royal courts of Awadh. As the son and disciple of Achchan Maharaj, and nephew of Shambhu Maharaj and Lachhu Maharaj, he inherited a rich legacy of dramatic storytelling (abhinaya) and complex footwork (tatkar), which he refined into a highly sophisticated visual art.</p>
+            <h4>Artistic Innovation &amp; Popular Culture</h4>
+            <p>Known for his mime, expressive eyes, and grace, Birju Maharaj popularized Kathak dance globally. He was also a superb vocalist, percussionist (playing the tabla and pakhawaj), and poet. He composed numerous dance dramas and choreographed for Indian cinema, including celebrated sequences in films like Satyajit Ray's <i>Shatranj Ke Khilari</i>, <i>Devdas</i>, and <i>Bajirao Mastani</i>.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Vibhushan (1986)</strong> - Awarded in recognition of his peerless mastery and globalization of Kathak.</li>
+              <li><strong>Sangeet Natak Akademi Award</strong> - Conferred for outstanding contributions and preserving the Lucknow style.</li>
+              <li><strong>National Film Award (2012)</strong> - Honored for Best Choreography in the national cinematic masterpiece <em>Vishwaroopam</em>.</li>
+              <li><strong>Kalashram Foundation</strong> - Established the premier classical arts academy dedicated to the preservation of Kalka-Bindadin traditions.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 7 -->
-        <div class="artist-card card" data-discipline="craft" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=80" alt="Craft artist"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Craft</span></div>
+        <div class="artist-card" data-discipline="craft" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80" alt="Sita Devi"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Madhubani Painting</p>
-            <p class="artist-name">Sita Devi</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">National Award Awardee</p>
+          <div class="card-body">
+            <span class="blog-category">Madhubani Painting</span>
+            <h2 class="artist-name">Sita Devi</h2>
+            <p class="artist-meta-desc">Mithila Art Pioneer · Padma Shri</p>
+            <p class="blog-excerpt">Sita Devi was born in Jitwarpur village in Bihar's Mithila region, where she learned the ancient art of Mithila (Madhubani) painting as a traditional domestic ritual. In the late 1960s, she was among the key local women who pioneered the transition of this art form onto handmade paper, turning a ritual craft into a source of economic independence and fine art.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Traditional Roots &amp; Artistic Rebirth</h4>
+            <p>Sita Devi was born in Jitwarpur village in Bihar's Mithila region, where she learned the ancient art of Mithila (Madhubani) painting as a traditional domestic ritual, painting the mud walls of her home during marriages and festivals. In the late 1960s, during a severe drought, she was among the key local women who pioneered the transition of this art form onto handmade paper, turning a ritual craft into a source of economic independence and fine art.</p>
+            <h4>Style &amp; Unique Innovations</h4>
+            <p>She is credited with popularizing the Bharni style of Madhubani painting, characterized by bold lines, rich color fills (using natural dyes), and themes drawn from Hindu mythology, particularly the lives of Radha and Krishna. Her compositions were celebrated for their structured geometry, intricate borders, and vibrant color palettes that brought rural stories to life with incredible depth.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Shri (1981)</strong> - Awarded by the Government of India for exceptional achievements in folk painting traditions.</li>
+              <li><strong>National Award from the President (1975)</strong> - Prestigious national honor celebrating her as a master craftsman.</li>
+              <li><strong>Madhubani Paper Transition</strong> - Pioneered the movement to transition Mithila art from mud walls onto handmade paper.</li>
+              <li><strong>International Museum Collections</strong> - Art permanently exhibited across premier museums in Japan, France, and the United States.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 8 -->
-        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=400&q=80" alt="Dhrupad vocalist"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+        <div class="artist-card" data-discipline="vocal" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=800&q=80" alt="Ustad Wasifuddin Dagar"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Dhrupad</p>
-            <p class="artist-name">Ustad Wasifuddin Dagar</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Dagar Vani Tradition</p>
+          <div class="card-body">
+            <span class="blog-category">Dhrupad</span>
+            <h2 class="artist-name">Ustad Wasifuddin Dagar</h2>
+            <p class="artist-meta-desc">20th Gen Dagar Vani Maestro</p>
+            <p class="blog-excerpt">Ustad F. Wasifuddin Dagar represents the 20th generation of the Dagar family of Dhrupad singers, an unbroken musical lineage that dates back to the Mughal courts. He carried forward the specialized "Dagar Vani" style, which emphasizes elaborate, meditative alap, microtonal inflections, and pure acoustic resonance.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>The Dagar Vani Lineage</h4>
+            <p>Ustad F. Wasifuddin Dagar represents the 20th generation of the Dagar family of Dhrupad singers, an unbroken musical lineage that dates back to the Mughal courts. Training under his father, Ustad Faiyazuddin Dagar, and his uncle, Ustad Zahiruddin Dagar (the legendary Dagar Brothers duettists), he carried forward the specialized "Dagar Vani" style, which emphasizes elaborate, meditative alap, microtonal inflections, and pure acoustic resonance.</p>
+            <h4>Musical Philosophy &amp; Vocal Range</h4>
+            <p>His singing is celebrated for its deep spiritual quietude, starting with a slow, contemplative, unstructured alap that slowly builds in intensity. His wide vocal range, command over voice modulation, and mastery of pitch and microtones allow him to create deep resonance inside the performance space, giving the audience a meditative, temple-like experience.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Shri (2010)</strong> - Awarded for exemplary dedication in preserving and presenting ancient Dhrupad traditions.</li>
+              <li><strong>20 Generations of Unbroken Lineage</strong> - Celebrated globally as the primary standard-bearer of the ancient Dagar Vani style.</li>
+              <li><strong>Sacred Music Festivals Representation</strong> - Regularly represents Indian classical music at premier sacred music summits in Europe and Asia.</li>
+              <li><strong>Dhrupad Education Campaigns</strong> - Spearheaded extensive university outreach workshops across India to inspire the next generation.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 9 -->
-        <div class="artist-card card" data-discipline="dance" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=400&q=80" alt="Odissi dancer"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Dance</span></div>
+        <div class="artist-card" data-discipline="dance" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=800&q=80" alt="Smt. Sonal Mansingh"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Odissi</p>
-            <p class="artist-name">Smt. Sonal Mansingh</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Padma Vibhushan</p>
+          <div class="card-body">
+            <span class="blog-category">Odissi</span>
+            <h2 class="artist-name">Smt. Sonal Mansingh</h2>
+            <p class="artist-meta-desc">Odissi Legend · Padma Vibhushan</p>
+            <p class="blog-excerpt">Sonal Mansingh is one of India's most versatile classical dancers, having achieved high mastery in both Odissi and Bharatanatyam. She trained under the legendary Guru Kelucharan Mohapatra and Pandanallur Chokkalingam Pillai. Her performances are revered for their profound emotional depth and deep philosophical understanding of Indian mythological themes.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Classical Mastery &amp; Artistic Synthesis</h4>
+            <p>Sonal Mansingh is one of India's most versatile classical dancers, having achieved high mastery in both Odissi and Bharatanatyam. She trained under the legendary Guru Kelucharan Mohapatra for Odissi and Pandanallur Chokkalingam Pillai for Bharatanatyam. Her performances are revered for their profound emotional depth, impeccable posture, and deep philosophical understanding of Indian mythological themes.</p>
+            <h4>Choreography &amp; Cultural Philosophy</h4>
+            <p>As a choreographer, she has created numerous pathbreaking dance dramas that merge traditional mythological stories with contemporary social issues, such as gender equality and environmental preservation. She founded the Centre for Indian Classical Dances (CICD) in New Delhi, which has served as a crucible for teaching, research, and cross-disciplinary studies in the performing arts.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Padma Vibhushan (2003)</strong> - Awarded as the first female classical dancer in India to receive this supreme civilian honor.</li>
+              <li><strong>Padma Bhushan (1992)</strong> - Conferred as the youngest-ever dance recipient of this national award at the time.</li>
+              <li><strong>Centre for Indian Classical Dances (1977)</strong> - Founded the premier training facility promoting deep academic and performance research.</li>
+              <li><strong>Member of Parliament (Rajya Sabha)</strong> - Appointed to represent the performing arts on the highest national legislative stage.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 10 -->
-        <div class="artist-card card" data-discipline="instrumental" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=80" alt="Sitar artist"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Sitar</span></div>
+        <div class="artist-card" data-discipline="instrumental" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80" alt="Purbayan Chatterjee"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Sitar</p>
-            <p class="artist-name">Purbayan Chatterjee</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Maihar Gharana</p>
+          <div class="card-body">
+            <span class="blog-category">Sitar</span>
+            <h2 class="artist-name">Purbayan Chatterjee</h2>
+            <p class="artist-meta-desc">Maihar Sitar Maestro</p>
+            <p class="blog-excerpt">Purbayan Chatterjee belongs to the illustrious Maihar Gharana, having received his primary sitar training from his father, Parthapratim Chatterjee, a disciple of Pandit Nikhil Banerjee and Ustad Ali Akbar Khan. This lineage infuses his music with intellectual clarity, deep vocal quality, and highly refined sitar techniques.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>The Maihar Influence</h4>
+            <p>Purbayan Chatterjee belongs to the illustrious Maihar Gharana, having received his primary sitar training from his father, Parthapratim Chatterjee, who was a disciple of the legendary Pandit Nikhil Banerjee and Ustad Ali Akbar Khan. This lineage infuses his music with the intellectual clarity, deep vocal quality (gayaki ang), and highly refined sitar techniques that define the modern Bengali sitar style.</p>
+            <h4>Fusion, Innovation, and the See-tar</h4>
+            <p>Known for his lightning-fast taans and global musical outlook, Purbayan has collaborated with international jazz fusion legends, including Chick Corea, Bela Fleck, and Pat Metheny. He designed the "See-tar," an electric sitar that allows him to perform standing up and engage with modern sound systems. He balances this innovation with rigorous traditional sitar recitals, keeping the classical spirit vibrant for younger generations.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>President of India Award</strong> - Honored as the Best Instrumentalist in the national classical talent hunt at a young age.</li>
+              <li><strong>Aditya Vikram Birla Award</strong> - Awarded for exceptional promise and virtuosity in Hindustani instrumental music.</li>
+              <li><strong>"See-tar" Conception</strong> - Pioneered the electric sitar instrument, creating high-octane modern fusion without breaking classical purity.</li>
+              <li><strong>Global Orchestral Solos</strong> - Performed as a featured soloist with international orchestras at the Sydney Opera House and Royal Albert Hall.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 11 -->
-        <div class="artist-card card" data-discipline="craft" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="Puppetry master"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Craft</span></div>
+        <div class="artist-card" data-discipline="craft" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80" alt="Puran Bhat"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Rajasthani Puppetry</p>
-            <p class="artist-name">Puran Bhat</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Kathputli Tradition</p>
+          <div class="card-body">
+            <span class="blog-category">Rajasthani Puppetry</span>
+            <h2 class="artist-name">Puran Bhat</h2>
+            <p class="artist-meta-desc">Puppetry Master · Sangeet Natak Akademi</p>
+            <p class="blog-excerpt">Puran Bhat was born into a traditional family of Bhat puppeteers from Rajasthan, growing up in the Kathputli Colony of Shadipur Depot in Delhi. He learned the ancient art of Rajasthani string puppetry (Kathputli) from his father and elders, developing a deep understanding of techniques that date back hundreds of years.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Traditional Puppetry Roots</h4>
+            <p>Puran Bhat was born into a traditional family of Bhat puppeteers from Rajasthan, growing up in the Kathputli Colony of Shadipur Depot in Delhi. He learned the ancient art of Rajasthani string puppetry (Kathputli) from his father and elders, developing a deep understanding of puppet fabrication, traditional music accompaniment, and string manipulation techniques that date back hundreds of years.</p>
+            <h4>Modernization &amp; Theatrical Collaborations</h4>
+            <p>He is celebrated for transforming traditional puppetry from simple street shows into a complex dramatic medium. He founded the "Aakar Puppet Theatre" and collaborated with modern theater directors like Habib Tanvir, B. V. Karanth, and Amal Allana. He has integrated contemporary themes, social issues, and advanced stage lighting and sound design into his puppet plays, making them engaging for modern global audiences.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>Sangeet Natak Akademi Award (2003)</strong> - Highly prestigious national recognition in traditional string puppetry.</li>
+              <li><strong>Aakar Puppet Theatre</strong> - Founded the leading performance ensemble that modernized ancient folk narratives for modern audiences.</li>
+              <li><strong>Habib Tanvir &amp; B. V. Karanth Collaborations</strong> - Integrated classical dramatic theatrical techniques with Rajasthani Kathputli puppetry.</li>
+              <li><strong>International Puppetry Festivals</strong> - Toured across Europe, Asia, and North America, bringing folk craft to prestigious world stages.</li>
+            </ul>
           </div>
         </div>
 
         <!-- Artist 12 -->
-        <div class="artist-card card" data-discipline="vocal" style="background:var(--surface-container);border-radius:12px;overflow:hidden;">
-          <div class="img-wrap">
-            <img src="https://images.unsplash.com/photo-1470019693664-1d202d2c0401?w=400&q=80" alt="Vocalist"/>
-            <div class="img-overlay"><span class="chip" style="font-size:0.7rem;">Vocal</span></div>
+        <div class="artist-card" data-discipline="vocal" onclick="openWikiModal(this)">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1470019693664-1d202d2c0401?w=800&q=80" alt="Kaushiki Chakraborty"/>
           </div>
-          <div style="padding:16px;">
-            <p class="artist-discipline">Khayal Vocal</p>
-            <p class="artist-name">Kaushiki Chakraborty</p>
-            <p class="body-md text-muted" style="font-size:0.8rem;margin-top:4px;">Patiala Gharana</p>
+          <div class="card-body">
+            <span class="blog-category">Khayal Vocal</span>
+            <h2 class="artist-name">Kaushiki Chakraborty</h2>
+            <p class="artist-meta-desc">Premier Patiala Vocalist · BBC Awardee</p>
+            <p class="blog-excerpt">Kaushiki Chakraborty is the daughter and disciple of the celebrated vocalist Pandit Ajoy Chakraborty. Growing up immersed in the ITC Sangeet Research Academy in Kolkata, she represents the Patiala Gharana — noted for its rich ornamentation, rapid-fire taans, and astonishing emotional expression across a three-octave range.</p>
+            <span class="blog-read-more">Read Profile →</span>
+          </div>
+          <div class="hidden-full-desc">
+            <h4>Musical Prodigy &amp; Patiala Roots</h4>
+            <p>Kaushiki Chakraborty is the daughter and disciple of the celebrated vocalist Pandit Ajoy Chakraborty. Growing up in the research academy ITC Sangeet Research Academy in Kolkata, she was immersed in music from birth. She represents the Patiala Gharana, noted for its rich ornamentation, rapid-fire taans, and emotional expression, while also absorbing elements from other classical traditions.</p>
+            <h4>Vocal Artistry &amp; Performance Style</h4>
+            <p>She is widely recognized for her astonishing vocal control, flawless pitch, and a three-octave range that allows her to transition between complex classical structures and delicate, emotive thumris and bhajans with incredible ease. She has pioneered "Sakhi," an all-women classical music ensemble that celebrates female classical instrumentalists and vocalists on a single stage.</p>
+            <h4>Key Achievements &amp; Awards</h4>
+            <ul>
+              <li><strong>BBC Radio 3 Award for World Music (2005)</strong> - Celebrated international award recognizing outstanding cross-cultural classical performance.</li>
+              <li><strong>Nari Shakti Puraskar (2020)</strong> - Awarded by the President of India for outstanding contributions to women's empowerment in arts.</li>
+              <li><strong>"Sakhi" All-Women Classical Ensemble</strong> - Founded the historic first all-female classical ensemble celebrating women instrumentalists.</li>
+              <li><strong>Ustad Bismillah Khan Yuva Puraskar (2011)</strong> - Awarded by Sangeet Natak Akademi to the top classical vocalist of the generation.</li>
+            </ul>
           </div>
         </div>
 
@@ -321,16 +827,7 @@
     </div>
   </section>
 
-  <!-- CTA strip -->
-  <div style="background:var(--surface-container);border-top:1px solid rgba(245,240,232,0.07);padding:48px 0;">
-    <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
-      <div>
-        <h3 class="headline-sm">Don't miss performing with the Maestros</h3>
-        <p class="body-md text-muted" style="margin-top:6px;">Baithaks and intimate workshops let you learn directly from the Gurus.</p>
-      </div>
-      <a href="register.html" class="btn btn-primary btn-lg">Register Now →</a>
-    </div>
-  </div>
+
 
   <!-- Footer -->
   <footer class="footer">
@@ -349,6 +846,27 @@
     </div>
   </footer>
 
+  <!-- Wikipedia-style Editorial Modal -->
+  <div class="wiki-modal" id="wikiModal">
+    <div class="wiki-modal-overlay" onclick="closeWikiModal()"></div>
+    <div class="wiki-modal-container">
+      <button class="wiki-modal-close" onclick="closeWikiModal()" aria-label="Close modal">✕</button>
+      <div class="wiki-modal-hero">
+        <img id="wikiModalImg" src="" alt="" />
+        <div class="wiki-modal-hero-overlay"></div>
+      </div>
+      <div class="wiki-modal-content">
+        <div class="wiki-modal-header">
+          <h2 class="wiki-modal-title" id="wikiModalTitle">Artist Name</h2>
+          <div class="wiki-modal-meta" id="wikiModalMeta">Discipline &amp; Info</div>
+        </div>
+        <div class="wiki-modal-body" id="wikiModalBody">
+          <!-- Dynamically populated biography details -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
   <script src="scripts/main.js"></script>
   <script>
@@ -361,9 +879,39 @@
         document.querySelectorAll('#artistsGrid .artist-card').forEach(card => {
           const match = filter === 'all' || card.dataset.discipline === filter;
           card.style.display = match ? '' : 'none';
-          if (match) card.style.animation = 'fadeIn 0.3s ease';
+          if (match) card.style.animation = 'fadeIn 0.35s ease';
         });
       });
+    });
+
+    // Wikipedia-style Modal Controller
+    function openWikiModal(card) {
+      const name    = card.querySelector('.artist-name').innerText;
+      const meta    = card.querySelector('.artist-meta-desc').innerText;
+      const descHtml = card.querySelector('.hidden-full-desc').innerHTML;
+      const imgUrl  = card.querySelector('img').src;
+
+      document.getElementById('wikiModalTitle').innerText = name;
+      document.getElementById('wikiModalMeta').innerText  = meta;
+      document.getElementById('wikiModalBody').innerHTML  = descHtml;
+
+      const modalImg = document.getElementById('wikiModalImg');
+      modalImg.src = imgUrl;
+      modalImg.alt = name;
+
+      document.getElementById('wikiModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeWikiModal() {
+      document.getElementById('wikiModal').classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('wikiModalImg').src = '';
+    }
+
+    // Escape key to close modal
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeWikiModal();
     });
   </script>
 </body>

@@ -4,41 +4,58 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Convention Schedule — SPIC MACAY 2026</title>
-  <meta name="description" content="Full schedule of SPIC MACAY events at VNIT Nagpur — classical music, dance, yoga, heritage walks and more."/>
+  <meta name="description" content="Full daily schedule of the 11th International Convention of SPIC MACAY, May 25–31, 2026 at IIT Kharagpur."/>
   <link rel="stylesheet" href="styles/main.css"/>
   <style>
-    .schedule-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
-    .day-tab {
-      padding:8px 20px; border-radius:var(--radius-full);
-      font-size:0.8125rem; font-weight:600;
-      border:1px solid rgba(245,240,232,0.15);
-      color:var(--on-surface-variant);
-      transition: all var(--transition-fast);
-      cursor:pointer;
+    .schedule-body {
+      padding-top: 40px !important;
     }
-    .day-tab:hover { border-color:var(--primary-container); color:var(--primary); }
-    .day-tab.active { background:var(--primary-container); color:var(--on-primary-container); border-color:var(--primary-container); }
+    @media (max-width: 768px) {
+      .schedule-body {
+        padding-top: 30px !important;
+      }
+    }
+
+    .schedule-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 40px;
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      .schedule-tabs {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .day-tab {
+      padding: 12px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: 1px solid rgba(245, 240, 232, 0.15);
+      color: var(--on-surface-variant);
+      background: rgba(245, 240, 232, 0.02);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .day-tab:hover {
+      border-color: var(--primary-container);
+      color: var(--primary);
+      background: rgba(232, 119, 34, 0.05);
+    }
+    .day-tab.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--primary-container);
+      box-shadow: 0 4px 12px rgba(232, 119, 34, 0.25);
+    }
 
     .day-view { display:none; animation:fadeIn 0.3s ease; }
     .day-view.active { display:block; }
-
-    .session-block {
-      display:flex; gap:20px;
-      padding:20px 0;
-      border-bottom:1px solid rgba(245,240,232,0.07);
-    }
-    .session-block:last-child { border-bottom:none; }
-    .session-time {
-      min-width:90px;
-      font-family:var(--font-sans);
-      font-size:0.8125rem; font-weight:600;
-      color:var(--primary-container);
-      padding-top:3px;
-    }
-    .session-info {}
-    .session-title { font-family:var(--font-serif); font-size:1rem; font-weight:600; color:var(--on-surface); margin-bottom:4px; }
-    .session-desc  { font-size:0.875rem; color:var(--on-surface-variant); line-height:1.6; }
-    .session-tags  { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
 
     .day-header {
       background:var(--surface-container);
@@ -61,83 +78,423 @@
     .pill-heritage  { background:rgba(251,191,36,0.1); color:#fcd34d; border:1px solid rgba(251,191,36,0.2); }
     .pill-special   { background:rgba(244,114,182,0.1); color:#f9a8d4; border:1px solid rgba(244,114,182,0.2); }
     .pill-ceremony  { background:rgba(245,240,232,0.08); color:var(--on-surface-variant); border:1px solid rgba(245,240,232,0.12); }
+
+    /* Modern Timeline/Card Tracking System */
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .event-card {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.05);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      position: relative;
+      transition: all var(--transition-base);
+      overflow: hidden;
+    }
+
+    /* Cultural Background Overlay — dull by design so typography is always readable */
+    .event-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.10; /* Lower base opacity to a subtle 0.10 as requested */
+      mix-blend-mode: luminosity;
+      transition: opacity var(--transition-base), transform var(--transition-slow);
+    }
+
+    /* Context-Specific Indian Cultural Image Routing
+       Each background-image stacks a dark radial gradient OVER the photo.
+       This ensures the background remains deeply muted, allowing the foreground text
+       to stand out perfectly with zero readability issues. */
+
+    /* Yoga Category — serene dawn meditation profile */
+    .event-card.category-yoga::before {
+      background-image:
+        radial-gradient(circle at center, rgba(15, 12, 10, 0.85) 0%, rgba(15, 12, 10, 0.95) 100%),
+        url("https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80");
+    }
+
+    /* Concert Category — close-up of classical Indian Sitar */
+    .event-card.category-concert::before {
+      background-image:
+        radial-gradient(circle at center, rgba(15, 12, 10, 0.85) 0%, rgba(15, 12, 10, 0.95) 100%),
+        url("https://images.unsplash.com/photo-1619890691196-85750d037a5f?auto=format&fit=crop&w=800&q=80");
+    }
+
+    /* Workshop Category — traditional classical dancer mudra */
+    .event-card.category-workshop::before {
+      background-image:
+        radial-gradient(circle at center, rgba(15, 12, 10, 0.85) 0%, rgba(15, 12, 10, 0.95) 100%),
+        url("https://images.unsplash.com/photo-1614358503164-88981e4b09bb?auto=format&fit=crop&w=800&q=80");
+    }
+
+    /* Cinema Category — classic cinematic projector/film reel */
+    .event-card.category-cinema::before {
+      background-image:
+        radial-gradient(circle at center, rgba(15, 12, 10, 0.85) 0%, rgba(15, 12, 10, 0.95) 100%),
+        url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80");
+    }
+
+    .event-card:hover::before {
+      /* Hover is still restrained (0.15) — subtle reveal, never distracting */
+      opacity: 0.15;
+      transform: scale(1.03);
+    }
+
+    /* Subtly animated instrument background watermark */
+    .event-card::after {
+      content: '';
+      position: absolute;
+      right: -10px;
+      bottom: -10px;
+      height: 70%;
+      width: 140px;
+      background-repeat: no-repeat;
+      background-position: bottom right;
+      background-size: contain;
+      opacity: 0.03; /* Elegant ghost detail blending with the photo background */
+      mix-blend-mode: luminosity;
+      pointer-events: none; /* Crucial so it doesn't block text selection or clicks */
+      z-index: 0;
+      transition: transform var(--transition-slow);
+    }
+
+    /* 5 elegant cultural Indian classical instruments rotated dynamically */
+    /* 1. Sitar */
+    .event-card:nth-child(5n+1)::after {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200' fill='%23ffb68b'%3E%3Cpath d='M 50 120 C 25 120, 20 150, 20 165 C 20 185, 35 195, 50 195 C 65 195, 80 185, 80 165 C 80 150, 75 120, 50 120 Z' /%3E%3Crect x='46' y='30' width='8' height='90' /%3E%3Cpath d='M 46 30 L 54 30 L 54 10 Q 54 5, 48 5 Q 42 5, 42 12 Q 42 20, 48 20 Q 52 20, 50 30' /%3E%3Cline x1='38' y1='25' x2='46' y2='25' stroke='%23ffb68b' stroke-width='2' /%3E%3Cline x1='38' y1='35' x2='46' y2='35' stroke='%23ffb68b' stroke-width='2' /%3E%3Cline x1='54' y1='20' x2='62' y2='20' stroke='%23ffb68b' stroke-width='2' /%3E%3Cline x1='54' y1='30' x2='62' y2='30' stroke='%23ffb68b' stroke-width='2' /%3E%3Cline x1='54' y1='40' x2='62' y2='40' stroke='%23ffb68b' stroke-width='2' /%3E%3Cline x1='46' y1='50' x2='54' y2='50' stroke='%23ffb68b' stroke-width='1' /%3E%3Cline x1='46' y1='60' x2='54' y2='60' stroke='%23ffb68b' stroke-width='1' /%3E%3Cline x1='46' y1='70' x2='54' y2='70' stroke='%23ffb68b' stroke-width='1' /%3E%3Cline x1='46' y1='80' x2='54' y2='80' stroke='%23ffb68b' stroke-width='1' /%3E%3Cline x1='46' y1='90' x2='54' y2='90' stroke='%23ffb68b' stroke-width='1' /%3E%3Cline x1='46' y1='100' x2='54' y2='100' stroke='%23ffb68b' stroke-width='1' /%3E%3Cline x1='46' y1='110' x2='54' y2='110' stroke='%23ffb68b' stroke-width='1' /%3E%3C/svg%3E");
+    }
+
+    /* 2. Tabla */
+    .event-card:nth-child(5n+2)::after {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='%23ffb68b'%3E%3Cpath d='M 15 65 C 15 45, 55 45, 55 65 C 55 90, 50 105, 35 105 C 20 105, 15 90, 15 65 Z' /%3E%3Cellipse cx='35' cy='52' rx='16' ry='5' fill='none' stroke='%23ffb68b' stroke-width='1.5' /%3E%3Cellipse cx='33' cy='52' rx='9' ry='3' /%3E%3Cpath d='M 65 55 L 95 55 L 88 105 L 72 105 Z' /%3E%3Cellipse cx='80' cy='55' rx='13' ry='4' fill='none' stroke='%23ffb68b' stroke-width='1.5' /%3E%3Cellipse cx='80' cy='55' rx='6' ry='2' /%3E%3Cline x1='68' y1='56' x2='73' y2='105' stroke='%23ffb68b' stroke-width='1' opacity='0.7' /%3E%3Cline x1='75' y1='56' x2='77' y2='105' stroke='%23ffb68b' stroke-width='1' opacity='0.7' /%3E%3Cline x1='80' y1='56' x2='81' y2='105' stroke='%23ffb68b' stroke-width='1' opacity='0.7' /%3E%3Cline x1='85' y1='56' x2='85' y2='105' stroke='%23ffb68b' stroke-width='1' opacity='0.7' /%3E%3Cline x1='92' y1='56' x2='87' y2='105' stroke='%23ffb68b' stroke-width='1' opacity='0.7' /%3E%3Crect x='67' y='75' width='4' height='10' rx='1' /%3E%3Crect x='89' y='78' width='4' height='10' rx='1' /%3E%3C/svg%3E");
+    }
+
+    /* 3. Veena */
+    .event-card:nth-child(5n+3)::after {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200' fill='%23ffb68b'%3E%3Ccircle cx='50' cy='145' r='30' /%3E%3Ccircle cx='65' cy='55' r='12' /%3E%3Cpath d='M 40 115 L 60 115 L 50 135 Z' /%3E%3Crect x='46' y='25' width='8' height='105' /%3E%3Cpath d='M 50 25 C 50 10, 30 10, 30 25 C 30 30, 35 32, 35 27 C 35 20, 46 20, 48 25 Z' /%3E%3Ccircle cx='42' cy='30' r='1.5' /%3E%3Ccircle cx='58' cy='30' r='1.5' /%3E%3Ccircle cx='42' cy='40' r='1.5' /%3E%3Ccircle cx='58' cy='40' r='1.5' /%3E%3C/svg%3E");
+    }
+
+    /* 4. Flute */
+    .event-card:nth-child(5n+4)::after {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200' fill='%23ffb68b'%3E%3Cpath d='M 20 180 Q 40 100, 75 50' fill='none' stroke='%23ffb68b' stroke-width='1.5' stroke-dasharray='1 1' /%3E%3Cpath d='M 75 50 C 70 30, 95 30, 90 50 C 85 70, 60 60, 75 50 Z' fill='none' stroke='%23ffb68b' stroke-width='2' /%3E%3Cellipse cx='80' cy='46' rx='6' ry='4' /%3E%3Cpath d='M 60 80 Q 75 75, 80 82 M 50 100 Q 70 95, 75 105 M 40 120 Q 60 115, 65 125 M 30 140 Q 50 135, 55 145' stroke='%23ffb68b' stroke-width='1' fill='none' /%3E%3Cpath d='M 60 80 Q 45 75, 40 82 M 50 100 Q 35 95, 30 105 M 40 120 Q 25 115, 20 125 M 30 140 Q 15 135, 10 145' stroke='%23ffb68b' stroke-width='1' fill='none' /%3E%3Cg transform='rotate(-40 50 100)'%3E%3Crect x='47' y='10' width='6' height='180' rx='3' /%3E%3Ccircle cx='50' cy='25' r='1.5' fill='%231a1512' /%3E%3Ccircle cx='50' cy='60' r='1.2' fill='%231a1512' /%3E%3Ccircle cx='50' cy='75' r='1.2' fill='%231a1512' /%3E%3Ccircle cx='50' cy='90' r='1.2' fill='%231a1512' /%3E%3Ccircle cx='50' cy='105' r='1.2' fill='%231a1512' /%3E%3Ccircle cx='50' cy='120' r='1.2' fill='%231a1512' /%3E%3Ccircle cx='50' cy='135' r='1.2' fill='%231a1512' /%3E%3Ccircle cx='50' cy='150' r='1.2' fill='%231a1512' /%3E%3Crect x='47' y='35' width='6' height='3' fill='%23e87722' /%3E%3Crect x='47' y='45' width='6' height='3' fill='%23e87722' /%3E%3Crect x='47' y='165' width='6' height='4' fill='%23e87722' /%3E%3Crect x='47' y='175' width='6' height='4' fill='%23e87722' /%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* 5. Tanpura */
+    .event-card:nth-child(5n+5)::after {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 200' fill='%23ffb68b'%3E%3Cellipse cx='50' cy='150' rx='28' ry='28' /%3E%3Cpath d='M 40 124 C 40 115, 50 110, 50 110 C 50 110, 60 115, 60 124 Z' fill='%23e87722' /%3E%3Crect x='38' y='145' width='24' height='6' rx='1' fill='%231a1512' /%3E%3Crect x='47' y='20' width='6' height='104' /%3E%3Cpath d='M 45 20 L 55 20 L 55 5 L 45 5 Z' /%3E%3Ccircle cx='38' cy='10' r='2' /%3E%3Cline x1='38' y1='10' x2='45' y2='10' stroke='%23ffb68b' stroke-width='2' /%3E%3Ccircle cx='38' cy='16' r='2' /%3E%3Cline x1='38' y1='16' x2='45' y2='16' stroke='%23ffb68b' stroke-width='2' /%3E%3Ccircle cx='62' cy='7' r='2' /%3E%3Cline x1='55' y1='7' x2='62' y2='7' stroke='%23ffb68b' stroke-width='2' /%3E%3Ccircle cx='62' cy='13' r='2' /%3E%3Cline x1='55' y1='13' x2='62' y2='13' stroke='%23ffb68b' stroke-width='2' /%3E%3Cline x1='48.5' y1='20' x2='48.5' y2='145' stroke='%23ffb68b' stroke-width='0.5' opacity='0.7' /%3E%3Cline x1='49.5' y1='20' x2='49.5' y2='145' stroke='%23ffb68b' stroke-width='0.5' opacity='0.7' /%3E%3Cline x1='50.5' y1='20' x2='50.5' y2='145' stroke='%23ffb68b' stroke-width='0.5' opacity='0.7' /%3E%3Cline x1='51.5' y1='20' x2='51.5' y2='145' stroke='%23ffb68b' stroke-width='0.5' opacity='0.7' /%3E%3C/svg%3E");
+    }
+
+    .event-card:hover {
+      border-color: rgba(232, 119, 34, 0.25);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .event-card:hover::after {
+      transform: scale(1.08) rotate(-4deg);
+    }
+
+    /* Primary text elements layered safely above the watermark and photo background */
+    .event-timeline,
+    .event-main,
+    .status-badge {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Horizontal alignment on desktop */
+    @media (min-width: 768px) {
+      .event-card {
+        flex-direction: row;
+        align-items: center;
+        gap: 32px;
+        padding: 24px 32px;
+      }
+    }
+
+    /* Timeline Tracking Indicator */
+    .event-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 180px;
+      border-left: 3px solid var(--primary-container);
+      padding-left: 16px;
+      flex-shrink: 0;
+    }
+
+    .event-time-range {
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      white-space: nowrap;
+    }
+
+    .event-duration {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--on-surface-variant);
+      opacity: 0.8;
+    }
+
+    /* Main Content Group */
+    .event-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .event-main {
+        margin-top: 0;
+      }
+    }
+
+    .event-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .event-category {
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: rgba(245, 240, 232, 0.06);
+      color: var(--primary);
+      border: 1px solid rgba(245, 240, 232, 0.1);
+    }
+
+    .event-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      line-height: 1.3;
+    }
+
+    .event-artist {
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .event-artist::before {
+      content: '·';
+      font-weight: bold;
+      color: var(--on-surface-variant);
+      margin-right: 2px;
+    }
+
+    .event-desc {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      line-height: 1.55;
+      margin-top: 2px;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 768px) {
+      .status-badge {
+        position: static;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .event-card {
+        padding-top: 56px; /* spacing for absolute status badge on mobile */
+      }
+      .status-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+      }
+    }
+
+    /* Status States */
+    .status-live {
+      background: rgba(232, 119, 34, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(232, 119, 34, 0.35);
+      box-shadow: 0 0 10px rgba(232, 119, 34, 0.15);
+      animation: pulse-glow 2s infinite;
+    }
+
+    .status-live::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--primary-container);
+    }
+
+    .status-upcoming {
+      background: transparent;
+      color: var(--on-surface-variant);
+      border: 1px solid rgba(245, 240, 232, 0.15);
+    }
+
+    .status-upcoming::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--outline);
+    }
+
+    .status-over {
+      background: rgba(245, 240, 232, 0.03);
+      color: rgba(245, 240, 232, 0.3);
+      border: 1px solid rgba(245, 240, 232, 0.05);
+    }
+
+    /* Premium Immersive Hero Banner Style */
+    .schedule-hero {
+      height: 45vh;
+      min-height: 380px;
+      background-image: 
+        linear-gradient(to bottom, rgba(15, 12, 10, 0.75) 0%, rgba(15, 12, 10, 0.1) 30%, rgba(15, 12, 10, 0.1) 70%, var(--background) 100%),
+        linear-gradient(to right, var(--background) 0%, rgba(15, 12, 10, 0) 15%, rgba(15, 12, 10, 0) 85%, var(--background) 100%),
+        url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?q=80&w=1400&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center 30%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 40px 0;
+    }
+
+    .schedule-hero-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+
+    .schedule-hero-title {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 700;
+      color: #f5f0e8;
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      letter-spacing: 0.03em;
+      line-height: 1.15;
+    }
+
+    .schedule-hero-title span {
+      background: linear-gradient(135deg, #f5f0e8 0%, #ffb68b 50%, #dfb15b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .schedule-hero-subtitle {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.25rem;
+      color: #ddc1b2;
+      margin-top: 16px;
+      max-width: 550px;
+      line-height: 1.6;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      letter-spacing: 0.02em;
+    }
+
+    @media (max-width: 768px) {
+      .schedule-hero {
+        height: auto;
+        min-height: 350px;
+        padding: 60px 0 40px;
+      }
+      .schedule-hero-title {
+        font-size: 2.25rem;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ══ Progress Bar ══════════════════════════════════ -->
-  <div class="progress-bar" id="progressBar"></div>
-
-  <!-- ══ Navigation ════════════════════════════════════ -->
+  <!-- Nav -->
   <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">SPIC MACAY</a>
-
-      <nav aria-label="Main navigation">
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle">About ▾</a>
-            <div class="nav-dropdown-menu">
-              <a href="about.html">About the Convention</a>
-              <a href="about.html#founder">Founder</a>
-              <a href="about.html#hosting">Hosting Institute</a>
-              <a href="about.html#past">Past Conventions</a>
-            </div>
-          </li>
-          <li><a href="artists.html">Artists</a></li>
-          <li><a href="schedule.html" class="active">Events</a></li>
-          <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle">Guidelines ▾</a>
-            <div class="nav-dropdown-menu">
-              <a href="guidelines.html">Convention Guidelines</a>
-              <a href="guidelines.html#travel">Travel Guidelines</a>
-            </div>
-          </li>
-          <li><a href="faq.html">FAQ</a></li>
-        </ul>
-      </nav>
-
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
-          <span class="theme-toggle-icon icon-moon">☾</span>
-          <span class="theme-toggle-icon icon-sun">☀</span>
-        </button>
-        <a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
-        <a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
-        <button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="artists.html">Artists</a></li>
+        <li><a href="schedule.html" class="active">Schedule</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul></nav>
+      <div class="flex items-center gap-4">
+        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
+        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
         </button>
       </div>
     </div>
   </header>
-
-  <!-- ══ Mobile Drawer ════════════════════════════════ -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
-  <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+  <div class="drawer" id="mobileDrawer">
     <div class="drawer-header">
       <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
-      <button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
+      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
     </div>
-    <a href="index.html" class="drawer-link">Home</a>
-    <a href="about.html" class="drawer-link">About</a>
-    <a href="artists.html" class="drawer-link">Artists &amp; Gurus</a>
-    <a href="schedule.html" class="drawer-link active">Events</a>
-    <a href="guidelines.html" class="drawer-link">Guidelines</a>
-    <a href="faq.html" class="drawer-link">FAQ</a>
-    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
-  </nav>
+    <a href="index.html" class="drawer-link">🏠 Home</a>
+    <a href="artists.html" class="drawer-link">🎵 Artists</a>
+    <a href="schedule.html" class="drawer-link active">📅 Schedule</a>
+    <a href="about.html" class="drawer-link">ℹ️ About</a>
+    <a href="faq.html" class="drawer-link">❓ FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;">Register Now</a>
+  </div>
 
   <div style="padding-top:65px;">
 
-    <!-- Page Header -->
-    <section style="background:var(--surface-container);border-bottom:1px solid rgba(245,240,232,0.07);padding:56px 0 40px;">
-      <div class="container">
-        <span class="chip reveal">📅 MAY 25 – 31, 2026 · VNIT NAGPUR</span>
-        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;max-width:600px;">Convention<br/><span class="text-gradient">Schedule</span></h1>
-        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:520px;margin-top:16px;">7 immersive days — from 4 AM Naad Yoga to overnight grand finale concerts.</p>
+    <!-- Page Header (Premium Immersive Hero Banner) -->
+    <section class="schedule-hero">
+      <div class="container schedule-hero-content">
+        <span class="chip reveal" style="background: rgba(232, 119, 34, 0.15); color: #ffb68b; border: 1px solid rgba(232, 119, 34, 0.3);">📅 MAY 25 – 31, 2026 · IIT KHARAGPUR</span>
+        <h1 class="schedule-hero-title reveal reveal-delay-1" style="margin-top:20px;">Convention<br/><span>Schedule</span></h1>
+        <p class="schedule-hero-subtitle reveal reveal-delay-2">7 immersive days — from 4 AM Naad Yoga to overnight grand finale concerts.</p>
 
         <!-- Legend -->
         <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:4px;" class="reveal reveal-delay-3">
@@ -148,35 +505,11 @@
           <span class="stream-pill pill-special">⭐ Special</span>
           <span class="stream-pill pill-ceremony">🎗️ Ceremony</span>
         </div>
-
-        <div style="margin-top:24px;" class="reveal">
-          <a href="#pdf" class="btn btn-secondary btn-sm">↓ Download Full PDF Schedule</a>
-        </div>
       </div>
     </section>
 
-    <!-- Arrival / Departure Info -->
-    <div style="background:rgba(232,119,34,0.07);border-bottom:1px solid rgba(232,119,34,0.15);padding:16px 0;">
-      <div class="container" style="display:flex;gap:32px;flex-wrap:wrap;">
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="font-size:1.25rem;">✈️</span>
-          <div>
-            <p class="label-sm" style="color:var(--primary-container);margin-bottom:2px;">ARRIVAL</p>
-            <p style="font-size:0.875rem;color:var(--on-surface);">4 PM on 24 May up to 7 AM on 25 May 2026</p>
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:flex-start;">
-          <span style="font-size:1.25rem;">🚂</span>
-          <div>
-            <p class="label-sm" style="color:var(--primary-container);margin-bottom:2px;">DEPARTURE</p>
-            <p style="font-size:0.875rem;color:var(--on-surface);">2 PM to 11 PM on 31 May 2026</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Schedule Body -->
-    <section class="section-gap">
+    <section class="schedule-body section-gap">
       <div class="container">
 
         <!-- Day Tabs -->
@@ -197,73 +530,158 @@
             </div>
             <span class="chip">9 Events</span>
           </div>
-          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
-            <div class="session-block">
-              <div class="session-time">7:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
-                <div class="session-desc">Time to settle in, freshen up, and enjoy a nourishing holistic meal.</div>
+          
+          <div class="event-list">
+            <!-- Event 1 -->
+            <div data-start="2026-05-25T07:00:00" data-end="2026-05-25T08:30:00" class="event-card category-yoga">
+              <span class="status-badge status-over">Over</span>
+              <div class="event-timeline">
+                <span class="event-time-range">07:00 AM - 08:30 AM</span>
+                <span class="event-duration">1.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Personal Time &amp; Holistic Breakfast</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">Settle into your rooms, freshen up, and enjoy a nourishing, traditional satvik breakfast served at the community dining space.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">8:30 AM</div>
-              <div class="session-info">
-                <div class="session-title">Morning Inauguration Ceremony</div>
-                <div class="session-desc">Welcome address and lighting of the ceremonial lamp.</div>
-                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
+
+            <!-- Event 2 -->
+            <div data-start="2026-05-25T08:30:00" data-end="2026-05-25T09:00:00" class="event-card category-workshop">
+              <span class="status-badge status-over">Over</span>
+              <div class="event-timeline">
+                <span class="event-time-range">08:30 AM - 09:00 AM</span>
+                <span class="event-duration">30 mins</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Ceremony</span>
+                </div>
+                <h3 class="event-title">Morning Inauguration Ceremony</h3>
+                <span class="event-artist">Convention Dignitaries &amp; Gurus</span>
+                <p class="event-desc">The formal commencement of the convention with chanting, welcome speeches, and lighting of the sacred ceremonial lamp.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">9:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Screening of 'The Making of the Mahatma'</div>
-                <div class="session-desc">Followed by an interactive session with Shri Rajit Kapur, the renowned actor-director.</div>
-                <div class="session-tags"><span class="stream-pill pill-special">⭐ Special</span></div>
+
+            <!-- Event 3 -->
+            <div data-start="2026-05-25T09:00:00" data-end="2026-05-25T12:00:00" class="event-card category-cinema">
+              <span class="status-badge status-over">Over</span>
+              <div class="event-timeline">
+                <span class="event-time-range">09:00 AM - 12:00 PM</span>
+                <span class="event-duration">3 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Special</span>
+                </div>
+                <h3 class="event-title">Screening of 'The Making of the Mahatma'</h3>
+                <span class="event-artist">Shri Rajit Kapur</span>
+                <p class="event-desc">A special cinematic showcase followed by an interactive discussion with the national award-winning lead actor and director.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">12:40 PM</div>
-              <div class="session-info">
-                <div class="session-title">Holistic Lunch</div>
-                <div class="session-desc">Nutritionally curated vegetarian meal in the community dining space.</div>
+
+            <!-- Event 4 -->
+            <div data-start="2026-05-25T12:40:00" data-end="2026-05-25T13:40:00" class="event-card category-yoga">
+              <span class="status-badge status-over">Over</span>
+              <div class="event-timeline">
+                <span class="event-time-range">12:40 PM - 01:40 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Holistic Satvik Lunch</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">A carefully curated organic vegetarian meal designed to refresh and energize the delegates.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">2:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Orientation of All Delegates</div>
-                <div class="session-desc">General orientation followed by teachers' and volunteers' briefing sessions.</div>
-                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
+
+            <!-- Event 5 -->
+            <div data-start="2026-05-25T14:00:00" data-end="2026-05-25T15:30:00" class="event-card category-workshop">
+              <span class="status-badge status-over">Over</span>
+              <div class="event-timeline">
+                <span class="event-time-range">02:00 PM - 03:30 PM</span>
+                <span class="event-duration">1.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Ceremony</span>
+                </div>
+                <h3 class="event-title">Orientation of All Delegates</h3>
+                <span class="event-artist">SPIC MACAY Volunteers</span>
+                <p class="event-desc">An essential briefing session detailing convention venues, workshop allotments, guidelines, and interactive sessions.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">4:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Nadaswaram Recital</div>
-                <div class="session-desc">An auspicious welcome performance on the traditional Nadaswaram instrument.</div>
-                <div class="session-tags"><span class="stream-pill pill-concert">🎵 Concert</span></div>
+
+            <!-- Event 6 -->
+            <div data-start="2026-05-25T16:00:00" data-end="2026-05-25T17:00:00" class="event-card category-concert">
+              <span class="status-badge status-over">Over</span>
+              <div class="event-timeline">
+                <span class="event-time-range">04:00 PM - 05:00 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Concert</span>
+                </div>
+                <h3 class="event-title">Welcoming Nadaswaram Recital</h3>
+                <span class="event-artist">Seshampatti T. Sivalingam</span>
+                <p class="event-desc">An auspicious and soul-stirring wind recital at the foyer entrance, setting a spiritual tone for the evening.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">5:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Holistic Dinner</div>
+
+            <!-- Event 7 -->
+            <div data-start="2026-05-25T17:00:00" data-end="2026-05-25T18:00:00" class="event-card category-yoga">
+              <span class="status-badge status-over">Over</span>
+              <div class="event-timeline">
+                <span class="event-time-range">05:00 PM - 06:00 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Holistic Dinner</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">An early wholesome dinner served to ensure light digestion before the grand evening concerts begin.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">6:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Formal Inauguration</div>
-                <div class="session-desc">Grand opening ceremony with distinguished dignitaries and Gurus.</div>
-                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
+
+            <!-- Event 8 -->
+            <div data-start="2026-05-25T18:00:00" data-end="2026-05-25T19:30:00" class="event-card category-workshop">
+              <span class="status-badge status-live">Live</span>
+              <div class="event-timeline">
+                <span class="event-time-range">06:00 PM - 07:30 PM</span>
+                <span class="event-duration">1.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Ceremony</span>
+                </div>
+                <h3 class="event-title">Formal Inauguration of 11th Convention</h3>
+                <span class="event-artist">State Dignitaries &amp; Maestro Gurus</span>
+                <p class="event-desc">The grand formal opening with addresses from eminent visionaries, cultural legends, and the host institution's director.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">7:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Evening Classical Concerts</div>
-                <div class="session-desc">Opening night performances by leading maestros across multiple stages.</div>
-                <div class="session-tags"><span class="stream-pill pill-concert">🎵 Concert</span></div>
+
+            <!-- Event 9 -->
+            <div data-start="2026-05-25T19:30:00" data-end="2026-05-25T22:00:00" class="event-card category-concert">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">07:30 PM - 10:00 PM</span>
+                <span class="event-duration">2.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Concert</span>
+                </div>
+                <h3 class="event-title">Opening Night Evening Classical Concert</h3>
+                <span class="event-artist">Vidushi Sudha Ragunathan (Carnatic Vocal)</span>
+                <p class="event-desc">A sublime vocal concert exploring intricate South Indian classical ragas accompanied by violin and mridangam.</p>
               </div>
             </div>
           </div>
@@ -277,73 +695,160 @@
               <h2 class="headline-md">Days 2–5 · 26–29 May 2026</h2>
               <p class="body-md text-muted" style="margin-top:6px;">Core Immersive Cycle — repeated each day</p>
             </div>
-            <span class="chip">7 Events Daily</span>
+            <span class="chip">9 Events Daily</span>
           </div>
-          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
-            <div class="session-block">
-              <div class="session-time">4:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Hatha Yog / Naad Yog / Meditation</div>
-                <div class="session-desc">Dawn sessions at the open lawns. Three concurrent streams: Hatha Yoga, Naad (Sound) Yoga, and Silent Meditation.</div>
-                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
+          
+          <div class="event-list">
+            <!-- Event 1 -->
+            <div data-start="2026-05-26T04:00:00" data-end="2026-05-26T06:00:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">04:00 AM - 06:00 AM</span>
+                <span class="event-duration">2 hrs</span>
               </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">7:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Shramdaan (Collective Service)</div>
-                <div class="session-desc">15-minute collective campus cleaning — a tradition of selfless service.</div>
-                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Community</span></div>
-              </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">7:15 AM</div>
-              <div class="session-info">
-                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
-              </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">9:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Morning Intensive Workshops</div>
-                <div class="session-desc">Parallel streams across 15+ venues: Vocal, Instrumental, Dance, Craft, Heritage Cinema. Students are guided by Guru-assigned batches.</div>
-                <div class="session-tags">
-                  <span class="stream-pill pill-workshop">🎨 Workshop</span>
-                  <span class="stream-pill pill-concert">🎵 Baithak</span>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Yoga</span>
                 </div>
+                <h3 class="event-title">Dawn Hatha Yoga &amp; Naad Yoga Meditation</h3>
+                <span class="event-artist">Yogi Devendra &amp; Pt. Sabyasachi Sarkhel</span>
+                <p class="event-desc">A peaceful morning spiritual practice at the open lawns. Experience the alignment of postures and sacred sound vibration meditation.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">1:10 PM</div>
-              <div class="session-info">
-                <div class="session-title">Yog Nidra (Yogic Sleep)</div>
-                <div class="session-desc">Guided deep relaxation session. Mandatory rest for all participants.</div>
-                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
+
+            <!-- Event 2 -->
+            <div data-start="2026-05-26T06:00:00" data-end="2026-05-26T07:00:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">06:00 AM - 07:00 AM</span>
+                <span class="event-duration">1 hr</span>
               </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">2:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Afternoon Intensive Sessions</div>
-                <div class="session-desc">Continuation of morning workshops with senior Guru presentations, heritage walks, and open baithaks.</div>
-                <div class="session-tags">
-                  <span class="stream-pill pill-workshop">🎨 Workshop</span>
-                  <span class="stream-pill pill-heritage">🏛️ Heritage</span>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Community</span>
                 </div>
+                <h3 class="event-title">Shramdaan (Collective Cleaning Service)</h3>
+                <span class="event-artist">All Delegates &amp; Volunteers</span>
+                <p class="event-desc">Fostering humility and cooperation through selfless service, cleaning the campus workshop spaces together as one family.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">5:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Holistic Dinner</div>
+
+            <!-- Event 3 -->
+            <div data-start="2026-05-26T07:00:00" data-end="2026-05-26T08:30:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">07:00 AM - 08:30 AM</span>
+                <span class="event-duration">1.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Holistic Breakfast</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">A traditional, nourishing breakfast designed to keep energy high for the extensive workshop intensives ahead.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">6:15 PM</div>
-              <div class="session-info">
-                <div class="session-title">Evening Classical Concerts</div>
-                <div class="session-desc">Curated concerts by the invited Gurus and senior artistes — Hindustani, Carnatic, and dance forms presented on the main stage.</div>
-                <div class="session-tags"><span class="stream-pill pill-concert">🎵 Concert</span></div>
+
+            <!-- Event 4 -->
+            <div data-start="2026-05-26T09:00:00" data-end="2026-05-26T12:00:00" class="event-card category-workshop">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">09:00 AM - 12:00 PM</span>
+                <span class="event-duration">3 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Workshop</span>
+                </div>
+                <h3 class="event-title">Guru-Shishya Intensive Workshops</h3>
+                <span class="event-artist">Pt. Ajoy Chakrabarty &amp; Vidushi Shovana Narayan</span>
+                <p class="event-desc">3-hour deep learning batches across 15+ concurrent venues, covering classical vocals, instrumental sitar, Kathak dance, and tribal crafts.</p>
+              </div>
+            </div>
+
+            <!-- Event 5 -->
+            <div data-start="2026-05-26T12:15:00" data-end="2026-05-26T13:15:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">12:15 PM - 01:15 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Holistic Satvik Lunch</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">Nourishing seasonal satvik lunch served in the dining halls to restore balance and strength.</p>
+              </div>
+            </div>
+
+            <!-- Event 6 -->
+            <div data-start="2026-05-26T13:30:00" data-end="2026-05-26T14:30:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">01:30 PM - 02:30 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Yoga</span>
+                </div>
+                <h3 class="event-title">Yog Nidra (Guided Deep Relaxation)</h3>
+                <span class="event-artist">Yoga Acharyas</span>
+                <p class="event-desc">Guided psychophysiological meditation for active rest. A mandatory cool-down and recharge session for all participants.</p>
+              </div>
+            </div>
+
+            <!-- Event 7 -->
+            <div data-start="2026-05-26T15:00:00" data-end="2026-05-26T17:00:00" class="event-card category-cinema">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">03:00 PM - 05:00 PM</span>
+                <span class="event-duration">2 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Talk</span>
+                </div>
+                <h3 class="event-title">Afternoon Inspiration Talks &amp; Cinema Classics</h3>
+                <span class="event-artist">Dr. Kiran Bedi &amp; Shabana Azmi</span>
+                <p class="event-desc">Inspiring lectures on life ethics, social responsibility, and interactive film screenings highlighting the brilliance of Satyajit Ray.</p>
+              </div>
+            </div>
+
+            <!-- Event 8 -->
+            <div data-start="2026-05-26T17:00:00" data-end="2026-05-26T18:00:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">05:00 PM - 06:00 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Holistic Dinner</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">Light satvik supper to prepare delegates' minds and bodies for an immersive night of music and dance.</p>
+              </div>
+            </div>
+
+            <!-- Event 9 -->
+            <div data-start="2026-05-26T18:30:00" data-end="2026-05-26T21:30:00" class="event-card category-concert">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">06:30 PM - 09:30 PM</span>
+                <span class="event-duration">3 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Concert</span>
+                </div>
+                <h3 class="event-title">Evening Maestro Concerts</h3>
+                <span class="event-artist">Pt. Hariprasad Chaurasia &amp; Pt. Vishwa Mohan Bhatt</span>
+                <p class="event-desc">A majestic evening performance by legendary maestros on the Bansuri and Mohan Veena, accompanied by stellar percussionists.</p>
               </div>
             </div>
           </div>
@@ -362,52 +867,124 @@
               <span style="background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;">⭐ OVERNIGHT</span>
             </div>
           </div>
-          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
-            <div class="session-block">
-              <div class="session-time">4:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Hatha Yog / Naad Yog / Meditation</div>
-                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
+          
+          <div class="event-list">
+            <!-- Event 1 -->
+            <div data-start="2026-05-30T04:00:00" data-end="2026-05-30T06:00:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">04:00 AM - 06:00 AM</span>
+                <span class="event-duration">2 hrs</span>
               </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">7:15 AM</div>
-              <div class="session-info">
-                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
-              </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">1:10 PM</div>
-              <div class="session-info">
-                <div class="session-title">Participant Presentations</div>
-                <div class="session-desc">Delegates present their learning from the week across 6 different venues simultaneously. A showcase of growth and gratitude.</div>
-                <div class="session-tags"><span class="stream-pill pill-special">⭐ Special</span></div>
-              </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">4:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Yog Nidra</div>
-                <div class="session-tags"><span class="stream-pill pill-yoga">🧘 Yoga</span></div>
-              </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">8:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Acknowledgement Session</div>
-                <div class="session-desc">Heartfelt recognition of volunteers, artists, faculty, and participants.</div>
-                <div class="session-tags"><span class="stream-pill pill-ceremony">🎗️ Ceremony</span></div>
-              </div>
-            </div>
-            <div class="session-block" style="background:rgba(232,119,34,0.05);border-radius:12px;padding:16px;margin-top:8px;">
-              <div class="session-time" style="color:#fcd34d;">8:45 PM</div>
-              <div class="session-info">
-                <div class="session-title" style="color:#fcd34d;">⭐ Overnight Grand Finale Concert</div>
-                <div class="session-desc">An unbroken cycle of classical music from 8:45 PM to 6:00 AM — culminating in the sacred dawn ragas. The peak of spiritual and musical alignment. Not to be missed.</div>
-                <div class="session-tags">
-                  <span class="stream-pill pill-concert">🎵 Concert</span>
-                  <span style="background:rgba(239,194,0,0.15);color:#fcd34d;border:1px solid rgba(239,194,0,0.25);padding:4px 12px;border-radius:var(--radius-full);font-size:0.75rem;font-weight:600;">8:45 PM → 6:00 AM</span>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Yoga</span>
                 </div>
+                <h3 class="event-title">Morning Hatha Yoga Practice</h3>
+                <span class="event-artist">Yogi Devendra</span>
+                <p class="event-desc">The final dawn yoga session focusing on deep breathing, flexibility, and centering the mind for the finale day.</p>
+              </div>
+            </div>
+
+            <!-- Event 2 -->
+            <div data-start="2026-05-30T07:00:00" data-end="2026-05-30T08:30:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">07:00 AM - 08:30 AM</span>
+                <span class="event-duration">1.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Holistic Breakfast</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">Traditional, healthy breakfast followed by final presentations prep and interactions with Gurus.</p>
+              </div>
+            </div>
+
+            <!-- Event 3 -->
+            <div data-start="2026-05-30T09:00:00" data-end="2026-05-30T12:30:00" class="event-card category-workshop">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">09:00 AM - 12:30 PM</span>
+                <span class="event-duration">3.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Special</span>
+                </div>
+                <h3 class="event-title">Participant Presentations &amp; Showcases</h3>
+                <span class="event-artist">All Convention Workshop Batches</span>
+                <p class="event-desc">Delegates showcase their week-long learning in vocal music, classical dances, and fine crafts across multiple arenas.</p>
+              </div>
+            </div>
+
+            <!-- Event 4 -->
+            <div data-start="2026-05-30T13:30:00" data-end="2026-05-30T14:30:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">01:30 PM - 02:30 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Yoga</span>
+                </div>
+                <h3 class="event-title">Mandatory Yog Nidra Rest</h3>
+                <span class="event-artist">Yoga Acharyas</span>
+                <p class="event-desc">Guided rest and deep recovery. Essential for resting prior to the overnight musical journey.</p>
+              </div>
+            </div>
+
+            <!-- Event 5 -->
+            <div data-start="2026-05-30T17:00:00" data-end="2026-05-30T18:00:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">05:00 PM - 06:00 PM</span>
+                <span class="event-duration">1 hr</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
+                </div>
+                <h3 class="event-title">Pre-Marathon Satvik Dinner</h3>
+                <span class="event-artist">IIT Kharagpur Catering</span>
+                <p class="event-desc">A hearty and nourishing dinner to fuel delegates for a historic, sleepless night of divine classical concerts.</p>
+              </div>
+            </div>
+
+            <!-- Event 6 -->
+            <div data-start="2026-05-30T18:30:00" data-end="2026-05-30T20:00:00" class="event-card category-workshop">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">06:30 PM - 08:00 PM</span>
+                <span class="event-duration">1.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Ceremony</span>
+                </div>
+                <h3 class="event-title">Valedictory &amp; Appreciation Ceremony</h3>
+                <span class="event-artist">SPIC MACAY Executives &amp; Volunteers</span>
+                <p class="event-desc">Reflections on the convention's journey, feedback sharing, and distribution of appreciation certificates to volunteers and coordinators.</p>
+              </div>
+            </div>
+
+            <!-- Event 7 -->
+            <div data-start="2026-05-30T20:30:00" data-end="2026-05-31T06:00:00" class="event-card category-concert" style="border: 2px solid rgba(232, 119, 34, 0.45); background: rgba(232, 119, 34, 0.04);">
+              <span class="status-badge status-live" style="background: var(--primary-container); color: white;">Marathon</span>
+              <div class="event-timeline">
+                <span class="event-time-range" style="color: var(--primary);">08:30 PM - 06:00 AM</span>
+                <span class="event-duration" style="color: var(--on-surface-variant); font-weight: bold;">9.5 hrs (Overnight)</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category" style="background: rgba(232, 119, 34, 0.2); color: var(--primary); border-color: rgba(232, 119, 34, 0.4);">Concert</span>
+                </div>
+                <h3 class="event-title" style="font-size: 1.35rem; color: #fff;">Legendary Overnight Grand Finale Concerts</h3>
+                <span class="event-artist">Pt. Ulhas Kashalkar (Vocal), Ustad Shahid Parvez (Sitar), Pt. Kushal Das (Sitar)</span>
+                <p class="event-desc">A continuous, sacred cycle of sublime performances spanning Sitar duets, classical Khayal vocal recitals, and concluding with divine early dawn ragas.</p>
               </div>
             </div>
           </div>
@@ -421,32 +998,58 @@
               <h2 class="headline-md">Day 7 · 31st May 2026</h2>
               <p class="body-md text-muted" style="margin-top:6px;">Farewell &amp; Heritage Tours</p>
             </div>
-            <span class="chip">2 Events</span>
+            <span class="chip">3 Events</span>
           </div>
-          <div style="background:var(--surface-container);border:1px solid rgba(245,240,232,0.07);border-radius:16px;padding:28px 32px;">
-            <div class="session-block">
-              <div class="session-time">6:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Personal Time &amp; Holistic Breakfast</div>
-                <div class="session-desc">The final shared meal. Time for goodbyes, reflections, and exchanging contacts.</div>
+          
+          <div class="event-list">
+            <!-- Event 1 -->
+            <div data-start="2026-05-31T06:00:00" data-end="2026-05-31T07:30:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">06:00 AM - 07:30 AM</span>
+                <span class="event-duration">1.5 hrs</span>
               </div>
-            </div>
-            <div class="session-block">
-              <div class="session-time">9:00 AM</div>
-              <div class="session-info">
-                <div class="session-title">Heritage Tours of VNIT Nagpur Campus</div>
-                <div class="session-desc">Guided heritage walks around the sprawling IIT-KGP campus — exploring its unique history, architecture, and cultural significance as one of India's oldest IITs.</div>
-                <div class="session-tags">
-                  <span class="stream-pill pill-heritage">🏛️ Heritage</span>
-                  <span class="stream-pill pill-special">⭐ Optional</span>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Holistic</span>
                 </div>
+                <h3 class="event-title">Concluding Shared Breakfast &amp; Farewell</h3>
+                <span class="event-artist">IIT Kharagpur Catering &amp; Delegates</span>
+                <p class="event-desc">A final warm satvik meal together. Opportunities for reflections, exchanging contact details, and taking group photos.</p>
               </div>
             </div>
-            <div class="session-block">
-              <div class="session-time">2:00 PM</div>
-              <div class="session-info">
-                <div class="session-title">Departure</div>
-                <div class="session-desc">Delegates depart between 2 PM and 11 PM. Safe travels and carry the music with you!</div>
+
+            <!-- Event 2 -->
+            <div data-start="2026-05-31T09:00:00" data-end="2026-05-31T12:00:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">09:00 AM - 12:00 PM</span>
+                <span class="event-duration">3 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Heritage</span>
+                </div>
+                <h3 class="event-title">Guided Historical Tour of IIT Kharagpur</h3>
+                <span class="event-artist">IIT Heritage Club Volunteers</span>
+                <p class="event-desc">A guided exploration of India's first IIT campus, including the historic Hijli Detention Camp, the Nehru Science Museum, and local archives.</p>
+              </div>
+            </div>
+
+            <!-- Event 3 -->
+            <div data-start="2026-05-31T12:30:00" data-end="2026-05-31T21:00:00" class="event-card category-yoga">
+              <span class="status-badge status-upcoming">Upcoming</span>
+              <div class="event-timeline">
+                <span class="event-time-range">12:30 PM - 09:00 PM</span>
+                <span class="event-duration">8.5 hrs</span>
+              </div>
+              <div class="event-main">
+                <div class="event-meta">
+                  <span class="event-category">Community</span>
+                </div>
+                <h3 class="event-title">Delegate Departure and Transport Coordination</h3>
+                <span class="event-artist">Logistics &amp; Transport Team</span>
+                <p class="event-desc">Coordinated shuttles departing for Kharagpur Junction Railway Station and Netaji Subhash Chandra Bose International Airport (CCU).</p>
               </div>
             </div>
           </div>
@@ -490,6 +1093,42 @@
       document.getElementById(id).classList.add('active');
       btn.classList.add('active');
     }
+
+    function syncEventStatuses() {
+      const now = new Date();
+      document.querySelectorAll('.event-card').forEach(card => {
+        const startStr = card.getAttribute('data-start');
+        const endStr = card.getAttribute('data-end');
+        if (!startStr || !endStr) return;
+
+        const start = new Date(startStr);
+        const end = new Date(endStr);
+        const badge = card.querySelector('.status-badge');
+        if (!badge) return;
+
+        // Clear existing status styling classes
+        badge.classList.remove('status-upcoming', 'status-live', 'status-over');
+        // Clear any legacy hardcoded inline styles so premium styling applies seamlessly
+        badge.removeAttribute('style');
+
+        // Apply new status based on unmodified system time
+        if (now < start) {
+          badge.textContent = 'Upcoming';
+          badge.classList.add('status-upcoming');
+        } else if (now >= start && now <= end) {
+          badge.textContent = 'Live';
+          badge.classList.add('status-live');
+        } else {
+          badge.textContent = 'Over';
+          badge.classList.add('status-over');
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      syncEventStatuses();
+      setInterval(syncEventStatuses, 30000); // Quiet 30-second background sync
+    });
   </script>
 </body>
 </html>
