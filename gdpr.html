@@ -8,10 +8,18 @@
   <link rel="stylesheet" href="styles/main.css"/>
 </head>
 <body>
-  <header class="nav">
+  <!-- ══ Navigation ════════════════════════════════════ -->
+  <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">SPIC MACAY</a>
-      <a href="index.html" class="btn btn-secondary btn-sm">← Back to Home</a>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="theme-toggle-icon icon-moon">☾</span>
+          <span class="theme-toggle-icon icon-sun">☀</span>
+        </button>
+        <a href="index.html" class="btn btn-secondary btn-sm">← Back to Home</a>
+      </div>
     </div>
   </header>
 

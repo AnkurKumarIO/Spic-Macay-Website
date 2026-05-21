@@ -1,13 +1,26 @@
 /* ============================================================
    SPIC MACAY — Shared JavaScript Engine
    Handles: Nav, Drawer, Scroll Reveal, Countdown,
-            Stat Counter, Toast, Progress Bar
+            Stat Counter, Toast, Progress Bar, Theme Toggle
    ============================================================ */
 
 'use strict';
 
+// Restore saved theme immediately to avoid flash of light/dark background
+(function() {
+  const saved = localStorage.getItem('spicmacay-theme');
+  if (saved) {
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+})();
+
 /* ── DOM Ready ───────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  initThemeToggle();
   initNav();
   initDrawer();
   initScrollReveal();
@@ -302,4 +315,22 @@ function initEventCountdown() {
   }
   tickEvent();
   setInterval(tickEvent, 1000);
+}
+
+/* ── Theme Toggle Event Handler ──────────────────────────── */
+function initThemeToggle() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    if (next === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('spicmacay-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('spicmacay-theme', 'light');
+    }
+  });
 }
