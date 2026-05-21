@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SPIC MACAY | Heritage Arts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#494741",
+                    "surface-variant": "#353535",
+                    "primary-container": "#e87722",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-container-highest": "#353535",
+                    "error": "#ffb4ab",
+                    "outline": "#a58c7e",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "surface-dim": "#131313",
+                    "inverse-on-surface": "#313030",
+                    "on-primary-fixed": "#321300",
+                    "primary-fixed": "#ffdbc8",
+                    "on-tertiary-container": "#2d2f2f",
+                    "tertiary-fixed": "#e2e2e2",
+                    "inverse-surface": "#e5e2e1",
+                    "primary-fixed-dim": "#ffb68b",
+                    "on-surface": "#e5e2e1",
+                    "surface": "#131313",
+                    "on-tertiary": "#2f3131",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary-container": "#b9b5ad",
+                    "on-background": "#e5e2e1",
+                    "tertiary": "#c6c6c7",
+                    "secondary": "#cac6be",
+                    "error-container": "#93000a",
+                    "surface-container-low": "#1c1b1b",
+                    "secondary-fixed": "#e7e2da",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "on-error": "#690005",
+                    "tertiary-fixed-dim": "#c6c6c7",
+                    "surface-container": "#20201f",
+                    "surface-tint": "#ffb68b",
+                    "tertiary-container": "#959696",
+                    "surface-bright": "#393939",
+                    "on-primary-fixed-variant": "#743400",
+                    "outline-variant": "#564337",
+                    "secondary-container": "#494741",
+                    "on-primary-container": "#4f2200",
+                    "secondary-fixed-dim": "#cac6be",
+                    "on-secondary-fixed": "#1d1c17",
+                    "on-secondary": "#32302b",
+                    "on-primary": "#522300",
+                    "on-surface-variant": "#ddc1b2",
+                    "background": "#131313",
+                    "inverse-primary": "#994700",
+                    "primary": "#ffb68b",
+                    "surface-container-high": "#2a2a2a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "max-width": "1280px",
+                    "margin-desktop": "80px",
+                    "unit": "8px",
+                    "margin-tablet": "40px",
+                    "gutter": "24px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg-mobile": ["Playfair Display"],
+                    "headline-lg": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "display-lg-mobile": ["40px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["56px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(26, 26, 26, 0.4), rgba(26, 26, 26, 0.95));
+        }
+        .text-glow {
+            text-shadow: 0 0 20px rgba(232, 119, 34, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<nav class="sticky top-0 w-full z-[100] bg-surface/90 backdrop-blur-md dark:bg-surface/90 border-b border-outline-variant/10 dark:border-outline-variant/10">
+<div class="flex justify-between items-center max-w-[1280px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin-desktop py-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary-container cursor-pointer" data-icon="menu">menu</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-background">SPIC MACAY</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-primary-container dark:text-primary-fixed font-bold font-label-md text-label-md hover:text-primary-container transition-colors duration-300" href="#">Home</a>
+<a class="text-on-surface dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-colors duration-300" href="#">Events</a>
+<a class="text-on-surface dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-colors duration-300" href="#">Artists</a>
+<a class="text-on-surface dark:text-on-surface-variant font-label-md text-label-md hover:text-primary-container transition-colors duration-300" href="#">Gallery</a>
+</div>
+<button class="bg-primary-container text-on-primary-fixed px-6 py-2 rounded-full font-label-md text-label-md hover:scale-[0.98] active:opacity-80 transition-all duration-300">
+                Register
+            </button>
+</div>
+</nav>
+<!-- Hero Section -->
+<header class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+<img alt="Sitar Performance" class="absolute inset-0 w-full h-full object-cover" data-alt="A master sitar player immersed in performance on a dimly lit stage, spotlighted by a warm amber glow that catches the intricate wood carvings of the instrument. The background is a soft, deep charcoal void, emphasizing the artist's focused expression and the vibration of the strings. The overall aesthetic is one of Contemporary Heritage, featuring a sophisticated dark-mode palette with subtle golden saffron accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuHeoQfnsmhqCvdiOEXopVFFTO-28Tu65FMoYZvNlhJRr-wwSN5p23ZK_Q8P20-byuHoYc4QATdKywUl4GCbg8ssGk54WRwwWBlIEx5uZNbe2VELAl-FnKn60noMMTtRI9xrMZocq8YGBDi3Yevd65O4W7cvKspqmuJxNnP79iNwK356KGIpgKJS_yrGfnxyCM4Inr1xC2FvXvnsD1ZZRku1wh_mU8D14ghrs9u_GRMHYjPIMwxc7vO26n95zYzvn8nWni9GDtioH0"/>
+<div class="absolute inset-0 hero-overlay"></div>
+<div class="relative z-10 text-center px-margin-mobile max-w-4xl mx-auto">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-8 tracking-tight leading-tight">
+                Rediscovering India's <br/>
+<span class="text-primary-container italic">Classical Heritage</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-2xl mx-auto">
+                Join a global movement dedicated to the enrichment of Indian classical arts and traditional craftsmanship through immersive experiences.
+            </p>
+<div class="flex flex-col sm:flex-row gap-gutter justify-center">
+<button class="bg-primary-container text-on-primary-fixed px-10 py-4 rounded-full font-label-md text-label-md hover:scale-[0.98] active:opacity-80 transition-all shadow-xl">
+                    Upcoming Events
+                </button>
+<button class="border border-outline text-on-surface px-10 py-4 rounded-full font-label-md text-label-md hover:bg-surface-variant/30 transition-all">
+                    About Us
+                </button>
+</div>
+</div>
+</header>
+<!-- Stats Bar -->
+<section class="bg-surface-container border-y border-outline-variant/10 py-12">
+<div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter text-center items-center">
+<div class="flex flex-col gap-2">
+<span class="font-headline-lg text-headline-lg text-primary-container">Est. 1977</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Legacy of Excellence</span>
+</div>
+<div class="flex flex-col gap-2 border-y md:border-y-0 md:border-x border-outline-variant/20 py-8 md:py-0">
+<span class="font-headline-lg text-headline-lg text-on-surface">400+ Cities</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Global Footprint</span>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-headline-lg text-headline-lg text-on-surface">10,000+ Events</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Annual Performances</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Why SPIC MACAY Bento Grid Teaser -->
+<section class="py-160px py-20 max-w-[1280px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin-desktop">
+<div class="flex flex-col items-center mb-16 text-center">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Why SPIC MACAY</h2>
+<div class="w-16 h-1 bg-primary-container rounded-full"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Volunteering Card -->
+<div class="md:col-span-8 bg-surface-container rounded-xl overflow-hidden group border border-outline-variant/10 hover:border-primary-container/30 transition-colors duration-500">
+<div class="relative h-80 overflow-hidden">
+<img alt="Volunteers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A group of young, diverse volunteers working together in a heritage space, organizing a classical music festival. The lighting is soft and natural, with warm tones highlighting their collaborative spirit and engagement. The aesthetic is clean and modern-corporate, reflecting a sense of purpose and community in a professional yet culturally rich setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuJS7OnHxk1p9-nbI2BTJZ36LbcJaPwvkw67FIeewpzjdjCnG2CAurubsIM5uM9e_QspeZ7E6jgkm_6euJP9Wv3vD7xizJfmbd5HZxvdemgjoO-rLjGoM5_a_uH_ms5r5tdKmjedGBxbAqmsVTBjDVHl63nxM5nUNRau4Q5maIzGRo6w45YQBFwgyMVExRKEW8f1QSs8DkbhRg2ux5rs3L3ZkhYUVpUVmJ3xuLB9CQwg8TGfId53OzS4IXCMTBHXXr-aG7j61ag3xo"/>
+</div>
+<div class="p-8">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">Volunteering</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Join a community of thousands across the globe dedicated to preserving our roots. Your passion is the energy that drives the cultural renaissance.</p>
+<button class="text-primary-container font-label-md text-label-md flex items-center gap-2 hover:translate-x-2 transition-transform">
+                        Explore Opportunities <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Enrichment Card -->
+<div class="md:col-span-4 bg-surface-container rounded-xl overflow-hidden group border border-outline-variant/10 hover:border-primary-container/30 transition-colors duration-500 flex flex-col">
+<div class="relative h-64 overflow-hidden">
+<img alt="Music Workshop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A close-up shot of a traditional Indian musical workshop, where a guru is teaching a young student the nuances of the Tabla. The focus is sharp on the intricate hand movements and the texture of the instrument, with a bokeh background of a traditional courtyard. The mood is serene, academic, and deeply focused, captured in high-contrast dark-mode photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiMfF4n_vNCWCKHc32uhsl7NtO01741MEzj6AkqgBNTTIL0iHrYEXookxPp6P37ObRSSfg-FU5MxP92myVQnnVxbIiXQmGhxcxPULyUqlEOEhQYNePy8iFukmeIQv0XJXuJAtMLAQue0zIbgadwQuxl5D9x9IHJ3jo9GoqS9pP6Bx7vZ8OckXAl5q2y64jgPYNKxuKlUL3W7fu10Xsqr5k5RZiPmAbYYJa3ScBWjuLrJyXKy4PyPf_mxU_P843YEObPwC6fe0eDOyt"/>
+</div>
+<div class="p-8 flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">Enrichment</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Experience workshops and intensives led by world-renowned masters of dance, music, and yoga.</p>
+<button class="text-primary-container font-label-md text-label-md flex items-center gap-2 hover:translate-x-2 transition-transform">
+                        Learn More <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Heritage Card -->
+<div class="md:col-span-12 bg-surface-container rounded-xl overflow-hidden group border border-outline-variant/10 hover:border-primary-container/30 transition-colors duration-500 flex flex-col md:flex-row items-center">
+<div class="md:w-1/2 p-12">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">Heritage Preservation</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">We curate experiences that connect the youth with the unseen dimensions of our ancient heritage, ensuring that these traditions thrive in the digital age.</p>
+<button class="border border-primary-container text-primary-container px-8 py-3 rounded-full font-label-md text-label-md hover:bg-primary-container/10 transition-all">
+                        Our Mission
+                    </button>
+</div>
+<div class="md:w-1/2 h-80 md:h-full relative overflow-hidden">
+<img alt="Indian Architecture" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="The intricate geometric patterns of a carved stone wall in an ancient Indian temple, photographed with a sharp focus that highlights the fine lines and shadows. The lighting is low-key, creating a dramatic interplay of shadow and ivory-toned stone. This architectural detail embodies the concept of timeless heritage and sophisticated craftsmanship in a modern editorial style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDl05EMi8QRl4nSzWqztbko8AyNdJPYoE0V8gFNNQ2uot2Sdi4DOJrBLXGCEyeSNEIOX4UpFH0uDugNRDIgNUIE1w2T5YkJIS2CvJpTXFdZYpybZ4qr6mdANz_PFHZ4hn7HIYMwfgjDNSTwkMIw6YOGoulN9H3S3xbiM4k-6qD3pF25ytfvJaShiRgiv6gRjzK-VcrFTAGN0EbTypmoBE2rBrefBlBOBJLOBJ8aTsMdsd2tXJuRvO_IdcA4guORHTw4rOaSIwm9Jywj"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Next Event Countdown -->
+<section class="bg-surface-container-high py-20">
+<div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin-desktop">
+<div class="flex flex-col md:flex-row items-center justify-between gap-12 bg-surface p-12 rounded-2xl border border-outline-variant/20 shadow-2xl">
+<div class="text-left max-w-md">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/10 border border-primary-container/20 text-primary-container mb-6">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-md text-label-md">Next Major Event</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-4 leading-tight">Anubhav: International Heritage Festival</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-0 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="location_on">location_on</span>
+                        National School of Drama, New Delhi
+                    </p>
+</div>
+<div class="flex gap-4 md:gap-8" id="countdown">
+<div class="flex flex-col items-center">
+<span class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary-container font-bold" id="days">08</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Days</span>
+</div>
+<div class="text-outline-variant/30 font-display-lg pt-2">:</div>
+<div class="flex flex-col items-center">
+<span class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface font-bold" id="hours">14</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Hours</span>
+</div>
+<div class="text-outline-variant/30 font-display-lg pt-2">:</div>
+<div class="flex flex-col items-center">
+<span class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface font-bold" id="minutes">45</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Mins</span>
+</div>
+</div>
+<button class="bg-primary-container text-on-primary-fixed px-10 py-5 rounded-full font-label-md text-label-md font-bold shadow-lg hover:scale-[1.02] transition-transform">
+                    Reserve Seats
+                </button>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/10">
+<div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin-desktop py-16 grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="flex flex-col gap-6">
+<span class="font-headline-lg text-headline-lg text-primary-container">SPIC MACAY</span>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">
+                    Society for the Promotion of Indian Classical Music And Culture Amongst Youth.
+                </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface hover:bg-primary-container hover:border-primary-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="public">public</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface hover:bg-primary-container hover:border-primary-container transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</a>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div class="flex flex-col gap-4">
+<span class="font-label-md text-label-md text-on-surface font-bold">Quick Links</span>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Archives</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Scholarships</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Volunteering</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-md text-label-md text-on-surface font-bold">Resources</span>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Media Kit</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Artist Portal</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">State Chapters</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#">Annual Report</a>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<span class="font-label-md text-label-md text-on-surface font-bold">Stay Updated</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Subscribe to our newsletter for event announcements and artist features.</p>
+<div class="relative">
+<input class="w-full bg-surface-container border border-outline-variant/20 rounded-lg px-4 py-3 text-on-surface focus:ring-1 focus:ring-primary-container focus:border-primary-container outline-none transition-all" placeholder="Email Address" type="email"/>
+<button class="absolute right-2 top-2 bottom-2 bg-primary-container text-on-primary-fixed px-4 rounded-md font-label-sm text-label-sm">Join</button>
+</div>
+</div>
+</div>
+<div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-tablet lg:px-margin-desktop py-8 border-t border-outline-variant/5 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">© 2024 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</span>
+</div>
+</footer>
+<script>
+        // Simple interactive countdown logic
+        function updateCountdown() {
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minsEl = document.getElementById('minutes');
+
+            let days = parseInt(daysEl.innerText);
+            let hours = parseInt(hoursEl.innerText);
+            let mins = parseInt(minsEl.innerText);
+
+            // Simulation: update every minute
+            setInterval(() => {
+                if (mins > 0) {
+                    mins--;
+                } else {
+                    mins = 59;
+                    if (hours > 0) {
+                        hours--;
+                    } else {
+                        hours = 23;
+                        if (days > 0) days--;
+                    }
+                }
+                daysEl.innerText = days.toString().padStart(2, '0');
+                hoursEl.innerText = hours.toString().padStart(2, '0');
+                minsEl.innerText = mins.toString().padStart(2, '0');
+            }, 60000);
+        }
+        updateCountdown();
+
+        // Parallax effect for hero
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroImg = document.querySelector('header img');
+            if (heroImg) {
+                heroImg.style.transform = `translateY(${scrolled * 0.4}px)`;
+            }
+        });
+    </script>
+</body></html>

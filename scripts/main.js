@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initStatCounters();
   initProgressBar();
   initFooterGrid();
+  initParallax();
+  initEventCountdown();
+  initStatSlam();
 });
 
 /* ── Navigation: shrink on scroll ───────────────────────── */
@@ -194,3 +197,109 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
   });
 });
+
+/* ── Hero Parallax ───────────────────────────── */
+function initParallax() {
+  const bg = document.getElementById('heroParallax');
+  const hero = document.querySelector('.hero-home');
+  if (!bg || !hero) return;
+
+  let ticking = false;
+
+  function applyParallax() {
+    const scrolled = window.scrollY;
+    const heroH = hero.offsetHeight;
+    // Only apply parallax while the hero is in view
+    if (scrolled <= heroH) {
+      // Move background at 40% scroll speed for a depth effect
+      bg.style.transform = `translateY(${scrolled * 0.42}px)`;
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(applyParallax);
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+/* ── Stats Slam-In Animation ────────────────────── */
+function initStatSlam() {
+  const nums = document.querySelectorAll('.stat-big-num');
+  const items = document.querySelectorAll('.stat-item-premium');
+  if (!nums.length) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+
+      const el = entry.target;
+      const target = parseInt(el.dataset.statTarget || el.textContent, 10);
+      const suffix = el.dataset.statSuffix || '';
+      const index = Array.from(nums).indexOf(el);
+
+      // Stagger each number by 120ms
+      setTimeout(() => {
+        el.style.animationDelay = '0s';
+        el.classList.add('stat-animate');
+
+        // Count up while animating
+        const duration = 1400;
+        const start = performance.now();
+
+        function countUp(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease-out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.floor(eased * target);
+          el.textContent = current.toLocaleString() + suffix;
+          if (progress < 1) {
+            requestAnimationFrame(countUp);
+          } else {
+            el.textContent = target.toLocaleString() + suffix;
+          }
+        }
+        requestAnimationFrame(countUp);
+
+        // Add bottom glow line
+        const item = el.closest('.stat-item-premium');
+        if (item) {
+          setTimeout(() => item.classList.add('stat-visible'), 200);
+        }
+      }, index * 140);
+
+      io.unobserve(el);
+    });
+  }, { threshold: 0.4 });
+
+  nums.forEach(n => io.observe(n));
+}
+
+/* ── Featured Event Countdown ───────────────────── */
+function initEventCountdown() {
+  const d = document.getElementById('evDays');
+  const h = document.getElementById('evHours');
+  const m = document.getElementById('evMins');
+  const s = document.getElementById('evSecs');
+  if (!d) return;
+
+  // Count to May 30, 2026 at 8:45 PM IST (+05:30)
+  const target = new Date('2026-05-30T20:45:00+05:30').getTime();
+
+  function tickEvent() {
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      d.textContent = h.textContent = m.textContent = s.textContent = '00';
+      return;
+    }
+    d.textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+    h.textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+    m.textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+    s.textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+  }
+  tickEvent();
+  setInterval(tickEvent, 1000);
+}

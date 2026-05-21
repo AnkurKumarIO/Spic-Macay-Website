@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register — SPIC MACAY 11th International Convention</title>
-  <meta name="description" content="Register for the 11th International Convention of SPIC MACAY. Join us at IIT Kharagpur, May 25–31, 2026."/>
+  <title>Register — SPIC MACAY VNIT Nagpur</title>
+  <meta name="description" content="Register for SPIC MACAY events at VNIT Nagpur. Fill in your details to join Indian classical music and arts programmes on campus."/>
   <link rel="stylesheet" href="styles/main.css"/>
   <style>
     body { background: var(--surface-dim); }
@@ -15,7 +15,7 @@
       min-height: 100dvh;
     }
     @media(min-width:1024px){
-      .reg-layout { grid-template-columns: 1fr 480px; }
+      .reg-layout { grid-template-columns: 1fr 500px; }
     }
 
     /* Left panel — decorative */
@@ -37,7 +37,7 @@
     }
     .reg-left-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(19,19,19,0.95) 0%, rgba(19,19,19,0.3) 100%);
+      background: linear-gradient(to top, rgba(9,9,9,0.96) 0%, rgba(9,9,9,0.3) 100%);
     }
     .reg-left-content { position: relative; z-index: 2; }
 
@@ -49,7 +49,7 @@
       flex-direction: column;
       min-height: 100dvh;
     }
-    @media(min-width:768px){ .reg-right { padding: 48px 40px; } }
+    @media(min-width:768px){ .reg-right { padding: 48px 44px; } }
 
     /* Form card */
     .form-card {
@@ -57,33 +57,14 @@
       border: 1px solid rgba(245,240,232,0.08);
       border-radius: 16px;
       padding: 32px;
-      margin-top: 32px;
+      margin-top: 28px;
       flex: 1;
     }
+    @media(max-width:480px){ .form-card { padding: 24px 18px; } }
 
     /* Step panel */
     .step-panel { display: none; }
     .step-panel.active { display: block; animation: fadeIn 0.3s ease; }
-
-    /* Type selector cards */
-    .type-card {
-      border: 2px solid rgba(245,240,232,0.12);
-      border-radius: 12px;
-      padding: 24px;
-      cursor: pointer;
-      transition: all var(--transition-base);
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    .type-card:hover { border-color: rgba(232,119,34,0.4); }
-    .type-card.selected { border-color: var(--primary-container); background: rgba(232,119,34,0.08); }
-    .type-icon {
-      width: 48px; height: 48px; border-radius: 12px;
-      background: rgba(232,119,34,0.15);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; flex-shrink: 0;
-    }
 
     /* Checkbox group */
     .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
@@ -109,7 +90,7 @@
     .summary-key { font-size: 0.8125rem; color: var(--on-surface-variant); }
     .summary-val { font-size: 0.9rem; color: var(--on-surface); text-align: right; }
 
-    /* Info pills on left panel */
+    /* Info pills */
     .info-pill {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 8px 14px; border-radius: var(--radius-full);
@@ -118,11 +99,39 @@
       font-size: 0.8125rem;
       margin: 4px;
     }
+
+    /* Step indicator */
+    .step-indicator {
+      display: flex; align-items: center; gap: 0; margin-block: 12px 4px;
+    }
+    .step-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface-container-high);
+      border: 2px solid rgba(245,240,232,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 600; color: var(--outline);
+      flex-shrink: 0; transition: all var(--transition-base);
+    }
+    .step-dot.active { background: var(--primary-container); border-color: var(--primary-container); color: var(--on-primary-container); }
+    .step-dot.done   { background: rgba(232,119,34,0.2); border-color: var(--primary-container); color: var(--primary-container); }
+    .step-connector  { flex: 1; height: 2px; background: rgba(245,240,232,0.1); transition: background var(--transition-base); }
+    .step-connector.done { background: var(--primary-container); }
+    .step-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--outline); }
+
+    /* Branch tag for VNIT */
+    .branch-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: var(--radius-full);
+      background: rgba(232,119,34,0.12);
+      border: 1px solid rgba(232,119,34,0.25);
+      font-size: 0.75rem; font-weight: 600; color: var(--primary-container);
+      letter-spacing: 0.04em;
+    }
   </style>
 </head>
 <body>
 
-  <!-- ── Nav (minimal) ─────────────────────────────────── -->
+  <!-- ── Nav ──────────────────────────────────────────── -->
   <header class="nav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">SPIC MACAY</a>
@@ -135,24 +144,24 @@
 
       <!-- ── Left Decorative Panel ─────────────────────── -->
       <div class="reg-left">
-        <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=900&q=80" alt=""/>
+        <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=900&q=80" alt=""/>
         <div class="reg-left-overlay"></div>
         <div class="reg-left-content">
-          <span class="chip" style="margin-bottom:20px;">11th International Convention</span>
+          <span class="branch-badge" style="margin-bottom:20px;">📍 VNIT Nagpur Chapter</span>
           <h2 class="headline-lg" style="margin-bottom:16px;">Begin Your Journey Into<br/>Indian Classical Arts</h2>
-          <p class="body-md text-muted" style="margin-bottom:32px;">Join musicians, students, scholars, and enthusiasts from across the globe for seven transformative days.</p>
+          <p class="body-md text-muted" style="margin-bottom:32px;">Join students, scholars, and enthusiasts for an immersive experience of Indian classical music, dance, and culture at VNIT Nagpur.</p>
 
           <div style="margin-bottom:32px;flex-wrap:wrap;display:flex;">
-            <span class="info-pill">📅 May 25–31, 2026</span>
-            <span class="info-pill">📍 IIT Kharagpur</span>
-            <span class="info-pill">🎵 100+ Sessions</span>
-            <span class="info-pill">🧘 Yoga & Meditation</span>
+            <span class="info-pill">📅 Upcoming Events</span>
+            <span class="info-pill">📍 VNIT Nagpur</span>
+            <span class="info-pill">🎵 Classical Arts</span>
+            <span class="info-pill">🧘 Yoga &amp; Meditation</span>
           </div>
 
           <div style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);border-radius:12px;padding:20px;">
             <p class="label-sm text-muted" style="margin-bottom:8px;">NEED HELP?</p>
-            <p style="font-size:0.9rem;color:var(--on-surface);">Contact our helpline</p>
-            <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">registrations@spicmacay.com</a>
+            <p style="font-size:0.9rem;color:var(--on-surface);">Contact our chapter</p>
+            <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);font-size:0.875rem;">spicmacay@vnit.ac.in</a>
           </div>
         </div>
       </div>
@@ -160,71 +169,34 @@
       <!-- ── Right Form Panel ──────────────────────────── -->
       <div class="reg-right">
         <div>
-          <!-- Step Indicator -->
-          <div style="margin-bottom:8px;">
+          <div style="margin-bottom:6px;">
             <p class="label-sm text-muted">REGISTRATION</p>
+            <h1 class="headline-md" style="margin-top:4px;margin-bottom:0;">SPIC MACAY — VNIT Nagpur</h1>
           </div>
           <div class="step-indicator" id="stepIndicator">
             <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
               <div class="step-dot active" id="dot1">1</div>
-              <span class="step-label">Type</span>
+              <span class="step-label">Details</span>
             </div>
             <div class="step-connector" id="conn1"></div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
               <div class="step-dot" id="dot2">2</div>
-              <span class="step-label">Personal</span>
+              <span class="step-label">Events</span>
             </div>
             <div class="step-connector" id="conn2"></div>
             <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
               <div class="step-dot" id="dot3">3</div>
-              <span class="step-label">Events</span>
-            </div>
-            <div class="step-connector" id="conn3"></div>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-              <div class="step-dot" id="dot4">4</div>
-              <span class="step-label">Summary</span>
+              <span class="step-label">Submit</span>
             </div>
           </div>
         </div>
 
         <div class="form-card">
 
-          <!-- ── Step 1: Registration Type ─────────────── -->
+          <!-- ── Step 1: Personal Details ──────────────── -->
           <div class="step-panel active" id="step1">
-            <h2 class="headline-md" style="margin-bottom:6px;">Choose Registration Type</h2>
-            <p class="body-md text-muted" style="margin-bottom:28px;">Select whether you're registering as an individual or on behalf of an institution.</p>
-
-            <div style="display:flex;flex-direction:column;gap:14px;">
-              <div class="type-card selected" id="typeIndividual" onclick="selectType('individual')">
-                <div class="type-icon">👤</div>
-                <div>
-                  <h4 class="headline-sm" style="margin-bottom:4px;">Individual</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">One participant account. For students, scholars, and enthusiasts attending personally.</p>
-                </div>
-              </div>
-              <div class="type-card" id="typeInstitution" onclick="selectType('institution')">
-                <div class="type-icon">🏫</div>
-                <div>
-                  <h4 class="headline-sm" style="margin-bottom:4px;">Institution</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Register on behalf of a school or college. Coordinate multiple delegates under one account.</p>
-                </div>
-              </div>
-              <div class="type-card" id="typeVolunteer" onclick="selectType('volunteer')">
-                <div class="type-icon">🤝</div>
-                <div>
-                  <h4 class="headline-sm" style="margin-bottom:4px;">Volunteer</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Contribute your time and skills. Volunteers receive accommodation and all-access passes.</p>
-                </div>
-              </div>
-            </div>
-
-            <button class="btn btn-primary w-full btn-lg" style="margin-top:32px;" onclick="goToStep(2)">Next Step →</button>
-          </div>
-
-          <!-- ── Step 2: Personal Info ──────────────────── -->
-          <div class="step-panel" id="step2">
-            <h2 class="headline-md" style="margin-bottom:6px;">Heritage Seeker</h2>
-            <p class="body-md text-muted" style="margin-bottom:28px;">Begin your journey into the soul of Indian classical arts.</p>
+            <h2 class="headline-md" style="margin-bottom:6px;">Your Details</h2>
+            <p class="body-md text-muted" style="margin-bottom:28px;">Tell us a bit about yourself to complete your registration.</p>
 
             <div style="display:flex;flex-direction:column;gap:20px;">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -239,42 +211,58 @@
               </div>
               <div class="input-group">
                 <label class="input-label" for="email">Email Address *</label>
-                <input class="input-field" type="email" id="email" placeholder="arjun@example.com" autocomplete="email"/>
+                <input class="input-field" type="email" id="email" placeholder="arjun@vnit.ac.in" autocomplete="email"/>
               </div>
               <div class="input-group">
                 <label class="input-label" for="phone">Phone Number *</label>
                 <input class="input-field" type="tel" id="phone" placeholder="+91 98765 43210" autocomplete="tel"/>
               </div>
               <div class="input-group">
-                <label class="input-label" for="institution">College / Institution *</label>
-                <input class="input-field" type="text" id="institution" placeholder="Indian Institute of Technology"/>
+                <label class="input-label" for="rollno">VNIT Roll Number</label>
+                <input class="input-field" type="text" id="rollno" placeholder="e.g. BT22BCE001"/>
               </div>
               <div class="input-group">
-                <label class="input-label" for="city">City *</label>
-                <input class="input-field" type="text" id="city" placeholder="New Delhi"/>
+                <label class="input-label" for="branch">Branch / Department</label>
+                <select class="input-field" id="branch" style="appearance:none;">
+                  <option value="">Select Branch</option>
+                  <option>Civil Engineering</option>
+                  <option>Computer Science &amp; Engineering</option>
+                  <option>Electronics &amp; Communication Engineering</option>
+                  <option>Electrical Engineering</option>
+                  <option>Mechanical Engineering</option>
+                  <option>Chemical Engineering</option>
+                  <option>Mining Engineering</option>
+                  <option>Metallurgical &amp; Materials Engineering</option>
+                  <option>Architecture</option>
+                  <option>MBA / MCA</option>
+                  <option>PhD / Research</option>
+                  <option>External / Non-VNIT</option>
+                </select>
               </div>
               <div class="input-group">
-                <label class="input-label" for="state">State</label>
-                <select class="input-field" id="state" style="appearance:none;">
-                  <option value="">Select State</option>
-                  <option>Delhi</option><option>Maharashtra</option><option>Karnataka</option>
-                  <option>Tamil Nadu</option><option>West Bengal</option><option>Uttar Pradesh</option>
-                  <option>Rajasthan</option><option>Gujarat</option><option>Kerala</option>
-                  <option>Other</option>
+                <label class="input-label" for="year">Year of Study</label>
+                <select class="input-field" id="year" style="appearance:none;">
+                  <option value="">Select Year</option>
+                  <option>1st Year</option>
+                  <option>2nd Year</option>
+                  <option>3rd Year</option>
+                  <option>4th Year</option>
+                  <option>5th Year</option>
+                  <option>Postgraduate</option>
+                  <option>PhD</option>
+                  <option>Faculty / Staff</option>
+                  <option>External Participant</option>
                 </select>
               </div>
             </div>
 
-            <div style="display:flex;gap:12px;margin-top:32px;">
-              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(1)">← Back</button>
-              <button class="btn btn-primary" style="flex:2;" onclick="goToStep(3)">Next Step →</button>
-            </div>
+            <button class="btn btn-primary w-full btn-lg" style="margin-top:32px;" onclick="goToStep(2)" id="nextBtn1">Next →</button>
           </div>
 
-          <!-- ── Step 3: Event Preferences ─────────────── -->
-          <div class="step-panel" id="step3">
+          <!-- ── Step 2: Event Preferences ─────────────── -->
+          <div class="step-panel" id="step2">
             <h2 class="headline-md" style="margin-bottom:6px;">Choose Your Streams</h2>
-            <p class="body-md text-muted" style="margin-bottom:28px;">Select the events and streams you're most interested in attending.</p>
+            <p class="body-md text-muted" style="margin-bottom:28px;">Select the events and art forms you're most interested in.</p>
 
             <div style="display:flex;flex-direction:column;gap:24px;">
               <div>
@@ -283,7 +271,7 @@
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="hindustani" checked/> <span>Hindustani Classical Vocal</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="carnatic"/> <span>Carnatic Music</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="instrumental"/> <span>Instrumental — Sitar, Sarod, Tabla</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="folk"/> <span>Folk & Regional Traditions</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="folk"/> <span>Folk &amp; Regional Traditions</span></label>
                 </div>
               </div>
               <div>
@@ -297,10 +285,10 @@
               <div>
                 <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">ACTIVITIES</p>
                 <div class="checkbox-group">
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="yoga" checked/> <span>Hatha Yoga & Naad Yoga (4:00 AM)</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="heritage"/> <span>Heritage Walks</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="yoga" checked/> <span>Hatha Yoga &amp; Naad Yoga</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="heritage"/> <span>Heritage Walk — VNIT Campus</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="activity" value="craft"/> <span>Craft Workshops</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="film"/> <span>Film Screenings</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="film"/> <span>Film Screenings &amp; Talks</span></label>
                 </div>
               </div>
               <div class="input-group">
@@ -313,53 +301,51 @@
                 </select>
               </div>
               <div class="input-group">
-                <label class="input-label" for="message">Special Requests / Message</label>
+                <label class="input-label" for="message">Any Message / Special Requests</label>
                 <textarea class="input-field" id="message" rows="3" placeholder="Accessibility requirements, questions, etc." style="resize:vertical;"></textarea>
               </div>
             </div>
 
             <div style="display:flex;gap:12px;margin-top:32px;">
-              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(2)">← Back</button>
-              <button class="btn btn-primary" style="flex:2;" onclick="goToStep(4)">Review Summary →</button>
+              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(1)">← Back</button>
+              <button class="btn btn-primary" style="flex:2;" onclick="goToStep(3)">Review →</button>
             </div>
           </div>
 
-          <!-- ── Step 4: Summary & Submit ───────────────── -->
-          <div class="step-panel" id="step4">
+          <!-- ── Step 3: Summary & Submit ───────────────── -->
+          <div class="step-panel" id="step3">
             <h2 class="headline-md" style="margin-bottom:6px;">Review &amp; Submit</h2>
             <p class="body-md text-muted" style="margin-bottom:28px;">Please verify your details before completing registration.</p>
 
             <div style="background:var(--surface-container-high);border-radius:12px;padding:20px;margin-bottom:24px;">
               <p class="label-md" style="margin-bottom:12px;color:var(--primary-container);">REGISTRATION SUMMARY</p>
-              <div id="summaryContent">
-                <!-- Populated by JS -->
-              </div>
+              <div id="summaryContent"><!-- Populated by JS --></div>
             </div>
 
             <div style="background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.2);border-radius:12px;padding:16px;margin-bottom:24px;">
               <p style="font-size:0.875rem;color:var(--on-surface-variant);line-height:1.6;">
-                By submitting, you agree to the <a href="#" style="color:var(--primary);">Terms &amp; Conditions</a> and <a href="#" style="color:var(--primary);">Privacy Policy</a>. Accommodation details will be shared via email after registration approval.
+                By submitting, you agree to the <a href="#" style="color:var(--primary);">Terms &amp; Conditions</a> and <a href="#" style="color:var(--primary);">Privacy Policy</a>. You'll receive a confirmation on your registered email.
               </p>
             </div>
 
             <div style="display:flex;gap:12px;">
-              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(3)">← Edit</button>
+              <button class="btn btn-secondary" style="flex:1;" onclick="goToStep(2)">← Edit</button>
               <button class="btn btn-primary btn-lg" style="flex:2;" onclick="submitRegistration()" id="submitBtn">
                 Complete Registration ✓
               </button>
             </div>
 
-            <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:var(--on-surface-variant);">Need assistance? <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);">help@spicmacay.org</a></p>
+            <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:var(--on-surface-variant);">Need help? <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);">spicmacay@vnit.ac.in</a></p>
           </div>
 
-          <!-- ── Step 5: Success ────────────────────────── -->
-          <div class="step-panel" id="step5" style="text-align:center;padding:40px 0;">
+          <!-- ── Step 4: Success ────────────────────────── -->
+          <div class="step-panel" id="step4" style="text-align:center;padding:40px 0;">
             <div style="font-size:4rem;margin-bottom:20px;">🎉</div>
-            <h2 class="headline-md" style="margin-bottom:12px;">Registration Submitted!</h2>
-            <p class="body-md text-muted" style="max-width:360px;margin:0 auto 28px;">Thank you for registering for the 11th International Convention of SPIC MACAY. You'll receive a confirmation email shortly.</p>
+            <h2 class="headline-md" style="margin-bottom:12px;">You're Registered!</h2>
+            <p class="body-md text-muted" style="max-width:360px;margin:0 auto 28px;">Thank you for registering with SPIC MACAY — VNIT Nagpur Chapter. You'll receive a confirmation email shortly.</p>
             <div style="background:var(--surface-container-high);border-radius:12px;padding:20px;margin-bottom:28px;text-align:left;">
               <p class="label-sm text-muted" style="margin-bottom:4px;">YOUR REGISTRATION ID</p>
-              <p class="headline-sm text-gradient" id="regId">SM-2026-XXXX</p>
+              <p class="headline-sm text-gradient" id="regId">VNIT-2026-XXXX</p>
             </div>
             <a href="index.html" class="btn btn-primary btn-lg">Back to Home</a>
           </div>
@@ -369,42 +355,36 @@
     </div><!-- /reg-layout -->
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
   <script src="scripts/main.js"></script>
   <script>
     let currentStep = 1;
-    let regType = 'individual';
-
-    function selectType(type) {
-      regType = type;
-      document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-      const map = { individual:'typeIndividual', institution:'typeInstitution', volunteer:'typeVolunteer' };
-      document.getElementById(map[type]).classList.add('selected');
-    }
 
     function goToStep(step) {
-      // Validate step 2
-      if (step === 3 && currentStep === 2) {
+      // Validate step 1
+      if (step === 2 && currentStep === 1) {
         const fn = document.getElementById('firstName').value.trim();
         const em = document.getElementById('email').value.trim();
         const ph = document.getElementById('phone').value.trim();
-        if (!fn || !em || !ph) { showToast('Please fill in all required fields.', 'error'); return; }
+        if (!fn || !em || !ph) { showToast('Please fill in Name, Email and Phone.', 'error'); return; }
         if (!em.includes('@')) { showToast('Please enter a valid email.', 'error'); return; }
       }
-      if (step === 4) buildSummary();
+      if (step === 3) buildSummary();
 
       document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('step' + step).classList.add('active');
 
-      // Update dots
-      for (let i = 1; i <= 4; i++) {
+      // Update dots (3 steps only)
+      for (let i = 1; i <= 3; i++) {
         const dot = document.getElementById('dot' + i);
+        if (!dot) continue;
         dot.classList.remove('active','done');
         if (i < step) dot.classList.add('done');
         else if (i === step) dot.classList.add('active');
       }
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 2; i++) {
         const conn = document.getElementById('conn' + i);
+        if (!conn) continue;
         conn.classList.remove('done');
         if (i < step) conn.classList.add('done');
       }
@@ -413,26 +393,26 @@
     }
 
     function buildSummary() {
-      const fn = document.getElementById('firstName').value;
-      const ln = document.getElementById('lastName').value;
-      const em = document.getElementById('email').value;
-      const ph = document.getElementById('phone').value;
-      const inst = document.getElementById('institution').value;
-      const city = document.getElementById('city').value;
-      const streams = [...document.querySelectorAll('input[name="stream"]:checked')].map(i=>i.value).join(', ') || '—';
+      const fn    = document.getElementById('firstName').value;
+      const ln    = document.getElementById('lastName').value;
+      const em    = document.getElementById('email').value;
+      const ph    = document.getElementById('phone').value;
+      const roll  = document.getElementById('rollno').value;
+      const branch= document.getElementById('branch').value;
+      const year  = document.getElementById('year').value;
+      const streams    = [...document.querySelectorAll('input[name="stream"]:checked')].map(i=>i.value).join(', ') || '—';
       const activities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i=>i.value).join(', ') || '—';
 
       const rows = [
-        ['Registration Type', regType.charAt(0).toUpperCase()+regType.slice(1)],
-        ['Full Name', `${fn} ${ln}`],
-        ['Email', em],
-        ['Phone', ph],
-        ['Institution', inst || '—'],
-        ['City', city || '—'],
-        ['Music/Dance Streams', streams],
-        ['Activities', activities],
-        ['Convention Dates', 'May 25–31, 2026'],
-        ['Venue', 'IIT Kharagpur, West Bengal'],
+        ['Full Name',       `${fn} ${ln}`],
+        ['Email',           em],
+        ['Phone',           ph],
+        ['Roll Number',     roll || '—'],
+        ['Branch',          branch || '—'],
+        ['Year of Study',   year || '—'],
+        ['Streams',         streams],
+        ['Activities',      activities],
+        ['Chapter',         'SPIC MACAY — VNIT Nagpur'],
       ];
       document.getElementById('summaryContent').innerHTML = rows.map(([k,v])=>`
         <div class="summary-row">
@@ -445,13 +425,12 @@
       const btn = document.getElementById('submitBtn');
       btn.textContent = 'Submitting…';
       btn.disabled = true;
-      // Simulate API call
       await new Promise(r => setTimeout(r, 2000));
-      const regId = 'SM-2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
+      const regId = 'VNIT-2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
       document.getElementById('regId').textContent = regId;
       document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('step5').classList.add('active');
-      showToast('Registration successful! Check your email.', 'success');
+      document.getElementById('step4').classList.add('active');
+      showToast('Registered successfully! Check your email.', 'success');
     }
   </script>
 </body>
