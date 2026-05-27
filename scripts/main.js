@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
   initNav();
   initDrawer();
+  initDropdowns();
   initScrollReveal();
   initCountdown();
   initStatCounters();
@@ -322,15 +323,68 @@ function initThemeToggle() {
   const btn = document.getElementById('themeToggle');
   if (!btn) return;
 
+  // Sync icon to current state on load
+  updateThemeIcon(btn);
+
   btn.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    if (next === 'dark') {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) {
+      // Switch to dark (default — remove attribute)
       document.documentElement.removeAttribute('data-theme');
       localStorage.setItem('spicmacay-theme', 'dark');
     } else {
+      // Switch to light
       document.documentElement.setAttribute('data-theme', 'light');
       localStorage.setItem('spicmacay-theme', 'light');
+    }
+    updateThemeIcon(btn);
+  });
+}
+
+function updateThemeIcon(btn) {
+  if (!btn) return;
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const moonIcon = btn.querySelector('.icon-moon');
+  const sunIcon  = btn.querySelector('.icon-sun');
+  if (moonIcon) moonIcon.style.display = isLight ? 'none'  : 'block';
+  if (sunIcon)  sunIcon.style.display  = isLight ? 'block' : 'none';
+}
+
+/* ── Click-Toggled Dropdown Nav ──────────────────────────── */
+function initDropdowns() {
+  const dropdowns = document.querySelectorAll('.nav-dropdown');
+  if (!dropdowns.length) return;
+
+  dropdowns.forEach(dd => {
+    const toggle = dd.querySelector('.nav-dropdown-toggle');
+    const menu   = dd.querySelector('.nav-dropdown-menu');
+    if (!toggle || !menu) return;
+
+    // Prevent # navigation
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Close other open dropdowns
+      dropdowns.forEach(other => {
+        if (other !== dd) other.classList.remove('dropdown-open');
+      });
+
+      dd.classList.toggle('dropdown-open');
+    });
+  });
+
+  // Close all dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-dropdown')) {
+      dropdowns.forEach(dd => dd.classList.remove('dropdown-open'));
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      dropdowns.forEach(dd => dd.classList.remove('dropdown-open'));
     }
   });
 }
