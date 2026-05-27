@@ -132,6 +132,75 @@
     }
     .bento-img-cell:hover .bento-bg-img { opacity: 0.28; transform: scale(1.06); }
     .bento-cell-content { position: relative; z-index: 1; }
+
+    /* ── Stats Section ─────────────────────────────────────── */
+    .stats-section {
+      padding-block: 80px 72px;
+      background: var(--background);
+      overflow: hidden;
+      position: relative;
+    }
+    .stats-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232,119,34,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .stats-grid-premium {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+    @media (min-width: 768px) { .stats-grid-premium { grid-template-columns: repeat(4, 1fr); } }
+
+    .stat-item-premium {
+      padding: 36px 20px;
+      text-align: center;
+      border: 1px solid rgba(245,240,232,0.05);
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+    .stat-item-premium::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary-container), transparent);
+      transform: scaleX(0);
+      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .stat-item-premium.stat-visible::after { transform: scaleX(1); }
+    /* Number — Bebas Neue for that rigid impact */
+    .stat-big-num {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 10vw, 6.5rem);
+      font-weight: 400;
+      color: var(--primary-container);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      display: block;
+      opacity: 0;
+      transform: translateY(50px) scale(0.85);
+    }
+    @keyframes statSlam {
+      0%   { opacity: 0; transform: translateY(60px) scale(0.8); filter: blur(3px); }
+      55%  { opacity: 1; transform: translateY(-6px) scale(1.04); filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .stat-big-num.stat-animate {
+      animation: statSlam 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .stat-label-premium {
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--outline);
+      margin-top: 8px;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -584,6 +653,34 @@
             </div>
 
           </div><!-- /about-grid -->
+        </div>
+      </section>
+
+      <!-- ══ Stats Section ═════════════════════════════════ -->
+      <section class="stats-section" aria-label="Key statistics" style="margin-top: 56px; border-top: 1px solid rgba(245,240,232,0.07); padding-block: 64px;">
+        <div class="container" style="padding-inline: 0;">
+          <div class="stats-grid-premium">
+            <!-- Est. 1977 -->
+            <div class="stat-item-premium" id="statEst">
+              <span class="stat-big-num" data-stat-target="1977" id="statNum0">1977</span>
+              <span class="stat-label-premium">Est. Year</span>
+            </div>
+            <!-- 400+ Cities -->
+            <div class="stat-item-premium" id="statCities">
+              <span class="stat-big-num" data-stat-target="400" data-stat-suffix="+" id="statNum1">400+</span>
+              <span class="stat-label-premium">Cities Served</span>
+            </div>
+            <!-- 10,000+ Events -->
+            <div class="stat-item-premium" id="statEvents">
+              <span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+" id="statNum2">10000+</span>
+              <span class="stat-label-premium">Events</span>
+            </div>
+            <!-- 120 Artists -->
+            <div class="stat-item-premium" id="statArtists">
+              <span class="stat-big-num" data-stat-target="120" id="statNum3">120</span>
+              <span class="stat-label-premium">Artists &amp; Gurus</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>
