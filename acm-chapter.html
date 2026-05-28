@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>ACM VNIT Chapter & Portal Creators — SPIC MACAY 11th International Convention</title>
+  <meta name="description" content="Discover the ACM Student Chapter VNIT and the brilliant engineering minds behind the SPIC MACAY VNIT Nagpur digital portal." />
+  <link rel="stylesheet" href="styles/main.css" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#e87722",
+            "primary-container": "#c45e0a",
+            "on-primary": "#ffffff",
+            "secondary": "#f5f0e8",
+            "secondary-container": "#c45e0a",
+            "surface": "#161614",
+            "surface-container-low": "#1d1d1b",
+            "surface-container": "#222220",
+            "surface-container-high": "#2e2e2a",
+            "surface-container-highest": "#3a3a35",
+            "surface-container-lowest": "#0a0a0a",
+            "on-surface": "#f5f0e8",
+            "on-surface-variant": "#d5cfc5",
+            "background": "#0a0a0a"
+          },
+          fontFamily: {
+            "display": ["Montserrat", "sans-serif"],
+            "body": ["Poppins", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Prevent Tailwind conflicts with main.css nav */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+    body {
+      background-color: var(--background);
+      color: var(--on-surface);
+    }
+    .glass {
+      backdrop-filter: blur(20px);
+      background: rgba(245, 240, 232, 0.02);
+      border: 1px solid rgba(245, 240, 232, 0.05);
+      transition: all .4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .glass:hover {
+      border-color: rgba(232, 119, 34, 0.25);
+      box-shadow: 0 12px 40px rgba(232, 119, 34, 0.08);
+      transform: translateY(-4px);
+    }
+    .gradient-text-acm {
+      background: linear-gradient(135deg, #e87722, #ffa366);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .btn-social {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(245, 240, 232, 0.04);
+      border: 1px solid rgba(245, 240, 232, 0.08);
+      color: var(--on-surface-variant);
+      transition: all 0.3s;
+    }
+    .btn-social:hover {
+      background: var(--primary-container);
+      color: #fff;
+      border-color: var(--primary-container);
+      transform: scale(1.1);
+    }
+    /* Light/dark support for atmospheric glow */
+    [data-theme="light"] .atmospheric-glow-1 {
+      background: rgba(232, 119, 34, 0.04) !important;
+    }
+    [data-theme="light"] .atmospheric-glow-2 {
+      background: rgba(196, 94, 10, 0.03) !important;
+    }
+    [data-theme="light"] .glass {
+      background: rgba(28, 27, 26, 0.02) !important;
+      border-color: rgba(28, 27, 26, 0.06) !important;
+    }
+    [data-theme="light"] .glass:hover {
+      border-color: rgba(232, 119, 34, 0.3) !important;
+      box-shadow: 0 12px 40px rgba(232, 119, 34, 0.06) !important;
+    }
+  </style>
+</head>
+<body class="pt-20 relative min-h-screen flex flex-col justify-between">
+
+  <!-- Atmospheric ambient glow effects -->
+  <div class="absolute top-[-10%] left-[-10%] w-[50%] aspect-square bg-primary/10 blur-[150px] rounded-full pointer-events-none atmospheric-glow atmospheric-glow-1 z-0"></div>
+  <div class="absolute bottom-[-10%] right-[-10%] w-[45%] aspect-square bg-primary-container/5 blur-[120px] rounded-full pointer-events-none atmospheric-glow atmospheric-glow-2 z-0"></div>
+
+  <!-- ══ Progress Bar ══════════════════════════════════ -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ══ Navigation ════════════════════════════════════ -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo"><img src="logo.svg" alt="SPIC MACAY" /></a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle">About</a>
+            <div class="nav-dropdown-menu">
+              <a href="about.html">About the Convention</a>
+              <a href="about.html#founder">Founder</a>
+              <a href="about.html#hosting">Hosting Institute</a>
+              <a href="about.html#past">Past Conventions</a>
+            </div>
+          </li>
+          <li><a href="artists.html">Artists</a></li>
+          <li><a href="schedule.html">Events</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle">Guidelines</a>
+            <div class="nav-dropdown-menu">
+              <a href="guidelines.html">Convention Guidelines</a>
+              <a href="guidelines.html#travel">Travel Guidelines</a>
+            </div>
+          </li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="theme-toggle-icon icon-moon">☾</span>
+          <span class="theme-toggle-icon icon-sun">☀</span>
+        </button>
+        <a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
+        <a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
+        <button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ Mobile Drawer ════════════════════════════════ -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-header">
+      <span class="nav-logo"><img src="logo.svg" alt="SPIC MACAY" style="height:24px;" /></span>
+      <button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link">Home</a>
+    <a href="about.html" class="drawer-link">About</a>
+    <a href="artists.html" class="drawer-link">Artists &amp; Gurus</a>
+    <a href="schedule.html" class="drawer-link">Events</a>
+    <a href="guidelines.html" class="drawer-link">Guidelines</a>
+    <a href="faq.html" class="drawer-link">FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
+  </nav>
+
+  <!-- MAIN BODY -->
+  <main class="relative z-10 flex-grow mt-12">
+    <section class="max-w-[1200px] mx-auto px-6 md:px-12 py-12 text-center">
+      
+      <!-- Pill Badge -->
+      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full glass mb-8">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+        <span class="text-[10px] font-bold uppercase tracking-widest text-primary">Technical Collaborators</span>
+      </div>
+
+      <div class="flex flex-col items-center justify-center gap-6 max-w-4xl mx-auto mb-16">
+        <!-- ACM Logo container -->
+        <div class="relative w-36 h-36 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center p-5 shadow-2xl glass mb-2">
+          <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-primary-container/10 rounded-2xl pointer-events-none"></div>
+          <img src="acm-logo.png" alt="ACM VNIT Logo" class="w-full h-full object-contain relative z-10" />
+        </div>
+
+        <div>
+          <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            ACM Student Chapter <br class="hidden sm:inline">
+            <span class="gradient-text-acm">VNIT Nagpur</span>
+          </h1>
+          <p class="text-on-surface-variant text-base md:text-lg leading-relaxed max-w-3xl mx-auto font-normal" style="color:var(--on-surface-variant);">
+            The Association for Computing Machinery (ACM) Student Chapter at VNIT Nagpur is the campus’s premier computing and technology hub. Dedicated to instilling a robust research mindset and fostering a progressive software engineering culture, the chapter empowers developers, hosts state-level hackathons, and designs full-stack digital portals to solve real-world community challenges.
+          </p>
+        </div>
+      </div>
+
+      <!-- ACM Social Links -->
+      <div class="flex justify-center items-center gap-4 mb-20">
+        <a href="https://www.linkedin.com/company/acm-student-chapter-vnit/" target="_blank" class="btn btn-secondary py-3 px-6 inline-flex items-center gap-2.5 font-bold uppercase" style="font-size: 0.85rem; letter-spacing: 0.1em; border-radius: 9999px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          LINKEDIN
+        </a>
+        <a href="https://www.instagram.com/acm_vnit/" target="_blank" class="btn btn-secondary py-3 px-6 inline-flex items-center gap-2.5 font-bold uppercase" style="font-size: 0.85rem; letter-spacing: 0.1em; border-radius: 9999px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          INSTAGRAM
+        </a>
+      </div>
+
+      <hr style="border: none; height: 1px; background: rgba(245, 240, 232, 0.08); margin-block: 48px;" />
+
+      <!-- MEET THE CREATORS SECTION -->
+      <div class="max-w-[1100px] mx-auto">
+        <span class="text-xs font-bold uppercase tracking-widest text-primary mb-3 block">Engineering & Design</span>
+        <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Meet the Portal Creators</h2>
+        <p class="text-on-surface-variant text-sm md:text-base max-w-xl mx-auto mb-16" style="color:var(--on-surface-variant);">
+          The full-stack developers and designers from ACM VNIT who engineered the SPIC MACAY 11th International Convention digital portal with meticulous precision.
+        </p>
+
+        <!-- Creators Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+
+          <!-- CREATOR 1: ANKUR KUMAR -->
+          <div class="glass p-6 rounded-2xl flex flex-col justify-between h-full relative group">
+            <div class="text-center">
+              <h3 class="font-display text-xl font-bold text-white mb-4">Ankur Kumar</h3>
+              <p class="text-sm leading-relaxed mb-6" style="color:var(--on-surface-variant);">
+                Hi, I’m Ankur, a Computer Science and Engineering undergraduate at VNIT Nagpur (Class of 2029) and an active member of the ACM Student Chapter. As part of my work with ACM, I engineered this platform to elevate SPIC MACAY's digital portal with high-performance responsive components.
+              </p>
+            </div>
+            <div class="flex items-center justify-between border-t border-white/5 pt-4 mt-auto">
+              <span class="text-[10px] text-on-surface-variant/40 font-bold uppercase tracking-wider">ACM VNIT Core</span>
+              <div class="flex gap-2">
+                <a href="mailto:quantum.ankurkr@gmail.com" class="btn-social" title="Email">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/honestly-ankur/" target="_blank" class="btn-social" title="LinkedIn Profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- CREATOR 2: CLIVE DSILVA -->
+          <div class="glass p-6 rounded-2xl flex flex-col justify-between h-full relative group">
+            <div class="text-center">
+              <h3 class="font-display text-xl font-bold text-white mb-4">Clive Dsilva</h3>
+              <p class="text-sm leading-relaxed mb-6" style="color:var(--on-surface-variant);">
+                Hi, I'm Clive, a Computer Science and Engineering undergraduate (Class of 2029) at VNIT Nagpur and a dedicated member of the ACM Student Chapter. I focused on designing premium micro-interactions, dark/light transitions, and the aesthetic layouts of this cultural convention portal.
+              </p>
+            </div>
+            <div class="flex items-center justify-between border-t border-white/5 pt-4 mt-auto">
+              <span class="text-[10px] text-on-surface-variant/40 font-bold uppercase tracking-wider">ACM VNIT Core</span>
+              <div class="flex gap-2">
+                <a href="mailto:clivedsilva@gmail.com" class="btn-social" title="Email">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <a href="https://www.linkedin.com/" target="_blank" class="btn-social" title="LinkedIn Profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- CREATOR 3: ANIKET SINGH -->
+          <div class="glass p-6 rounded-2xl flex flex-col justify-between h-full relative group">
+            <div class="text-center">
+              <h3 class="font-display text-xl font-bold text-white mb-4">Aniket Singh</h3>
+              <p class="text-sm leading-relaxed mb-6" style="color:var(--on-surface-variant);">
+                Hi, I’m Aniket, a Computer Science student (Class of 2029) at VNIT Nagpur and active member of the ACM Student Chapter. I led performance optimizations, SEO implementations, and accessibility overlays for the schedule and registration flows.
+              </p>
+            </div>
+            <div class="flex items-center justify-between border-t border-white/5 pt-4 mt-auto">
+              <span class="text-[10px] text-on-surface-variant/40 font-bold uppercase tracking-wider">ACM VNIT Core</span>
+              <div class="flex gap-2">
+                <a href="mailto:aniketsingh@gmail.com" class="btn-social" title="Email">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <a href="https://www.linkedin.com/" target="_blank" class="btn-social" title="LinkedIn Profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══ Footer ═════════════════════════════════════════ -->
+  <footer class="footer mt-auto">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+        <div class="footer-logo"><img src="logo.svg" alt="SPIC MACAY" /></div>
+        <p class="label-sm text-muted">© 2026 SPIC MACAY · Dedicated to the enrichment of Indian Classical Arts.</p>
+        <div class="flex gap-4">
+          <a href="index.html" style="color:var(--primary); font-size:0.8rem;">Back To Portal</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="scripts/main.js"></script>
+  <script>
+    // Subtle atmospheric mouse movement glow
+    document.addEventListener('mousemove', (e) => {
+      const orbs = document.querySelectorAll('.atmospheric-glow');
+      orbs.forEach((o, i) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * (i + 1) * 35;
+        const y = (e.clientY / window.innerHeight - 0.5) * (i + 1) * 35;
+        o.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    });
+  </script>
+</body>
+</html>
