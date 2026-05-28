@@ -301,13 +301,17 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .nav-logo {
   font-family: var(--font-serif);
-  font-size: 1.125rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   color: var(--on-surface);
-  letter-spacing: -0.01em;
   flex-shrink: 0;
+  /* Subtle warm glow in dark mode */
+  text-shadow: 0 0 18px rgba(232, 119, 34, 0.45), 0 0 6px rgba(232, 119, 34, 0.2);
+  transition: color 0.3s ease, text-shadow 0.3s ease, font-size 0.3s ease;
 }
-@media (min-width: 480px) { .nav-logo { font-size: 1.25rem; } }
+@media (min-width: 480px) { .nav-logo { font-size: 1.75rem; } }
 
 /* Nav links — desktop only */
 .nav-links {
