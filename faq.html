@@ -37,15 +37,18 @@
   <div class="progress-bar" id="progressBar"></div>
 
   <!-- ══ Navigation ════════════════════════════════════ -->
-  <header class="nav" id="mainNav">
+    <header class="nav" id="mainNav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <a href="index.html" class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+      </a>
 
       <nav aria-label="Main navigation">
         <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html" >Home</a></li>
           <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle">About ▾</a>
+            <a href="#" class="nav-dropdown-toggle ">About</a>
             <div class="nav-dropdown-menu">
               <a href="about.html">About the Convention</a>
               <a href="about.html#founder">Founder</a>
@@ -53,10 +56,10 @@
               <a href="about.html#past">Past Conventions</a>
             </div>
           </li>
-          <li><a href="artists.html">Artists</a></li>
-          <li><a href="schedule.html">Events</a></li>
+          <li><a href="artists.html" >Artists</a></li>
+          <li><a href="schedule.html" >Events</a></li>
           <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle">Guidelines ▾</a>
+            <a href="#" class="nav-dropdown-toggle ">Guidelines</a>
             <div class="nav-dropdown-menu">
               <a href="guidelines.html">Convention Guidelines</a>
               <a href="guidelines.html#travel">Travel Guidelines</a>
@@ -82,18 +85,21 @@
     </div>
   </header>
 
-  <!-- ══ Mobile Drawer ════════════════════════════════ -->
+    <!-- ══ Mobile Drawer ════════════════════════════════ -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
     <div class="drawer-header">
-      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
+      <span class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" style="height:24px;" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" style="height:24px;" />
+      </span>
       <button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
     </div>
-    <a href="index.html" class="drawer-link">Home</a>
-    <a href="about.html" class="drawer-link">About</a>
-    <a href="artists.html" class="drawer-link">Artists &amp; Gurus</a>
-    <a href="schedule.html" class="drawer-link">Events</a>
-    <a href="guidelines.html" class="drawer-link">Guidelines</a>
+    <a href="index.html" class="drawer-link ">Home</a>
+    <a href="about.html" class="drawer-link ">About</a>
+    <a href="artists.html" class="drawer-link ">Artists &amp; Gurus</a>
+    <a href="schedule.html" class="drawer-link ">Events</a>
+    <a href="guidelines.html" class="drawer-link ">Guidelines</a>
     <a href="faq.html" class="drawer-link active">FAQ</a>
     <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
   </nav>
@@ -234,8 +240,8 @@
               <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
             </button>
             <div class="faq-answer">
-              <strong>By Train:</strong> Kharagpur Junction is well-connected to Kolkata, Delhi, Mumbai, Chennai, and Bangalore. IIT-KGP campus is approximately 3 km from the station — autos and cabs are available.<br/><br/>
-              <strong>By Air:</strong> Nearest airport is Netaji Subhas Chandra Bose International Airport, Kolkata (about 120 km). From Kolkata, take a train to Kharagpur Junction.<br/><br/>
+              <strong>By Train:</strong> Nagpur Junction Railway Station is well-connected to major cities including Mumbai, Delhi, Kolkata, Chennai, Pune, and Bangalore. The VNIT campus is approximately 6 km from the station — Nagpur Metro, auto-rickshaws, and cabs are readily available.<br/><br/>
+              <strong>By Air:</strong> Fly directly into Dr. Babasaheb Ambedkar International Airport, Nagpur (NAG), which is located just 7 km from the VNIT campus. Direct prepaid cabs, autos, and metro links connect the airport to the campus.<br/><br/>
               Detailed travel guidelines will be shared after registration is confirmed.
             </div>
           </div>
@@ -244,7 +250,7 @@
               Will transportation be arranged from the station?
               <span class="faq-icon" style="color:var(--primary-container);font-size:1.25rem;">+</span>
             </button>
-            <div class="faq-answer">Yes. Pick-up assistance will be available at Kharagpur Junction during the designated arrival window (4 PM–7 AM). Participants traveling in groups are encouraged to coordinate arrival times and share transport. Details will be communicated after registration.</div>
+            <div class="faq-answer">Yes. Pick-up assistance will be available at Nagpur Junction Railway Station during the designated arrival window (4 PM–7 AM). Participants traveling in groups are encouraged to coordinate arrival times and share transport. Details will be communicated after registration.</div>
           </div>
         </div>
 
@@ -294,18 +300,70 @@
     </section>
   </div>
 
-  <!-- Footer -->
+  <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
   <footer class="footer">
     <div class="container">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
-        <div class="footer-logo">SPIC MACAY</div>
-        <div class="flex gap-4">
-          <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" target="_blank">▶</a>
-          <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" target="_blank">📷</a>
+      <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
+        <div>
+          <div class="footer-logo"><img src="logo-dark.svg" alt="SPIC MACAY" /></div>
+          <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
+          <div class="flex gap-4" style="margin-top:20px;">
+            <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
+            <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
+            <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">f</a>
+            <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank" rel="noopener">𝕏</a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="artists.html">Artists</a></li>
+              <li><a href="schedule.html">Events</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Legal</div>
+            <ul class="footer-links">
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="gdpr.html">GDPR Compliance</a></li>
+              <li><a href="guidelines.html">Guidelines</a></li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Contact Us</div>
+          <address style="font-style:normal;font-size:0.875rem;color:var(--on-surface-variant);line-height:1.9;">
+            VNIT Nagpur Campus,<br/>
+            South Ambazari Road,<br/>
+            Nagpur – 440010
+          </address>
+          <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">registrations@spicmacay.com</a>
+          <div style="margin-top:20px;">
+            <div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
+            <div class="flex gap-4">
+              <input type="email" class="input-field" placeholder="your@email.com" style="font-size:0.875rem;padding:10px 14px;" id="newsletterEmail"/>
+              <button class="btn btn-primary btn-sm" onclick="subscribeNewsletter()">Join</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="divider" style="margin-block:28px;"></div>
-      <p class="label-sm text-muted text-center">© 2026 SPIC MACAY · <a href="index.html" style="color:var(--primary);">Home</a> · <a href="register.html" style="color:var(--primary);">Register</a></p>
+      <div class="divider" style="margin-block:40px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
+        <p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
+        <p class="label-sm text-muted" style="display:flex;align-items:center;gap:6px;">
+          Developed by 
+          <a href="acm-chapter.html" style="color:var(--primary);display:inline-flex;align-items:center;gap:6px;">
+            <img src="acm-logo.png" alt="ACM Logo" style="height:18px;width:auto;" />
+            ACM Student Chapter, VNIT
+          </a>
+        </p>
+      </div>
     </div>
   </footer>
 
