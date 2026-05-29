@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SPIC MACAY — VNIT Nagpur Chapter</title>
+  <title>Spic Macay VNIT Nagpur</title>
   <meta name="description" content="Official website of SPIC MACAY — VNIT Nagpur Chapter. Promoting Indian classical music and arts on campus. Events, workshops, concerts and more at VNIT Nagpur."/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,7 @@
       position: absolute;
       inset: -25% 0;          /* extra height top+bottom for parallax travel */
       background:
-        url('https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=1600&q=85')
+        url('Reference/hero.jpg')
         center / cover no-repeat;
       will-change: transform;
       transform: translateY(0);
@@ -71,74 +71,6 @@
     @media(min-width: 768px){ .marquee-item { font-size: 1.25rem; } }
     .marquee-item .mdot { color: var(--primary-container); margin-right: 40px; }
 
-    /* ── Stats Section ─────────────────────────────────────── */
-    .stats-section {
-      padding-block: 80px 72px;
-      background: var(--background);
-      overflow: hidden;
-      position: relative;
-    }
-    .stats-section::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232,119,34,0.04) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .stats-grid-premium {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-    }
-    @media (min-width: 768px) { .stats-grid-premium { grid-template-columns: repeat(4, 1fr); } }
-
-    .stat-item-premium {
-      padding: 36px 20px;
-      text-align: center;
-      border: 1px solid rgba(245,240,232,0.05);
-      position: relative;
-      overflow: hidden;
-      cursor: default;
-    }
-    .stat-item-premium::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary-container), transparent);
-      transform: scaleX(0);
-      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
-    }
-    .stat-item-premium.stat-visible::after { transform: scaleX(1); }
-    /* Number — Bebas Neue for that rigid impact */
-    .stat-big-num {
-      font-family: var(--font-display);
-      font-size: clamp(3.5rem, 10vw, 6.5rem);
-      font-weight: 400;
-      color: var(--primary-container);
-      line-height: 1;
-      letter-spacing: 0.01em;
-      display: block;
-      opacity: 0;
-      transform: translateY(50px) scale(0.85);
-    }
-    @keyframes statSlam {
-      0%   { opacity: 0; transform: translateY(60px) scale(0.8); filter: blur(3px); }
-      55%  { opacity: 1; transform: translateY(-6px) scale(1.04); filter: blur(0); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .stat-big-num.stat-animate {
-      animation: statSlam 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-    .stat-label-premium {
-      font-family: var(--font-sans);
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--outline);
-      margin-top: 8px;
-      display: block;
-    }
 
     /* ── Why SPIC MACAY Section ────────────────────────────── */
     .why-section { padding-block: 96px 80px; background: var(--background); }
@@ -398,9 +330,325 @@
     [data-theme="light"] .nav-mobile-btn--register {
       color: #fff !important;
     }
+
+    /* ── Flagship Event: Virasat Section ───────────────────── */
+    .virasat-section {
+      padding-block: 80px;
+      background: var(--surface-container-low);
+      border-block: 1px solid rgba(245,240,232,0.06);
+    }
+    [data-theme="light"] .virasat-section {
+      border-block-color: rgba(28,27,26,0.06) !important;
+    }
+    @media (min-width: 768px) {
+      .virasat-section { padding-block: 100px; }
+    }
+    .virasat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    @media (min-width: 1024px) {
+      .virasat-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 64px;
+      }
+    }
+    .virasat-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .virasat-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 480px) {
+      .virasat-highlights {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+    .virasat-highlight-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: var(--radius-lg);
+      padding: 16px 12px;
+      text-align: center;
+      transition: all var(--transition-base);
+    }
+    [data-theme="light"] .virasat-highlight-card {
+      border-color: rgba(28,27,26,0.08) !important;
+    }
+    .virasat-highlight-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(232, 119, 34, 0.35);
+      box-shadow: 0 10px 24px rgba(232, 119, 34, 0.08);
+    }
+    .virasat-highlight-num {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      color: var(--primary-container);
+      display: block;
+      line-height: 1.1;
+    }
+    .virasat-highlight-lbl {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--outline);
+      margin-top: 4px;
+      display: block;
+    }
+    .virasat-img-container {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 20px 48px rgba(0,0,0,0.5);
+      transition: all var(--transition-base);
+      aspect-ratio: 4/3;
+    }
+    @media (min-width: 768px) {
+      .virasat-img-container {
+        aspect-ratio: 16/11;
+      }
+    }
+    .virasat-img-container::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(245,240,232,0.15);
+      border-radius: var(--radius-xl);
+      z-index: 2;
+      pointer-events: none;
+      transition: border-color var(--transition-base);
+    }
+    .virasat-img-container:hover::before {
+      border-color: rgba(232, 119, 34, 0.4);
+    }
+    .virasat-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-slow);
+    }
+    .virasat-img-container:hover .virasat-img {
+      transform: scale(1.05);
+    }
+    [data-theme="light"] .virasat-img-container {
+      box-shadow: 0 20px 48px rgba(28,27,26,0.12);
+    }
+
+    /* ── Upcoming Events & Workshops Section ────────────────── */
+    .workshops-section {
+      padding-block: 80px;
+      background: var(--background);
+    }
+    @media (min-width: 768px) {
+      .workshops-section { padding-block: 120px; }
+    }
+    .workshops-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .workshop-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--transition-base);
+    }
+    [data-theme="light"] .workshop-card {
+      border-color: rgba(28,27,26,0.08) !important;
+    }
+    .workshop-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(232, 119, 34, 0.3);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.45);
+    }
+    [data-theme="light"] .workshop-card:hover {
+      box-shadow: 0 20px 48px rgba(28,27,26,0.1) !important;
+    }
+    .workshop-img-wrap {
+      overflow: hidden;
+      position: relative;
+      height: 200px;
+      width: 100%;
+    }
+    .workshop-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-slow);
+    }
+    .workshop-card:hover .workshop-img {
+      transform: scale(1.06);
+    }
+    .workshop-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .workshop-card-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: 8px;
+    }
+    .workshop-desc {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex: 1;
+    }
+    .workshop-cta {
+      align-self: flex-start;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: gap var(--transition-fast), color var(--transition-fast);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+    .workshop-cta:hover {
+      gap: 10px;
+      color: var(--primary-container);
+    }
+
+    /* ── Evening Concerts Section ───────────────────────────── */
+    .evening-concerts-section {
+      position: relative;
+      padding-block: 80px;
+      background: linear-gradient(185deg, var(--surface-dim) 0%, #150a04 100%);
+      border-block: 1px solid rgba(245,240,232,0.06);
+      overflow: hidden;
+    }
+    [data-theme="light"] .evening-concerts-section {
+      background: linear-gradient(185deg, var(--surface-dim) 0%, #fff2e6 100%) !important;
+      border-block-color: rgba(28,27,26,0.06) !important;
+    }
+    @media (min-width: 768px) {
+      .evening-concerts-section { padding-block: 110px 100px; }
+    }
+    .evening-concerts-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(232,119,34,0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .concert-itinerary {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+    .concert-track {
+      display: grid;
+      grid-template-columns: 1fr;
+      background: rgba(22, 22, 20, 0.45);
+      border: 1px solid rgba(245,240,232,0.05);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      gap: 16px;
+      align-items: center;
+      transition: all var(--transition-base);
+    }
+    [data-theme="light"] .concert-track {
+      background: rgba(255, 252, 247, 0.55);
+      border-color: rgba(28,27,26,0.06);
+    }
+    .concert-track:hover {
+      transform: translateY(-3px);
+      border-color: rgba(232, 119, 34, 0.25);
+      background: rgba(22, 22, 20, 0.85);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    [data-theme="light"] .concert-track:hover {
+      background: rgba(255, 252, 247, 0.95);
+      box-shadow: 0 10px 30px rgba(28, 27, 26, 0.05);
+    }
+    @media (min-width: 768px) {
+      .concert-track {
+        grid-template-columns: 120px 1.2fr 0.8fr;
+        gap: 32px;
+      }
+    }
+    .concert-time-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .concert-time {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.02em;
+    }
+    .concert-session-label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--outline);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 2px;
+    }
+    .concert-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .concert-title {
+      font-family: var(--font-serif);
+      font-size: 1.1875rem;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+    .concert-details {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      line-height: 1.5;
+    }
+    .concert-venue-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--outline);
+      font-weight: 600;
+    }
+    @media (min-width: 768px) {
+      .concert-venue-tag {
+        justify-content: flex-end;
+      }
+    }
+    .concert-venue-icon {
+      color: var(--primary-container);
+    }
   </style>
 </head>
 <body>
+
+
   <!-- ══ Progress Bar ══════════════════════════════════ -->
   <div class="progress-bar" id="progressBar"></div>
 
@@ -488,11 +736,11 @@
           25 – 31 May 2026 &nbsp;·&nbsp; VNIT Nagpur
         </div>
         <h1 class="display-lg reveal reveal-delay-1" style="max-width:720px;margin-top:16px;">
-          11th International<br/>
-          <span class="text-gradient">Convention</span> SPIC MACAY
+          Spic Macay<br/>
+          <span class="text-gradient">VNIT Nagpur</span>
         </h1>
         <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:500px;margin-top:16px;margin-bottom:28px;">
-          A week-long immersion in Indian classical music and arts — concerts, workshops, heritage walks, yoga, meditation, and wisdom sessions.
+          Society for the Promotion of Indian Classical Music And Culture Amongst Youth
         </p>
         <div class="flex gap-4 reveal reveal-delay-3 hero-btn-group">
           <a href="register.html" class="btn btn-primary btn-lg animate-pulse-glow" id="heroCTARegister">Register for Convention</a>
@@ -529,234 +777,187 @@
     </div>
   </div>
 
-  <!-- ══ Stats Section ═════════════════════════════════ -->
-  <section class="stats-section" aria-label="Key statistics">
+  <!-- ══ Flagship Event: Virasat 2026 ═══════════════════ -->
+  <section class="virasat-section" id="virasat">
     <div class="container">
-      <div class="stats-grid-premium">
-        <!-- Est. 1977 -->
-        <div class="stat-item-premium" id="statEst">
-          <span class="stat-big-num" data-stat-target="1977" id="statNum0">1977</span>
-          <span class="stat-label-premium">Est. Year</span>
+      <div class="virasat-grid">
+        <!-- Left: Descriptive Content -->
+        <div class="virasat-content reveal">
+          <div>
+            <p class="label-md text-primary-container" style="margin-bottom: 8px;">The Flagship Festival</p>
+            <h2 class="display-lg" style="margin-bottom: 16px;">Embrace Your Virasat</h2>
+            <p class="body-md text-muted" style="line-height: 1.7; margin-bottom: 8px;">
+              Virasat is not just a festival; it is a profound journey into the heart of India’s classical heritage. Held annually at the VNIT Nagpur campus, this week-long immersion brings legendary maestros, intricate art forms, and ancient wisdom directly to the youth.
+            </p>
+            <p class="body-md text-muted" style="line-height: 1.7; margin-bottom: 8px;">
+              Dawn to Dusk Immersions: Experience everything from Naad Yoga at sunrise to spellbinding all-night classical concerts.<br>
+              Guru-Shishya Parampara: Intimate baithaks and interactive workshops bridging the gap between artist and student.<br>
+              Holistic Arts: Classical music, dance forms, heritage walks, folk arts, and craft workshops.
+            </p>
+          </div>
+
+          <!-- Metrics Highlights Grid -->
+          <div class="virasat-highlights">
+            <div class="virasat-highlight-card">
+              <span class="virasat-highlight-num">5000+</span>
+              <span class="virasat-highlight-lbl">Attendees</span>
+            </div>
+            <div class="virasat-highlight-card">
+              <span class="virasat-highlight-num">6 Days</span>
+              <span class="virasat-highlight-lbl">Immersive</span>
+            </div>
+            <div class="virasat-highlight-card">
+              <span class="virasat-highlight-num">15+</span>
+              <span class="virasat-highlight-lbl">National Artists</span>
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="flex gap-4 hero-btn-group" style="margin-top: 12px;">
+            <a href="register.html" class="btn btn-primary">Register for Virasat</a>
+            <a href="schedule.html" class="btn btn-secondary">View Schedule</a>
+          </div>
         </div>
-        <!-- 400+ Cities -->
-        <div class="stat-item-premium" id="statCities">
-          <span class="stat-big-num" data-stat-target="400" data-stat-suffix="+" id="statNum1">400+</span>
-          <span class="stat-label-premium">Cities Served</span>
-        </div>
-        <!-- 10,000+ Events -->
-        <div class="stat-item-premium" id="statEvents">
-          <span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+" id="statNum2">10000+</span>
-          <span class="stat-label-premium">Events</span>
-        </div>
-        <!-- 120 Artists -->
-        <div class="stat-item-premium" id="statArtists">
-          <span class="stat-big-num" data-stat-target="120" id="statNum3">120</span>
-          <span class="stat-label-premium">Artists &amp; Gurus</span>
+
+        <!-- Right: Premium Image Showcase -->
+        <div class="virasat-img-container reveal reveal-delay-1">
+          <img 
+            src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&q=80" 
+            alt="Virasat 2026 Classical Performance at VNIT Nagpur" 
+            class="virasat-img"
+          />
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ══ Why SPIC MACAY ═══════════════════════════════ -->
-  <section class="why-section" id="why">
+  <!-- ══ Upcoming Events & Workshops ════════════════════ -->
+  <section class="workshops-section" id="workshops">
     <div class="container">
-
-      <!-- Section Header -->
-      <div class="why-section-header reveal">
-        <span class="why-section-pretitle">Why SPIC MACAY</span>
-        <h2 class="why-section-title">
-          Rediscovering India's<br/>
-          <span class="text-gradient">Classical Heritage</span>
-        </h2>
-        <div class="why-section-divider"></div>
-        <p class="body-md text-muted reveal reveal-delay-1" style="max-width:540px;margin-top:20px;">
-          For nearly five decades, SPIC MACAY has been the bridge between India's timeless art forms and the hearts of the youth — bringing maestros into classrooms, campuses, and communities.
+      <div style="text-align: center; max-width: 600px; margin-inline: auto;" class="reveal">
+        <p class="label-md text-primary-container" style="margin-bottom: 8px;">LEARNING & EXPERIENCES</p>
+        <h2 class="headline-lg">Upcoming Events & Workshops</h2>
+        <p class="body-md text-muted" style="margin-top: 12px;">
+          Dive hands-on into India's profound artistic lineages with interactive daytime educational modules led by renowned experts.
         </p>
       </div>
 
-      <!-- 3 Image Cards -->
-      <div class="why-cards-grid">
-        <div class="why-card reveal">
-          <div style="overflow:hidden;">
-            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Volunteers at SPIC MACAY" class="why-card-img"/>
+      <div class="workshops-grid">
+        <!-- Workshop 1 -->
+        <div class="workshop-card reveal">
+          <div class="workshop-img-wrap">
+            <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80" alt="Classical Instrument Workshops" class="workshop-img"/>
           </div>
-          <div class="why-card-body">
-            <div class="artist-discipline">Community</div>
-            <div class="why-card-title">Volunteering</div>
-            <p class="why-card-desc">Be part of something larger than yourself. Volunteers are the backbone of this incredible week, gaining backstage access to every event.</p>
-            <a href="register.html#volunteer" class="btn btn-ghost why-card-link" style="padding:0;font-size:0.8rem;">Join as Volunteer →</a>
-          </div>
-        </div>
-
-        <div class="why-card reveal reveal-delay-1">
-          <div style="overflow:hidden;">
-            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Classical music enrichment session" class="why-card-img"/>
-          </div>
-          <div class="why-card-body">
-            <div class="artist-discipline">Learning</div>
-            <div class="why-card-title">Enrichment</div>
-            <p class="why-card-desc">Immerse yourself in workshops, baithaks, and interactions with legendary gurus. Experience the guru-shishya parampara first-hand.</p>
-            <a href="artists.html" class="btn btn-ghost why-card-link" style="padding:0;font-size:0.8rem;">Meet the Artists →</a>
+          <div class="workshop-body">
+            <h3 class="workshop-card-title">Classical Instrument Workshops</h3>
+            <p class="workshop-desc">
+              Understand the intricate structures of Hindustani and Carnatic string and percussion systems through guided, practical modules in Sitar, Tabla, Flute, and Violin.
+            </p>
+            <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
           </div>
         </div>
 
-        <div class="why-card reveal reveal-delay-2">
-          <div style="overflow:hidden;">
-            <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage preservation" class="why-card-img"/>
+        <!-- Workshop 2 -->
+        <div class="workshop-card reveal reveal-delay-1">
+          <div class="workshop-img-wrap">
+            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80" alt="Traditional Art & Painting Masterclasses" class="workshop-img"/>
           </div>
-          <div class="why-card-body">
-            <div class="artist-discipline">Culture</div>
-            <div class="why-card-title">Heritage Preservation</div>
-            <p class="why-card-desc">SPIC MACAY has dedicated nearly five decades to ensuring India's timeless art forms remain alive, vibrant, and accessible to all.</p>
-            <a href="about.html" class="btn btn-ghost why-card-link" style="padding:0;font-size:0.8rem;">Our Story →</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bento Grid — All with images -->
-      <div class="about-grid" style="margin-top:20px;">
-
-        <!-- Main large cell -->
-        <div class="bento-cell about-cell-main reveal bento-img-cell" style="display:flex;flex-direction:column;justify-content:space-between;min-height:280px;">
-          <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-          <div class="bento-cell-content" style="display:flex;flex-direction:column;height:100%;justify-content:space-between;">
-            <div>
-              <div style="font-size:2.25rem;margin-bottom:16px;">🎵</div>
-              <h3 class="headline-sm" style="margin-bottom:10px;">The Guru-Shishya Tradition</h3>
-              <p class="body-md text-muted">Experience an ashram-like peek into the classical parampara. Engage in Naad Yoga at dawn and meditation sessions that bridge ancient wisdom with digital-era focus. Every interaction curated to bring you closer to India's artistic heritage.</p>
-            </div>
-            <div class="flex gap-4" style="margin-top:24px;flex-wrap:wrap;">
-              <span class="chip">Meditation</span>
-              <span class="chip">Philosophy</span>
-              <span class="chip">Guru Parampara</span>
-            </div>
+          <div class="workshop-body">
+            <h3 class="workshop-card-title">Traditional Art Masterclasses</h3>
+            <p class="workshop-desc">
+              Connect with India's rich visual heritage. Master ancient techniques of Madhubani painting and Warli tribal art under national award-winning master craftsmen.
+            </p>
+            <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
           </div>
         </div>
 
-        <!-- 100+ Sessions -->
-        <div class="bento-cell about-cell-3 reveal reveal-delay-1 bento-img-cell" style="display:flex;flex-direction:column;justify-content:space-between;">
-          <img src="https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?w=400&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-          <div class="bento-cell-content" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
-            <div>
-              <div style="font-size:1.75rem;margin-bottom:12px;">🎶</div>
-              <h4 class="headline-sm" style="margin-bottom:8px;">100+ Sessions</h4>
-              <p class="body-md text-muted" style="font-size:0.9rem;">Concerts and intimate baithaks featuring world-class classical musicians from across India.</p>
-            </div>
-            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(245,240,232,0.1);">
-              <a href="schedule.html" class="btn btn-ghost" style="font-size:0.8125rem;padding:0;">VIEW EVENTS →</a>
-            </div>
+        <!-- Workshop 3 -->
+        <div class="workshop-card reveal reveal-delay-2">
+          <div class="workshop-img-wrap">
+            <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&q=80" alt="Guru-Shishya Lecture-Demonstrations" class="workshop-img"/>
           </div>
-        </div>
-
-        <!-- 7 Days Accent -->
-        <div class="bento-cell about-cell-accent reveal reveal-delay-2 bento-img-cell" style="display:flex;flex-direction:column;justify-content:center;">
-          <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=400&q=75" alt="" class="bento-bg-img" style="opacity:0.12;" aria-hidden="true"/>
-          <div class="bento-cell-content">
-            <div style="font-size:4.5rem;font-family:var(--font-display);font-weight:400;line-height:1;letter-spacing:0.02em;">7</div>
-            <p class="headline-sm" style="margin-top:8px;">Immersive Days</p>
-            <p style="margin-top:12px;font-size:0.875rem;opacity:0.9;line-height:1.6;">Sunrise yoga to late-evening classical performances — every hour dedicated to cultural enrichment.</p>
-          </div>
-        </div>
-
-        <!-- Heritage Walks -->
-        <div class="bento-cell about-cell-3 reveal reveal-delay-1 bento-img-cell" style="display:flex;flex-direction:column;justify-content:space-between;">
-          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-          <div class="bento-cell-content" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
-            <div>
-              <div style="font-size:1.75rem;margin-bottom:12px;">🏛️</div>
-              <h4 class="headline-sm" style="margin-bottom:8px;">Heritage Walks</h4>
-              <p class="body-md text-muted" style="font-size:0.9rem;">Exploring the architectural marvels and vibrant histories of VNIT Nagpur's heritage campus.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tech Hub / Live Sessions -->
-        <div class="bento-cell about-cell-3 reveal reveal-delay-2 bento-img-cell" style="display:flex;flex-direction:column;gap:12px;">
-          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-          <div class="bento-cell-content">
-            <div class="flex items-center gap-4" style="font-size:0.75rem;font-weight:700;color:#4ade80;">
-              <span style="width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse-glow 2s infinite;"></span>
-              LIVE SESSIONS
-            </div>
-            <h4 class="headline-sm" style="margin-top:10px;">Tech Hub</h4>
-            <p class="body-md text-muted" style="font-size:0.9rem;margin-top:8px;">Digital archival and acoustics workshops integrating high-tech tools with India's heritage arts.</p>
-          </div>
-        </div>
-
-      </div><!-- /about-grid -->
-    </div>
-  </section>
-
-  <!-- ══ Featured Event ════════════════════════════════ -->
-  <section class="featured-event-wrap section-gap" id="featured">
-    <div class="container">
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
-        <div>
-          <p class="label-md text-primary-container reveal" style="margin-bottom:8px;">📍 VNIT NAGPUR &nbsp;·&nbsp; SPIC MACAY CHAPTER</p>
-          <h2 class="headline-lg reveal reveal-delay-1">Featured Performance</h2>
-        </div>
-        <a href="schedule.html" class="btn btn-secondary reveal reveal-delay-2">All Events →</a>
-      </div>
-
-      <div class="featured-event reveal">
-        <div class="featured-event-img-wrap">
-          <img
-            src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&q=80"
-            alt="Dr. Chaerin Kim — International Performance at VNIT Nagpur"
-            class="featured-event-img"
-          />
-        </div>
-        <div class="featured-event-body">
-          <div>
-            <div class="featured-event-meta">
-              <span class="chip">International Artist</span>
-              <span class="chip">Live Performance</span>
-            </div>
-            <h3 class="headline-md" style="margin-top:14px;margin-bottom:12px;">Dr. Chaerin Kim</h3>
-            <p class="body-md text-muted">A captivating international performance that brought the VNIT Nagpur campus alive — Dr. Chaerin Kim's artistry bridged global musical traditions with the rich heritage of Indian classical arts in a truly unforgettable evening.</p>
-            <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:20px;">
-              <div>
-                <div class="label-sm text-muted" style="margin-bottom:3px;">ARTIST</div>
-                <div style="font-size:0.9rem;color:var(--on-surface);font-weight:600;">Dr. Chaerin Kim</div>
-              </div>
-              <div>
-                <div class="label-sm text-muted" style="margin-bottom:3px;">TYPE</div>
-                <div style="font-size:0.9rem;color:var(--on-surface);font-weight:600;">International Performance</div>
-              </div>
-              <div>
-                <div class="label-sm text-muted" style="margin-bottom:3px;">VENUE</div>
-                <div style="font-size:0.9rem;color:var(--on-surface);font-weight:600;">VNIT Nagpur</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Performance Highlights -->
-          <div class="event-countdown" style="border-color:rgba(232,119,34,0.25);">
-            <div class="event-cd-label">Performance Highlights</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px;">
-              <div style="text-align:center;">
-                <span class="event-cd-num" style="font-size:clamp(1.6rem,5vw,2.2rem);">500+</span>
-                <div class="event-cd-lbl">Attendees</div>
-              </div>
-              <div style="text-align:center;">
-                <span class="event-cd-num" style="font-size:clamp(1.6rem,5vw,2.2rem);">2hrs</span>
-                <div class="event-cd-lbl">Duration</div>
-              </div>
-              <div style="text-align:center;">
-                <span class="event-cd-num" style="font-size:clamp(1.6rem,5vw,2.2rem);">1</span>
-                <div class="event-cd-lbl">Global Artist</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <a href="register.html" class="btn btn-primary">Register Now</a>
-            <a href="schedule.html" class="btn btn-secondary">All Events</a>
+          <div class="workshop-body">
+            <h3 class="workshop-card-title">Guru-Shishya Lecture-Demos</h3>
+            <p class="workshop-desc">
+              Immerse yourself in interactive lecture-demonstrations that break down complex music theories, rhythmic patterns, and historical backgrounds behind iconic art forms.
+            </p>
+            <button class="workshop-cta" onclick="location.href='about.html'">Learn More →</button>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- ══ Evening Concerts ═══════════════════════════════ -->
+  <section class="evening-concerts-section" id="evening-concerts">
+    <div class="container" style="position: relative; z-index: 2;">
+      <div style="text-align: center; max-width: 600px; margin-inline: auto;" class="reveal">
+        <p class="label-md text-primary-container" style="margin-bottom: 8px;">CULTURAL EVENING ITINERARY</p>
+        <h2 class="headline-lg">Prestigious Evening Concerts</h2>
+        <p class="body-md text-muted" style="margin-top: 12px;">
+          As twilight settles over VNIT Nagpur, witness the soul-stirring magic of classical music and grand jugalbandis under a starlit canopy.
+        </p>
+      </div>
+
+      <div class="concert-itinerary">
+        <!-- Concert Track 1 -->
+        <div class="concert-track reveal">
+          <div class="concert-time-badge">
+            <span class="concert-time">06:00 PM</span>
+            <span class="concert-session-label">Twilight Session</span>
+          </div>
+          <div class="concert-info">
+            <h3 class="concert-title">Naad Yoga at Twilight</h3>
+            <p class="concert-details text-muted">
+              Begin the cultural transition with ambient, meditative sonic resonance and morning-evening transition raagas designed for absolute inner focus.
+            </p>
+          </div>
+          <div class="concert-venue-tag">
+            <span class="concert-venue-icon">📍</span> Academic Lawn
+          </div>
+        </div>
+
+        <!-- Concert Track 2 -->
+        <div class="concert-track reveal reveal-delay-1">
+          <div class="concert-time-badge">
+            <span class="concert-time">07:30 PM</span>
+            <span class="concert-session-label">Grand Recital</span>
+          </div>
+          <div class="concert-info">
+            <h3 class="concert-title">Grand Classical Vocals &amp; Jugalbandi</h3>
+            <p class="concert-details text-muted">
+              A spellbinding combination of Hindustani classical vocals accompanied by high-energy interactions on the tabla and harmonium by national legends.
+            </p>
+          </div>
+          <div class="concert-venue-tag">
+            <span class="concert-venue-icon">📍</span> Main Auditorium
+          </div>
+        </div>
+
+        <!-- Concert Track 3 -->
+        <div class="concert-track reveal reveal-delay-2">
+          <div class="concert-time-badge">
+            <span class="concert-time">09:00 PM</span>
+            <span class="concert-session-label">Late Night Raga</span>
+          </div>
+          <div class="concert-info">
+            <h3 class="concert-title">Sitar &amp; Flute Symphony</h3>
+            <p class="concert-details text-muted">
+              Experience the complex, fluid melodies of traditional late-night ragas weaving together the brilliant strings of Sitar and resonant echoes of Flute.
+            </p>
+          </div>
+          <div class="concert-venue-tag">
+            <span class="concert-venue-icon">📍</span> Main Auditorium
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center;" class="reveal reveal-delay-3">
+        <a href="register.html" class="btn btn-primary btn-lg animate-pulse-glow">Book Evening Pass</a>
+      </div>
+    </div>
+  </section>
+
 
   <!-- ══ CTA Section ════════════════════════════════════ -->
   <section class="cta-section section-gap">
@@ -792,7 +993,6 @@
       </div>
     </div>
   </section>
-
   <!-- ══ Footer ═════════════════════════════════════════ -->
     <!-- ══ Footer ═════════════════════════════════════════ -->
   <footer class="footer">
@@ -862,27 +1062,6 @@
 
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
   <script src="scripts/main.js"></script>
-  <script>
-    /* ── Theme Toggle ───────────────────────────── */
-    (function() {
-      const saved = localStorage.getItem('spicmacay-theme');
-      if (saved) document.documentElement.setAttribute('data-theme', saved);
 
-      const btn = document.getElementById('themeToggle');
-      if (!btn) return;
-
-      btn.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        const next = current === 'light' ? 'dark' : 'light';
-        if (next === 'dark') {
-          document.documentElement.removeAttribute('data-theme');
-          localStorage.setItem('spicmacay-theme', 'dark');
-        } else {
-          document.documentElement.setAttribute('data-theme', 'light');
-          localStorage.setItem('spicmacay-theme', 'light');
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
