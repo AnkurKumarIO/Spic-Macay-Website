@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery — SPIC MACAY VNIT Nagpur Convention</title>
+  <meta name="description" content="Explore the visual journey of SPIC MACAY conventions at VNIT Nagpur — concerts, workshops, art sessions, and cultural moments captured through the lens."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="styles/main.css"/>
+
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       GALLERY PAGE — SPECIFIC STYLES
+    ══════════════════════════════════════════════════════════ */
+
+    /* ── Page Header ─────────────────────────────────────────── */
+    .gallery-hero {
+      background: var(--surface-container);
+      border-bottom: 1px solid rgba(245,240,232,0.07);
+      padding: 72px 0 48px;
+    }
+
+    /* ── Filter Tabs ─────────────────────────────────────────── */
+    .gallery-filters {
+      padding: 28px 0 0;
+      background: var(--surface-dim);
+      border-bottom: 1px solid rgba(245,240,232,0.06);
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-bottom: 20px;
+    }
+    .filter-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 18px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border: 1px solid rgba(245,240,232,0.15);
+      background: rgba(245,240,232,0.05);
+      color: var(--on-surface-variant);
+      transition: all var(--transition-base);
+    }
+    .filter-tab:hover {
+      background: rgba(245,240,232,0.1);
+      color: var(--on-surface);
+      border-color: rgba(245,240,232,0.3);
+    }
+    .filter-tab.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--primary-container);
+    }
+    [data-theme="light"] .filter-tab {
+      border-color: rgba(28,27,26,0.15);
+      background: rgba(28,27,26,0.04);
+      color: var(--on-surface-variant);
+    }
+    [data-theme="light"] .filter-tab:hover {
+      background: rgba(28,27,26,0.09);
+      color: var(--on-surface);
+    }
+
+    /* ── Gallery Section Wrapper ─────────────────────────────── */
+    .gallery-section {
+      padding-block: 64px 96px;
+      background: var(--background);
+    }
+    @media (min-width: 768px) {
+      .gallery-section { padding-block: 80px 120px; }
+    }
+
+    /* ── Bento Grid ──────────────────────────────────────────── */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 60px;
+      gap: 14px;
+    }
+
+    /* Mobile: single column stacked */
+    @media (max-width: 639px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+      }
+      .bento-item { grid-column: span 1 !important; grid-row: span 1 !important; }
+      .bento-item .bento-img { height: 240px !important; }
+    }
+
+    /* Tablet: 2-column */
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .bento-grid {
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 68px;
+      }
+      .bento-item { grid-column: span 3 !important; grid-row: span 4 !important; }
+      .bento-item.bento-wide { grid-column: span 6 !important; grid-row: span 3 !important; }
+      .bento-item.bento-tall { grid-column: span 3 !important; grid-row: span 5 !important; }
+      .bento-item .bento-img { height: 100% !important; min-height: 200px; }
+    }
+
+    /* Desktop: full 12-col asymmetric layout */
+    @media (min-width: 1024px) {
+      /* Row 1 */
+      .bento-item--1  { grid-column: 1 / span 5;  grid-row: 1 / span 6; }
+      .bento-item--2  { grid-column: 6 / span 4;  grid-row: 1 / span 4; }
+      .bento-item--3  { grid-column: 10 / span 3; grid-row: 1 / span 3; }
+      /* Row 2 filler */
+      .bento-item--4  { grid-column: 10 / span 3; grid-row: 4 / span 3; }
+      .bento-item--5  { grid-column: 6 / span 4;  grid-row: 5 / span 4; }
+      /* Row 3 */
+      .bento-item--6  { grid-column: 1 / span 3;  grid-row: 7 / span 4; }
+      .bento-item--7  { grid-column: 4 / span 5;  grid-row: 7 / span 3; }
+      .bento-item--8  { grid-column: 9 / span 4;  grid-row: 7 / span 5; }
+      /* Row 4 */
+      .bento-item--9  { grid-column: 1 / span 3;  grid-row: 11 / span 4; }
+      .bento-item--10 { grid-column: 4 / span 5;  grid-row: 10 / span 4; }
+      .bento-item--11 { grid-column: 9 / span 4;  grid-row: 12 / span 4; }
+      /* Row 5 */
+      .bento-item--12 { grid-column: 1 / span 8;  grid-row: 15 / span 3; }
+    }
+
+    /* ── Individual Bento Cell ───────────────────────────────── */
+    .bento-item {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.06);
+      cursor: pointer;
+    }
+    [data-theme="light"] .bento-item {
+      border-color: rgba(28,27,26,0.07);
+    }
+
+    .bento-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .bento-item:hover .bento-img {
+      transform: scale(1.03);
+    }
+
+    /* Overlay on hover */
+    .bento-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(6,6,6,0.85) 0%,
+        rgba(6,6,6,0.3) 40%,
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+      z-index: 2;
+    }
+    .bento-item:hover .bento-overlay {
+      opacity: 1;
+    }
+    .bento-caption {
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.03em;
+      transform: translateY(6px);
+      transition: transform 0.3s ease-in-out;
+    }
+    .bento-item:hover .bento-caption {
+      transform: translateY(0);
+    }
+    .bento-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    /* Glow border on hover */
+    .bento-item::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      border: 1px solid rgba(232,119,34,0);
+      transition: border-color 0.3s ease-in-out;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .bento-item:hover::after {
+      border-color: rgba(232,119,34,0.45);
+    }
+
+    /* ── Lightbox ────────────────────────────────────────────── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.93);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .lightbox-inner {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .lightbox-img {
+      max-width: 90vw;
+      max-height: 80vh;
+      border-radius: 12px;
+      object-fit: contain;
+      display: block;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.9);
+    }
+    .lightbox-caption {
+      margin-top: 16px;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      font-family: var(--font-sans);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: -44px;
+      right: 0;
+      background: rgba(245,240,232,0.1);
+      border: 1px solid rgba(245,240,232,0.15);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+    .lightbox-close:hover {
+      background: rgba(232,119,34,0.3);
+      border-color: rgba(232,119,34,0.5);
+    }
+    .lightbox-nav {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(245,240,232,0.08);
+      border: 1px solid rgba(245,240,232,0.12);
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      z-index: 10000;
+    }
+    .lightbox-nav:hover {
+      background: rgba(232,119,34,0.25);
+      border-color: rgba(232,119,34,0.4);
+    }
+    .lightbox-prev { left: 20px; }
+    .lightbox-next { right: 20px; }
+
+    /* ── Stats Strip ─────────────────────────────────────────── */
+    .gallery-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: rgba(245,240,232,0.07);
+      border-top: 1px solid rgba(245,240,232,0.07);
+      border-bottom: 1px solid rgba(245,240,232,0.07);
+      margin-bottom: 56px;
+    }
+    @media (min-width: 640px) {
+      .gallery-stats { grid-template-columns: repeat(4, 1fr); }
+    }
+    .gallery-stat {
+      padding: 28px 24px;
+      text-align: center;
+      background: var(--background);
+    }
+    .gallery-stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      color: var(--primary-container);
+      display: block;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .gallery-stat-lbl {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--outline);
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ── Section Pretitle & Title ────────────────────────────── */
+    .gallery-pretitle {
+      font-family: var(--font-display);
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      letter-spacing: 0.35em;
+      color: var(--primary-container);
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    /* ── CTA strip at bottom ─────────────────────────────────── */
+    .gallery-cta-strip {
+      background: var(--surface-container-low);
+      border-top: 1px solid rgba(245,240,232,0.06);
+      padding: 56px 0;
+    }
+    [data-theme="light"] .gallery-cta-strip {
+      border-top-color: rgba(28,27,26,0.06);
+    }
+
+    /* ── Light mode overrides for this page ──────────────────── */
+    [data-theme="light"] .gallery-hero {
+      border-bottom-color: rgba(28,27,26,0.07) !important;
+    }
+    [data-theme="light"] .gallery-filters {
+      border-bottom-color: rgba(28,27,26,0.06) !important;
+    }
+    [data-theme="light"] .gallery-stats {
+      background: rgba(28,27,26,0.06);
+      border-color: rgba(28,27,26,0.06) !important;
+    }
+    [data-theme="light"] .gallery-stat {
+      background: var(--background);
+    }
+
+    /* ── Theme Toggle (inherited from index but redeclared for safety) ── */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(245,240,232,0.15);
+      background: rgba(245,240,232,0.06);
+      cursor: pointer;
+      transition: all var(--transition-base);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .theme-toggle:hover { background: rgba(245,240,232,0.14); transform: scale(1.08); }
+    [data-theme="light"] .theme-toggle {
+      border-color: rgba(28,27,26,0.15);
+      background: rgba(28,27,26,0.06);
+    }
+    [data-theme="light"] .theme-toggle:hover { background: rgba(28,27,26,0.12); }
+    .theme-toggle-icon { font-size: 1.05rem; line-height: 1; transition: transform 0.35s ease, opacity 0.3s ease; }
+    .theme-toggle .icon-sun  { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+    [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+    [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+    /* ── Light mode nav / drawer ─────────────────────────────── */
+    [data-theme="light"] .nav {
+      background: rgba(248,244,236,0.92) !important;
+      border-bottom-color: rgba(28,27,26,0.08) !important;
+    }
+    [data-theme="light"] .hamburger-bar { background: #1c1b1a !important; }
+    [data-theme="light"] .hamburger-btn {
+      background: rgba(28,27,26,0.06) !important;
+      border-color: rgba(28,27,26,0.12) !important;
+    }
+    [data-theme="light"] .drawer {
+      background: #f5f0e8 !important;
+      border-left-color: rgba(28,27,26,0.08) !important;
+    }
+    [data-theme="light"] .text-gradient {
+      background: linear-gradient(135deg, #c45e0a 0%, #e87722 50%, #9a4e0c 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+    [data-theme="light"] .footer {
+      background: var(--surface-dim) !important;
+      border-top: 1px solid rgba(28,27,26,0.08);
+    }
+    [data-theme="light"] .social-link {
+      background: rgba(28,27,26,0.06) !important;
+      border-color: rgba(28,27,26,0.1) !important;
+    }
+    [data-theme="light"] .divider {
+      background: rgba(28,27,26,0.08) !important;
+    }
+    [data-theme="light"] .progress-bar {
+      background: var(--primary-container) !important;
+    }
+    [data-theme="light"] .nav-mobile-btn--register {
+      color: #fff !important;
+    }
+
+    /* Nav Mobile Button */
+    .nav-mobile-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .nav-mobile-btn--register {
+      background: var(--primary-container);
+      border: 1px solid var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .nav-mobile-btn--register:hover { filter: brightness(1.1); }
+    @media (min-width: 768px) { .nav-mobile-btn { display: none; } }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Progress Bar ══════════════════════════════════ -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ══ Navigation ════════════════════════════════════ -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle">About</a>
+            <div class="nav-dropdown-menu">
+              <a href="about.html">About the Convention</a>
+              <a href="about.html#founder">Founder</a>
+              <a href="about.html#hosting">Hosting Institute</a>
+              <a href="about.html#past">Past Conventions</a>
+            </div>
+          </li>
+          <li><a href="artists.html">Artists</a></li>
+          <li><a href="schedule.html">Events</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle">Guidelines</a>
+            <div class="nav-dropdown-menu">
+              <a href="guidelines.html">Convention Guidelines</a>
+              <a href="guidelines.html#travel">Travel Guidelines</a>
+            </div>
+          </li>
+          <li><a href="gallery.html" class="active">Gallery</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="theme-toggle-icon icon-moon">☾</span>
+          <span class="theme-toggle-icon icon-sun">☀</span>
+        </button>
+        <a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
+        <a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
+        <button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ Mobile Drawer ════════════════════════════════ -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-header">
+      <span class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" style="height:24px;" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" style="height:24px;" />
+      </span>
+      <button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
+    </div>
+    <a href="index.html" class="drawer-link">Home</a>
+    <a href="about.html" class="drawer-link">About</a>
+    <a href="artists.html" class="drawer-link">Artists &amp; Gurus</a>
+    <a href="schedule.html" class="drawer-link">Events</a>
+    <a href="guidelines.html" class="drawer-link">Guidelines</a>
+    <a href="gallery.html" class="drawer-link active">Gallery</a>
+    <a href="faq.html" class="drawer-link">FAQ</a>
+
+  </nav>
+
+  <div style="padding-top: 65px;">
+
+    <!-- ══ Page Hero Header ══════════════════════════════════ -->
+    <section class="gallery-hero" id="gallery">
+      <div class="container">
+        <span class="chip reveal">VISUAL HERITAGE</span>
+        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px; max-width: 640px;">
+          Moments of<br/><span class="text-gradient">Living Heritage</span>
+        </h1>
+        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:520px; margin-top:16px;">
+          A visual journey through the sounds, colours, and spirit of past SPIC MACAY conventions — from dawn yoga to all-night classical concerts.
+        </p>
+        <!-- Quick scroll nav -->
+        <div class="flex gap-4 reveal reveal-delay-3" style="margin-top:28px; flex-wrap:wrap;">
+          <a href="#gallery-grid" class="btn btn-primary" id="galleryViewPhotosBtn">View Photos</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ Stats Strip ════════════════════════════════════════ -->
+    <div class="gallery-stats" aria-label="Gallery statistics">
+      <div class="gallery-stat">
+        <span class="gallery-stat-num">200+</span>
+        <span class="gallery-stat-lbl">Photographs</span>
+      </div>
+      <div class="gallery-stat">
+        <span class="gallery-stat-num">11</span>
+        <span class="gallery-stat-lbl">Conventions</span>
+      </div>
+      <div class="gallery-stat">
+        <span class="gallery-stat-num">15+</span>
+        <span class="gallery-stat-lbl">Art Forms</span>
+      </div>
+      <div class="gallery-stat">
+        <span class="gallery-stat-num">5K+</span>
+        <span class="gallery-stat-lbl">Attendees</span>
+      </div>
+    </div>
+
+    <!-- ══ Filter Tabs ════════════════════════════════════════ -->
+    <div class="gallery-filters">
+      <div class="container">
+        <div class="filter-tabs" role="tablist" aria-label="Gallery categories">
+          <button class="filter-tab active" role="tab" aria-selected="true"  id="tab-all"       data-filter="all"      onclick="filterGallery('all', this)">🎨 All Moments</button>
+          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-concerts"  data-filter="concerts" onclick="filterGallery('concerts', this)">🎵 Evening Concerts</button>
+          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-workshops" data-filter="workshops" onclick="filterGallery('workshops', this)">🏺 Workshops</button>
+          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-yoga"      data-filter="yoga"     onclick="filterGallery('yoga', this)">🧘 Naad Yoga</button>
+          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-dance"     data-filter="dance"    onclick="filterGallery('dance', this)">💃 Classical Dance</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Gallery Grid ═══════════════════════════════════════ -->
+    <section class="gallery-section" id="gallery-grid" aria-label="Photo gallery">
+      <div class="container">
+
+        <div style="text-align:center; max-width:580px; margin-inline:auto; margin-bottom:56px;" class="reveal">
+          <span class="gallery-pretitle">SPIC MACAY · VNIT NAGPUR</span>
+          <h2 class="headline-lg">Virasat Through the Lens</h2>
+          <p class="body-md text-muted" style="margin-top:12px;">
+            Every image captures a thread of India's living classical heritage — woven into the fabric of a week that changes lives.
+          </p>
+        </div>
+
+        <!-- BENTO GRID -->
+        <div class="bento-grid" id="bentoGrid" role="list" aria-label="Gallery images">
+
+          <!-- 1 · TALL hero — classical concert -->
+          <div class="bento-item bento-item--1 reveal" role="listitem" data-category="concerts"
+               onclick="openLightbox(0)" title="Click to enlarge" id="galleryItem1" tabindex="0" aria-label="Evening classical concert performance">
+            <img
+              src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=900&q=80"
+              alt="Grand evening classical concert at SPIC MACAY VNIT Nagpur"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Evening Concert</span>
+              <p class="bento-caption">Grand Jugalbandi — Main Auditorium</p>
+            </div>
+          </div>
+
+          <!-- 2 · WIDE landscape — tabla master -->
+          <div class="bento-item bento-item--2 reveal reveal-delay-1" role="listitem" data-category="workshops"
+               onclick="openLightbox(1)" title="Click to enlarge" id="galleryItem2" tabindex="0" aria-label="Tabla workshop session">
+            <img
+              src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800&q=80"
+              alt="Tabla workshop with master musician at SPIC MACAY"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Workshop</span>
+              <p class="bento-caption">Tabla Masterclass — Guru-Shishya Session</p>
+            </div>
+          </div>
+
+          <!-- 3 · COMPACT square — Madhubani art -->
+          <div class="bento-item bento-item--3 reveal reveal-delay-2" role="listitem" data-category="workshops"
+               onclick="openLightbox(2)" title="Click to enlarge" id="galleryItem3" tabindex="0" aria-label="Madhubani painting workshop">
+            <img
+              src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80"
+              alt="Traditional Madhubani painting workshop at VNIT Nagpur"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Folk Art</span>
+              <p class="bento-caption">Madhubani Painting Workshop</p>
+            </div>
+          </div>
+
+          <!-- 4 · COMPACT square — Naad yoga at dawn -->
+          <div class="bento-item bento-item--4 reveal reveal-delay-1" role="listitem" data-category="yoga"
+               onclick="openLightbox(3)" title="Click to enlarge" id="galleryItem4" tabindex="0" aria-label="Naad yoga at sunrise">
+            <img
+              src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&q=80"
+              alt="Naad Yoga at sunrise during SPIC MACAY convention"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Naad Yoga</span>
+              <p class="bento-caption">4 AM Naad Yoga at the Academic Lawn</p>
+            </div>
+          </div>
+
+          <!-- 5 · WIDE landscape — dance recital -->
+          <div class="bento-item bento-item--5 reveal" role="listitem" data-category="dance"
+               onclick="openLightbox(4)" title="Click to enlarge" id="galleryItem5" tabindex="0" aria-label="Bharatanatyam dance recital">
+            <img
+              src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=900&q=80"
+              alt="Bharatanatyam classical dance recital at SPIC MACAY convention"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Classical Dance</span>
+              <p class="bento-caption">Bharatanatyam Recital — Open Amphitheatre</p>
+            </div>
+          </div>
+
+          <!-- 6 · STANDARD — sitar solo -->
+          <div class="bento-item bento-item--6 reveal reveal-delay-2" role="listitem" data-category="concerts"
+               onclick="openLightbox(5)" title="Click to enlarge" id="galleryItem6" tabindex="0" aria-label="Sitar solo performance">
+            <img
+              src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80"
+              alt="Sitar solo performance at evening concert SPIC MACAY"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Concert</span>
+              <p class="bento-caption">Sitar Solo — Late Night Raga Session</p>
+            </div>
+          </div>
+
+          <!-- 7 · WIDE — crowd immersion -->
+          <div class="bento-item bento-item--7 reveal reveal-delay-1" role="listitem" data-category="concerts"
+               onclick="openLightbox(6)" title="Click to enlarge" id="galleryItem7" tabindex="0" aria-label="Audience at evening concert">
+            <img
+              src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=900&q=80"
+              alt="Crowd immersed in classical music at SPIC MACAY VNIT Nagpur"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Live Concert</span>
+              <p class="bento-caption">5000+ Attendees — The Overnight Concert</p>
+            </div>
+          </div>
+
+          <!-- 8 · TALL right — Kathak -->
+          <div class="bento-item bento-item--8 reveal" role="listitem" data-category="dance"
+               onclick="openLightbox(7)" title="Click to enlarge" id="galleryItem8" tabindex="0" aria-label="Kathak classical dance performance">
+            <img
+              src="https://images.unsplash.com/photo-1582691849635-5748b4739d97?w=700&q=80"
+              alt="Kathak classical dance performance SPIC MACAY VNIT"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Classical Dance</span>
+              <p class="bento-caption">Kathak Performance — Cultural Evening</p>
+            </div>
+          </div>
+
+          <!-- 9 · COMPACT — pottery workshop -->
+          <div class="bento-item bento-item--9 reveal reveal-delay-2" role="listitem" data-category="workshops"
+               onclick="openLightbox(8)" title="Click to enlarge" id="galleryItem9" tabindex="0" aria-label="Traditional pottery workshop">
+            <img
+              src="https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&q=80"
+              alt="Traditional pottery hands-on workshop at SPIC MACAY"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Craft Workshop</span>
+              <p class="bento-caption">Traditional Pottery — Hands-On Session</p>
+            </div>
+          </div>
+
+          <!-- 10 · WIDE — flute performance -->
+          <div class="bento-item bento-item--10 reveal reveal-delay-1" role="listitem" data-category="concerts"
+               onclick="openLightbox(9)" title="Click to enlarge" id="galleryItem10" tabindex="0" aria-label="Classical flute performance">
+            <img
+              src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&q=80"
+              alt="Classical flute performance at SPIC MACAY evening concert"
+              class="bento-img"
+              style="object-position: center 30%;"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Evening Concert</span>
+              <p class="bento-caption">Classical Flute — Twilight Session</p>
+            </div>
+          </div>
+
+          <!-- 11 · COMPACT — Hindustani vocals -->
+          <div class="bento-item bento-item--11 reveal" role="listitem" data-category="concerts"
+               onclick="openLightbox(10)" title="Click to enlarge" id="galleryItem11" tabindex="0" aria-label="Hindustani vocal performance">
+            <img
+              src="https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?w=700&q=80"
+              alt="Hindustani classical vocal performance SPIC MACAY"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">Grand Recital</span>
+              <p class="bento-caption">Hindustani Vocals &amp; Harmonium Jugalbandi</p>
+            </div>
+          </div>
+
+          <!-- 12 · PANORAMIC banner — campus scenery -->
+          <div class="bento-item bento-item--12 reveal reveal-delay-1" role="listitem" data-category="yoga"
+               onclick="openLightbox(11)" title="Click to enlarge" id="galleryItem12" tabindex="0" aria-label="VNIT campus during the convention">
+            <img
+              src="https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1200&q=80"
+              alt="VNIT Nagpur campus during the Virasat convention dawn session"
+              class="bento-img"
+              loading="lazy"
+            />
+            <div class="bento-overlay">
+              <span class="bento-tag">VNIT Nagpur Campus</span>
+              <p class="bento-caption">Dawn Begins — Virasat 2025 Convention</p>
+            </div>
+          </div>
+
+        </div><!-- /bento-grid -->
+
+        <!-- Virasat invite -->
+        <div style="text-align:center; margin-top:56px;" class="reveal">
+          <p class="body-md text-muted">
+            Want to experience this for yourself? Join us at <strong style="color:var(--on-surface);">Virasat 2026</strong>.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ CTA Strip ══════════════════════════════════════════ -->
+    <div class="gallery-cta-strip">
+      <div class="container" style="text-align:center;">
+        <span class="gallery-pretitle">25 – 31 MAY 2026 · VNIT NAGPUR</span>
+        <h2 class="headline-lg" style="max-width:520px; margin-inline:auto; margin-top:4px;">
+          Be Part of the Next Chapter
+        </h2>
+        <p class="body-md text-muted" style="max-width:440px; margin-inline:auto; margin-top:12px; margin-bottom:28px;">
+          These moments could be yours. Secure your place at India's most transformative classical arts convention.
+        </p>
+        <div class="flex gap-4 justify-center" style="justify-content:center; flex-wrap:wrap;">
+          <a href="schedule.html" class="btn btn-secondary btn-lg" id="galleryCtaScheduleBtn">View Schedule</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /padding-top wrapper -->
+
+  <!-- ══ Footer ═════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
+        <div>
+          <div class="footer-logo">
+            <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+            <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+          </div>
+          <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
+          <div class="flex gap-4" style="margin-top:20px;">
+            <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
+            <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
+            <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">f</a>
+            <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank" rel="noopener">𝕏</a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="artists.html">Artists</a></li>
+              <li><a href="schedule.html">Events</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Legal</div>
+            <ul class="footer-links">
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="gdpr.html">GDPR Compliance</a></li>
+              <li><a href="guidelines.html">Guidelines</a></li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Contact Us</div>
+          <address style="font-style:normal;font-size:0.875rem;color:var(--on-surface-variant);line-height:1.9;">
+            VNIT Nagpur Campus,<br/>
+            South Ambazari Road,<br/>
+            Nagpur – 440010
+          </address>
+          <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">registrations@spicmacay.com</a>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:40px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
+        <p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
+        <p class="label-sm text-muted" style="display:flex;align-items:center;gap:6px;">
+          Developed by
+          <a href="acm-chapter.html" style="color:var(--primary);display:inline-flex;align-items:center;gap:6px;">
+            <img src="acm-logo.png" alt="ACM Logo" style="height:18px;width:auto;" />
+            ACM Student Chapter, VNIT
+          </a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ Lightbox ═══════════════════════════════════════ -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" onclick="closeLightboxOnBg(event)">
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" onclick="lightboxNav(-1)" aria-label="Previous image">&#8249;</button>
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose" onclick="closeLightbox()" aria-label="Close image viewer">✕</button>
+      <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+      <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" onclick="lightboxNav(1)" aria-label="Next image">&#8250;</button>
+  </div>
+
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+  <script src="scripts/main.js"></script>
+
+  <script>
+    /* ── Gallery Data ─────────────────────────────────────── */
+    const galleryItems = [
+      { src: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&q=85', caption: 'Grand Jugalbandi — Main Auditorium, VNIT Nagpur', category: 'concerts' },
+      { src: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=1200&q=85', caption: 'Tabla Masterclass — Guru-Shishya Session', category: 'workshops' },
+      { src: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1200&q=85', caption: 'Madhubani Painting Workshop', category: 'workshops' },
+      { src: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=1200&q=85', caption: '4 AM Naad Yoga at the Academic Lawn', category: 'yoga' },
+      { src: 'https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=1200&q=85', caption: 'Bharatanatyam Recital — Open Amphitheatre', category: 'dance' },
+      { src: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=85', caption: 'Sitar Solo — Late Night Raga Session', category: 'concerts' },
+      { src: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=1200&q=85', caption: '5000+ Attendees — The Overnight Concert', category: 'concerts' },
+      { src: 'https://images.unsplash.com/photo-1582691849635-5748b4739d97?w=1200&q=85', caption: 'Kathak Performance — Cultural Evening', category: 'dance' },
+      { src: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=1200&q=85', caption: 'Traditional Pottery — Hands-On Session', category: 'workshops' },
+      { src: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=85', caption: 'Classical Flute — Twilight Session', category: 'concerts' },
+      { src: 'https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?w=1200&q=85', caption: 'Hindustani Vocals & Harmonium Jugalbandi', category: 'concerts' },
+      { src: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=1400&q=85', caption: 'Dawn Begins — Virasat 2025 Convention, VNIT Nagpur', category: 'yoga' },
+    ];
+
+    let currentLightboxIndex = 0;
+
+    /* ── Lightbox open/close ─────────────────────────────── */
+    function openLightbox(index) {
+      currentLightboxIndex = index;
+      updateLightbox();
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function closeLightboxOnBg(e) {
+      if (e.target === document.getElementById('lightbox')) closeLightbox();
+    }
+
+    function lightboxNav(dir) {
+      currentLightboxIndex = (currentLightboxIndex + dir + galleryItems.length) % galleryItems.length;
+      updateLightbox();
+    }
+
+    function updateLightbox() {
+      const item = galleryItems[currentLightboxIndex];
+      const img = document.getElementById('lightboxImg');
+      const cap = document.getElementById('lightboxCaption');
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = item.src;
+        img.alt = item.caption;
+        cap.textContent = item.caption;
+        img.style.transition = 'opacity 0.25s ease';
+        img.style.opacity = '1';
+      }, 150);
+    }
+
+    /* Keyboard navigation */
+    document.addEventListener('keydown', (e) => {
+      const lb = document.getElementById('lightbox');
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') lightboxNav(1);
+      if (e.key === 'ArrowLeft')  lightboxNav(-1);
+    });
+
+    /* ── Gallery Filter ───────────────────────────────────── */
+    function filterGallery(category, btn) {
+      /* Update active tab */
+      document.querySelectorAll('.filter-tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+
+      /* Show / hide items */
+      const items = document.querySelectorAll('#bentoGrid .bento-item');
+      items.forEach((item, i) => {
+        const cat = galleryItems[i] ? galleryItems[i].category : 'all';
+        if (category === 'all' || cat === category) {
+          item.style.opacity = '0';
+          item.style.display = '';
+          setTimeout(() => { item.style.transition = 'opacity 0.35s ease'; item.style.opacity = '1'; }, 20);
+        } else {
+          item.style.opacity = '0';
+          setTimeout(() => { item.style.display = 'none'; }, 350);
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
