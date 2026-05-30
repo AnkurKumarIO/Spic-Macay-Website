@@ -278,20 +278,23 @@
   <div style="padding-top:65px;">
 
     <!-- Page Header with Hero Image -->
+    <!-- Page Header with Hero Image -->
     <section style="position:relative;overflow:hidden;border-bottom:1px solid rgba(245,240,232,0.07);padding:0;">
-      <img src="vnit-hero.jpg" alt="VNIT Nagpur Campus at Night" style="width:100%;height:360px;object-fit:cover;display:block;"/>
-      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(9,9,9,0.95) 0%,rgba(9,9,9,0.6) 50%,rgba(9,9,9,0.3) 100%);"></div>
-      <div class="container" style="position:absolute;bottom:0;left:0;right:0;padding-bottom:32px;">
-        <span class="chip reveal">VNIT NAGPUR CHAPTER</span>
-        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">About <span class="text-gradient">SPIC MACAY</span></h1>
-        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:16px;">The official SPIC MACAY chapter at VNIT Nagpur — preserving and promoting India's classical heritage on campus.</p>
-
-        <!-- Tabs -->
-        <div class="about-tabs" style="margin-top:32px;">
-          <button class="filter-tab active" onclick="showAboutTab('vnit',this)">SPIC MACAY VNIT</button>
-          <button class="filter-tab" onclick="showAboutTab('members',this)">Core Members</button>
-          <button class="filter-tab" onclick="showAboutTab('global',this)">About SPIC MACAY</button>
-          <button class="filter-tab" onclick="showAboutTab('archives',this)">Archives</button>
+      <!-- Image fills width, shows entire photo without cropping -->
+      <div style="width:100%;min-height:500px;background:#060606 url('vnit-hero.jpg') center center / contain no-repeat;display:flex;flex-direction:column;justify-content:flex-end;">
+        <!-- Strong gradient overlay so text is always readable -->
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,6,0.97) 0%,rgba(6,6,6,0.75) 40%,rgba(6,6,6,0.45) 70%,rgba(6,6,6,0.2) 100%);pointer-events:none;"></div>
+        <div class="container" style="position:relative;z-index:1;padding-bottom:40px;padding-top:40px;">
+          <span class="chip reveal">VNIT NAGPUR CHAPTER</span>
+          <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">About <span class="text-gradient">SPIC MACAY</span></h1>
+          <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:16px;">The official SPIC MACAY chapter at VNIT Nagpur — preserving and promoting India's classical heritage on campus.</p>
+          <!-- Tabs -->
+          <div class="about-tabs" style="margin-top:32px;">
+            <button class="filter-tab active" onclick="showAboutTab('vnit',this)">SPIC MACAY VNIT</button>
+            <button class="filter-tab" onclick="showAboutTab('members',this)">Core Members</button>
+            <button class="filter-tab" onclick="showAboutTab('global',this)">About SPIC MACAY</button>
+            <button class="filter-tab" onclick="showAboutTab('archives',this)">Archives</button>
+          </div>
         </div>
       </div>
     </section>
@@ -305,9 +308,10 @@
 
             <!-- Hero intro -->
             <div class="reveal">
-              <div style="position:relative;border-radius:20px;overflow:hidden;height:320px;margin-bottom:40px;">
-                <img src="vnit-campus.jpg" alt="VNIT Nagpur Campus" style="width:100%;height:100%;object-fit:cover;"/>
-                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(9,9,9,0.9) 0%,rgba(9,9,9,0.3) 50%,transparent 100%);display:flex;align-items:flex-end;padding:36px;">
+              <!-- VNIT Chapter image — full image visible, no cropping -->
+              <div style="position:relative;border-radius:20px;overflow:hidden;margin-bottom:40px;background:#0a0a0a;">
+                <img src="vnit-campus.jpg" alt="VNIT Nagpur Campus" style="width:100%;max-height:420px;object-fit:contain;display:block;"/>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(9,9,9,0.92) 0%,rgba(9,9,9,0.2) 50%,transparent 100%);display:flex;align-items:flex-end;padding:36px;pointer-events:none;">
                   <div>
                     <span class="chip" style="margin-bottom:12px;">EST. 2018 · VNIT NAGPUR</span>
                     <h2 class="headline-lg">SPIC MACAY — VNIT Nagpur Chapter</h2>
