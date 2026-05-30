@@ -1051,7 +1051,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   border-left-color: rgba(28,27,26,0.08) !important;
 }
 [data-theme="light"] .hero-overlay-home {
-  background: linear-gradient(to bottom, rgba(248,244,236,0.3) 0%, rgba(248,244,236,0.85) 60%, rgba(248,244,236,1) 100%) !important;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(248, 244, 236, 0.6) 60%, rgba(248, 244, 236, 1) 100%) !important;
+}
+[data-theme="light"] .hero-overlay {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(248, 244, 236, 0.6) 60%, rgba(248, 244, 236, 1) 100%) !important;
 }
 [data-theme="light"] .text-gradient {
   background: linear-gradient(135deg, #c45e0a 0%, #e87722 50%, #9a4e0c 100%) !important;
@@ -1085,4 +1088,36 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 [data-theme="light"] .stat-item-premium {
   border-color: rgba(28,27,26,0.06) !important;
+}
+[data-theme="light"] .btn-secondary {
+  border-color: rgba(28, 27, 26, 0.25) !important;
+}
+[data-theme="light"] .btn-secondary:hover {
+  background: rgba(28, 27, 26, 0.06) !important;
+  border-color: rgba(28, 27, 26, 0.5) !important;
+}
+
+/* Footer logo theme switching */
+.footer-logo img.logo-dark  { display: block; }
+.footer-logo img.logo-light { display: none;  }
+[data-theme="light"] .footer-logo img.logo-dark  { display: none;  }
+[data-theme="light"] .footer-logo img.logo-light { display: block; }
+
+/* Schedule page light theme compatibility */
+[data-theme="light"] .schedule-hero {
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.45) 0%, rgba(248, 244, 236, 0.6) 60%, rgba(248, 244, 236, 1) 100%),
+    linear-gradient(to right, rgba(248, 244, 236, 0.2) 0%, transparent 15%, transparent 85%, rgba(248, 244, 236, 0.2) 100%),
+    url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?q=80&w=1400&auto=format&fit=crop') !important;
+}
+[data-theme="light"] .schedule-hero-title {
+  color: var(--on-surface) !important;
+}
+[data-theme="light"] .schedule-hero-title span {
+  background: linear-gradient(135deg, #c45e0a 0%, #e87722 50%, #9a4e0c 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+[data-theme="light"] .schedule-hero-subtitle {
+  color: var(--on-surface-variant) !important;
 }

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Artists &amp; Gurus — SPIC MACAY 11th International Convention</title>
-  <meta name="description" content="Meet the renowned maestros and classical artists performing at the 11th International Convention of SPIC MACAY, May 25–31, 2026."/>
+  <title>Artists &amp; Gurus — Spic Macay VNIT Nagpur</title>
+  <meta name="description" content="Meet the renowned maestros and classical artists performing at the Spic Macay VNIT Nagpur, May 25–31, 2026."/>
   <link rel="stylesheet" href="styles/main.css"/>
   <style>
     /* ── Hero ─────────────────────────────────── */
@@ -397,13 +397,36 @@
       from { transform: translateY(30px); opacity: 0; }
       to   { transform: translateY(0);    opacity: 1; }
     }
+
+    /* Light Mode Overrides for Artist Page Cards and Modals */
+    [data-theme="light"] .artist-card .artist-name {
+      color: var(--on-surface) !important;
+    }
+    [data-theme="light"] .artist-card .blog-excerpt {
+      color: var(--on-surface-variant) !important;
+    }
+    [data-theme="light"] .wiki-modal-title {
+      color: var(--on-surface) !important;
+    }
+    [data-theme="light"] .wiki-modal-body {
+      color: var(--on-surface) !important;
+    }
+    [data-theme="light"] .wiki-modal-body h4 {
+      color: var(--on-surface) !important;
+    }
+    [data-theme="light"] .wiki-modal-body li strong {
+      color: var(--on-surface) !important;
+    }
+    [data-theme="light"] .wiki-modal-body li {
+      color: var(--on-surface-variant) !important;
+    }
   </style>
 </head>
 <body>
   <!-- ══ Progress Bar ══════════════════════════════════ -->
   <div class="progress-bar" id="progressBar"></div>
   <!-- ══ Navigation ════════════════════════════════════ -->
-      <header class="nav" id="mainNav">
+        <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
         <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
@@ -450,7 +473,7 @@
       </div>
     </div>
   </header>
-  <!-- ══ Mobile Drawer ════════════════════════════════ -->
+    <!-- ══ Mobile Drawer ════════════════════════════════ -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
     <div class="drawer-header">
@@ -831,11 +854,15 @@
     </div>
   </section>
   <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
   <footer class="footer">
     <div class="container">
       <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
         <div>
-          <div class="footer-logo"><img src="logo-dark.svg" alt="SPIC MACAY" /></div>
+          <div class="footer-logo">
+            <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+            <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+          </div>
           <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
           <div class="flex gap-4" style="margin-top:20px;">
             <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
