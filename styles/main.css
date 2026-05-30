@@ -420,19 +420,22 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-dropdown-toggle {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   cursor: pointer;
   user-select: none;
 }
 .nav-dropdown-toggle::after {
-  content: '';
+  content: '▼';
   display: inline-block;
-  width: 0; height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 4px solid currentColor;
-  margin-left: 2px;
-  transition: transform var(--transition-fast);
+  position: static;
+  width: auto;
+  height: auto;
+  border: none;
+  background: transparent;
+  font-size: 8px;
+  line-height: 1;
+  color: currentColor;
+  transition: transform 0.25s ease;
 }
 .nav-dropdown.dropdown-open .nav-dropdown-toggle::after {
   transform: rotate(180deg);
@@ -440,38 +443,83 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 16px);
+  top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: var(--surface-container-high);
-  border: 1px solid rgba(245,240,232,0.1);
-  border-radius: var(--radius-lg);
-  padding: 8px;
+  background: #161514;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 0;
   min-width: 200px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   z-index: 200;
-  animation: fadeInDown 0.2s ease;
+  opacity: 0;
 }
+
+/* Animations for dropdown menu */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 /* Show via JS click toggle */
-.nav-dropdown.dropdown-open .nav-dropdown-menu { display: block; }
+.nav-dropdown.dropdown-open .nav-dropdown-menu {
+  display: block;
+  animation: dropdownFadeIn 0.25s ease forwards;
+}
+
 /* Also show on hover for desktop convenience */
 @media (hover: hover) and (pointer: fine) {
-  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
-  .nav-dropdown:hover .nav-dropdown-toggle::after { transform: rotate(180deg); }
+  .nav-dropdown:hover .nav-dropdown-menu {
+    display: block;
+    animation: dropdownFadeIn 0.25s ease forwards;
+  }
+  .nav-dropdown:hover .nav-dropdown-toggle::after {
+    transform: rotate(180deg);
+  }
 }
 .nav-dropdown-menu a {
   display: block;
   padding: 10px 16px;
-  border-radius: var(--radius-md);
   font-size: 0.875rem;
   color: var(--on-surface-variant);
-  transition: all var(--transition-fast);
+  transition: background-color 0.2s ease, color 0.2s ease;
   text-decoration: none;
+  opacity: 0;
 }
 .nav-dropdown-menu a:hover {
-  background: rgba(232,119,34,0.12);
-  color: var(--primary);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--on-surface);
 }
+
+@keyframes navItemSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nav-dropdown:hover .nav-dropdown-menu a,
+.nav-dropdown.dropdown-open .nav-dropdown-menu a {
+  animation: navItemSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.nav-dropdown-menu a:nth-child(1) { animation-delay: 0.03s; }
+.nav-dropdown-menu a:nth-child(2) { animation-delay: 0.06s; }
+.nav-dropdown-menu a:nth-child(3) { animation-delay: 0.09s; }
+.nav-dropdown-menu a:nth-child(4) { animation-delay: 0.12s; }
+.nav-dropdown-menu a:nth-child(5) { animation-delay: 0.15s; }
+.nav-dropdown-menu a:nth-child(6) { animation-delay: 0.18s; }
 
 /* Mobile drawer */
 .drawer-overlay {
@@ -1082,9 +1130,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: #fff !important;
 }
 [data-theme="light"] .nav-dropdown-menu {
-  background: var(--surface-container) !important;
-  border-color: rgba(28,27,26,0.1) !important;
-  box-shadow: 0 16px 48px rgba(28,27,26,0.15) !important;
+  background-color: var(--surface-container) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+[data-theme="light"] .nav-dropdown-menu a {
+  color: var(--on-surface-variant) !important;
+}
+[data-theme="light"] .nav-dropdown-menu a:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: var(--on-surface) !important;
 }
 [data-theme="light"] .stat-item-premium {
   border-color: rgba(28,27,26,0.06) !important;
