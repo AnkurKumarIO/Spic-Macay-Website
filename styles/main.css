@@ -1176,3 +1176,43 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 [data-theme="light"] .schedule-hero-subtitle {
   color: var(--on-surface-variant) !important;
 }
+
+/* Light mode navbar link contrast fixes */
+[data-theme="light"] .nav-links a,
+[data-theme="light"] .nav-dropdown-toggle {
+  color: var(--on-surface) !important;
+}
+[data-theme="light"] .nav-links a:hover,
+[data-theme="light"] .nav-links a.active,
+[data-theme="light"] .nav-dropdown-toggle:hover,
+[data-theme="light"] .nav-dropdown-toggle.active {
+  color: var(--primary) !important;
+}
+
+/* Light mode category filter pills overrides for high contrast and ceremony badges */
+[data-theme="light"] .pill-yoga {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #4338ca !important;
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+[data-theme="light"] .pill-workshop {
+  background: rgba(22, 163, 74, 0.1) !important;
+  color: #15803d !important;
+  border-color: rgba(22, 163, 74, 0.22) !important;
+}
+[data-theme="light"] .pill-heritage {
+  background: rgba(217, 119, 6, 0.1) !important;
+  color: #a16207 !important;
+  border-color: rgba(217, 119, 6, 0.22) !important;
+}
+[data-theme="light"] .pill-special {
+  background: rgba(219, 39, 119, 0.1) !important;
+  color: #be185d !important;
+  border-color: rgba(219, 39, 119, 0.22) !important;
+}
+[data-theme="light"] .pill-ceremony {
+  background: rgba(217, 119, 6, 0.1) !important;
+  color: #a16207 !important;
+  border-color: rgba(217, 119, 6, 0.22) !important;
+}
+
