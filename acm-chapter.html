@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width,initial-scale=1.0" name="viewport" />
-  <title>ACM VNIT Chapter & Portal Creators — SPIC MACAY 11th International Convention</title>
+  <title>ACM VNIT Chapter & Portal Creators — Spic Macay VNIT Nagpur</title>
   <meta name="description" content="Discover the ACM Student Chapter VNIT and the brilliant engineering minds behind the SPIC MACAY VNIT Nagpur digital portal." />
   <link rel="stylesheet" href="styles/main.css" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -100,6 +100,31 @@
       border-color: rgba(232, 119, 34, 0.3) !important;
       box-shadow: 0 12px 40px rgba(232, 119, 34, 0.06) !important;
     }
+    [data-theme="light"] .text-white {
+      color: var(--on-surface) !important;
+    }
+    [data-theme="light"] .border-white\/5 {
+      border-color: rgba(28, 27, 26, 0.08) !important;
+    }
+    [data-theme="light"] .border-white\/10 {
+      border-color: rgba(28, 27, 26, 0.08) !important;
+    }
+    [data-theme="light"] .bg-white\/5 {
+      background-color: rgba(28, 27, 26, 0.03) !important;
+    }
+    [data-theme="light"] .text-on-surface-variant\/40 {
+      color: rgba(28, 27, 26, 0.5) !important;
+    }
+    [data-theme="light"] .btn-social {
+      background: rgba(28, 27, 26, 0.04) !important;
+      border-color: rgba(28, 27, 26, 0.1) !important;
+      color: var(--on-surface-variant) !important;
+    }
+    [data-theme="light"] .btn-social:hover {
+      background: var(--primary-container) !important;
+      color: #fff !important;
+      border-color: var(--primary-container) !important;
+    }
   </style>
 </head>
 <body class="pt-20 relative min-h-screen flex flex-col justify-between">
@@ -110,9 +135,8 @@
 
   <!-- ══ Progress Bar ══════════════════════════════════ -->
   <div class="progress-bar" id="progressBar"></div>
-
   <!-- ══ Navigation ════════════════════════════════════ -->
-  <header class="nav" id="mainNav">
+        <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
         <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
@@ -121,9 +145,9 @@
 
       <nav aria-label="Main navigation">
         <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html" >Home</a></li>
           <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle">About</a>
+            <a href="#" class="nav-dropdown-toggle ">About</a>
             <div class="nav-dropdown-menu">
               <a href="about.html">About the Convention</a>
               <a href="about.html#founder">Founder</a>
@@ -131,17 +155,17 @@
               <a href="about.html#past">Past Conventions</a>
             </div>
           </li>
-          <li><a href="artists.html">Artists</a></li>
-          <li><a href="schedule.html">Events</a></li>
+          <li><a href="artists.html" >Artists</a></li>
+          <li><a href="schedule.html" >Events</a></li>
           <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle">Guidelines</a>
+            <a href="#" class="nav-dropdown-toggle ">Guidelines</a>
             <div class="nav-dropdown-menu">
               <a href="guidelines.html">Convention Guidelines</a>
               <a href="guidelines.html#travel">Travel Guidelines</a>
             </div>
           </li>
           <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="faq.html" >FAQ</a></li>
         </ul>
       </nav>
 
@@ -160,8 +184,7 @@
       </div>
     </div>
   </header>
-
-  <!-- ══ Mobile Drawer ════════════════════════════════ -->
+    <!-- ══ Mobile Drawer ════════════════════════════════ -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
     <div class="drawer-header">
@@ -171,13 +194,13 @@
       </span>
       <button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
     </div>
-    <a href="index.html" class="drawer-link">Home</a>
-    <a href="about.html" class="drawer-link">About</a>
-    <a href="artists.html" class="drawer-link">Artists &amp; Gurus</a>
-    <a href="schedule.html" class="drawer-link">Events</a>
-    <a href="guidelines.html" class="drawer-link">Guidelines</a>
+    <a href="index.html" class="drawer-link ">Home</a>
+    <a href="about.html" class="drawer-link ">About</a>
+    <a href="artists.html" class="drawer-link ">Artists &amp; Gurus</a>
+    <a href="schedule.html" class="drawer-link ">Events</a>
+    <a href="guidelines.html" class="drawer-link ">Guidelines</a>
     <a href="gallery.html" class="drawer-link">Gallery</a>
-    <a href="faq.html" class="drawer-link">FAQ</a>
+    <a href="faq.html" class="drawer-link ">FAQ</a>
     <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
   </nav>
 
@@ -228,7 +251,7 @@
         <span class="text-xs font-bold uppercase tracking-widest text-primary mb-3 block">Engineering & Design</span>
         <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Meet the Portal Creators</h2>
         <p class="text-on-surface-variant text-sm md:text-base max-w-xl mx-auto mb-16" style="color:var(--on-surface-variant);">
-          The full-stack developers and designers from ACM VNIT who engineered the SPIC MACAY 11th International Convention digital portal with meticulous precision.
+          The full-stack developers and designers from ACM VNIT who engineered the Spic Macay VNIT Nagpur digital portal with meticulous precision.
         </p>
 
         <!-- Creators Grid -->
@@ -301,12 +324,14 @@
       </div>
     </section>
   </main>
-
   <!-- ══ Footer ═════════════════════════════════════════ -->
   <footer class="footer mt-auto">
     <div class="container">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
-        <div class="footer-logo"><img src="logo-dark.svg" alt="SPIC MACAY" /></div>
+        <div class="footer-logo">
+          <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+          <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+        </div>
         <p class="label-sm text-muted">© 2026 SPIC MACAY · Dedicated to the enrichment of Indian Classical Arts.</p>
         <div class="flex gap-4">
           <a href="index.html" style="color:var(--primary); font-size:0.8rem;">Back To Portal</a>

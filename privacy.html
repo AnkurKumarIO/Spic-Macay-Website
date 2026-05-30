@@ -9,9 +9,12 @@
 </head>
 <body>
   <!-- ══ Navigation ════════════════════════════════════ -->
-  <header class="nav" id="mainNav">
+        <header class="nav" id="mainNav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">SPIC MACAY</a>
+      <a href="index.html" class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+      </a>
 
       <div class="nav-actions">
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
@@ -85,7 +88,89 @@
       </div>
     </div>
   </main>
-
+  <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
+        <div>
+          <div class="footer-logo">
+            <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+            <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+          </div>
+          <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
+          <div class="flex gap-4" style="margin-top:20px;">
+            <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
+            <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
+            <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">f</a>
+            <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank" rel="noopener">𝕏</a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="artists.html">Artists</a></li>
+              <li><a href="schedule.html">Events</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Legal</div>
+            <ul class="footer-links">
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="gdpr.html">GDPR Compliance</a></li>
+              <li><a href="guidelines.html">Guidelines</a></li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Contact Us</div>
+          <address style="font-style:normal;font-size:0.875rem;color:var(--on-surface-variant);line-height:1.9;">
+            VNIT Nagpur Campus,<br/>
+            South Ambazari Road,<br/>
+            Nagpur – 440010
+          </address>
+          <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">registrations@spicmacay.com</a>
+          <div style="margin-top:20px;">
+            <div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
+            <div class="flex gap-4">
+              <input type="email" class="input-field" placeholder="your@email.com" style="font-size:0.875rem;padding:10px 14px;" id="newsletterEmail"/>
+              <button class="btn btn-primary btn-sm" onclick="subscribeNewsletter()">Join</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider" style="margin-block:40px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
+        <p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
+        <p class="label-sm text-muted" style="display:flex;align-items:center;gap:6px;">
+          Developed by 
+          <a href="acm-chapter.html" style="color:var(--primary);display:inline-flex;align-items:center;gap:6px;">
+            <img src="acm-logo.png" alt="ACM Logo" style="height:18px;width:auto;" />
+            ACM Student Chapter, VNIT
+          </a>
+        </p>
+      </div>
+    </div>
+  </footer>
   <script src="scripts/main.js"></script>
+  <script>
+    function showAboutTab(id, btn) {
+      document.querySelectorAll('.about-tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.about-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
+      if (window.location.hash === '#hosting' && id !== 'hosting') return;
+    }
+    const hash = window.location.hash;
+    if (hash === '#founder') showAboutTab('founder', document.querySelectorAll('.filter-tab')[1]);
+    if (hash === '#hosting') showAboutTab('hosting', document.querySelectorAll('.filter-tab')[2]);
+    if (hash === '#past') showAboutTab('past', document.querySelectorAll('.filter-tab')[3]);
+  </script>
 </body>
 </html>

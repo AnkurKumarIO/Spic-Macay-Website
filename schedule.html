@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Convention Schedule — SPIC MACAY 2026</title>
-  <meta name="description" content="Full daily schedule of the 11th International Convention of SPIC MACAY, May 25–31, 2026 at IIT Kharagpur."/>
+  <meta name="description" content="Full daily schedule of the Spic Macay VNIT Nagpur, May 25–31, 2026 at VNIT Nagpur."/>
   <link rel="stylesheet" href="styles/main.css"/>
   <style>
     .schedule-body {
@@ -452,48 +452,83 @@
     }
   </style>
 </head>
-<body>
-
-  <!-- Nav -->
-  <header class="nav" id="mainNav">
+  <!-- ══ Progress Bar ══════════════════════════════════ -->
+  <div class="progress-bar" id="progressBar"></div>
+  <!-- ══ Navigation ════════════════════════════════════ -->
+        <header class="nav" id="mainNav">
     <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">SPIC MACAY</a>
-      <nav><ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="artists.html">Artists</a></li>
-        <li><a href="schedule.html" class="active">Schedule</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-      </ul></nav>
-      <div class="flex items-center gap-4">
-        <a href="register.html" class="btn btn-primary btn-sm hide-mobile">Register Now</a>
-        <button class="btn btn-secondary btn-sm" id="menuBtn" style="width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;" aria-label="Menu">
-          <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="2" rx="1" fill="currentColor"/><rect y="6" width="14" height="2" rx="1" fill="currentColor"/><rect y="12" width="20" height="2" rx="1" fill="currentColor"/></svg>
+      <a href="index.html" class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="index.html" >Home</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle ">About</a>
+            <div class="nav-dropdown-menu">
+              <a href="about.html">About the Convention</a>
+              <a href="about.html#founder">Founder</a>
+              <a href="about.html#hosting">Hosting Institute</a>
+              <a href="about.html#past">Past Conventions</a>
+            </div>
+          </li>
+          <li><a href="artists.html" >Artists</a></li>
+          <li><a href="schedule.html" class="active">Events</a></li>
+          <li class="nav-dropdown">
+            <a href="#" class="nav-dropdown-toggle ">Guidelines</a>
+            <div class="nav-dropdown-menu">
+              <a href="guidelines.html">Convention Guidelines</a>
+              <a href="guidelines.html#travel">Travel Guidelines</a>
+            </div>
+          </li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="faq.html" >FAQ</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+          <span class="theme-toggle-icon icon-moon">☾</span>
+          <span class="theme-toggle-icon icon-sun">☀</span>
+        </button>
+        <a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
+        <a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
+        <button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
         </button>
       </div>
     </div>
   </header>
+    <!-- ══ Mobile Drawer ════════════════════════════════ -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
-  <div class="drawer" id="mobileDrawer">
+  <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
     <div class="drawer-header">
-      <span class="nav-logo" style="font-size:1rem;">SPIC MACAY</span>
-      <button id="drawerClose" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;">✕</button>
+      <span class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" style="height:24px;" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" style="height:24px;" />
+      </span>
+      <button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
     </div>
-    <a href="index.html" class="drawer-link">🏠 Home</a>
-    <a href="artists.html" class="drawer-link">🎵 Artists</a>
-    <a href="schedule.html" class="drawer-link active">📅 Schedule</a>
-    <a href="about.html" class="drawer-link">ℹ️ About</a>
-    <a href="faq.html" class="drawer-link">❓ FAQ</a>
-    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;">Register Now</a>
-  </div>
+    <a href="index.html" class="drawer-link ">Home</a>
+    <a href="about.html" class="drawer-link ">About</a>
+    <a href="artists.html" class="drawer-link ">Artists &amp; Gurus</a>
+    <a href="schedule.html" class="drawer-link active">Events</a>
+    <a href="guidelines.html" class="drawer-link ">Guidelines</a>
+    <a href="gallery.html" class="drawer-link">Gallery</a>
+    <a href="faq.html" class="drawer-link ">FAQ</a>
+    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
+  </nav>
 
   <div style="padding-top:65px;">
 
     <!-- Page Header (Premium Immersive Hero Banner) -->
     <section class="schedule-hero">
       <div class="container schedule-hero-content">
-        <span class="chip reveal" style="background: rgba(232, 119, 34, 0.15); color: #ffb68b; border: 1px solid rgba(232, 119, 34, 0.3);">📅 MAY 25 – 31, 2026 · IIT KHARAGPUR</span>
+        <span class="chip reveal" style="background: rgba(232, 119, 34, 0.15); color: #ffb68b; border: 1px solid rgba(232, 119, 34, 0.3);">📅 MAY 25 – 31, 2026 · VNIT NAGPUR</span>
         <h1 class="schedule-hero-title reveal reveal-delay-1" style="margin-top:20px;">Convention<br/><span>Schedule</span></h1>
         <p class="schedule-hero-subtitle reveal reveal-delay-2">7 immersive days — from 4 AM Naad Yoga to overnight grand finale concerts.</p>
 
@@ -545,7 +580,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Personal Time &amp; Holistic Breakfast</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">Settle into your rooms, freshen up, and enjoy a nourishing, traditional satvik breakfast served at the community dining space.</p>
               </div>
             </div>
@@ -596,7 +631,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Holistic Satvik Lunch</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">A carefully curated organic vegetarian meal designed to refresh and energize the delegates.</p>
               </div>
             </div>
@@ -647,7 +682,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Holistic Dinner</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">An early wholesome dinner served to ensure light digestion before the grand evening concerts begin.</p>
               </div>
             </div>
@@ -746,7 +781,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Holistic Breakfast</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">A traditional, nourishing breakfast designed to keep energy high for the extensive workshop intensives ahead.</p>
               </div>
             </div>
@@ -780,7 +815,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Holistic Satvik Lunch</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">Nourishing seasonal satvik lunch served in the dining halls to restore balance and strength.</p>
               </div>
             </div>
@@ -831,7 +866,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Holistic Dinner</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">Light satvik supper to prepare delegates' minds and bodies for an immersive night of music and dance.</p>
               </div>
             </div>
@@ -899,7 +934,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Holistic Breakfast</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">Traditional, healthy breakfast followed by final presentations prep and interactions with Gurus.</p>
               </div>
             </div>
@@ -950,7 +985,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Pre-Marathon Satvik Dinner</h3>
-                <span class="event-artist">IIT Kharagpur Catering</span>
+                <span class="event-artist">VNIT Nagpur Catering</span>
                 <p class="event-desc">A hearty and nourishing dinner to fuel delegates for a historic, sleepless night of divine classical concerts.</p>
               </div>
             </div>
@@ -1015,7 +1050,7 @@
                   <span class="event-category">Holistic</span>
                 </div>
                 <h3 class="event-title">Concluding Shared Breakfast &amp; Farewell</h3>
-                <span class="event-artist">IIT Kharagpur Catering &amp; Delegates</span>
+                <span class="event-artist">VNIT Nagpur Catering &amp; Delegates</span>
                 <p class="event-desc">A final warm satvik meal together. Opportunities for reflections, exchanging contact details, and taking group photos.</p>
               </div>
             </div>
@@ -1031,9 +1066,9 @@
                 <div class="event-meta">
                   <span class="event-category">Heritage</span>
                 </div>
-                <h3 class="event-title">Guided Historical Tour of IIT Kharagpur</h3>
-                <span class="event-artist">IIT Heritage Club Volunteers</span>
-                <p class="event-desc">A guided exploration of India's first IIT campus, including the historic Hijli Detention Camp, the Nehru Science Museum, and local archives.</p>
+                <h3 class="event-title">Guided Historical Tour of VNIT Nagpur Campus</h3>
+                <span class="event-artist">VNIT Heritage Club Volunteers</span>
+                <p class="event-desc">A guided exploration of VNIT Nagpur's beautiful green campus, highlighting its modern architectural marvels, research facilities, and local heritage archives.</p>
               </div>
             </div>
 
@@ -1050,7 +1085,7 @@
                 </div>
                 <h3 class="event-title">Delegate Departure and Transport Coordination</h3>
                 <span class="event-artist">Logistics &amp; Transport Team</span>
-                <p class="event-desc">Coordinated shuttles departing for Kharagpur Junction Railway Station and Netaji Subhash Chandra Bose International Airport (CCU).</p>
+                <p class="event-desc">Coordinated shuttles departing for Nagpur Junction Railway Station and Dr. Babasaheb Ambedkar International Airport (NAG).</p>
               </div>
             </div>
           </div>
@@ -1069,19 +1104,73 @@
     </section>
 
   </div>
-
-  <!-- Footer -->
+  <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
   <footer class="footer">
     <div class="container">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
-        <div class="footer-logo">SPIC MACAY</div>
-        <div class="flex gap-4">
-          <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" target="_blank">▶</a>
-          <a href="https://www.instagram.com/spicmacayofficial/" class="social-link" target="_blank">📷</a>
+      <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
+        <div>
+          <div class="footer-logo">
+            <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+            <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+          </div>
+          <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
+          <div class="flex gap-4" style="margin-top:20px;">
+            <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
+            <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
+            <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">f</a>
+            <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank" rel="noopener">𝕏</a>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
+          <div>
+            <div class="footer-heading">Quick Links</div>
+            <ul class="footer-links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="artists.html">Artists</a></li>
+              <li><a href="schedule.html">Events</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="about.html">About</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="footer-heading">Legal</div>
+            <ul class="footer-links">
+              <li><a href="terms.html">Terms &amp; Conditions</a></li>
+              <li><a href="privacy.html">Privacy Policy</a></li>
+              <li><a href="gdpr.html">GDPR Compliance</a></li>
+              <li><a href="guidelines.html">Guidelines</a></li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="footer-heading">Contact Us</div>
+          <address style="font-style:normal;font-size:0.875rem;color:var(--on-surface-variant);line-height:1.9;">
+            VNIT Nagpur Campus,<br/>
+            South Ambazari Road,<br/>
+            Nagpur – 440010
+          </address>
+          <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">registrations@spicmacay.com</a>
+          <div style="margin-top:20px;">
+            <div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
+            <div class="flex gap-4">
+              <input type="email" class="input-field" placeholder="your@email.com" style="font-size:0.875rem;padding:10px 14px;" id="newsletterEmail"/>
+              <button class="btn btn-primary btn-sm" onclick="subscribeNewsletter()">Join</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="divider" style="margin-block:28px;"></div>
-      <p class="label-sm text-muted text-center">© 2026 SPIC MACAY · <a href="index.html" style="color:var(--primary);">Home</a> · <a href="register.html" style="color:var(--primary);">Register</a></p>
+      <div class="divider" style="margin-block:40px;"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
+        <p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
+        <p class="label-sm text-muted" style="display:flex;align-items:center;gap:6px;">
+          Developed by 
+          <a href="acm-chapter.html" style="color:var(--primary);display:inline-flex;align-items:center;gap:6px;">
+            <img src="acm-logo.png" alt="ACM Logo" style="height:18px;width:auto;" />
+            ACM Student Chapter, VNIT
+          </a>
+        </p>
+      </div>
     </div>
   </footer>
 
