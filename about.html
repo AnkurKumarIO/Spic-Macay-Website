@@ -277,9 +277,11 @@
 
   <div style="padding-top:65px;">
 
-    <!-- Page Header -->
-    <section style="background:var(--surface-container);border-bottom:1px solid rgba(245,240,232,0.07);padding:56px 0 40px;">
-      <div class="container">
+    <!-- Page Header with Hero Image -->
+    <section style="position:relative;overflow:hidden;border-bottom:1px solid rgba(245,240,232,0.07);padding:0;">
+      <img src="vnit-hero.jpg" alt="VNIT Nagpur Campus at Night" style="width:100%;height:360px;object-fit:cover;display:block;"/>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(9,9,9,0.95) 0%,rgba(9,9,9,0.6) 50%,rgba(9,9,9,0.3) 100%);"></div>
+      <div class="container" style="position:absolute;bottom:0;left:0;right:0;padding-bottom:32px;">
         <span class="chip reveal">VNIT NAGPUR CHAPTER</span>
         <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">About <span class="text-gradient">SPIC MACAY</span></h1>
         <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:16px;">The official SPIC MACAY chapter at VNIT Nagpur — preserving and promoting India's classical heritage on campus.</p>
@@ -304,7 +306,7 @@
             <!-- Hero intro -->
             <div class="reveal">
               <div style="position:relative;border-radius:20px;overflow:hidden;height:320px;margin-bottom:40px;">
-                <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1200&q=80" alt="VNIT Nagpur Campus" style="width:100%;height:100%;object-fit:cover;"/>
+                <img src="vnit-campus.jpg" alt="VNIT Nagpur Campus" style="width:100%;height:100%;object-fit:cover;"/>
                 <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(9,9,9,0.9) 0%,rgba(9,9,9,0.3) 50%,transparent 100%);display:flex;align-items:flex-end;padding:36px;">
                   <div>
                     <span class="chip" style="margin-bottom:12px;">EST. 2018 · VNIT NAGPUR</span>
@@ -529,54 +531,55 @@
               </div>
             </div>
           </div>
+
+            <!-- Why SPIC MACAY (inside global tab only) -->
+            <div id="why" style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:80px;">
+              <div class="why-section-header reveal">
+                <span class="why-section-pretitle">Why SPIC MACAY</span>
+                <h2 class="why-section-title">Rediscovering India's<br/><span class="text-gradient">Classical Heritage</span></h2>
+                <div class="why-section-divider"></div>
+                <p class="body-md text-muted reveal reveal-delay-1" style="max-width:540px;margin-top:20px;">For nearly five decades, SPIC MACAY has been the bridge between India's timeless art forms and the hearts of the youth — bringing maestros into classrooms, campuses, and communities.</p>
+              </div>
+              <div class="why-cards-grid" style="margin-top:40px;">
+                <div class="why-card reveal">
+                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Volunteers" class="why-card-img"/></div>
+                  <div class="why-card-body">
+                    <div class="artist-discipline">Community</div>
+                    <div class="why-card-title">Volunteering</div>
+                    <p class="why-card-desc">Be part of something larger than yourself. Volunteers are the backbone of this incredible week.</p>
+                  </div>
+                </div>
+                <div class="why-card reveal reveal-delay-1">
+                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Classical music" class="why-card-img"/></div>
+                  <div class="why-card-body">
+                    <div class="artist-discipline">Learning</div>
+                    <div class="why-card-title">Enrichment</div>
+                    <p class="why-card-desc">Immerse yourself in workshops, baithaks, and interactions with legendary gurus.</p>
+                  </div>
+                </div>
+                <div class="why-card reveal reveal-delay-2">
+                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage" class="why-card-img"/></div>
+                  <div class="why-card-body">
+                    <div class="artist-discipline">Culture</div>
+                    <div class="why-card-title">Heritage Preservation</div>
+                    <p class="why-card-desc">SPIC MACAY has dedicated nearly five decades to ensuring India's timeless art forms remain alive and accessible.</p>
+                  </div>
+                </div>
+              </div>
+              <!-- Stats -->
+              <div style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:64px;">
+                <div class="stats-grid-premium">
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="1977">1977</span><span class="stat-label-premium">Est. Year</span></div>
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="400" data-stat-suffix="+">400+</span><span class="stat-label-premium">Cities Served</span></div>
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+">10000+</span><span class="stat-label-premium">Events</span></div>
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="120">120</span><span class="stat-label-premium">Artists &amp; Gurus</span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
 
-        <!-- ══ Why SPIC MACAY (inside global tab) ═════════ -->
-        <div id="why" style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:80px;">
-          <div class="why-section-header reveal">
-            <span class="why-section-pretitle">Why SPIC MACAY</span>
-            <h2 class="why-section-title">Rediscovering India's<br/><span class="text-gradient">Classical Heritage</span></h2>
-            <div class="why-section-divider"></div>
-            <p class="body-md text-muted reveal reveal-delay-1" style="max-width:540px;margin-top:20px;">For nearly five decades, SPIC MACAY has been the bridge between India's timeless art forms and the hearts of the youth — bringing maestros into classrooms, campuses, and communities.</p>
-          </div>
-
-          <div class="why-cards-grid" style="margin-top:40px;">
-            <div class="why-card reveal">
-              <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Volunteers" class="why-card-img"/></div>
-              <div class="why-card-body">
-                <div class="artist-discipline">Community</div>
-                <div class="why-card-title">Volunteering</div>
-                <p class="why-card-desc">Be part of something larger than yourself. Volunteers are the backbone of this incredible week.</p>
-              </div>
-            </div>
-            <div class="why-card reveal reveal-delay-1">
-              <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Classical music" class="why-card-img"/></div>
-              <div class="why-card-body">
-                <div class="artist-discipline">Learning</div>
-                <div class="why-card-title">Enrichment</div>
-                <p class="why-card-desc">Immerse yourself in workshops, baithaks, and interactions with legendary gurus.</p>
-              </div>
-            </div>
-            <div class="why-card reveal reveal-delay-2">
-              <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage" class="why-card-img"/></div>
-              <div class="why-card-body">
-                <div class="artist-discipline">Culture</div>
-                <div class="why-card-title">Heritage Preservation</div>
-                <p class="why-card-desc">SPIC MACAY has dedicated nearly five decades to ensuring India's timeless art forms remain alive and accessible.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stats -->
-          <div style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:64px;">
-            <div class="stats-grid-premium">
-              <div class="stat-item-premium" id="statEst"><span class="stat-big-num" data-stat-target="1977" id="statNum0">1977</span><span class="stat-label-premium">Est. Year</span></div>
-              <div class="stat-item-premium" id="statCities"><span class="stat-big-num" data-stat-target="400" data-stat-suffix="+" id="statNum1">400+</span><span class="stat-label-premium">Cities Served</span></div>
-              <div class="stat-item-premium" id="statEvents"><span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+" id="statNum2">10000+</span><span class="stat-label-premium">Events</span></div>
-              <div class="stat-item-premium" id="statArtists"><span class="stat-big-num" data-stat-target="120" id="statNum3">120</span><span class="stat-label-premium">Artists &amp; Gurus</span></div>
-            </div>
-          </div>
-        </div>
 
         <!-- ══ Tab 4: Archives ═════════════════════════════ -->
         <div class="about-tab-panel" id="tab-archives">
