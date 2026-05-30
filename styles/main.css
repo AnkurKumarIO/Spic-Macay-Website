@@ -440,7 +440,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 16px);
+  top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   background: var(--surface-container-high);
@@ -451,6 +451,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   z-index: 200;
   animation: fadeInDown 0.2s ease;
+}
+/* Invisible bridge to prevent hover loss between toggle and menu */
+.nav-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -16px; left: 0; right: 0;
+  height: 16px;
 }
 /* Show via JS click toggle */
 .nav-dropdown.dropdown-open .nav-dropdown-menu { display: block; }
