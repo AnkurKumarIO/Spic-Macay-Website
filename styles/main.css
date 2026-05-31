@@ -91,6 +91,8 @@ html { scroll-behavior: smooth; font-size: 16px; }
 
 body {
   background: var(--background);
+  background-size: cover;
+  background-attachment: scroll;
   color: var(--on-surface);
   font-family: var(--font-sans);
   line-height: 1.6;
