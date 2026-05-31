@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Convention Schedule — SPIC MACAY 2026</title>
-  <meta name="description" content="Full daily schedule of the Spic Macay VNIT Nagpur, May 25–31, 2026 at VNIT Nagpur."/>
+  <meta name="description" content="Full daily schedule of the Spic Macay VNIT Nagpur, July 25–27, 2026 at VNIT Nagpur."/>
   <link rel="stylesheet" href="styles/main.css"/>
   <style>
     .schedule-body {
@@ -450,12 +450,208 @@
         font-size: 2.25rem;
       }
     }
+
+    /* ── Events Tiles Dashboard Style ───────────────────────── */
+    .events-dashboard-section {
+      padding-block: 64px 48px;
+      background: var(--background);
+    }
+    .events-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      margin-top: 40px;
+    }
+    @media (min-width: 768px) {
+      .events-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .event-tile-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.08);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 280px;
+      transition: all var(--transition-base);
+    }
+    .event-tile-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(232, 119, 34, 0.15) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity var(--transition-base);
+      z-index: 0;
+    }
+    .event-tile-card:hover {
+      border-color: rgba(232, 119, 34, 0.35);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+    }
+    .event-tile-card:hover::before {
+      opacity: 1;
+    }
+    .event-tile-content {
+      position: relative;
+      z-index: 1;
+    }
+    .event-tile-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      background: rgba(232, 119, 34, 0.12);
+      border: 1px solid rgba(232, 119, 34, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: var(--primary);
+      transition: all 0.3s ease;
+    }
+    .event-tile-card:hover .event-tile-icon-wrap {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+    .event-tile-svg {
+      width: 28px;
+      height: 28px;
+    }
+    .event-tile-title {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: 12px;
+    }
+    .event-tile-desc {
+      font-size: 0.9375rem;
+      color: var(--on-surface-variant);
+      line-height: 1.6;
+    }
+    .event-tile-arrow {
+      font-size: 1.25rem;
+      color: var(--primary);
+      margin-top: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      transition: gap 0.3s;
+    }
+    .event-tile-card:hover .event-tile-arrow {
+      gap: 14px;
+    }
+
+    /* Subpage / Details Panel */
+    .event-details-panel {
+      display: none;
+      margin-top: 48px;
+      background: var(--surface-container-low);
+      border: 1px solid rgba(245, 240, 232, 0.05);
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      animation: fadeIn var(--transition-base);
+    }
+    .event-details-panel.active {
+      display: block;
+    }
+    .panel-header {
+      margin-bottom: 36px;
+      border-bottom: 1px solid rgba(245, 240, 232, 0.08);
+      padding-bottom: 24px;
+    }
+    .sub-tiles-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 640px) {
+      .sub-tiles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .sub-tiles-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .sub-tile-card {
+      background: var(--surface-container-high);
+      border: 1px solid rgba(245, 240, 232, 0.06);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .sub-tile-card:hover {
+      border-color: rgba(232, 119, 34, 0.3);
+      transform: translateY(-4px);
+      background: var(--surface-container);
+    }
+    .sub-tile-icon {
+      font-size: 1.75rem;
+      margin-bottom: 16px;
+    }
+    .sub-tile-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      margin-bottom: 8px;
+    }
+    .sub-tile-desc {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      line-height: 1.5;
+    }
+    .sub-tile-link {
+      font-size: 0.8125rem;
+      color: var(--primary);
+      margin-top: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Light mode support for the new components */
+    [data-theme="light"] .event-tile-card {
+      border-color: rgba(28, 27, 26, 0.08);
+      background: var(--surface-container);
+    }
+    [data-theme="light"] .event-tile-card:hover {
+      border-color: rgba(232, 119, 34, 0.35);
+    }
+    [data-theme="light"] .event-details-panel {
+      background: var(--surface-container-low);
+      border-color: rgba(28, 27, 26, 0.05);
+    }
+    [data-theme="light"] .sub-tile-card {
+      background: var(--surface-container-high);
+      border-color: rgba(28, 27, 26, 0.06);
+    }
+    [data-theme="light"] .sub-tile-card:hover {
+      border-color: rgba(232, 119, 34, 0.3);
+    }
   </style>
 </head>
   <!-- ══ Progress Bar ══════════════════════════════════ -->
   <div class="progress-bar" id="progressBar"></div>
   <!-- ══ Navigation ════════════════════════════════════ -->
-        <header class="nav" id="mainNav">
+                  <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
         <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
@@ -483,7 +679,7 @@
               <a href="guidelines.html#travel">Travel Guidelines</a>
             </div>
           </li>
-          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="gallery.html" >Gallery</a></li>
           <li><a href="faq.html" >FAQ</a></li>
         </ul>
       </nav>
@@ -503,7 +699,7 @@
       </div>
     </div>
   </header>
-    <!-- ══ Mobile Drawer ════════════════════════════════ -->
+              <!-- ══ Mobile Drawer ════════════════════════════════ -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
     <div class="drawer-header">
@@ -518,7 +714,7 @@
     <a href="artists.html" class="drawer-link ">Artists &amp; Gurus</a>
     <a href="schedule.html" class="drawer-link active">Events</a>
     <a href="guidelines.html" class="drawer-link ">Guidelines</a>
-    <a href="gallery.html" class="drawer-link">Gallery</a>
+    <a href="gallery.html" class="drawer-link ">Gallery</a>
     <a href="faq.html" class="drawer-link ">FAQ</a>
     <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
   </nav>
@@ -528,9 +724,9 @@
     <!-- Page Header (Premium Immersive Hero Banner) -->
     <section class="schedule-hero">
       <div class="container schedule-hero-content">
-        <span class="chip reveal" style="background: rgba(232, 119, 34, 0.15); color: #ffb68b; border: 1px solid rgba(232, 119, 34, 0.3);">📅 MAY 25 – 31, 2026 · VNIT NAGPUR</span>
+        <span class="chip reveal" style="background: rgba(232, 119, 34, 0.15); color: #ffb68b; border: 1px solid rgba(232, 119, 34, 0.3);">📅 JULY 25 – 27, 2026 · VNIT NAGPUR</span>
         <h1 class="schedule-hero-title reveal reveal-delay-1" style="margin-top:20px;">Convention<br/><span>Schedule</span></h1>
-        <p class="schedule-hero-subtitle reveal reveal-delay-2">7 immersive days — from 4 AM Naad Yoga to overnight grand finale concerts.</p>
+        <p class="schedule-hero-subtitle reveal reveal-delay-2">3 immersive days — from 4 AM Naad Yoga to overnight grand finale concerts.</p>
 
         <!-- Legend -->
         <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:4px;" class="reveal reveal-delay-3">
@@ -544,24 +740,116 @@
       </div>
     </section>
 
+    <!-- ══ Events Tiles Dashboard ════════════════════════ -->
+    <section class="events-dashboard-section">
+      <div class="container">
+        <div style="text-align: center; max-width: 600px; margin-inline: auto;" class="reveal">
+          <p class="label-md text-primary-container" style="margin-bottom: 8px;">EVENTS HUB</p>
+          <h2 class="headline-lg">Explore Our Events</h2>
+          <p class="body-md text-muted" style="margin-top: 12px;">
+            Select a flagship event category below to view dedicated subpages, artist profiles, guidelines, and schedules.
+          </p>
+        </div>
+
+        <div class="events-grid">
+          <!-- Tile 1: Virasat -->
+          <div class="event-tile-card reveal" onclick="toggleEventPanel('virasat', this)" id="tile-virasat">
+            <div class="event-tile-content">
+              <div class="event-tile-icon-wrap" style="padding: 0; overflow: hidden;">
+                <img src="Reference/sitar-lotus.png" alt="Sitar Lotus Icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;" />
+              </div>
+              <h3 class="event-tile-title">VIRASAT</h3>
+              <p class="event-tile-desc">
+                Our flagship 3-day cultural immersion. Experience classical concerts, guru-shishya workshops, and heritage arts.
+              </p>
+            </div>
+            <span class="event-tile-arrow">Open Portal →</span>
+          </div>
+
+          <!-- Tile 2: Inaugural Event -->
+          <div class="event-tile-card reveal reveal-delay-1" onclick="revealInauguralDay()" id="tile-inaugural">
+            <div class="event-tile-content">
+              <div class="event-tile-icon-wrap" style="padding: 0; overflow: hidden; background: #fff;">
+                <img src="Reference/krishna-flute.png" alt="Krishna Flute Icon" style="width: 100%; height: 100%; object-fit: contain; border-radius: inherit; display: block;" />
+              </div>
+              <h3 class="event-tile-title">Inaugural Event</h3>
+              <p class="event-tile-desc">
+                The grand opening ceremony. Welcoming recitals, lamp lighting, and inaugural addresses by state dignitaries.
+              </p>
+            </div>
+            <span class="event-tile-arrow">View Schedule →</span>
+          </div>
+        </div>
+
+        <!-- Panel 1: Virasat Details (Subpage Map) -->
+        <div class="event-details-panel" id="panel-virasat">
+          <div class="panel-header">
+            <h3 class="headline-md" style="color: var(--primary);">Virasat — Flagship Portal</h3>
+            <p class="body-md text-muted" style="margin-top: 8px;">Select a subpage to learn more or explore the complete schedule below.</p>
+          </div>
+          <div class="sub-tiles-grid">
+            <!-- Sub-tile 1: Artists -->
+            <a href="artists.html" class="sub-tile-card">
+              <div>
+                <span class="sub-tile-icon">🎭</span>
+                <h4 class="sub-tile-title">Artists &amp; Gurus</h4>
+                <p class="sub-tile-desc">Meet the legends and maestros performing at Virasat 2026.</p>
+              </div>
+              <span class="sub-tile-link">View Artists →</span>
+            </a>
+
+            <!-- Sub-tile 2: Guidelines -->
+            <a href="guidelines.html" class="sub-tile-card">
+              <div>
+                <span class="sub-tile-icon">📋</span>
+                <h4 class="sub-tile-title">Convention Guidelines</h4>
+                <p class="sub-tile-desc">Essential instructions, registration rules, and campus code of conduct.</p>
+              </div>
+              <span class="sub-tile-link">Read Guidelines →</span>
+            </a>
+
+            <!-- Sub-tile 3: Travel Guidelines -->
+            <a href="guidelines.html#travel" class="sub-tile-card">
+              <div>
+                <span class="sub-tile-icon">✈️</span>
+                <h4 class="sub-tile-title">Travel Guidelines</h4>
+                <p class="sub-tile-desc">How to reach VNIT Nagpur campus, local transit, and logistics.</p>
+              </div>
+              <span class="sub-tile-link">Read Guidelines →</span>
+            </a>
+
+            <!-- Sub-tile 4: Convention Schedule -->
+            <div class="sub-tile-card" onclick="revealFullSchedule()">
+              <div>
+                <span class="sub-tile-icon">📅</span>
+                <h4 class="sub-tile-title">Convention Schedule</h4>
+                <p class="sub-tile-desc">Interactive day-wise schedule of all 3 days of the convention.</p>
+              </div>
+              <span class="sub-tile-link">View Schedule ↓</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- Schedule Body -->
-    <section class="schedule-body section-gap">
+    <section class="schedule-body section-gap" id="scheduleSection" style="display: none;">
       <div class="container">
 
         <!-- Day Tabs -->
         <div class="schedule-tabs reveal">
-          <button class="day-tab active" onclick="showDay('day1',this)">Day 1 — May 25</button>
-          <button class="day-tab" onclick="showDay('day2',this)">Days 2–5</button>
-          <button class="day-tab" onclick="showDay('day6',this)">Day 6 — May 30</button>
-          <button class="day-tab" onclick="showDay('day7',this)">Day 7 — May 31</button>
+          <button class="day-tab active" onclick="showDay('day1',this)">Day 1 — July 25</button>
+          <button class="day-tab" onclick="showDay('day2',this)">Day 2 — July 26</button>
+          <button class="day-tab" onclick="showDay('day3',this)">Day 3 — July 27</button>
         </div>
 
         <!-- ── Day 1 ─────────────────────────────────────── -->
         <div class="day-view active" id="day1">
           <div class="day-header">
             <div>
-              <p class="label-sm text-muted">MONDAY</p>
-              <h2 class="headline-md">Day 1 · 25th May 2026</h2>
+              <p class="label-sm text-muted">SATURDAY</p>
+              <h2 class="headline-md">Day 1 · 25th July 2026</h2>
               <p class="body-md text-muted" style="margin-top:6px;">Inauguration &amp; Opening Ceremonies</p>
             </div>
             <span class="chip">9 Events</span>
@@ -569,7 +857,7 @@
           
           <div class="event-list">
             <!-- Event 1 -->
-            <div data-start="2026-05-25T07:00:00" data-end="2026-05-25T08:30:00" class="event-card category-yoga">
+            <div data-start="2026-07-25T07:00:00" data-end="2026-07-25T08:30:00" class="event-card category-yoga">
               <span class="status-badge status-over">Over</span>
               <div class="event-timeline">
                 <span class="event-time-range">07:00 AM - 08:30 AM</span>
@@ -586,7 +874,7 @@
             </div>
 
             <!-- Event 2 -->
-            <div data-start="2026-05-25T08:30:00" data-end="2026-05-25T09:00:00" class="event-card category-workshop">
+            <div data-start="2026-07-25T08:30:00" data-end="2026-07-25T09:00:00" class="event-card category-workshop">
               <span class="status-badge status-over">Over</span>
               <div class="event-timeline">
                 <span class="event-time-range">08:30 AM - 09:00 AM</span>
@@ -603,7 +891,7 @@
             </div>
 
             <!-- Event 3 -->
-            <div data-start="2026-05-25T09:00:00" data-end="2026-05-25T12:00:00" class="event-card category-cinema">
+            <div data-start="2026-07-25T09:00:00" data-end="2026-07-25T12:00:00" class="event-card category-cinema">
               <span class="status-badge status-over">Over</span>
               <div class="event-timeline">
                 <span class="event-time-range">09:00 AM - 12:00 PM</span>
@@ -620,7 +908,7 @@
             </div>
 
             <!-- Event 4 -->
-            <div data-start="2026-05-25T12:40:00" data-end="2026-05-25T13:40:00" class="event-card category-yoga">
+            <div data-start="2026-07-25T12:40:00" data-end="2026-07-25T13:40:00" class="event-card category-yoga">
               <span class="status-badge status-over">Over</span>
               <div class="event-timeline">
                 <span class="event-time-range">12:40 PM - 01:40 PM</span>
@@ -637,7 +925,7 @@
             </div>
 
             <!-- Event 5 -->
-            <div data-start="2026-05-25T14:00:00" data-end="2026-05-25T15:30:00" class="event-card category-workshop">
+            <div data-start="2026-07-25T14:00:00" data-end="2026-07-25T15:30:00" class="event-card category-workshop">
               <span class="status-badge status-over">Over</span>
               <div class="event-timeline">
                 <span class="event-time-range">02:00 PM - 03:30 PM</span>
@@ -654,7 +942,7 @@
             </div>
 
             <!-- Event 6 -->
-            <div data-start="2026-05-25T16:00:00" data-end="2026-05-25T17:00:00" class="event-card category-concert">
+            <div data-start="2026-07-25T16:00:00" data-end="2026-07-25T17:00:00" class="event-card category-concert">
               <span class="status-badge status-over">Over</span>
               <div class="event-timeline">
                 <span class="event-time-range">04:00 PM - 05:00 PM</span>
@@ -671,7 +959,7 @@
             </div>
 
             <!-- Event 7 -->
-            <div data-start="2026-05-25T17:00:00" data-end="2026-05-25T18:00:00" class="event-card category-yoga">
+            <div data-start="2026-07-25T17:00:00" data-end="2026-07-25T18:00:00" class="event-card category-yoga">
               <span class="status-badge status-over">Over</span>
               <div class="event-timeline">
                 <span class="event-time-range">05:00 PM - 06:00 PM</span>
@@ -688,7 +976,7 @@
             </div>
 
             <!-- Event 8 -->
-            <div data-start="2026-05-25T18:00:00" data-end="2026-05-25T19:30:00" class="event-card category-workshop">
+            <div data-start="2026-07-25T18:00:00" data-end="2026-07-25T19:30:00" class="event-card category-workshop">
               <span class="status-badge status-live">Live</span>
               <div class="event-timeline">
                 <span class="event-time-range">06:00 PM - 07:30 PM</span>
@@ -705,7 +993,7 @@
             </div>
 
             <!-- Event 9 -->
-            <div data-start="2026-05-25T19:30:00" data-end="2026-05-25T22:00:00" class="event-card category-concert">
+            <div data-start="2026-07-25T19:30:00" data-end="2026-07-25T22:00:00" class="event-card category-concert">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">07:30 PM - 10:00 PM</span>
@@ -727,16 +1015,16 @@
         <div class="day-view" id="day2">
           <div class="day-header">
             <div>
-              <p class="label-sm text-muted">TUESDAY – FRIDAY</p>
-              <h2 class="headline-md">Days 2–5 · 26–29 May 2026</h2>
-              <p class="body-md text-muted" style="margin-top:6px;">Core Immersive Cycle — repeated each day</p>
+              <p class="label-sm text-muted">SUNDAY</p>
+              <h2 class="headline-md">Day 2 · 26th July 2026</h2>
+              <p class="body-md text-muted" style="margin-top:6px;">Core Immersive Day — Workshops, Talks &amp; Concerts</p>
             </div>
-            <span class="chip">9 Events Daily</span>
+            <span class="chip">9 Events</span>
           </div>
           
           <div class="event-list">
             <!-- Event 1 -->
-            <div data-start="2026-05-26T04:00:00" data-end="2026-05-26T06:00:00" class="event-card category-yoga">
+            <div data-start="2026-07-26T04:00:00" data-end="2026-07-26T06:00:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">04:00 AM - 06:00 AM</span>
@@ -753,7 +1041,7 @@
             </div>
 
             <!-- Event 2 -->
-            <div data-start="2026-05-26T06:00:00" data-end="2026-05-26T07:00:00" class="event-card category-yoga">
+            <div data-start="2026-07-26T06:00:00" data-end="2026-07-26T07:00:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">06:00 AM - 07:00 AM</span>
@@ -770,7 +1058,7 @@
             </div>
 
             <!-- Event 3 -->
-            <div data-start="2026-05-26T07:00:00" data-end="2026-05-26T08:30:00" class="event-card category-yoga">
+            <div data-start="2026-07-26T07:00:00" data-end="2026-07-26T08:30:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">07:00 AM - 08:30 AM</span>
@@ -787,7 +1075,7 @@
             </div>
 
             <!-- Event 4 -->
-            <div data-start="2026-05-26T09:00:00" data-end="2026-05-26T12:00:00" class="event-card category-workshop">
+            <div data-start="2026-07-26T09:00:00" data-end="2026-07-26T12:00:00" class="event-card category-workshop">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">09:00 AM - 12:00 PM</span>
@@ -804,7 +1092,7 @@
             </div>
 
             <!-- Event 5 -->
-            <div data-start="2026-05-26T12:15:00" data-end="2026-05-26T13:15:00" class="event-card category-yoga">
+            <div data-start="2026-07-26T12:15:00" data-end="2026-07-26T13:15:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">12:15 PM - 01:15 PM</span>
@@ -821,7 +1109,7 @@
             </div>
 
             <!-- Event 6 -->
-            <div data-start="2026-05-26T13:30:00" data-end="2026-05-26T14:30:00" class="event-card category-yoga">
+            <div data-start="2026-07-26T13:30:00" data-end="2026-07-26T14:30:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">01:30 PM - 02:30 PM</span>
@@ -838,7 +1126,7 @@
             </div>
 
             <!-- Event 7 -->
-            <div data-start="2026-05-26T15:00:00" data-end="2026-05-26T17:00:00" class="event-card category-cinema">
+            <div data-start="2026-07-26T15:00:00" data-end="2026-07-26T17:00:00" class="event-card category-cinema">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">03:00 PM - 05:00 PM</span>
@@ -855,7 +1143,7 @@
             </div>
 
             <!-- Event 8 -->
-            <div data-start="2026-05-26T17:00:00" data-end="2026-05-26T18:00:00" class="event-card category-yoga">
+            <div data-start="2026-07-26T17:00:00" data-end="2026-07-26T18:00:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">05:00 PM - 06:00 PM</span>
@@ -872,7 +1160,7 @@
             </div>
 
             <!-- Event 9 -->
-            <div data-start="2026-05-26T18:30:00" data-end="2026-05-26T21:30:00" class="event-card category-concert">
+            <div data-start="2026-07-26T18:30:00" data-end="2026-07-26T21:30:00" class="event-card category-concert">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">06:30 PM - 09:30 PM</span>
@@ -890,23 +1178,23 @@
           </div>
         </div>
 
-        <!-- ── Day 6 ──────────────────────────────────────── -->
-        <div class="day-view" id="day6">
+        <!-- ── Day 3 ──────────────────────────────────────── -->
+        <div class="day-view" id="day3">
           <div class="day-header" style="border:1px solid rgba(232,119,34,0.3);">
             <div>
-              <p class="label-sm text-muted">SATURDAY</p>
-              <h2 class="headline-md">Day 6 · 30th May 2026</h2>
-              <p class="body-md text-muted" style="margin-top:6px;">Grand Finale + Overnight Concert Marathon</p>
+              <p class="label-sm text-muted">MONDAY</p>
+              <h2 class="headline-md">Day 3 · 27th July 2026</h2>
+              <p class="body-md text-muted" style="margin-top:6px;">Grand Finale, Overnight Concerts &amp; Farewell</p>
             </div>
             <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
-              <span class="chip">7 Events</span>
-              <span style="background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;">⭐ OVERNIGHT</span>
+              <span class="chip">10 Events</span>
+              <span style="background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;">⭐ OVERNIGHT &amp; FAREWELL</span>
             </div>
           </div>
           
           <div class="event-list">
             <!-- Event 1 -->
-            <div data-start="2026-05-30T04:00:00" data-end="2026-05-30T06:00:00" class="event-card category-yoga">
+            <div data-start="2026-07-27T04:00:00" data-end="2026-07-27T06:00:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">04:00 AM - 06:00 AM</span>
@@ -923,7 +1211,7 @@
             </div>
 
             <!-- Event 2 -->
-            <div data-start="2026-05-30T07:00:00" data-end="2026-05-30T08:30:00" class="event-card category-yoga">
+            <div data-start="2026-07-27T07:00:00" data-end="2026-07-27T08:30:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">07:00 AM - 08:30 AM</span>
@@ -940,7 +1228,7 @@
             </div>
 
             <!-- Event 3 -->
-            <div data-start="2026-05-30T09:00:00" data-end="2026-05-30T12:30:00" class="event-card category-workshop">
+            <div data-start="2026-07-27T09:00:00" data-end="2026-07-27T12:30:00" class="event-card category-workshop">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">09:00 AM - 12:30 PM</span>
@@ -952,12 +1240,12 @@
                 </div>
                 <h3 class="event-title">Participant Presentations &amp; Showcases</h3>
                 <span class="event-artist">All Convention Workshop Batches</span>
-                <p class="event-desc">Delegates showcase their week-long learning in vocal music, classical dances, and fine crafts across multiple arenas.</p>
+                <p class="event-desc">Delegates showcase their intensive learning in vocal music, classical dances, and fine crafts across multiple arenas.</p>
               </div>
             </div>
 
             <!-- Event 4 -->
-            <div data-start="2026-05-30T13:30:00" data-end="2026-05-30T14:30:00" class="event-card category-yoga">
+            <div data-start="2026-07-27T13:30:00" data-end="2026-07-27T14:30:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">01:30 PM - 02:30 PM</span>
@@ -974,7 +1262,7 @@
             </div>
 
             <!-- Event 5 -->
-            <div data-start="2026-05-30T17:00:00" data-end="2026-05-30T18:00:00" class="event-card category-yoga">
+            <div data-start="2026-07-27T17:00:00" data-end="2026-07-27T18:00:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">05:00 PM - 06:00 PM</span>
@@ -991,7 +1279,7 @@
             </div>
 
             <!-- Event 6 -->
-            <div data-start="2026-05-30T18:30:00" data-end="2026-05-30T20:00:00" class="event-card category-workshop">
+            <div data-start="2026-07-27T18:30:00" data-end="2026-07-27T20:00:00" class="event-card category-workshop">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">06:30 PM - 08:00 PM</span>
@@ -1008,7 +1296,7 @@
             </div>
 
             <!-- Event 7 -->
-            <div data-start="2026-05-30T20:30:00" data-end="2026-05-31T06:00:00" class="event-card category-concert" style="border: 2px solid rgba(232, 119, 34, 0.45); background: rgba(232, 119, 34, 0.04);">
+            <div data-start="2026-07-27T20:30:00" data-end="2026-07-28T06:00:00" class="event-card category-concert" style="border: 2px solid rgba(232, 119, 34, 0.45); background: rgba(232, 119, 34, 0.04);">
               <span class="status-badge status-live" style="background: var(--primary-container); color: white;">Marathon</span>
               <div class="event-timeline">
                 <span class="event-time-range" style="color: var(--primary);">08:30 PM - 06:00 AM</span>
@@ -1023,23 +1311,9 @@
                 <p class="event-desc">A continuous, sacred cycle of sublime performances spanning Sitar duets, classical Khayal vocal recitals, and concluding with divine early dawn ragas.</p>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- ── Day 7 ──────────────────────────────────────── -->
-        <div class="day-view" id="day7">
-          <div class="day-header">
-            <div>
-              <p class="label-sm text-muted">SUNDAY</p>
-              <h2 class="headline-md">Day 7 · 31st May 2026</h2>
-              <p class="body-md text-muted" style="margin-top:6px;">Farewell &amp; Heritage Tours</p>
-            </div>
-            <span class="chip">3 Events</span>
-          </div>
-          
-          <div class="event-list">
-            <!-- Event 1 -->
-            <div data-start="2026-05-31T06:00:00" data-end="2026-05-31T07:30:00" class="event-card category-yoga">
+            <!-- Event 8 -->
+            <div data-start="2026-07-28T06:00:00" data-end="2026-07-28T07:30:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">06:00 AM - 07:30 AM</span>
@@ -1055,8 +1329,8 @@
               </div>
             </div>
 
-            <!-- Event 2 -->
-            <div data-start="2026-05-31T09:00:00" data-end="2026-05-31T12:00:00" class="event-card category-yoga">
+            <!-- Event 9 -->
+            <div data-start="2026-07-28T09:00:00" data-end="2026-07-28T12:00:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">09:00 AM - 12:00 PM</span>
@@ -1072,8 +1346,8 @@
               </div>
             </div>
 
-            <!-- Event 3 -->
-            <div data-start="2026-05-31T12:30:00" data-end="2026-05-31T21:00:00" class="event-card category-yoga">
+            <!-- Event 10 -->
+            <div data-start="2026-07-28T12:30:00" data-end="2026-07-28T21:00:00" class="event-card category-yoga">
               <span class="status-badge status-upcoming">Upcoming</span>
               <div class="event-timeline">
                 <span class="event-time-range">12:30 PM - 09:00 PM</span>
@@ -1095,7 +1369,7 @@
         <div id="pdf" style="margin-top:48px;background:var(--surface-container);border:1px solid rgba(232,119,34,0.2);border-radius:16px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;" class="reveal">
           <div>
             <h3 class="headline-sm">Download Full Schedule PDF</h3>
-            <p class="body-md text-muted" style="margin-top:6px;">Complete timetable with venue maps and session details — 8 pages.</p>
+            <p class="body-md text-muted" style="margin-top:6px;">Complete timetable with venue maps and session details — 4 pages.</p>
           </div>
           <a href="https://intcon.spicmacay.org/schedule/pdf/download" class="btn btn-primary" target="_blank">↓ Download PDF</a>
         </div>
@@ -1105,6 +1379,11 @@
 
   </div>
   <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
     <!-- ══ Footer ═════════════════════════════════════════ -->
   <footer class="footer">
     <div class="container">
@@ -1118,8 +1397,7 @@
           <div class="flex gap-4" style="margin-top:20px;">
             <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
             <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
-            <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">f</a>
-            <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank" rel="noopener">𝕏</a>
+            <a href="https://www.linkedin.com/company/spic-macay-vnit-chapter/" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">in</a>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
@@ -1129,6 +1407,7 @@
               <li><a href="index.html">Home</a></li>
               <li><a href="artists.html">Artists</a></li>
               <li><a href="schedule.html">Events</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
               <li><a href="faq.html">FAQ</a></li>
               <li><a href="about.html">About</a></li>
             </ul>
@@ -1151,6 +1430,7 @@
             Nagpur – 440010
           </address>
           <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">registrations@spicmacay.com</a>
+          <a href="https://vnit.ac.in/" target="_blank" rel="noopener" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:8px;">VNIT Nagpur Website →</a>
           <div style="margin-top:20px;">
             <div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
             <div class="flex gap-4">
@@ -1182,6 +1462,51 @@
       document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
       document.getElementById(id).classList.add('active');
       btn.classList.add('active');
+    }
+
+    function toggleEventPanel(panelName, element) {
+      const panels = document.querySelectorAll('.event-details-panel');
+      const cards = document.querySelectorAll('.event-tile-card');
+      const panel = document.getElementById('panel-' + panelName);
+      
+      const isActive = panel.classList.contains('active');
+      
+      panels.forEach(p => p.classList.remove('active'));
+      cards.forEach(c => {
+        c.style.borderColor = '';
+        c.style.boxShadow = '';
+      });
+      
+      if (!isActive) {
+        panel.classList.add('active');
+        element.style.borderColor = 'var(--primary)';
+        element.style.boxShadow = '0 12px 36px rgba(232, 119, 34, 0.15)';
+        setTimeout(() => {
+          panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
+    }
+
+    function revealFullSchedule() {
+      const scheduleSec = document.getElementById('scheduleSection');
+      scheduleSec.style.display = 'block';
+      setTimeout(() => {
+        scheduleSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
+
+    function revealInauguralDay() {
+      const scheduleSec = document.getElementById('scheduleSection');
+      scheduleSec.style.display = 'block';
+      
+      const day1TabBtn = document.querySelector('.day-tab');
+      if (day1TabBtn) {
+        showDay('day1', day1TabBtn);
+      }
+      
+      setTimeout(() => {
+        scheduleSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
     }
 
     function syncEventStatuses() {
