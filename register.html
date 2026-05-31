@@ -24,7 +24,7 @@
       background: var(--surface-container);
       display: none;
       flex-direction: column;
-      justify-content: flex-end;
+      justify-content: flex-start;
       padding: 60px;
       overflow: hidden;
     }
@@ -37,9 +37,26 @@
     }
     .reg-left-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(9,9,9,0.96) 0%, rgba(9,9,9,0.3) 100%);
+      background: linear-gradient(to bottom, rgba(9,9,9,0.96) 0%, rgba(9,9,9,0.3) 100%);
     }
-    .reg-left-content { position: relative; z-index: 2; }
+    .reg-left-content { 
+      position: relative; 
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      flex: 1;
+    }
+    .reg-left-top  { /* heading block — stays at top */ }
+    .reg-left-mid  {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 24px 0;
+    }
+    .reg-left-bottom { /* need help — stays at bottom */ }
 
     /* Right panel — form */
     .reg-right {
@@ -153,7 +170,7 @@
       box-shadow: 0 8px 30px rgba(28, 27, 26, 0.03) !important;
     }
     [data-theme="light"] .reg-left-overlay {
-      background: linear-gradient(to top, rgba(248, 244, 236, 0.96) 0%, rgba(248, 244, 236, 0.3) 100%) !important;
+      background: linear-gradient(to bottom, rgba(248, 244, 236, 0.96) 0%, rgba(248, 244, 236, 0.3) 100%) !important;
     }
     [data-theme="light"] .reg-left {
       background: var(--surface-container-low) !important;
@@ -181,7 +198,7 @@
 </head>
 <body>
   <!-- ══ Navigation ════════════════════════════════════ -->
-        <header class="nav" id="mainNav">
+                  <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
         <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
@@ -206,23 +223,208 @@
         <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=900&q=80" alt=""/>
         <div class="reg-left-overlay"></div>
         <div class="reg-left-content">
-          <span class="branch-badge" style="margin-bottom:20px;">📍 VNIT Nagpur Chapter</span>
-          <h2 class="headline-lg" style="margin-bottom:16px;">Begin Your Journey Into<br/>Indian Classical Arts</h2>
-          <p class="body-md text-muted" style="margin-bottom:32px;">Join students, scholars, and enthusiasts for an immersive experience of Indian classical music, dance, and culture at VNIT Nagpur.</p>
 
-          <div style="margin-bottom:32px;flex-wrap:wrap;display:flex;">
-            <span class="info-pill">📅 Upcoming Events</span>
-            <span class="info-pill">📍 VNIT Nagpur</span>
-            <span class="info-pill">🎵 Classical Arts</span>
-            <span class="info-pill">🧘 Yoga &amp; Meditation</span>
+          <!-- TOP: Heading block -->
+          <div class="reg-left-top">
+            <span class="branch-badge" style="margin-bottom:20px;">📍 VNIT Nagpur Chapter</span>
+            <h2 class="headline-lg" style="margin-bottom:16px;">Begin Your Journey Into<br/>Indian Classical Arts</h2>
+            <p class="body-md text-muted" style="margin-bottom:24px;">Join students, scholars, and enthusiasts for an immersive experience of Indian classical music, dance, and culture at VNIT Nagpur.</p>
+            <div style="flex-wrap:wrap;display:flex;">
+              <span class="info-pill">📅 Upcoming Events</span>
+              <span class="info-pill">📍 VNIT Nagpur</span>
+              <span class="info-pill">🎵 Classical Arts</span>
+              <span class="info-pill">🧘 Yoga &amp; Meditation</span>
+            </div>
           </div>
 
-          <div style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);border-radius:12px;padding:20px;">
-            <p class="label-sm text-muted" style="margin-bottom:8px;">NEED HELP?</p>
-            <p style="font-size:0.9rem;color:var(--on-surface);">Contact our chapter</p>
-            <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);font-size:0.875rem;">spicmacay@vnit.ac.in</a>
+          <!-- MIDDLE: Interactive Logo -->
+          <div class="reg-left-mid">
+            <div class="logo-interactive-wrap" id="logoWrap" title="Click me!">
+              <div class="logo-ripple-ring" id="rippleRing"></div>
+              <div class="logo-particles" id="logoParticles"></div>
+              <img src="logo-dark.svg" alt="SPIC MACAY Logo" class="logo-interactive-img" id="interactiveLogo" />
+              <div class="logo-tooltip" id="logoTooltip">✨ Preserving India's Classical Heritage</div>
+            </div>
           </div>
+
+          <!-- BOTTOM: Need Help -->
+          <div class="reg-left-bottom">
+            <div style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);border-radius:12px;padding:20px;">
+              <p class="label-sm text-muted" style="margin-bottom:8px;">NEED HELP?</p>
+              <p style="font-size:0.9rem;color:var(--on-surface);">Contact our chapter</p>
+              <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);font-size:0.875rem;">spicmacay@vnit.ac.in</a>
+            </div>
+          </div>
+
         </div>
+
+        <style>
+          .logo-interactive-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 160px;
+            cursor: pointer;
+            user-select: none;
+          }
+          .logo-interactive-img {
+            width: 220px;
+            max-width: 80%;
+            filter: drop-shadow(0 0 12px rgba(232,119,34,0.4));
+            transition: transform 0.3s ease, filter 0.3s ease;
+            position: relative;
+            z-index: 2;
+          }
+          .logo-interactive-wrap:hover .logo-interactive-img {
+            transform: scale(1.06);
+            filter: drop-shadow(0 0 24px rgba(232,119,34,0.75)) drop-shadow(0 0 8px rgba(255,242,0,0.4));
+          }
+          .logo-interactive-wrap.clicked .logo-interactive-img {
+            animation: logoBurst 0.5s ease forwards;
+          }
+          @keyframes logoBurst {
+            0%   { transform: scale(1); }
+            30%  { transform: scale(1.18) rotate(-3deg); }
+            60%  { transform: scale(0.95) rotate(2deg); }
+            100% { transform: scale(1.06) rotate(0deg); }
+          }
+
+          /* Ripple ring on click */
+          .logo-ripple-ring {
+            position: absolute;
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            border: 2px solid rgba(232,119,34,0.6);
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+          }
+          .logo-ripple-ring.ripple {
+            animation: rippleOut 0.7s ease-out forwards;
+          }
+          @keyframes rippleOut {
+            0%   { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(2.8); opacity: 0; }
+          }
+
+          /* Floating particles */
+          .logo-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+          }
+          .particle {
+            position: absolute;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+          }
+          .particle.burst {
+            animation: particleFly 0.8s ease-out forwards;
+          }
+          @keyframes particleFly {
+            0%   { transform: translate(0,0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+          }
+
+          /* Tooltip */
+          .logo-tooltip {
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: rgba(232,119,34,0.92);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 4;
+            letter-spacing: 0.03em;
+          }
+          .logo-interactive-wrap:hover .logo-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+
+          /* Idle glow pulse */
+          @keyframes idleGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(232,119,34,0.3)); }
+            50%       { filter: drop-shadow(0 0 20px rgba(232,119,34,0.6)) drop-shadow(0 0 6px rgba(255,242,0,0.3)); }
+          }
+          .logo-interactive-img {
+            animation: idleGlow 3s ease-in-out infinite;
+          }
+          .logo-interactive-wrap:hover .logo-interactive-img {
+            animation: none;
+          }
+        </style>
+
+        <script>
+          (function() {
+            const wrap = document.getElementById('logoWrap');
+            const ring = document.getElementById('rippleRing');
+            const particles = document.getElementById('logoParticles');
+            const logo = document.getElementById('interactiveLogo');
+
+            const messages = [
+              '🎵 Raag Yaman flows through the air...',
+              '🪘 Feel the rhythm of the Tabla',
+              '💃 Kathak — where feet tell stories',
+              '🪷 Rooted in 5000 years of tradition',
+              '🎶 Hindustani Classical — pure soul',
+              '🌸 Bharatanatyam — devotion in motion',
+            ];
+            const tooltip = document.getElementById('logoTooltip');
+            let msgIndex = 0;
+
+            const colors = ['#e87722','#fff200','#c4261c','#ffaa44','#ffffff'];
+
+            wrap.addEventListener('click', function() {
+              // Cycle tooltip message
+              tooltip.textContent = messages[msgIndex % messages.length];
+              msgIndex++;
+
+              // Ripple
+              ring.classList.remove('ripple');
+              void ring.offsetWidth;
+              ring.classList.add('ripple');
+
+              // Burst animation on logo
+              wrap.classList.remove('clicked');
+              void wrap.offsetWidth;
+              wrap.classList.add('clicked');
+
+              // Spawn particles
+              particles.innerHTML = '';
+              for (let i = 0; i < 12; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle burst';
+                const angle = (i / 12) * 360;
+                const dist = 60 + Math.random() * 50;
+                const tx = Math.cos(angle * Math.PI / 180) * dist + 'px';
+                const ty = Math.sin(angle * Math.PI / 180) * dist + 'px';
+                p.style.setProperty('--tx', tx);
+                p.style.setProperty('--ty', ty);
+                p.style.background = colors[i % colors.length];
+                p.style.left = '50%';
+                p.style.top = '50%';
+                p.style.marginLeft = '-3px';
+                p.style.marginTop = '-3px';
+                p.style.animationDelay = (i * 0.03) + 's';
+                particles.appendChild(p);
+              }
+            });
+          })();
+        </script>
       </div>
 
       <!-- ── Right Form Panel ──────────────────────────── -->
@@ -293,9 +495,6 @@
                   <option>Mining Engineering</option>
                   <option>Metallurgical &amp; Materials Engineering</option>
                   <option>Architecture</option>
-                  <option>MBA / MCA</option>
-                  <option>PhD / Research</option>
-                  <option>External / Non-VNIT</option>
                 </select>
               </div>
               <div class="input-group">
@@ -306,11 +505,10 @@
                   <option>2nd Year</option>
                   <option>3rd Year</option>
                   <option>4th Year</option>
-                  <option>5th Year</option>
-                  <option>Postgraduate</option>
+                  <option>5th Year (Architecture)</option>
+                  <option>M.Tech</option>
                   <option>PhD</option>
                   <option>Faculty / Staff</option>
-                  <option>External Participant</option>
                 </select>
               </div>
             </div>
@@ -320,7 +518,7 @@
 
           <!-- ── Step 2: Event Preferences ─────────────── -->
           <div class="step-panel" id="step2">
-            <h2 class="headline-md" style="margin-bottom:6px;">Choose Your Streams</h2>
+            <h2 class="headline-md" style="margin-bottom:6px;">Choose Your Intensives</h2>
             <p class="body-md text-muted" style="margin-bottom:28px;">Select the events and art forms you're most interested in.</p>
 
             <div style="display:flex;flex-direction:column;gap:24px;">
@@ -351,17 +549,8 @@
                 </div>
               </div>
               <div class="input-group">
-                <label class="input-label" for="dietary">Dietary Requirements</label>
-                <select class="input-field" id="dietary" style="appearance:none;">
-                  <option value="vegetarian">Vegetarian</option>
-                  <option value="vegan">Vegan</option>
-                  <option value="jain">Jain</option>
-                  <option value="non-veg">Non-Vegetarian</option>
-                </select>
-              </div>
-              <div class="input-group">
                 <label class="input-label" for="message">Any Message / Special Requests</label>
-                <textarea class="input-field" id="message" rows="3" placeholder="Accessibility requirements, questions, etc." style="resize:vertical;"></textarea>
+                <textarea class="input-field" id="message" rows="3" placeholder="e.g. Wheelchair access needed, assistance for visually/hearing impaired, seating accommodation, volunteer to help facilitate for disabled attendees, any other special requests..." style="resize:vertical;"></textarea>
               </div>
             </div>
 

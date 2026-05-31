@@ -445,7 +445,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   min-width: 200px;
@@ -458,6 +458,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   z-index: 200;
   opacity: 0;
   transform-origin: top center;
+}
+
+/* Invisible bridge to prevent hover loss between toggle and menu */
+.nav-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -16px; left: 0; right: 0;
+  height: 16px;
 }
 
 /* Animations for dropdown menu */

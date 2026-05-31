@@ -207,7 +207,7 @@
   <!-- ══ Progress Bar ══════════════════════════════════ -->
   <div class="progress-bar" id="progressBar"></div>
   <!-- ══ Navigation ════════════════════════════════════ -->
-      <header class="nav" id="mainNav">
+                <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="index.html" class="nav-logo">
         <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
@@ -235,7 +235,7 @@
               <a href="guidelines.html#travel">Travel Guidelines</a>
             </div>
           </li>
-          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="gallery.html" >Gallery</a></li>
           <li><a href="faq.html" >FAQ</a></li>
         </ul>
       </nav>
@@ -255,7 +255,7 @@
       </div>
     </div>
   </header>
-    <!-- ══ Mobile Drawer ════════════════════════════════ -->
+              <!-- ══ Mobile Drawer ════════════════════════════════ -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
     <div class="drawer-header">
@@ -270,27 +270,31 @@
     <a href="artists.html" class="drawer-link ">Artists &amp; Gurus</a>
     <a href="schedule.html" class="drawer-link ">Events</a>
     <a href="guidelines.html" class="drawer-link ">Guidelines</a>
-    <a href="gallery.html" class="drawer-link">Gallery</a>
+    <a href="gallery.html" class="drawer-link ">Gallery</a>
     <a href="faq.html" class="drawer-link ">FAQ</a>
     <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
   </nav>
 
   <div style="padding-top:65px;">
 
-    <!-- Page Header -->
-    <section style="background:var(--surface-container);border-bottom:1px solid rgba(245,240,232,0.07);padding:56px 0 40px;">
-      <div class="container">
-        <span class="chip reveal">EST. 1977</span>
-        <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">About <span class="text-gradient">SPIC MACAY</span></h1>
-        <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:16px;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth — a voluntary youth movement since 1977.</p>
-
-        <!-- Tabs -->
-        <div class="about-tabs" style="margin-top:32px;">
-          <button class="filter-tab active" onclick="showAboutTab('convention',this)">The Convention</button>
-          <button class="filter-tab" onclick="showAboutTab('founder',this)">Founder</button>
-          <button class="filter-tab" onclick="showAboutTab('hosting',this)" id="hostingTab">Hosting Institute</button>
-          <button class="filter-tab" onclick="showAboutTab('past',this)">Past Conventions</button>
-          <button class="filter-tab" onclick="showAboutTab('contacts',this)">Key Contacts</button>
+    <!-- Page Header with Hero Image -->
+    <!-- Page Header with Hero Image -->
+    <section style="position:relative;overflow:hidden;border-bottom:1px solid rgba(245,240,232,0.07);padding:0;">
+      <!-- Image fills width, shows entire photo without cropping -->
+      <div style="width:100%;min-height:500px;background:#060606 url('vnit-hero.jpg') center center / contain no-repeat;display:flex;flex-direction:column;justify-content:flex-end;">
+        <!-- Strong gradient overlay so text is always readable -->
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,6,0.97) 0%,rgba(6,6,6,0.75) 40%,rgba(6,6,6,0.45) 70%,rgba(6,6,6,0.2) 100%);pointer-events:none;"></div>
+        <div class="container" style="position:relative;z-index:1;padding-bottom:40px;padding-top:40px;">
+          <span class="chip reveal">VNIT NAGPUR CHAPTER</span>
+          <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">About <span class="text-gradient">SPIC MACAY</span></h1>
+          <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:16px;">The official SPIC MACAY chapter at VNIT Nagpur — preserving and promoting India's classical heritage on campus.</p>
+          <!-- Tabs -->
+          <div class="about-tabs" style="margin-top:32px;">
+            <button class="filter-tab active" onclick="showAboutTab('vnit',this)">SPIC MACAY VNIT</button>
+            <button class="filter-tab" onclick="showAboutTab('members',this)">Core Members</button>
+            <button class="filter-tab" onclick="showAboutTab('global',this)">About SPIC MACAY</button>
+            <button class="filter-tab" onclick="showAboutTab('archives',this)">Archives</button>
+          </div>
         </div>
       </div>
     </section>
@@ -298,401 +302,391 @@
     <section class="section-gap">
       <div class="container">
 
-        <!-- ── Convention Tab ─────────────────────────────── -->
-        <div class="about-tab-panel active" id="tab-convention">
+        <!-- ══ Tab 1: SPIC MACAY VNIT ══════════════════════ -->
+        <div class="about-tab-panel active" id="tab-vnit">
           <div style="display:grid;grid-template-columns:1fr;gap:48px;">
-            <div style="display:grid;grid-template-columns:1fr;gap:32px;">
-              <div class="reveal">
-                <h2 class="headline-lg" style="margin-bottom:20px;">About the Convention</h2>
-                <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
-                  The SPIC MACAY International Convention is a flagship gathering that brings together renowned maestros, young learners, and cultural enthusiasts for a transformative experience. The convention features dawn-to-dusk activities — from Naad Yoga and Hatha Yoga in the morning to classical music and dance performances in the evening.
-                </p>
-                <p class="body-md text-muted" style="line-height:1.85;">
-                  Workshops across music, dance, craft, and cinema classics run throughout the day. Heritage walks and baithaks offer intimate interactions with artists, while seva and volunteering foster community spirit. The ashram-like environment encourages participants to disconnect from the noise of daily life and reconnect with the timeless wisdom embedded in India's classical traditions.
-                </p>
+
+            <!-- Hero intro -->
+            <div class="reveal">
+              <!-- VNIT Chapter image — full image visible, no cropping -->
+              <div style="position:relative;border-radius:20px;overflow:hidden;margin-bottom:40px;background:#0a0a0a;">
+                <img src="vnit-campus.jpg" alt="VNIT Nagpur Campus" style="width:100%;max-height:420px;object-fit:contain;display:block;"/>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(9,9,9,0.92) 0%,rgba(9,9,9,0.2) 50%,transparent 100%);display:flex;align-items:flex-end;padding:36px;pointer-events:none;">
+                  <div>
+                    <span class="chip" style="margin-bottom:12px;">EST. 2018 · VNIT NAGPUR</span>
+                    <h2 class="headline-lg">SPIC MACAY — VNIT Nagpur Chapter</h2>
+                  </div>
+                </div>
               </div>
 
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;" class="reveal reveal-delay-1">
-                <div class="bento-cell" style="text-align:center;">
-                  <div style="font-size:2.5rem;margin-bottom:10px;">🎵</div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Concerts</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">World-class Hindustani, Carnatic, and dance performances nightly.</p>
-                </div>
-                <div class="bento-cell" style="text-align:center;">
-                  <div style="font-size:2.5rem;margin-bottom:10px;">🎨</div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Workshops</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Guru-led intensive sessions in music, dance, craft, and cinema.</p>
-                </div>
-                <div class="bento-cell" style="text-align:center;">
-                  <div style="font-size:2.5rem;margin-bottom:10px;">🏛️</div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Heritage Walks</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Guided exploration of VNIT Nagpur's heritage campus and the historical landmarks of Nagpur city.</p>
-                </div>
-                <div class="bento-cell" style="text-align:center;">
-                  <div style="font-size:2.5rem;margin-bottom:10px;">🧘</div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Yoga & Meditation</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Dawn sessions of Hatha Yoga, Naad Yoga, and Silent Meditation.</p>
+              <div style="display:grid;grid-template-columns:1fr;gap:32px;">
+                <div>
+                  <h3 class="headline-md" style="margin-bottom:16px;">Our Mission</h3>
+                  <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
+                    The SPIC MACAY chapter at VNIT Nagpur is dedicated to bringing the richness of India's classical arts to the campus. We organise workshops, live performances, and interactive sessions that let students experience the depth of classical music, dance, painting, and folk traditions first-hand.
+                  </p>
+                  <p class="body-md text-muted" style="line-height:1.85;">
+                    Our chapter has been a vibrant force on campus — hosting the 8th International Convention in 2023, conducting year-round workshops in Madhubani, Warli, Kathak, Tabla, and more. We believe that exposure to classical arts cultivates patience, focus, and a deeper connection to India's heritage.
+                  </p>
                 </div>
               </div>
             </div>
 
-            <!-- What makes it unique -->
+            <!-- What we do cards -->
+            <div class="reveal reveal-delay-1">
+              <h3 class="headline-md" style="margin-bottom:24px;">What We Do</h3>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
+                <div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">🎨</div>
+                  <h4 class="headline-sm" style="margin-bottom:8px;">Art Workshops</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Madhubani, Warli, Mural Paintings, Pottery — hands-on sessions with skilled artists throughout the year.</p>
+                </div>
+                <div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">🎵</div>
+                  <h4 class="headline-sm" style="margin-bottom:8px;">Music & Dance</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Kathak, Bharatanatyam, Tabla, Flute, Hindustani Vocals — live performances and learning sessions on campus.</p>
+                </div>
+                <div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">🎭</div>
+                  <h4 class="headline-sm" style="margin-bottom:8px;">Cultural Events</h4>
+                  <p class="body-md text-muted" style="font-size:0.875rem;">Guest lectures, heritage screenings, and collaborations with artists of national and international repute.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Highlight numbers -->
+            <div class="reveal reveal-delay-2">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
+                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">2018</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Chapter Founded</div>
+                </div>
+                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">9+</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Workshop Disciplines</div>
+                </div>
+                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">500+</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Annual Participants</div>
+                </div>
+                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">8th</div>
+                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Intl. Convention Host</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Tab 2: Core Members ═════════════════════════ -->
+        <div class="about-tab-panel" id="tab-members">
+          <div class="reveal">
+            <h2 class="headline-lg" style="margin-bottom:8px;">Core Team</h2>
+            <p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">The dedicated students behind SPIC MACAY at VNIT Nagpur — organising, curating, and keeping the spirit of classical arts alive on campus.</p>
+
+            <!-- Faculty Advisor -->
+            <div style="margin-bottom:48px;">
+              <p class="label-md" style="color:var(--primary-container);margin-bottom:16px;letter-spacing:0.12em;">FACULTY ADVISOR</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+                <div style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(232,119,34,0.2);display:flex;gap:18px;align-items:center;transition:all 0.3s ease;" onmouseover="this.style.boxShadow='0 0 30px rgba(232,119,34,0.12)';this.style.transform='translateY(-3px)'" onmouseout="this.style.boxShadow='';this.style.transform=''">
+                  <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary-container),rgba(232,119,34,0.6));display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#fff;flex-shrink:0;">FA</div>
+                  <div>
+                    <p class="headline-sm" style="margin-bottom:2px;">Faculty Advisor</p>
+                    <p class="body-md text-muted" style="font-size:0.8rem;">Department of Humanities · VNIT Nagpur</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Core Committee -->
+            <div style="margin-bottom:48px;">
+              <p class="label-md" style="color:var(--primary-container);margin-bottom:16px;letter-spacing:0.12em;">CORE COMMITTEE 2025-26</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">
+                <div style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);">
+                    <span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">P</span>
+                  </div>
+                  <p class="headline-sm" style="margin-bottom:4px;">President</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Chapter Head</p>
+                </div>
+                <div style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);">
+                    <span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">VP</span>
+                  </div>
+                  <p class="headline-sm" style="margin-bottom:4px;">Vice President</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Operations & Coordination</p>
+                </div>
+                <div style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);">
+                    <span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">S</span>
+                  </div>
+                  <p class="headline-sm" style="margin-bottom:4px;">Secretary</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Communication & Records</p>
+                </div>
+                <div style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);">
+                    <span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">T</span>
+                  </div>
+                  <p class="headline-sm" style="margin-bottom:4px;">Treasurer</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Finance & Sponsorship</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Heads -->
+            <div>
+              <p class="label-md" style="color:var(--primary-container);margin-bottom:16px;letter-spacing:0.12em;">DEPARTMENT HEADS</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
+                <div style="padding:20px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform=''">
+                  <p class="headline-sm" style="font-size:0.95rem;margin-bottom:4px;">Events Head</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Workshops & Programmes</p>
+                </div>
+                <div style="padding:20px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform=''">
+                  <p class="headline-sm" style="font-size:0.95rem;margin-bottom:4px;">PR & Outreach</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Media & Social</p>
+                </div>
+                <div style="padding:20px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform=''">
+                  <p class="headline-sm" style="font-size:0.95rem;margin-bottom:4px;">Creative Head</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Design & Content</p>
+                </div>
+                <div style="padding:20px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform=''">
+                  <p class="headline-sm" style="font-size:0.95rem;margin-bottom:4px;">Logistics Head</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Venues & Coordination</p>
+                </div>
+                <div style="padding:20px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform=''">
+                  <p class="headline-sm" style="font-size:0.95rem;margin-bottom:4px;">Tech Head</p>
+                  <p class="body-md text-muted" style="font-size:0.8rem;">Website & Digital</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ Tab 3: About SPIC MACAY (Global) ═══════════ -->
+        <div class="about-tab-panel" id="tab-global">
+          <div style="display:grid;grid-template-columns:1fr;gap:48px;">
+            <div class="founder-layout reveal">
+              <div>
+                <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=500&q=80" alt="Dr. Kiran Seth" class="founder-img"/>
+                <div style="margin-top:16px;padding:16px;background:var(--surface-container);border-radius:12px;text-align:center;border:1px solid rgba(232,119,34,0.2);">
+                  <p class="label-md" style="color:var(--primary-container);margin-bottom:4px;">FOUNDER</p>
+                  <h3 class="headline-sm">Dr. Kiran Seth</h3>
+                  <p class="body-md text-muted" style="font-size:0.875rem;margin-top:4px;">Professor Emeritus, IIT Delhi<br/>Padma Shri Awardee (2009)</p>
+                </div>
+              </div>
+              <div>
+                <span class="chip" style="margin-bottom:20px;display:inline-flex;">SINCE 1977</span>
+                <h2 class="headline-lg" style="margin-bottom:20px;">About SPIC MACAY</h2>
+                <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
+                  SPIC MACAY (Society for the Promotion of Indian Classical Music And Culture Amongst Youth) is a voluntary youth movement founded in 1977 by Dr. Kiran Seth at IIT Delhi. What began as a small series of classical music programmes has grown into one of the largest cultural movements in the world.
+                </p>
+                <p class="body-md text-muted" style="margin-bottom:20px;line-height:1.85;">
+                  The movement is driven by a simple philosophy — expose young people to the depth and beauty of Indian classical arts, and they will be transformed. SPIC MACAY has presented over 15,000 programmes in 900+ cities across India and abroad, bringing maestros into classrooms, campuses, and communities.
+                </p>
+                <p class="body-md text-muted" style="margin-bottom:32px;line-height:1.85;">
+                  Today, SPIC MACAY has active chapters in hundreds of colleges, schools, and institutions worldwide — each driven by student volunteers who carry forward the mission of preserving India's intangible cultural heritage for future generations.
+                </p>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
+                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">1977</div>
+                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Founded</div>
+                  </div>
+                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">900+</div>
+                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Cities Reached</div>
+                  </div>
+                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">15k+</div>
+                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Programmes Held</div>
+                  </div>
+                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">40+</div>
+                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Countries</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Global pillars -->
             <div class="reveal">
-              <h3 class="headline-md" style="margin-bottom:24px;">What Makes It Unique</h3>
+              <h3 class="headline-md" style="margin-bottom:24px;">Core Pillars</h3>
               <div style="display:flex;flex-direction:column;gap:16px;">
-                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <span style="font-size:1.5rem;flex-shrink:0;">🕰️</span>
+                <div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
+                  <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🎵</div>
                   <div>
-                    <h4 class="headline-sm" style="margin-bottom:6px;">47 Years of Legacy</h4>
-                    <p class="body-md text-muted" style="font-size:0.875rem;">Founded in 1977, SPIC MACAY has presented over 15,000 programmes in 900+ cities, colleges, and rural areas across India and abroad.</p>
+                    <h4 class="headline-sm" style="margin-bottom:6px;">Classical Music & Dance</h4>
+                    <p class="body-md text-muted" style="font-size:0.875rem;">Hindustani, Carnatic, Kathak, Bharatanatyam, Odissi — world-class performances by legendary maestros.</p>
                   </div>
                 </div>
-                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <span style="font-size:1.5rem;flex-shrink:0;">🌐</span>
-                  <div>
-                    <h4 class="headline-sm" style="margin-bottom:6px;">Global Community</h4>
-                    <p class="body-md text-muted" style="font-size:0.875rem;">Participants from over 40 countries have attended past International Conventions — a truly global celebration of India's living heritage.</p>
-                  </div>
-                </div>
-                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <span style="font-size:1.5rem;flex-shrink:0;">🤝</span>
-                  <div>
-                    <h4 class="headline-sm" style="margin-bottom:6px;">Volunteer-Driven</h4>
-                    <p class="body-md text-muted" style="font-size:0.875rem;">The convention runs almost entirely on the energy of student volunteers — making it one of the largest youth-led cultural events in Asia.</p>
-                  </div>
-                </div>
-                <div style="display:flex;gap:16px;padding:20px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <span style="font-size:1.5rem;flex-shrink:0;">🎓</span>
+                <div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
+                  <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🎓</div>
                   <div>
                     <h4 class="headline-sm" style="margin-bottom:6px;">Guru-Shishya Parampara</h4>
-                    <p class="body-md text-muted" style="font-size:0.875rem;">The ancient tradition of direct knowledge transmission from master to student is alive at SPIC MACAY — an experience unavailable in formal education.</p>
+                    <p class="body-md text-muted" style="font-size:0.875rem;">The ancient tradition of direct transmission — intimate workshops and baithaks with masters.</p>
+                  </div>
+                </div>
+                <div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
+                  <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🏛️</div>
+                  <div>
+                    <h4 class="headline-sm" style="margin-bottom:6px;">Heritage & Craft</h4>
+                    <p class="body-md text-muted" style="font-size:0.875rem;">Heritage walks, folk art workshops, cinema classics, and yoga — a holistic cultural immersion.</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- ── Founder Tab ─────────────────────────────────── -->
-        <div class="about-tab-panel" id="tab-founder">
-          <div class="founder-layout reveal">
-            <div>
-              <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=500&q=80" alt="Dr. Kiran Seth" class="founder-img"/>
-              <div style="margin-top:16px;padding:16px;background:var(--surface-container);border-radius:12px;text-align:center;border:1px solid rgba(232,119,34,0.2);">
-                <p class="label-md" style="color:var(--primary-container);margin-bottom:4px;">FOUNDER</p>
-                <h3 class="headline-sm">Dr. Kiran Seth</h3>
-                <p class="body-md text-muted" style="font-size:0.875rem;margin-top:4px;">Professor Emeritus, IIT Delhi<br/>Padma Shri Awardee</p>
+            <!-- Why SPIC MACAY (inside global tab only) -->
+            <div id="why" style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:80px;">
+              <div class="why-section-header reveal">
+                <span class="why-section-pretitle">Why SPIC MACAY</span>
+                <h2 class="why-section-title">Rediscovering India's<br/><span class="text-gradient">Classical Heritage</span></h2>
+                <div class="why-section-divider"></div>
+                <p class="body-md text-muted reveal reveal-delay-1" style="max-width:540px;margin-top:20px;">For nearly five decades, SPIC MACAY has been the bridge between India's timeless art forms and the hearts of the youth — bringing maestros into classrooms, campuses, and communities.</p>
               </div>
-            </div>
-            <div>
-              <span class="chip" style="margin-bottom:20px;display:inline-flex;">The Visionary</span>
-              <h2 class="headline-lg" style="margin-bottom:20px;">Dr. Kiran Seth</h2>
-              <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
-                Dr. Kiran Seth founded SPIC MACAY in 1977 as a student of IIT Delhi, driven by a profound concern that India's youth were drifting away from their extraordinary cultural heritage. What began as a small series of classical music programmes at IIT Delhi has grown into a global movement.
-              </p>
-              <p class="body-md text-muted" style="margin-bottom:20px;line-height:1.85;">
-                A Professor Emeritus of Mechanical Engineering, Dr. Seth has dedicated his life — beyond his academic responsibilities — to ensuring that India's intangible cultural heritage reaches every corner of the country. His philosophy is simple: expose young people to the depth and beauty of classical arts, and they will be transformed.
-              </p>
-              <p class="body-md text-muted" style="margin-bottom:32px;line-height:1.85;">
-                Dr. Seth was awarded the prestigious Padma Shri in 2009 in recognition of his extraordinary contribution to Indian classical arts. He continues to serve as the guiding spirit and tireless driving force behind SPIC MACAY's mission.
-              </p>
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
-                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">1977</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Founded SPIC MACAY</div>
+              <div class="why-cards-grid" style="margin-top:40px;">
+                <div class="why-card reveal">
+                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Volunteers" class="why-card-img"/></div>
+                  <div class="why-card-body">
+                    <div class="artist-discipline">Community</div>
+                    <div class="why-card-title">Volunteering</div>
+                    <p class="why-card-desc">Be part of something larger than yourself. Volunteers are the backbone of this incredible week.</p>
+                  </div>
                 </div>
-                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">2009</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Padma Shri Award</div>
+                <div class="why-card reveal reveal-delay-1">
+                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Classical music" class="why-card-img"/></div>
+                  <div class="why-card-body">
+                    <div class="artist-discipline">Learning</div>
+                    <div class="why-card-title">Enrichment</div>
+                    <p class="why-card-desc">Immerse yourself in workshops, baithaks, and interactions with legendary gurus.</p>
+                  </div>
                 </div>
-                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">900+</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Cities Reached</div>
-                </div>
-                <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">15k+</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Programmes Held</div>
+                <div class="why-card reveal reveal-delay-2">
+                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage" class="why-card-img"/></div>
+                  <div class="why-card-body">
+                    <div class="artist-discipline">Culture</div>
+                    <div class="why-card-title">Heritage Preservation</div>
+                    <p class="why-card-desc">SPIC MACAY has dedicated nearly five decades to ensuring India's timeless art forms remain alive and accessible.</p>
+                  </div>
                 </div>
               </div>
+              <!-- Stats -->
+              <div style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:64px;">
+                <div class="stats-grid-premium">
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="1977">1977</span><span class="stat-label-premium">Est. Year</span></div>
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="400" data-stat-suffix="+">400+</span><span class="stat-label-premium">Cities Served</span></div>
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+">10000+</span><span class="stat-label-premium">Events</span></div>
+                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="120">120</span><span class="stat-label-premium">Artists &amp; Gurus</span></div>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
-        <!-- ── Hosting Institute Tab ───────────────────────── -->
-        <div class="about-tab-panel" id="tab-hosting">
+
+        <!-- ══ Tab 4: Archives ═════════════════════════════ -->
+        <div class="about-tab-panel" id="tab-archives">
           <div class="reveal">
-            <div style="position:relative;border-radius:20px;overflow:hidden;height:300px;margin-bottom:40px;">
-              <img src="https://images.unsplash.com/photo-1562774053-701939374585?w=1200&q=80" alt="IIT Kharagpur" style="width:100%;height:100%;object-fit:cover;"/>
-              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(19,19,19,0.8) 0%,transparent 60%);display:flex;align-items:flex-end;padding:32px;">
-                <div>
-                  <span class="chip" style="margin-bottom:12px;">HOST INSTITUTION</span>
-                  <h2 class="headline-lg">Indian Institute of Technology<br/>Kharagpur</h2>
+            <h2 class="headline-lg" style="margin-bottom:8px;">Archives</h2>
+            <p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">A look back at the events and workshops organized by the SPIC MACAY chapter at VNIT Nagpur.</p>
+
+            <!-- 2024-25 -->
+            <div style="margin-bottom:48px;">
+              <p class="label-md" style="color:var(--primary-container);margin-bottom:20px;letter-spacing:0.12em;">ACADEMIC YEAR 2024-25</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
+                <div class="past-conv-card" style="padding:24px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip">Workshop</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Mar 2025</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Madhubani Painting</h4>
+                  <p class="body-md text-muted" style="font-size:0.85rem;">Two-day intensive workshop with 60+ participants learning the ancient Mithila art form.</p>
+                </div>
+                <div class="past-conv-card" style="padding:24px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip">Workshop</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Feb 2025</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Kathak & Tabla</h4>
+                  <p class="body-md text-muted" style="font-size:0.85rem;">Live rhythm workshop exploring the synergy between Kathak footwork and Tabla compositions.</p>
+                </div>
+                <div class="past-conv-card" style="padding:24px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip">Performance</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Jan 2025</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Hindustani Vocals Evening</h4>
+                  <p class="body-md text-muted" style="font-size:0.85rem;">An enchanting evening of ragas performed by visiting artists from the Gwalior gharana.</p>
+                </div>
+                <div class="past-conv-card" style="padding:24px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip">Workshop</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Nov 2024</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Warli & Mural Art</h4>
+                  <p class="body-md text-muted" style="font-size:0.85rem;">Hands-on session exploring tribal Warli patterns and large-scale campus mural creation.</p>
                 </div>
               </div>
             </div>
 
-            <div class="hosting-grid">
-              <div>
-                <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
-                  VNIT Nagpur (Visvesvaraya National Institute of Technology), established in 1960, is one of India's premier NITs. Spread across a lush 225-acre campus on South Ambazari Road, Nagpur, it is home to a vibrant student community with a rich tradition in arts, culture, and innovation.
-                </p>
-                <p class="body-md text-muted" style="line-height:1.85;margin-bottom:20px;">
-                  The campus provides the ideal setting for SPIC MACAY's immersive convention — with spacious lawns for dawn yoga, large auditoria for concerts, heritage buildings for walks, and hostels for accommodation. IIT-KGP's student community is one of the most active SPIC MACAY chapters in the country.
-                </p>
-              </div>
-              <div style="display:flex;flex-direction:column;gap:14px;">
-                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <p class="label-sm text-muted" style="margin-bottom:4px;">ESTABLISHED</p>
-                  <p class="headline-sm">1951 · First IIT of India</p>
+            <!-- 2023-24 -->
+            <div style="margin-bottom:48px;">
+              <p class="label-md" style="color:var(--primary-container);margin-bottom:20px;letter-spacing:0.12em;">ACADEMIC YEAR 2023-24</p>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
+                <div class="past-conv-card" style="padding:24px;border-color:rgba(232,119,34,0.2);">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip" style="background:rgba(232,119,34,0.15);color:var(--primary-container);">Convention</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Dec 2023</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">8th International Convention</h4>
+                  <p class="body-md text-muted" style="font-size:0.85rem;">VNIT Nagpur hosted the 8th SPIC MACAY International Convention — 3 days, 500+ participants, world-class artists.</p>
                 </div>
-                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <p class="label-sm text-muted" style="margin-bottom:4px;">CAMPUS SIZE</p>
-                  <p class="headline-sm">2,100 Acres · A City in Itself</p>
+                <div class="past-conv-card" style="padding:24px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip">Performance</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Oct 2023</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Dr. Chaerin Kim — International</h4>
+                  <p class="body-md text-muted" style="font-size:0.85rem;">A captivating international performance bridging global traditions with Indian classical arts.</p>
                 </div>
-                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <p class="label-sm text-muted" style="margin-bottom:4px;">LOCATION</p>
-                  <p class="headline-sm">Nagpur, Maharashtra</p>
+                <div class="past-conv-card" style="padding:24px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip">Workshop</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Sep 2023</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Bharatanatyam & Pottery</h4>
+                  <p class="body-md text-muted" style="font-size:0.85rem;">Back-to-back workshops exploring classical dance and traditional pottery techniques.</p>
                 </div>
-                <div style="padding:18px;background:var(--surface-container);border-radius:12px;border:1px solid rgba(245,240,232,0.07);">
-                  <p class="label-sm text-muted" style="margin-bottom:4px;">NEAREST STATION</p>
-                  <p class="headline-sm">Kharagpur Junction (~3 km)</p>
+                <div class="past-conv-card" style="padding:24px;">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <span class="chip">Workshop</span>
+                    <span style="font-size:0.75rem;color:var(--outline);">Aug 2023</span>
+                  </div>
+                  <h4 class="headline-sm" style="margin-bottom:6px;">Flute & Folk Music</h4>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- ── Past Conventions Tab ────────────────────────── -->
-        <div class="about-tab-panel" id="tab-past">
-          <div class="reveal">
-            <h2 class="headline-lg" style="margin-bottom:8px;">Past International Conventions</h2>
-            <p class="body-md text-muted" style="margin-bottom:36px;">A decade of transformative gatherings across India's premier institutions.</p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-              <div class="past-conv-card"><div class="past-conv-num">10th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2024</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Bombay, Mumbai</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">8th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2023</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">VNIT Nagpur, Maharashtra</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">8th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2022</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Madras, Chennai</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">7th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2019</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Kanpur, Kanpur</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">6th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2018</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Roorkee, Roorkee</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">5th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2017</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Kharagpur</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">4th</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2016</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Hyderabad</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">3rd</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2015</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Gandhinagar</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">2nd</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2014</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Delhi</p></div>
-              <div class="past-conv-card"><div class="past-conv-num">1st</div><p class="label-md" style="margin-top:4px;color:var(--on-surface);">2013</p><p class="body-md text-muted" style="font-size:0.875rem;margin-top:6px;">IIT Bombay</p></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── Key Contacts Tab ───────────────────────────── -->
-        <div class="about-tab-panel" id="tab-contacts">
-          <div class="reveal">
-            <h2 class="headline-lg" style="margin-bottom:8px;">Key Contacts</h2>
-            <p class="body-md text-muted" style="margin-bottom:36px;">Reach out to the right team for any queries regarding the convention.</p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
-              <div class="key-contact-card">
-                <div class="contact-avatar">👤</div>
-                <div>
-                  <p class="label-sm text-muted" style="margin-bottom:2px;">GENERAL ENQUIRIES</p>
-                  <p class="headline-sm" style="margin-bottom:4px;">Registrations Team</p>
-                  <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">registrations@spicmacay.com</a>
-                </div>
-              </div>
-              <div class="key-contact-card">
-                <div class="contact-avatar">🎵</div>
-                <div>
-                  <p class="label-sm text-muted" style="margin-bottom:2px;">ARTIST RELATIONS</p>
-                  <p class="headline-sm" style="margin-bottom:4px;">Programme Committee</p>
-                  <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">artists@spicmacay.com</a>
-                </div>
-              </div>
-              <div class="key-contact-card">
-                <div class="contact-avatar">📰</div>
-                <div>
-                  <p class="label-sm text-muted" style="margin-bottom:2px;">MEDIA & PR</p>
-                  <p class="headline-sm" style="margin-bottom:4px;">Public Relations</p>
-                  <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;">media@spicmacay.com</a>
-                </div>
-              </div>
-              <div class="key-contact-card">
-                <div class="contact-avatar">🤝</div>
-                <div>
-                  <p class="label-sm text-muted" style="margin-bottom:2px;">VOLUNTEERING</p>
-                  <p class="headline-sm" style="margin-bottom:4px;">Volunteer Coordinator</p>
-                  <a href="https://spicmacay.org/volunteer-with-us" style="color:var(--primary);font-size:0.875rem;" target="_blank">spicmacay.org/volunteer</a>
-                </div>
-              </div>
-              <div class="key-contact-card">
-                <div class="contact-avatar">🏛️</div>
-                <div>
-                  <p class="label-sm text-muted" style="margin-bottom:2px;">REGISTERED OFFICE</p>
-                  <p class="headline-sm" style="margin-bottom:4px;">VNIT Nagpur Chapter</p>
-                  <p style="font-size:0.875rem;color:var(--on-surface-variant);">South Ambazari Road, VNIT Campus, Nagpur – 440010</p>
-                </div>
-              </div>
+            <!-- CTA -->
+            <div style="padding:32px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(232,119,34,0.15);text-align:center;">
+              <p class="headline-sm" style="margin-bottom:8px;">Want to be part of the next chapter?</p>
+              <p class="body-md text-muted" style="margin-bottom:20px;">Register for upcoming events and workshops at VNIT Nagpur.</p>
+              <a href="register.html" class="btn btn-primary">Register Now</a>
             </div>
           </div>
         </div>
 
-      <!-- ══ Why SPIC MACAY ═══════════════════════════════ -->
-      <section class="why-section" id="why" style="margin-top: 56px; border-top: 1px solid rgba(245,240,232,0.07); padding-top: 80px; padding-bottom: 0;">
-        <div class="container" style="padding-inline: 0;">
-
-          <!-- Section Header -->
-          <div class="why-section-header reveal">
-            <span class="why-section-pretitle">Why SPIC MACAY</span>
-            <h2 class="why-section-title">
-              Rediscovering India's<br/>
-              <span class="text-gradient">Classical Heritage</span>
-            </h2>
-            <div class="why-section-divider"></div>
-            <p class="body-md text-muted reveal reveal-delay-1" style="max-width:540px;margin-top:20px;">
-              For nearly five decades, SPIC MACAY has been the bridge between India's timeless art forms and the hearts of the youth — bringing maestros into classrooms, campuses, and communities.
-            </p>
-          </div>
-
-          <!-- 3 Image Cards -->
-          <div class="why-cards-grid">
-            <div class="why-card reveal">
-              <div style="overflow:hidden;">
-                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Volunteers at SPIC MACAY" class="why-card-img"/>
-              </div>
-              <div class="why-card-body">
-                <div class="artist-discipline">Community</div>
-                <div class="why-card-title">Volunteering</div>
-                <p class="why-card-desc">Be part of something larger than yourself. Volunteers are the backbone of this incredible week, gaining backstage access to every event.</p>
-                <a href="register.html#volunteer" class="btn btn-ghost why-card-link" style="padding:0;font-size:0.8rem;">Join as Volunteer →</a>
-              </div>
-            </div>
-
-            <div class="why-card reveal reveal-delay-1">
-              <div style="overflow:hidden;">
-                <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Classical music enrichment session" class="why-card-img"/>
-              </div>
-              <div class="why-card-body">
-                <div class="artist-discipline">Learning</div>
-                <div class="why-card-title">Enrichment</div>
-                <p class="why-card-desc">Immerse yourself in workshops, baithaks, and interactions with legendary gurus. Experience the guru-shishya parampara first-hand.</p>
-                <a href="artists.html" class="btn btn-ghost why-card-link" style="padding:0;font-size:0.8rem;">Meet the Artists →</a>
-              </div>
-            </div>
-
-            <div class="why-card reveal reveal-delay-2">
-              <div style="overflow:hidden;">
-                <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage preservation" class="why-card-img"/>
-              </div>
-              <div class="why-card-body">
-                <div class="artist-discipline">Culture</div>
-                <div class="why-card-title">Heritage Preservation</div>
-                <p class="why-card-desc">SPIC MACAY has dedicated nearly five decades to ensuring India's timeless art forms remain alive, vibrant, and accessible to all.</p>
-                <a href="about.html" class="btn btn-ghost why-card-link" style="padding:0;font-size:0.8rem;">Our Story →</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bento Grid — All with images -->
-          <div class="about-grid" style="margin-top:20px;">
-
-            <!-- Main large cell -->
-            <div class="bento-cell about-cell-main reveal bento-img-cell" style="display:flex;flex-direction:column;justify-content:space-between;min-height:280px;">
-              <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=800&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-              <div class="bento-cell-content" style="display:flex;flex-direction:column;height:100%;justify-content:space-between;">
-                <div>
-                  <div style="font-size:2.25rem;margin-bottom:16px;">🎵</div>
-                  <h3 class="headline-sm" style="margin-bottom:10px;">The Guru-Shishya Tradition</h3>
-                  <p class="body-md text-muted">Experience an ashram-like peek into the classical parampara. Engage in Naad Yoga at dawn and meditation sessions that bridge ancient wisdom with digital-era focus. Every interaction curated to bring you closer to India's artistic heritage.</p>
-                </div>
-                <div class="flex gap-4" style="margin-top:24px;flex-wrap:wrap;">
-                  <span class="chip">Meditation</span>
-                  <span class="chip">Philosophy</span>
-                  <span class="chip">Guru Parampara</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 100+ Sessions -->
-            <div class="bento-cell about-cell-3 reveal reveal-delay-1 bento-img-cell" style="display:flex;flex-direction:column;justify-content:space-between;">
-              <img src="https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?w=400&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-              <div class="bento-cell-content" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
-                <div>
-                  <div style="font-size:1.75rem;margin-bottom:12px;">🎶</div>
-                  <h4 class="headline-sm" style="margin-bottom:8px;">100+ Sessions</h4>
-                  <p class="body-md text-muted" style="font-size:0.9rem;">Concerts and intimate baithaks featuring world-class classical musicians from across India.</p>
-                </div>
-                <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(245,240,232,0.1);">
-                  <a href="schedule.html" class="btn btn-ghost" style="font-size:0.8125rem;padding:0;">VIEW EVENTS →</a>
-                </div>
-              </div>
-            </div>
-
-            <!-- 7 Days Accent -->
-            <div class="bento-cell about-cell-accent reveal reveal-delay-2 bento-img-cell" style="display:flex;flex-direction:column;justify-content:center;">
-              <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=400&q=75" alt="" class="bento-bg-img" style="opacity:0.12;" aria-hidden="true"/>
-              <div class="bento-cell-content">
-                <div style="font-size:4.5rem;font-family:var(--font-display);font-weight:400;line-height:1;letter-spacing:0.02em;">7</div>
-                <p class="headline-sm" style="margin-top:8px;">Immersive Days</p>
-                <p style="margin-top:12px;font-size:0.875rem;opacity:0.9;line-height:1.6;">Sunrise yoga to late-evening classical performances — every hour dedicated to cultural enrichment.</p>
-              </div>
-            </div>
-
-            <!-- Heritage Walks -->
-            <div class="bento-cell about-cell-3 reveal reveal-delay-1 bento-img-cell" style="display:flex;flex-direction:column;justify-content:space-between;">
-              <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-              <div class="bento-cell-content" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
-                <div>
-                  <div style="font-size:1.75rem;margin-bottom:12px;">🏛️</div>
-                  <h4 class="headline-sm" style="margin-bottom:8px;">Heritage Walks</h4>
-                  <p class="body-md text-muted" style="font-size:0.9rem;">Exploring the architectural marvels and vibrant histories of VNIT Nagpur's heritage campus.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tech Hub / Live Sessions -->
-            <div class="bento-cell about-cell-3 reveal reveal-delay-2 bento-img-cell" style="display:flex;flex-direction:column;gap:12px;">
-              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=75" alt="" class="bento-bg-img" aria-hidden="true"/>
-              <div class="bento-cell-content">
-                <div class="flex items-center gap-4" style="font-size:0.75rem;font-weight:700;color:#4ade80;">
-                  <span style="width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse-glow 2s infinite;"></span>
-                  LIVE SESSIONS
-                </div>
-                <h4 class="headline-sm" style="margin-top:10px;">Tech Hub</h4>
-                <p class="body-md text-muted" style="font-size:0.9rem;margin-top:8px;">Digital archival and acoustics workshops integrating high-tech tools with India's heritage arts.</p>
-              </div>
-            </div>
-
-          </div><!-- /about-grid -->
-        </div>
-      </section>
-
-      <!-- ══ Stats Section ═════════════════════════════════ -->
-      <section class="stats-section" aria-label="Key statistics" style="margin-top: 56px; border-top: 1px solid rgba(245,240,232,0.07); padding-block: 64px;">
-        <div class="container" style="padding-inline: 0;">
-          <div class="stats-grid-premium">
-            <!-- Est. 1977 -->
-            <div class="stat-item-premium" id="statEst">
-              <span class="stat-big-num" data-stat-target="1977" id="statNum0">1977</span>
-              <span class="stat-label-premium">Est. Year</span>
-            </div>
-            <!-- 400+ Cities -->
-            <div class="stat-item-premium" id="statCities">
-              <span class="stat-big-num" data-stat-target="400" data-stat-suffix="+" id="statNum1">400+</span>
-              <span class="stat-label-premium">Cities Served</span>
-            </div>
-            <!-- 10,000+ Events -->
-            <div class="stat-item-premium" id="statEvents">
-              <span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+" id="statNum2">10000+</span>
-              <span class="stat-label-premium">Events</span>
-            </div>
-            <!-- 120 Artists -->
-            <div class="stat-item-premium" id="statArtists">
-              <span class="stat-big-num" data-stat-target="120" id="statNum3">120</span>
-              <span class="stat-label-premium">Artists &amp; Gurus</span>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
+  </div>
 
   <!-- Footer -->
   <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
+    <!-- ══ Footer ═════════════════════════════════════════ -->
     <!-- ══ Footer ═════════════════════════════════════════ -->
   <footer class="footer">
     <div class="container">
@@ -706,8 +700,7 @@
           <div class="flex gap-4" style="margin-top:20px;">
             <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">▶</a>
             <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">📷</a>
-            <a href="https://www.facebook.com/SPICMACAY/" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">f</a>
-            <a href="https://x.com/spicmacay" class="social-link" aria-label="Twitter/X" target="_blank" rel="noopener">𝕏</a>
+            <a href="https://www.linkedin.com/company/spic-macay-vnit-chapter/" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">in</a>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
@@ -717,6 +710,7 @@
               <li><a href="index.html">Home</a></li>
               <li><a href="artists.html">Artists</a></li>
               <li><a href="schedule.html">Events</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
               <li><a href="faq.html">FAQ</a></li>
               <li><a href="about.html">About</a></li>
             </ul>
@@ -739,6 +733,7 @@
             Nagpur – 440010
           </address>
           <a href="mailto:registrations@spicmacay.com" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">registrations@spicmacay.com</a>
+          <a href="https://vnit.ac.in/" target="_blank" rel="noopener" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:8px;">VNIT Nagpur Website →</a>
           <div style="margin-top:20px;">
             <div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
             <div class="flex gap-4">
@@ -770,14 +765,12 @@
       document.querySelectorAll('.about-tabs .filter-tab').forEach(t => t.classList.remove('active'));
       document.getElementById('tab-' + id).classList.add('active');
       btn.classList.add('active');
-      // handle anchor
-      if (window.location.hash === '#hosting' && id !== 'hosting') return;
     }
     // Check hash on load
     const hash = window.location.hash;
-    if (hash === '#founder') showAboutTab('founder', document.querySelectorAll('.filter-tab')[1]);
-    if (hash === '#hosting') showAboutTab('hosting', document.querySelectorAll('.filter-tab')[2]);
-    if (hash === '#past')    showAboutTab('past', document.querySelectorAll('.filter-tab')[3]);
+    if (hash === '#members')  showAboutTab('members', document.querySelectorAll('.filter-tab')[1]);
+    if (hash === '#global')   showAboutTab('global', document.querySelectorAll('.filter-tab')[2]);
+    if (hash === '#archives') showAboutTab('archives', document.querySelectorAll('.filter-tab')[3]);
   </script>
 </body>
 </html>
