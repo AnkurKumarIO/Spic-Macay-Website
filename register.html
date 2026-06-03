@@ -194,6 +194,300 @@
       border-color: rgba(28, 27, 26, 0.08) !important;
       background: var(--surface-container) !important;
     }
+
+    /* Visual Ticket Styles */
+    .ticket-container {
+      margin: 32px auto 0 auto;
+      max-width: 750px;
+      width: 100%;
+      perspective: 1000px;
+      animation: ticketReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes ticketReveal {
+      0% { opacity: 0; transform: translateY(30px) scale(0.97); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .ticket-pass {
+      width: 100%;
+      aspect-ratio: 900 / 300; /* Match template aspect ratio */
+      border: 1px solid rgba(232, 119, 34, 0.35);
+      border-radius: 16px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.6), 0 0 25px rgba(232, 119, 34, 0.08);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .ticket-pass:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 35px rgba(232, 119, 34, 0.12);
+    }
+    .ticket-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .ticket-details-overlay {
+      position: absolute;
+      left: 31%;
+      top: 38%;
+      width: 41.5%; /* Reduced to prevent overlapping the QR code */
+      height: 56%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 6px;
+      text-align: left;
+      z-index: 2; /* Sit on top of background image */
+    }
+    
+    .ticket-field-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    
+    .ticket-details-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 10px;
+    }
+    
+    .ticket-field-custom {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+    
+    .ticket-lbl-custom {
+      font-size: 0.5rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a99285; /* Muted gold */
+      font-weight: 700;
+      line-height: 1;
+    }
+    
+    .ticket-val-custom {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #e8e5e4; /* Ivory text */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+    
+    .ticket-val-custom.name {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: #ffd700; /* Rich gold */
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      line-height: 1.1;
+    }
+    
+    .ticket-val-custom.id {
+      color: var(--primary);
+      font-family: monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.02em;
+    }
+    
+    .ticket-val-custom.preferences {
+      font-size: 0.65rem;
+      color: #c9a898;
+      white-space: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    
+    /* QR code overlay positioning - matches the placeholder */
+    .ticket-qr-overlay {
+      position: absolute;
+      right: 14.8%;
+      bottom: 8.8%;
+      width: 12%;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2; /* Sit on top of background image */
+    }
+    
+    .ticket-qr-frame {
+      width: 100%;
+      height: 100%;
+      background: white;
+      padding: 3%;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .ticket-qr-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Mobile Responsive Handling for Ticket */
+    @media (max-width: 767px) {
+      .ticket-container {
+        max-width: 480px;
+      }
+      .ticket-lbl-custom {
+        font-size: 0.42rem;
+      }
+      .ticket-val-custom {
+        font-size: 0.65rem;
+      }
+      .ticket-val-custom.name {
+        font-size: 0.95rem;
+      }
+      .ticket-val-custom.id {
+        font-size: 0.68rem;
+      }
+      .ticket-val-custom.preferences {
+        font-size: 0.58rem;
+      }
+      .ticket-details-overlay {
+        gap: 4px;
+        top: 36%;
+      }
+    }
+
+    /* Success Overlay Styles */
+    .success-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--surface-dim);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-y: auto;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    .success-overlay.active {
+      display: flex;
+    }
+    .success-content {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      margin: auto;
+    }
+
+    /* Print styles to print just the ticket template */
+    @media print {
+      @page {
+        margin: 0; /* Removes browser-added headers, footers, dates, and URLs */
+      }
+      /* Force white background on body to prevent solid black pages */
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      /* Hide navigation, toast notifications, and forms */
+      .nav, .toast, .reg-layout {
+        display: none !important;
+      }
+      /* Remove success overlay background and padding */
+      .success-overlay {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: #ffffff !important;
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .success-content {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .success-content > *:not(.ticket-container) {
+        display: none !important;
+      }
+      .ticket-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+      #ticketPass {
+        position: relative !important;
+        width: 180mm !important;
+        height: 60mm !important; /* Exact 3:1 ratio */
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 12px !important;
+        margin: 0 !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+      }
+      .ticket-bg-img {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      /* Print font scaling in pt for paper layout integrity */
+      .ticket-details-overlay {
+        left: 31% !important;
+        top: 43% !important; /* Moved down to avoid overlapping the subheading text */
+        width: 41.5% !important;
+        height: 50% !important;
+        gap: 4px !important;
+      }
+      .ticket-lbl-custom {
+        font-size: 6pt !important;
+        color: #a99285 !important; /* Muted gold */
+      }
+      .ticket-val-custom {
+        font-size: 8.5pt !important;
+        line-height: 1.2 !important;
+        color: #e8e5e4 !important; /* Ivory */
+      }
+      .ticket-val-custom.name {
+        font-size: 13pt !important;
+        line-height: 1.1 !important;
+        color: #ffd700 !important; /* Rich gold */
+      }
+      .ticket-val-custom.id {
+        font-size: 8.5pt !important;
+        color: #ffb68b !important; /* Gold/saffron */
+      }
+      .ticket-val-custom.preferences {
+        font-size: 7.5pt !important;
+        line-height: 1.2 !important;
+        color: #c9a898 !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -586,17 +880,7 @@
             <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:var(--on-surface-variant);">Need help? <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);">spicmacay@vnit.ac.in</a></p>
           </div>
 
-          <!-- ── Step 4: Success ────────────────────────── -->
-          <div class="step-panel" id="step4" style="text-align:center;padding:40px 0;">
-            <div style="font-size:4rem;margin-bottom:20px;">🎉</div>
-            <h2 class="headline-md" style="margin-bottom:12px;">You're Registered!</h2>
-            <p class="body-md text-muted" style="max-width:360px;margin:0 auto 28px;">Thank you for registering with SPIC MACAY — VNIT Nagpur Chapter. You'll receive a confirmation email shortly.</p>
-            <div style="background:var(--surface-container-high);border-radius:12px;padding:20px;margin-bottom:28px;text-align:left;">
-              <p class="label-sm text-muted" style="margin-bottom:4px;">YOUR REGISTRATION ID</p>
-              <p class="headline-sm text-gradient" id="regId">VNIT-2026-XXXX</p>
-            </div>
-            <a href="index.html" class="btn btn-primary btn-lg">Back to Home</a>
-          </div>
+
 
         </div><!-- /form-card -->
 
@@ -614,7 +898,27 @@
 
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
   <script src="scripts/main.js"></script>
+
+  <!-- Firebase App & Firestore Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+      authDomain: "spic-macay-vnit.firebaseapp.com",
+      projectId: "spic-macay-vnit",
+      storageBucket: "spic-macay-vnit.firebasestorage.app",
+      messagingSenderId: "768698124036",
+      appId: "1:768698124036:web:311cc550bef0ac56133251",
+      measurementId: "G-MP0S6HFP5T"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     let currentStep = 1;
 
     function goToStep(step) {
@@ -680,15 +984,120 @@
 
     async function submitRegistration() {
       const btn = document.getElementById('submitBtn');
+      const originalText = btn.textContent;
       btn.textContent = 'Submitting…';
       btn.disabled = true;
-      await new Promise(r => setTimeout(r, 2000));
-      const regId = 'VNIT-2026-' + Math.random().toString(36).substr(2,6).toUpperCase();
-      document.getElementById('regId').textContent = regId;
-      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('step4').classList.add('active');
-      showToast('Registered successfully! Check your email.', 'success');
+
+      // Extract form values
+      const fn = document.getElementById('firstName').value.trim();
+      const ln = document.getElementById('lastName').value.trim();
+      const em = document.getElementById('email').value.trim();
+      const ph = document.getElementById('phone').value.trim();
+      const roll = document.getElementById('rollno').value.trim();
+      const branch = document.getElementById('branch').value;
+      const year = document.getElementById('year').value;
+      const message = document.getElementById('message').value.trim();
+
+      const streams = [...document.querySelectorAll('input[name="stream"]:checked')].map(i => i.value);
+      const activities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i => i.value);
+
+      // Unique Registration ID
+      const regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+      const registrationData = {
+        registrationId: regId,
+        firstName: fn,
+        lastName: ln,
+        email: em,
+        phone: ph,
+        rollNumber: roll || '—',
+        branch: branch || '—',
+        yearOfStudy: year || '—',
+        streams: streams,
+        activities: activities,
+        message: message,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+        // Save to Firestore
+        await db.collection('registrations').doc(regId).set(registrationData);
+
+        // Update Ticket UI details
+        document.getElementById('ticketName').textContent = `${fn} ${ln}`;
+        document.getElementById('ticketId').textContent = regId;
+        document.getElementById('ticketRoll').textContent = roll || '—';
+        
+        const prefText = [...streams, ...activities].map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ');
+        document.getElementById('ticketEvents').textContent = prefText || 'General Entry';
+
+        // Generate QR code using public api.qrserver.com
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(regId)}`;
+        document.getElementById('ticketQr').src = qrUrl;
+
+        // Show Success Page Overlay
+        document.getElementById('successOverlay').classList.add('active');
+        showToast('Registered successfully! Pass generated.', 'success');
+      } catch (error) {
+        console.error("Error saving registration: ", error);
+        showToast('Registration failed. Please try again.', 'error');
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
     }
   </script>
+
+  <!-- Full-Screen Success Overlay -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-content">
+      <div style="font-size:4rem;margin-bottom:12px;">🎉</div>
+      <h2 class="headline-md" style="margin-bottom:8px;color:var(--on-surface);">You're Registered!</h2>
+      <p class="body-md text-muted" style="max-width:480px;margin:0 auto 24px;font-size:0.9rem;">
+        Thank you for registering. Below is your official entry pass for SPIC MACAY programmes at VNIT Nagpur.
+      </p>
+      
+      <!-- Visual Ticket Pass -->
+      <div class="ticket-container">
+        <div class="ticket-pass" id="ticketPass">
+          <!-- Background image for solid printing -->
+          <img src="ticket-template.png" class="ticket-bg-img" alt="Ticket Background"/>
+          
+          <!-- Details Overlay -->
+          <div class="ticket-details-overlay">
+            <div class="ticket-field-row name-row">
+              <span class="ticket-lbl-custom">ATTENDEE PASS</span>
+              <span class="ticket-val-custom name" id="ticketName">Arjun Sharma</span>
+            </div>
+            <div class="ticket-details-grid">
+              <div class="ticket-field-custom">
+                <span class="ticket-lbl-custom">TICKET ID</span>
+                <span class="ticket-val-custom id" id="ticketId">VNIT-2026-XXXXXX</span>
+              </div>
+              <div class="ticket-field-custom">
+                <span class="ticket-lbl-custom">ROLL NUMBER</span>
+                <span class="ticket-val-custom" id="ticketRoll">BT22BCE001</span>
+              </div>
+            </div>
+            <div class="ticket-field-custom preferences-custom">
+              <span class="ticket-lbl-custom">INTENSIVES</span>
+              <span class="ticket-val-custom preferences" id="ticketEvents">Hindustani Vocal, Kathak, Hatha Yoga</span>
+            </div>
+          </div>
+          
+          <!-- QR Code Overlay -->
+          <div class="ticket-qr-overlay">
+            <div class="ticket-qr-frame">
+              <img id="ticketQr" src="" alt="Ticket QR Code"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:16px;justify-content:center;margin-top:36px;">
+        <button onclick="window.print()" class="btn btn-secondary btn-sm">🖨️ Print Pass</button>
+        <a href="index.html" class="btn btn-primary btn-sm">Back to Home</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
