@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Portal — SPIC MACAY VNIT Nagpur</title>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    body { background: var(--surface-dim); min-height: 100vh; }
+    
+    .admin-container {
+      max-width: 1200px;
+      margin: 80px auto 40px auto;
+      padding: 24px;
+    }
+
+    /* Auth Screen styling */
+    .auth-card {
+      max-width: 420px;
+      margin: 120px auto;
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.08);
+      border-radius: 16px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    /* Admin Workspace styling */
+    .admin-workspace {
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .admin-workspace.active {
+      display: flex;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(245, 240, 232, 0.08);
+      padding-bottom: 16px;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid rgba(245, 240, 232, 0.08);
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+    .admin-tab {
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .admin-tab:hover {
+      color: var(--primary);
+      background: rgba(232, 119, 34, 0.05);
+    }
+    .admin-tab.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--primary-container);
+    }
+
+    .panel-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .panel-section.active {
+      display: block;
+    }
+
+    /* Card styling */
+    .dashboard-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.06);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* Table styling */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .admin-table th, .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(245, 240, 232, 0.06);
+      font-size: 0.875rem;
+    }
+    .admin-table th {
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    .admin-table tr:hover td {
+      background: rgba(245, 240, 232, 0.02);
+    }
+
+    /* Badges */
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-success { background: rgba(74, 222, 128, 0.15); color: #86efac; border: 1px solid rgba(74, 222, 128, 0.25); }
+    .badge-warning { background: rgba(232, 119, 34, 0.15); color: var(--primary); border: 1px solid rgba(232, 119, 34, 0.25); }
+
+    /* Action buttons */
+    .action-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Modal dialog styling */
+    .admin-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: rgba(15, 12, 10, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .admin-modal.active {
+      display: flex;
+    }
+    .modal-container {
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.1);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      animation: slideUp 0.3s ease;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-full {
+      grid-column: span 2;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      padding: 12px 24px;
+      border-radius: var(--radius-lg);
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      z-index: 4000;
+      display: none;
+      animation: slideUp 0.3s ease;
+    }
+    .toast.success { border-left: 4px solid var(--primary-container); }
+    .toast.error { border-left: 4px solid #c4261c; }
+
+    /* Fix header space */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+  </style>
+</head>
+<body>
+  <!-- ══ Navigation ════════════════════════════════════ -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+      </a>
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-secondary btn-sm">← Back to Site</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    
+    <!-- ── Auth Guard Screen ──────────────────────────── -->
+    <div class="auth-card" id="authCard">
+      <h1 class="headline-md" style="margin-bottom: 8px;">Admin Login</h1>
+      <p class="body-md text-muted" style="margin-bottom: 28px;">Sign in to manage SPIC MACAY details.</p>
+      
+      <div style="display:flex; flex-direction:column; gap:16px; text-align:left; margin-bottom: 24px;">
+        <div class="input-group">
+          <label class="input-label" for="loginEmail">Email Address</label>
+          <input class="input-field" type="email" id="loginEmail" placeholder="admin@vnit.ac.in" />
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="loginPassword">Password</label>
+          <input class="input-field" type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+      </div>
+      <button class="btn btn-primary w-full" id="loginBtn" onclick="handleLogin()">Sign In</button>
+    </div>
+
+    <!-- ── Admin Workspace Screen ──────────────────────── -->
+    <div class="admin-workspace" id="adminWorkspace">
+      <div class="admin-header">
+        <div>
+          <h1 class="headline-md">Admin Dashboard</h1>
+          <p class="body-sm text-muted">Virasat 2026 Management Console</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-secondary btn-sm" onclick="seedInitialData()">Seed Sample Data</button>
+          <button class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('registrations', this)">Registrations</button>
+        <button class="admin-tab" onclick="switchTab('artists', this)">Artists &amp; Gurus</button>
+        <button class="admin-tab" onclick="switchTab('schedule', this)">Events/Schedule</button>
+        <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
+      </div>
+
+      <!-- Registrations Section -->
+      <div class="panel-section active" id="section-registrations">
+        <div class="dashboard-card">
+          <h2 class="headline-sm" style="margin-bottom:16px;">Registered Attendees</h2>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Roll Number</th>
+                  <th>Streams / Preferences</th>
+                  <th>Check-In</th>
+                </tr>
+              </thead>
+              <tbody id="registrationsTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artists Section -->
+      <div class="panel-section" id="section-artists">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 class="headline-sm">Manage Artists</h2>
+            <button class="btn btn-primary btn-sm" onclick="openArtistModal()">+ Add Artist</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Discipline</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="artistsTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Section -->
+      <div class="panel-section" id="section-schedule">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 class="headline-sm">Manage Schedule</h2>
+            <button class="btn btn-primary btn-sm" onclick="openEventModal()">+ Add Event</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Time / Duration</th>
+                  <th>Event Title</th>
+                  <th>Artist Name</th>
+                  <th>Day</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Section -->
+      <div class="panel-section" id="section-gallery">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 class="headline-sm">Manage Gallery</h2>
+            <button class="btn btn-primary btn-sm" onclick="openGalleryModal()">+ Add Moment</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Caption</th>
+                  <th>Category</th>
+                  <th>Tag</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="galleryTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Modals Section ──────────────────────────────── -->
+
+  <!-- Artist Modal -->
+  <div class="admin-modal" id="artistModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="artistModalTitle" style="margin-bottom:24px;">Add Performing Artist</h2>
+      <form id="artistForm" onsubmit="saveArtist(event)">
+        <input type="hidden" id="artistId"/>
+        <div class="form-grid">
+          <div class="input-group">
+            <label class="input-label" for="artName">Artist Name *</label>
+            <input class="input-field" type="text" id="artName" required placeholder="e.g. Pt. Hariprasad Chaurasia"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="artDiscipline">Discipline Category *</label>
+            <select class="input-field" id="artDiscipline" required>
+              <option value="vocal">Vocal</option>
+              <option value="instrumental">Instrumental</option>
+              <option value="dance">Dance</option>
+              <option value="craft">Craft &amp; Folk</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="artCategory">Sub-Category *</label>
+            <input class="input-field" type="text" id="artCategory" required placeholder="e.g. Sitar, Kathak, Flute"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="artMeta">Gharana / Meta Subtitle</label>
+            <input class="input-field" type="text" id="artMeta" placeholder="e.g. Maihar Gharana Legend"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="artImg">Photo URL *</label>
+            <input class="input-field" type="url" id="artImg" required placeholder="e.g. https://images.unsplash.com/..."/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="artExcerpt">Short Card Excerpt *</label>
+            <textarea class="input-field" id="artExcerpt" required rows="2" placeholder="Describe the artist in 2-3 sentences..."></textarea>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="artBio">Full Wiki Profile Biography (HTML allowed)</label>
+            <textarea class="input-field" id="artBio" rows="6" placeholder="Detail biography sections..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeArtistModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Artist</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Event Modal -->
+  <div class="admin-modal" id="eventModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="eventModalTitle" style="margin-bottom:24px;">Add Schedule Event</h2>
+      <form id="eventForm" onsubmit="saveEvent(event)">
+        <input type="hidden" id="eventId"/>
+        <div class="form-grid">
+          <div class="input-group">
+            <label class="input-label" for="evTitle">Event Title *</label>
+            <input class="input-field" type="text" id="evTitle" required placeholder="e.g. Sitar Recital"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evArtist">Artist Name</label>
+            <input class="input-field" type="text" id="evArtist" placeholder="e.g. Pt. Kushal Das"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evTime">Time Range *</label>
+            <input class="input-field" type="text" id="evTime" required placeholder="e.g. 06:00 PM – 08:30 PM"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evDuration">Duration Descriptor</label>
+            <input class="input-field" type="text" id="evDuration" placeholder="e.g. 2.5 Hours"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evDay">Day *</label>
+            <select class="input-field" id="evDay" required>
+              <option value="Day 1">Day 1 (July 25)</option>
+              <option value="Day 2">Day 2 (July 26)</option>
+              <option value="Day 3">Day 3 (July 27)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evCategory">Category Type *</label>
+            <select class="input-field" id="evCategory" required>
+              <option value="concert">Concert</option>
+              <option value="yoga">Yoga</option>
+              <option value="workshop">Workshop</option>
+              <option value="heritage">Heritage</option>
+              <option value="ceremony">Ceremony</option>
+              <option value="special">Special</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evStatus">Live Status *</label>
+            <select class="input-field" id="evStatus" required>
+              <option value="upcoming">Upcoming</option>
+              <option value="live">Live Now</option>
+              <option value="over">Completed</option>
+            </select>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="evDesc">Short Details Description</label>
+            <textarea class="input-field" id="evDesc" rows="3" placeholder="Additional details, venue parameters, etc."></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeEventModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Gallery Modal -->
+  <div class="admin-modal" id="galleryModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="galleryModalTitle" style="margin-bottom:24px;">Add Gallery Moment</h2>
+      <form id="galleryForm" onsubmit="saveGallery(event)">
+        <input type="hidden" id="galleryId"/>
+        <div class="form-grid">
+          <div class="input-group form-full">
+            <label class="input-label" for="galImg">Image URL *</label>
+            <input class="input-field" type="url" id="galImg" required placeholder="https://images.unsplash.com/..."/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="galCaption">Caption *</label>
+            <input class="input-field" type="text" id="galCaption" required placeholder="e.g. Sitar Masterclass Session"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="galCategory">Category Tag Filter *</label>
+            <select class="input-field" id="galCategory" required>
+              <option value="concerts">Evening Concerts</option>
+              <option value="workshops">Workshops</option>
+              <option value="yoga">Naad Yoga</option>
+              <option value="dance">Classical Dance</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="galTag">Hover Tag Title *</label>
+            <input class="input-field" type="text" id="galTag" required placeholder="e.g. LIVE CONCERT, WORKSHOP"/>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeGalleryModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Moment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="adminToast"></div>
+
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+      authDomain: "spic-macay-vnit.firebaseapp.com",
+      projectId: "spic-macay-vnit",
+      storageBucket: "spic-macay-vnit.firebasestorage.app",
+      messagingSenderId: "768698124036",
+      appId: "1:768698124036:web:311cc550bef0ac56133251",
+      measurementId: "G-MP0S6HFP5T"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Session observer
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('authCard').style.display = 'none';
+        document.getElementById('adminWorkspace').classList.add('active');
+        loadAllData();
+      } else {
+        document.getElementById('authCard').style.display = 'block';
+        document.getElementById('adminWorkspace').classList.remove('active');
+      }
+    });
+
+    // Sign in handling
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginBtn');
+
+      if (!email || !pass) { showToast('Please enter credentials.', 'error'); return; }
+      btn.textContent = 'Logging in...';
+      btn.disabled = true;
+
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+        showToast('Signed in successfully.', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || 'Authentication failed.', 'error');
+      } finally {
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
+    }
+
+    async function handleLogout() {
+      await auth.signOut();
+      showToast('Signed out.', 'success');
+    }
+
+    // Switch Panel Tabs
+    function switchTab(tab, el) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+
+      document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('section-' + tab).classList.add('active');
+    }
+
+    // Toast notices
+    function showToast(msg, type) {
+      const toast = document.getElementById('adminToast');
+      toast.textContent = msg;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    }
+
+    // LOAD ALL DATA LISTS
+    function loadAllData() {
+      // Listen to real-time registrations
+      db.collection('registrations').orderBy('createdAt', 'desc').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          const checkInClass = d.checkedIn ? 'badge-success' : 'badge-warning';
+          const checkInText = d.checkedIn ? 'Checked In' : 'Pending';
+          html += `
+            <tr>
+              <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;">${d.registrationId}</span></td>
+              <td style="font-weight:600;">${d.firstName} ${d.lastName}</td>
+              <td>${d.email}</td>
+              <td>${d.phone}</td>
+              <td>${d.rollNumber || '—'}</td>
+              <td><span style="font-size:0.8rem;opacity:0.8;">${[...(d.streams||[]), ...(d.activities||[])].join(', ') || '—'}</span></td>
+              <td>
+                <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${doc.id}', ${!!d.checkedIn})" style="cursor:pointer;">
+                  ${checkInText}
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No registrations yet.</td></tr>';
+      });
+
+      // Listen to artists
+      db.collection('artists').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <tr>
+              <td><img src="${d.imageUrl}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"/></td>
+              <td style="font-weight:600;">${d.name}</td>
+              <td><span class="admin-badge badge-success">${d.discipline}</span></td>
+              <td style="max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.8;">${d.excerpt}</td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editArtist('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('artists', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById('artistsTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No artists added.</td></tr>';
+      });
+
+      // Listen to events
+      db.collection('events').orderBy('day').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          let statusClass = 'badge-warning';
+          if (d.status === 'live') statusClass = 'badge-success';
+          if (d.status === 'over') statusClass = 'admin-badge';
+          html += `
+            <tr>
+              <td><span style="font-weight:600;">${d.timeRange}</span><br/><span style="font-size:0.75rem;opacity:0.7;">${d.duration || '—'}</span></td>
+              <td style="font-weight:600;">${d.title}</td>
+              <td>${d.artistName || '—'}</td>
+              <td><span class="text-primary-container">${d.day}</span></td>
+              <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.category}</span></td>
+              <td><span class="admin-badge ${statusClass}">${d.status}</span></td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editEvent('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('events', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById('scheduleTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No events added.</td></tr>';
+      });
+
+      // Listen to gallery
+      db.collection('gallery').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <tr>
+              <td><img src="${d.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;"/></td>
+              <td style="font-weight:600;">${d.caption}</td>
+              <td>${d.category}</td>
+              <td><span class="admin-badge badge-warning">${d.tag}</span></td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editGallery('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('gallery', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById('galleryTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No moments added.</td></tr>';
+      });
+    }
+
+    // Toggle Registration Gate Check-In Status
+    async function toggleCheckIn(id, currentStatus) {
+      try {
+        await db.collection('registrations').doc(id).update({ checkedIn: !currentStatus });
+        showToast('Registration status updated.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // DELETE document utility
+    async function deleteDoc(col, id) {
+      if (!confirm('Are you sure you want to delete this item?')) return;
+      try {
+        await db.collection(col).doc(id).delete();
+        showToast('Item deleted successfully.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ARTIST EDIT / SAVE
+    function openArtistModal() {
+      document.getElementById('artistForm').reset();
+      document.getElementById('artistId').value = '';
+      document.getElementById('artistModalTitle').textContent = 'Add Performing Artist';
+      document.getElementById('artistModal').classList.add('active');
+    }
+    function closeArtistModal() {
+      document.getElementById('artistModal').classList.remove('active');
+    }
+    async function editArtist(id) {
+      try {
+        const doc = await db.collection('artists').doc(id).get();
+        const d = doc.data();
+        document.getElementById('artistId').value = id;
+        document.getElementById('artName').value = d.name;
+        document.getElementById('artDiscipline').value = d.discipline;
+        document.getElementById('artCategory').value = d.category;
+        document.getElementById('artMeta').value = d.metaSubtitle || d.artistMetaDesc || '';
+        document.getElementById('artImg').value = d.imageUrl;
+        document.getElementById('artExcerpt').value = d.excerpt;
+        document.getElementById('artBio').value = d.bioHTML || d.fullDescHTML || '';
+        document.getElementById('artistModalTitle').textContent = 'Edit Performing Artist';
+        document.getElementById('artistModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+    async function saveArtist(e) {
+      e.preventDefault();
+      const id = document.getElementById('artistId').value;
+      const data = {
+        name: document.getElementById('artName').value.trim(),
+        discipline: document.getElementById('artDiscipline').value,
+        category: document.getElementById('artCategory').value.trim(),
+        metaSubtitle: document.getElementById('artMeta').value.trim(),
+        imageUrl: document.getElementById('artImg').value.trim(),
+        excerpt: document.getElementById('artExcerpt').value.trim(),
+        bioHTML: document.getElementById('artBio').value.trim()
+      };
+      try {
+        if (id) {
+          await db.collection('artists').doc(id).update(data);
+        } else {
+          await db.collection('artists').add(data);
+        }
+        closeArtistModal();
+        showToast('Artist profile saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // EVENT EDIT / SAVE
+    function openEventModal() {
+      document.getElementById('eventForm').reset();
+      document.getElementById('eventId').value = '';
+      document.getElementById('eventModalTitle').textContent = 'Add Schedule Event';
+      document.getElementById('eventModal').classList.add('active');
+    }
+    function closeEventModal() {
+      document.getElementById('eventModal').classList.remove('active');
+    }
+    async function editEvent(id) {
+      try {
+        const doc = await db.collection('events').doc(id).get();
+        const d = doc.data();
+        document.getElementById('eventId').value = id;
+        document.getElementById('evTitle').value = d.title;
+        document.getElementById('evArtist').value = d.artistName || '';
+        document.getElementById('evTime').value = d.timeRange;
+        document.getElementById('evDuration').value = d.duration || '';
+        document.getElementById('evDay').value = d.day;
+        document.getElementById('evCategory').value = d.category;
+        document.getElementById('evStatus').value = d.status;
+        document.getElementById('evDesc').value = d.description || '';
+        document.getElementById('eventModalTitle').textContent = 'Edit Schedule Event';
+        document.getElementById('eventModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+    async function saveEvent(e) {
+      e.preventDefault();
+      const id = document.getElementById('eventId').value;
+      const data = {
+        title: document.getElementById('evTitle').value.trim(),
+        artistName: document.getElementById('evArtist').value.trim(),
+        timeRange: document.getElementById('evTime').value.trim(),
+        duration: document.getElementById('evDuration').value.trim(),
+        day: document.getElementById('evDay').value,
+        category: document.getElementById('evCategory').value,
+        status: document.getElementById('evStatus').value,
+        description: document.getElementById('evDesc').value.trim()
+      };
+      try {
+        if (id) {
+          await db.collection('events').doc(id).update(data);
+        } else {
+          await db.collection('events').add(data);
+        }
+        closeEventModal();
+        showToast('Schedule event saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // GALLERY EDIT / SAVE
+    function openGalleryModal() {
+      document.getElementById('galleryForm').reset();
+      document.getElementById('galleryId').value = '';
+      document.getElementById('galleryModalTitle').textContent = 'Add Gallery Moment';
+      document.getElementById('galleryModal').classList.add('active');
+    }
+    function closeGalleryModal() {
+      document.getElementById('galleryModal').classList.remove('active');
+    }
+    async function editGallery(id) {
+      try {
+        const doc = await db.collection('gallery').doc(id).get();
+        const d = doc.data();
+        document.getElementById('galleryId').value = id;
+        document.getElementById('galImg').value = d.imageUrl;
+        document.getElementById('galCaption').value = d.caption;
+        document.getElementById('galCategory').value = d.category;
+        document.getElementById('galTag').value = d.tag;
+        document.getElementById('galleryModalTitle').textContent = 'Edit Gallery Moment';
+        document.getElementById('galleryModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+    async function saveGallery(e) {
+      e.preventDefault();
+      const id = document.getElementById('galleryId').value;
+      const data = {
+        imageUrl: document.getElementById('galImg').value.trim(),
+        caption: document.getElementById('galCaption').value.trim(),
+        category: document.getElementById('galCategory').value,
+        tag: document.getElementById('galTag').value.trim()
+      };
+      try {
+        if (id) {
+          await db.collection('gallery').doc(id).update(data);
+        } else {
+          await db.collection('gallery').add(data);
+        }
+        closeGalleryModal();
+        showToast('Gallery moment saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // DATABASE SEEDING UTILITY
+    async function seedInitialData() {
+      if (!confirm('Are you sure you want to seed initial sample data? This will add the default maestros, schedule events, and gallery items.')) return;
+      
+      const artistsSample = [
+        {
+          name: "Pt. Jasraj",
+          discipline: "vocal",
+          category: "Hindustani Vocal",
+          metaSubtitle: "Mewati Gharana Legend",
+          imageUrl: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=800&q=80",
+          excerpt: "Pandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance.",
+          bioHTML: "<h4>Gharana & Musical Lineage</h4><p>Pandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance.</p><h4>Key Contributions</h4><p>Pandit Jasraj introduced the 'Jasrangi' jugalbandi, a unique style of duet singing between a male and a female vocalist.</p>"
+        },
+        {
+          name: "Ustad Amjad Ali Khan",
+          discipline: "instrumental",
+          category: "Hindustani Instrumental",
+          metaSubtitle: "Sarod Maestro · Padma Vibhushan",
+          imageUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
+          excerpt: "Ustad Amjad Ali Khan is credited with innovating and modifying the modern Sarod, bringing a unique vocal quality (gayaki ang) to string performances.",
+          bioHTML: "<h4>Sarod Legacy</h4><p>Ustad Amjad Ali Khan is the sixth-generation descendant of the illustrious Bangash lineage of musicians.</p>"
+        },
+        {
+          name: "Smt. Alarmel Valli",
+          discipline: "dance",
+          category: "Bharatanatyam",
+          metaSubtitle: "Pandanallur Exponent",
+          imageUrl: "https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=800&q=80",
+          excerpt: "Smt. Alarmel Valli is a leading exponent of the Pandanallur style of Bharatanatyam, noted for her synthesis of traditional rigor and personal poetic expression.",
+          bioHTML: "<h4>Pandanallur Style</h4><p>She has pioneered a deeply expressive approach that translates traditional Bharatanatyam to contemporary stages.</p>"
+        }
+      ];
+
+      const eventsSample = [
+        {
+          title: "Sunrise Yoga & Naad Yoga Session",
+          artistName: "Yoga Guru Ravindra Acharya",
+          timeRange: "04:00 AM – 06:00 AM",
+          duration: "2 Hours",
+          day: "Day 1",
+          category: "yoga",
+          status: "upcoming",
+          description: "Vedic chants, breathing control, and early morning meditation session at the central academic lawn."
+        },
+        {
+          title: "Inaugural Ceremony & Lamp Lighting",
+          artistName: "VVIP Dignitaries & Conveners",
+          timeRange: "09:00 AM – 11:30 AM",
+          duration: "2.5 Hours",
+          day: "Day 1",
+          category: "ceremony",
+          status: "upcoming",
+          description: "Lighting of the lamp, conveners opening remarks, and inaugurating the 3-day cultural event."
+        },
+        {
+          title: "Grand Jugalbandi - Vocal & Flute",
+          artistName: "Ustad Amjad Ali Khan & Pandit Jasraj Tribute",
+          timeRange: "06:00 PM – 09:30 PM",
+          duration: "3.5 Hours",
+          day: "Day 1",
+          category: "concert",
+          status: "upcoming",
+          description: "Flagship evening classical concert session in the main auditorium."
+        }
+      ];
+
+      const gallerySample = [
+        {
+          imageUrl: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=900&q=80",
+          caption: "Grand Jugalbandi — Main Auditorium",
+          category: "concerts",
+          tag: "Evening Concert"
+        },
+        {
+          imageUrl: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800&q=80",
+          caption: "Tabla Masterclass — Guru-Shishya Session",
+          category: "workshops",
+          tag: "Workshop"
+        },
+        {
+          imageUrl: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80",
+          caption: "Madhubani Painting Workshop",
+          category: "workshops",
+          tag: "Folk Art"
+        }
+      ];
+
+      try {
+        const batch = db.batch();
+        
+        artistsSample.forEach(art => {
+          const docId = art.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const docRef = db.collection('artists').doc(docId);
+          batch.set(docRef, art);
+        });
+
+        eventsSample.forEach(ev => {
+          const docId = `${ev.day}-${ev.title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const docRef = db.collection('events').doc(docId);
+          batch.set(docRef, ev);
+        });
+
+        gallerySample.forEach(gal => {
+          const docId = gal.caption.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const docRef = db.collection('gallery').doc(docId);
+          batch.set(docRef, gal);
+        });
+
+        await batch.commit();
+        showToast('Sample data seeded successfully.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>
