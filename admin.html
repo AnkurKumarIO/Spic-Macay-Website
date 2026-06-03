@@ -246,7 +246,13 @@
       <!-- Registrations Section -->
       <div class="panel-section active" id="section-registrations">
         <div class="dashboard-card">
-          <h2 class="headline-sm" style="margin-bottom:16px;">Registered Attendees</h2>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+            <h2 class="headline-sm">Registered Attendees</h2>
+            <div style="display:flex; gap:12px; align-items:center;">
+              <input type="text" id="regSearchInput" placeholder="Search name, email, roll..." class="input-field" style="width:260px; padding:8px 12px; margin-bottom:0;" oninput="filterRegistrations()" />
+              <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsCSV()">Download CSV</button>
+            </div>
+          </div>
           <div class="table-responsive">
             <table class="admin-table">
               <thead>
@@ -582,32 +588,90 @@
       setTimeout(() => { toast.style.display = 'none'; }, 4000);
     }
 
+    let allRegistrations = [];
+
+    function filterRegistrations() {
+      const query = document.getElementById('regSearchInput').value.toLowerCase().trim();
+      const filtered = allRegistrations.filter(r => {
+        const fullName = `${r.firstName} ${r.lastName}`.toLowerCase();
+        const email = (r.email || '').toLowerCase();
+        const phone = (r.phone || '').toLowerCase();
+        const roll = (r.rollNumber || '').toLowerCase();
+        const regId = (r.registrationId || '').toLowerCase();
+        
+        return fullName.includes(query) || 
+               email.includes(query) || 
+               phone.includes(query) || 
+               roll.includes(query) || 
+               regId.includes(query);
+      });
+
+      let html = '';
+      filtered.forEach(d => {
+        const checkInClass = d.checkedIn ? 'badge-success' : 'badge-warning';
+        const checkInText = d.checkedIn ? 'Checked In' : 'Pending';
+        html += `
+          <tr>
+            <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;">${d.registrationId}</span></td>
+            <td style="font-weight:600;">${d.firstName} ${d.lastName}</td>
+            <td>${d.email}</td>
+            <td>${d.phone}</td>
+            <td>${d.rollNumber || '—'}</td>
+            <td><span style="font-size:0.8rem;opacity:0.8;">${[...(d.streams||[]), ...(d.activities||[])].join(', ') || '—'}</span></td>
+            <td>
+              <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${d.id}', ${!!d.checkedIn})" style="cursor:pointer;">
+                ${checkInText}
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No matching registrations found.</td></tr>';
+    }
+
+    function downloadRegistrationsCSV() {
+      if (!allRegistrations.length) {
+        showToast('No registrations to download.', 'error');
+        return;
+      }
+      
+      const headers = ['Registration ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Roll Number', 'Branch', 'Year of Study', 'Preferences', 'Checked In'];
+      const rows = allRegistrations.map(r => [
+        r.registrationId || '',
+        r.firstName || '',
+        r.lastName || '',
+        r.email || '',
+        r.phone || '',
+        r.rollNumber || '',
+        r.branch || '',
+        r.yearOfStudy || '',
+        [...(r.streams || []), ...(r.activities || [])].join('; '),
+        r.checkedIn ? 'Yes' : 'No'
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + [headers.join(','), ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))].join('\n');
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `spic_macay_registrations_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV downloaded successfully.', 'success');
+    }
+
     // LOAD ALL DATA LISTS
     function loadAllData() {
       // Listen to real-time registrations
       db.collection('registrations').orderBy('createdAt', 'desc').onSnapshot(snap => {
-        let html = '';
+        allRegistrations = [];
         snap.forEach(doc => {
           const d = doc.data();
-          const checkInClass = d.checkedIn ? 'badge-success' : 'badge-warning';
-          const checkInText = d.checkedIn ? 'Checked In' : 'Pending';
-          html += `
-            <tr>
-              <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;">${d.registrationId}</span></td>
-              <td style="font-weight:600;">${d.firstName} ${d.lastName}</td>
-              <td>${d.email}</td>
-              <td>${d.phone}</td>
-              <td>${d.rollNumber || '—'}</td>
-              <td><span style="font-size:0.8rem;opacity:0.8;">${[...(d.streams||[]), ...(d.activities||[])].join(', ') || '—'}</span></td>
-              <td>
-                <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${doc.id}', ${!!d.checkedIn})" style="cursor:pointer;">
-                  ${checkInText}
-                </button>
-              </td>
-            </tr>
-          `;
+          allRegistrations.push({ id: doc.id, ...d });
         });
-        document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No registrations yet.</td></tr>';
+        filterRegistrations();
       });
 
       // Listen to artists

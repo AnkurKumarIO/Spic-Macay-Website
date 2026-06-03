@@ -1001,8 +1001,22 @@
       const streams = [...document.querySelectorAll('input[name="stream"]:checked')].map(i => i.value);
       const activities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i => i.value);
 
-      // Unique Registration ID
-      const regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      let regId;
+      try {
+        const querySnapshot = await db.collection('registrations')
+          .where('email', '==', em)
+          .limit(1)
+          .get();
+
+        if (!querySnapshot.empty) {
+          regId = querySnapshot.docs[0].data().registrationId;
+        } else {
+          regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+      } catch (err) {
+        console.error("Checking existing registration failed, fallback to new ID:", err);
+        regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      }
 
       const registrationData = {
         registrationId: regId,
