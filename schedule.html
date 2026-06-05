@@ -1455,8 +1455,99 @@
   </footer>
 
   <div class="toast" id="toast"></div>
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="scripts/main.js"></script>
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+      authDomain: "spic-macay-vnit.firebaseapp.com",
+      projectId: "spic-macay-vnit",
+      storageBucket: "spic-macay-vnit.firebasestorage.app",
+      messagingSenderId: "768698124036",
+      appId: "1:768698124036:web:311cc550bef0ac56133251",
+      measurementId: "G-MP0S6HFP5T"
+    };
+
+    let db;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      loadEventsFromFirestore();
+    } catch (e) {
+      console.warn("Firebase failed to load or initialize, using static fallbacks.", e);
+    }
+
+    async function loadEventsFromFirestore() {
+      if (!db) return;
+      try {
+        const snapshot = await db.collection('events').get();
+        if (snapshot.empty) {
+          console.log("No dynamic events found, using static fallbacks.");
+          return;
+        }
+
+        const eventsByDay = {
+          'Day 1': [],
+          'Day 2': [],
+          'Day 3': []
+        };
+
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const day = d.day || 'Day 1';
+          if (eventsByDay[day]) {
+            eventsByDay[day].push(d);
+          }
+        });
+
+        for (const [dayKey, events] of Object.entries(eventsByDay)) {
+          const dayId = dayKey.toLowerCase().replace(' ', '');
+          const dayEl = document.getElementById(dayId);
+          if (!dayEl) continue;
+
+          const chipEl = dayEl.querySelector('.day-header .chip');
+          if (chipEl) {
+            chipEl.textContent = `${events.length} Event${events.length !== 1 ? 's' : ''}`;
+          }
+
+          const eventListEl = dayEl.querySelector('.event-list');
+          if (eventListEl) {
+            let html = '';
+            events.forEach(d => {
+              const statusClass = d.status === 'live' ? 'status-live' : (d.status === 'over' || d.status === 'completed' ? 'status-over' : 'status-upcoming');
+              const statusLabel = d.status === 'live' ? 'Live' : (d.status === 'over' || d.status === 'completed' ? 'Over' : 'Upcoming');
+              
+              html += `
+                <div class="event-card category-${d.category || 'concert'}">
+                  <span class="status-badge ${statusClass}">${statusLabel}</span>
+                  <div class="event-timeline">
+                    <span class="event-time-range">${d.timeRange}</span>
+                    <span class="event-duration">${d.duration || ''}</span>
+                  </div>
+                  <div class="event-main">
+                    <div class="event-meta">
+                      <span class="event-category">${d.category || ''}</span>
+                    </div>
+                    <h3 class="event-title">${d.title}</h3>
+                    <span class="event-artist">${d.artistName || ''}</span>
+                    <p class="event-desc">${d.description || ''}</p>
+                  </div>
+                </div>
+              `;
+            });
+            eventListEl.innerHTML = html;
+          }
+        }
+        syncEventStatuses();
+        if (typeof initScrollReveal === 'function') initScrollReveal();
+      } catch (err) {
+        console.error("Error loading events from Firestore:", err);
+      }
+    }
+
     function showDay(id, btn) {
       document.querySelectorAll('.day-view').forEach(v => v.classList.remove('active'));
       document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));

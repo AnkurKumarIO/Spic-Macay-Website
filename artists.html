@@ -953,8 +953,68 @@
   </div>
 
   <div class="toast" id="toast"></div>
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="scripts/main.js"></script>
   <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+      authDomain: "spic-macay-vnit.firebaseapp.com",
+      projectId: "spic-macay-vnit",
+      storageBucket: "spic-macay-vnit.firebasestorage.app",
+      messagingSenderId: "768698124036",
+      appId: "1:768698124036:web:311cc550bef0ac56133251",
+      measurementId: "G-MP0S6HFP5T"
+    };
+
+    let db;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      loadArtistsFromFirestore();
+    } catch (e) {
+      console.warn("Firebase failed to load or initialize, using static fallbacks.", e);
+    }
+
+    async function loadArtistsFromFirestore() {
+      if (!db) return;
+      try {
+        const snapshot = await db.collection('artists').get();
+        if (snapshot.empty) {
+          console.log("No dynamic artists found, using static fallbacks.");
+          return;
+        }
+        
+        let html = '';
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <div class="artist-card" data-discipline="${d.discipline || 'vocal'}" onclick="openWikiModal(this)">
+              <div class="card-img-wrap">
+                <img src="${d.imageUrl}" alt="${d.name}"/>
+              </div>
+              <div class="card-body">
+                <span class="blog-category">${d.category || ''}</span>
+                <h2 class="artist-name">${d.name}</h2>
+                <p class="artist-meta-desc">${d.metaSubtitle || ''}</p>
+                <p class="blog-excerpt">${d.excerpt || ''}</p>
+                <span class="blog-read-more">Read Profile →</span>
+              </div>
+              <div class="hidden-full-desc">
+                ${d.bioHTML || ''}
+              </div>
+            </div>
+          `;
+        });
+        document.getElementById('artistsGrid').innerHTML = html;
+        if (typeof initScrollReveal === 'function') initScrollReveal();
+      } catch (err) {
+        console.error("Error loading artists from Firestore:", err);
+      }
+    }
+
     // Discipline filter
     document.querySelectorAll('.filter-tab').forEach(tab => {
       tab.addEventListener('click', () => {

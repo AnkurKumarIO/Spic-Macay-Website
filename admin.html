@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Portal — SPIC MACAY VNIT Nagpur</title>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    body { background: var(--surface-dim); min-height: 100vh; }
+    
+    .admin-container {
+      max-width: 1200px;
+      margin: 80px auto 40px auto;
+      padding: 24px;
+    }
+
+    /* Auth Screen styling */
+    .auth-card {
+      max-width: 420px;
+      margin: 120px auto;
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.08);
+      border-radius: 16px;
+      padding: 40px 32px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    /* Admin Workspace styling */
+    .admin-workspace {
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .admin-workspace.active {
+      display: flex;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(245, 240, 232, 0.08);
+      padding-bottom: 16px;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid rgba(245, 240, 232, 0.08);
+      padding-bottom: 12px;
+      overflow-x: auto;
+    }
+    .admin-tab {
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .admin-tab:hover {
+      color: var(--primary);
+      background: rgba(232, 119, 34, 0.05);
+    }
+    .admin-tab.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--primary-container);
+    }
+    .day-tab {
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(245,240,232,0.12);
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      letter-spacing: 0.03em;
+    }
+    .day-tab:hover { color: var(--primary); background: rgba(232,119,34,0.05); }
+    .day-tab.active { background: var(--primary-container); color: var(--on-primary-container); border-color: transparent; }
+
+    .panel-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .panel-section.active {
+      display: block;
+    }
+
+    /* Card styling */
+    .dashboard-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.06);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    /* Table styling */
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .admin-table th, .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(245, 240, 232, 0.06);
+      font-size: 0.875rem;
+    }
+    .admin-table th {
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    .admin-table tr:hover td {
+      background: rgba(245, 240, 232, 0.02);
+    }
+
+    /* Badges */
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-success { background: rgba(74, 222, 128, 0.15); color: #86efac; border: 1px solid rgba(74, 222, 128, 0.25); }
+    .badge-warning { background: rgba(232, 119, 34, 0.15); color: var(--primary); border: 1px solid rgba(232, 119, 34, 0.25); }
+
+    /* Action buttons */
+    .action-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Modal dialog styling */
+    .admin-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      background: rgba(15, 12, 10, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .admin-modal.active {
+      display: flex;
+    }
+    .modal-container {
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.1);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      animation: slideUp 0.3s ease;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-full {
+      grid-column: span 2;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      padding: 12px 24px;
+      border-radius: var(--radius-lg);
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      z-index: 4000;
+      display: none;
+      animation: slideUp 0.3s ease;
+    }
+    .toast.success { border-left: 4px solid var(--primary-container); }
+    .toast.error { border-left: 4px solid #c4261c; }
+
+    /* Fix header space */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+
+    /* ── Mobile Responsive ─────────────────────────── */
+    @media (max-width: 768px) {
+
+      /* Container */
+      .admin-container {
+        margin: 64px auto 24px auto;
+        padding: 12px;
+      }
+
+      /* Auth card */
+      .auth-card {
+        margin: 80px auto;
+        padding: 28px 18px;
+      }
+
+      /* Header — stack title and buttons */
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .admin-header > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+      }
+      .admin-header > div:last-child .btn {
+        flex: 1;
+        text-align: center;
+        font-size: 0.75rem;
+        padding: 8px 10px;
+      }
+
+      /* Tabs — scrollable row, smaller text */
+      .admin-tabs {
+        gap: 6px;
+        padding-bottom: 10px;
+      }
+      .admin-tab {
+        padding: 8px 14px;
+        font-size: 0.78rem;
+      }
+
+      /* Stats bar — stack vertically */
+      #attendeeStatsBar {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 12px 14px;
+      }
+      #attendeeStatsBar span[style*="margin:0 24px"] {
+        display: none;
+      }
+      #attendeeStatsBar .btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 4px;
+      }
+
+      /* Dashboard cards */
+      .dashboard-card {
+        padding: 16px 12px;
+        border-radius: 12px;
+      }
+
+      /* Section headers — stack title + action button */
+      .dashboard-card > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+      }
+      .dashboard-card > div:first-child > div {
+        width: 100%;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      /* Search input full width */
+      #regSearchInput {
+        width: 100% !important;
+      }
+      .dashboard-card > div:first-child .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Tables — reduce padding, smaller font */
+      .admin-table th,
+      .admin-table td {
+        padding: 10px 10px;
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+      .admin-table th {
+        font-size: 0.68rem;
+      }
+
+      /* Action buttons side by side */
+      .action-btn-group {
+        flex-direction: column;
+        gap: 4px;
+      }
+      .action-btn-group .btn {
+        font-size: 0.7rem;
+        padding: 5px 8px;
+      }
+
+      /* Day sub-tabs wrap */
+      #section-schedule .dashboard-card > div:nth-child(2) {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .day-tab {
+        padding: 7px 12px;
+        font-size: 0.75rem;
+      }
+
+      /* Modal full screen on mobile */
+      .modal-container {
+        padding: 20px 16px;
+        max-height: 95vh;
+        border-radius: 12px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-full {
+        grid-column: span 1;
+      }
+
+      /* Scanner modal */
+      #scannerModal > div {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ══ Navigation ════════════════════════════════════ -->
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+      </a>
+      <div class="nav-actions">
+        <a href="index.html" class="btn btn-secondary btn-sm">← Back to Site</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    
+    <!-- ── Auth Guard Screen ──────────────────────────── -->
+    <div class="auth-card" id="authCard">
+      <h1 class="headline-md" style="margin-bottom: 8px;">Admin Login</h1>
+      <p class="body-md text-muted" style="margin-bottom: 28px;">Sign in to manage SPIC MACAY details.</p>
+      
+      <div style="display:flex; flex-direction:column; gap:16px; text-align:left; margin-bottom: 24px;">
+        <div class="input-group">
+          <label class="input-label" for="loginEmail">Email Address</label>
+          <input class="input-field" type="email" id="loginEmail" placeholder="admin@vnit.ac.in" />
+        </div>
+        <div class="input-group">
+          <label class="input-label" for="loginPassword">Password</label>
+          <input class="input-field" type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+      </div>
+      <button class="btn btn-primary w-full" id="loginBtn" onclick="handleLogin()">Sign In</button>
+    </div>
+
+    <!-- ── Admin Workspace Screen ──────────────────────── -->
+    <div class="admin-workspace" id="adminWorkspace">
+      <div class="admin-header">
+        <div>
+          <h1 class="headline-md">Admin Dashboard</h1>
+          <p class="body-sm text-muted">Virasat 2026 Management Console</p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-secondary btn-sm" onclick="seedInitialData()">Seed Sample Data</button>
+          <button class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('registrations', this)">Registrations</button>
+        <button class="admin-tab" onclick="switchTab('artists', this)">Artists &amp; Gurus</button>
+        <button class="admin-tab" onclick="switchTab('schedule', this)">Events/Schedule</button>
+        <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
+      </div>
+
+      <!-- Attendee Stats Bar -->
+      <div id="attendeeStatsBar" style="display:none; padding:14px 20px; background:var(--surface-container); border:1px solid rgba(245,240,232,0.08); border-radius:12px; margin-top:16px; align-items:center; flex-wrap:wrap; gap:0;">
+        <span style="font-size:0.875rem; font-weight:600; color:var(--on-surface);">
+          Registered Attendees: <span id="statTotal" style="color:var(--primary-container);">0</span>
+        </span>
+        <span style="margin:0 24px; color:rgba(245,240,232,0.2);">|</span>
+        <span style="font-size:0.875rem; font-weight:600; color:var(--on-surface);">
+          Checked In Attendees: <span id="statCheckedIn" style="color:#4caf7d;">0</span>
+        </span>
+        <span style="flex:1;"></span>
+        <button class="btn btn-sm" onclick="openScanner()" style="background:var(--primary-container);color:var(--on-primary-container);border:none;font-weight:700;letter-spacing:0.04em;">📷 Scanner</button>
+      </div>
+
+      <!-- Registrations Section -->
+      <div class="panel-section active" id="section-registrations" style="margin-top:8px;">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
+            <h2 class="headline-sm">Registered Attendees</h2>
+            <div style="display:flex; gap:12px; align-items:center;">
+              <input type="text" id="regSearchInput" placeholder="Search name, email, roll..." class="input-field" style="width:260px; padding:8px 12px; margin-bottom:0;" oninput="filterRegistrations()" />
+              <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsCSV()">Download CSV</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Roll Number</th>
+                  <th>Streams / Preferences</th>
+                  <th>Check-In</th>
+                </tr>
+              </thead>
+              <tbody id="registrationsTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artists Section -->
+      <div class="panel-section" id="section-artists">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 class="headline-sm">Manage Artists</h2>
+            <button class="btn btn-primary btn-sm" onclick="openArtistModal()">+ Add Artist</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Discipline</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="artistsTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Section -->
+      <div class="panel-section" id="section-schedule">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h2 class="headline-sm">Manage Schedule</h2>
+            <button class="btn btn-primary btn-sm" onclick="openEventModal()">+ Add Event</button>
+          </div>
+          <!-- Day Sub-tabs -->
+          <div style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid rgba(245,240,232,0.08); padding-bottom:12px;">
+            <button class="day-tab active" id="dayTab1" onclick="switchDayTab('day1', this)">Day 1 — July 25</button>
+            <button class="day-tab" id="dayTab2" onclick="switchDayTab('day2', this)">Day 2 — July 26</button>
+            <button class="day-tab" id="dayTab3" onclick="switchDayTab('day3', this)">Day 3 — July 27</button>
+          </div>
+          <!-- Day 1 Table -->
+          <div id="dayPanel-day1" class="day-panel">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="scheduleBody-day1"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 1.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Day 2 Table -->
+          <div id="dayPanel-day2" class="day-panel" style="display:none;">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="scheduleBody-day2"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 2.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Day 3 Table -->
+          <div id="dayPanel-day3" class="day-panel" style="display:none;">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="scheduleBody-day3"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 3.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery Section -->
+      <div class="panel-section" id="section-gallery">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 class="headline-sm">Manage Gallery</h2>
+            <button class="btn btn-primary btn-sm" onclick="openGalleryModal()">+ Add Moment</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Caption</th>
+                  <th>Category</th>
+                  <th>Tag</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="galleryTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Modals Section ──────────────────────────────── -->
+
+  <!-- Artist Modal -->
+  <div class="admin-modal" id="artistModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="artistModalTitle" style="margin-bottom:24px;">Add Performing Artist</h2>
+      <form id="artistForm" onsubmit="saveArtist(event)">
+        <input type="hidden" id="artistId"/>
+        <div class="form-grid">
+          <div class="input-group">
+            <label class="input-label" for="artName">Artist Name *</label>
+            <input class="input-field" type="text" id="artName" required placeholder="e.g. Pt. Hariprasad Chaurasia"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="artDiscipline">Discipline Category</label>
+            <select class="input-field" id="artDiscipline" onchange="toggleOtherDiscipline(this)">
+              <option value="vocal">Vocal</option>
+              <option value="instrumental">Instrumental</option>
+              <option value="dance">Dance</option>
+              <option value="craft">Craft &amp; Folk</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="input-group" id="otherDisciplineGroup" style="display:none;">
+            <label class="input-label" for="artDisciplineOther">Specify Discipline</label>
+            <input class="input-field" type="text" id="artDisciplineOther" placeholder="e.g. Puppetry, Martial Arts..."/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="artCategory">Sub-Category</label>
+            <input class="input-field" type="text" id="artCategory" placeholder="e.g. Sitar, Kathak, Flute"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="artMeta">Gharana / Meta Subtitle</label>
+            <input class="input-field" type="text" id="artMeta" placeholder="e.g. Maihar Gharana Legend"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="artImg">Artist Photo</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="artImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewArtistImage(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="artImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewArtistImageUrl(this)"/>
+            </div>
+            <div id="artImgPreview" style="margin-top:10px; display:none;">
+              <img id="artImgPreviewImg" src="" alt="Preview" style="width:80px; height:80px; object-fit:cover; border-radius:10px; border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearArtistImage()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-left:8px;">✕ Remove</button>
+            </div>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="artExcerpt">Short Card Excerpt *</label>
+            <textarea class="input-field" id="artExcerpt" required rows="2" placeholder="Describe the artist in 2-3 sentences..."></textarea>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="artBio">Full Wiki Profile Biography</label>
+            <textarea class="input-field" id="artBio" rows="6" placeholder="Write the biography here. Leave a blank line between paragraphs. Each paragraph will be formatted automatically."></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeArtistModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Artist</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Event Modal -->
+  <div class="admin-modal" id="eventModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="eventModalTitle" style="margin-bottom:24px;">Add Schedule Event</h2>
+      <form id="eventForm" onsubmit="saveEvent(event)">
+        <input type="hidden" id="eventId"/>
+        <div class="form-grid">
+          <div class="input-group">
+            <label class="input-label" for="evTitle">Event Title *</label>
+            <input class="input-field" type="text" id="evTitle" required placeholder="e.g. Sitar Recital"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evArtist">Artist Name</label>
+            <input class="input-field" type="text" id="evArtist" placeholder="e.g. Pt. Kushal Das"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evTime">Time Range *</label>
+            <input class="input-field" type="text" id="evTime" required placeholder="e.g. 06:00 PM – 08:30 PM"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evDuration">Duration Descriptor</label>
+            <input class="input-field" type="text" id="evDuration" placeholder="e.g. 2.5 Hours"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evDay">Day *</label>
+            <select class="input-field" id="evDay" required>
+              <option value="Day 1">Day 1 (July 25)</option>
+              <option value="Day 2">Day 2 (July 26)</option>
+              <option value="Day 3">Day 3 (July 27)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evCategory">Category Type *</label>
+            <select class="input-field" id="evCategory" required>
+              <option value="concert">Concert</option>
+              <option value="yoga">Yoga</option>
+              <option value="workshop">Workshop</option>
+              <option value="heritage">Heritage</option>
+              <option value="ceremony">Ceremony</option>
+              <option value="special">Special</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="evStatus">Live Status *</label>
+            <select class="input-field" id="evStatus" required>
+              <option value="upcoming">Upcoming</option>
+              <option value="live">Live Now</option>
+              <option value="over">Completed</option>
+            </select>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="evDesc">Short Details Description</label>
+            <textarea class="input-field" id="evDesc" rows="3" placeholder="Additional details, venue parameters, etc."></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeEventModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Gallery Modal -->
+  <div class="admin-modal" id="galleryModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="galleryModalTitle" style="margin-bottom:24px;">Add Gallery Moment</h2>
+      <form id="galleryForm" onsubmit="saveGallery(event)">
+        <input type="hidden" id="galleryId"/>
+        <div class="form-grid">
+          <div class="input-group form-full">
+            <label class="input-label" for="galImg">Image</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="galImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewGalleryImage(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="galImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewGalleryImageUrl(this)"/>
+            </div>
+            <div id="galImgPreview" style="margin-top:10px; display:none;">
+              <img id="galImgPreviewImg" src="" alt="Preview" style="width:120px; height:80px; object-fit:cover; border-radius:8px; border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearGalleryImage()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-left:8px;">✕ Remove</button>
+            </div>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="galCaption">Caption</label>
+            <input class="input-field" type="text" id="galCaption" placeholder="e.g. Sitar Masterclass Session"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="galCategory">Category Tag Filter</label>
+            <select class="input-field" id="galCategory">
+              <option value="concerts">Evening Concerts</option>
+              <option value="workshops">Workshops</option>
+              <option value="yoga">Naad Yoga</option>
+              <option value="dance">Classical Dance</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="galTag">Hover Tag Title</label>
+            <input class="input-field" type="text" id="galTag" placeholder="e.g. LIVE CONCERT, WORKSHOP"/>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeGalleryModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Moment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="adminToast"></div>
+
+  <!-- ── QR Scanner Modal ─────────────────────────────── -->
+  <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:var(--surface-container); border-radius:20px; padding:28px; max-width:420px; width:100%; text-align:center; position:relative;">
+      <button onclick="closeScanner()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>
+      <h2 class="headline-sm" style="margin-bottom:4px;">QR Scanner</h2>
+      <p class="body-sm text-muted" style="margin-bottom:16px;">Point the camera at the attendee's ticket QR code</p>
+
+      <!-- Camera feed -->
+      <div style="position:relative; width:100%; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#000; margin-bottom:16px;">
+        <video id="scannerVideo" style="width:100%; height:100%; object-fit:cover;" playsinline muted></video>
+        <canvas id="scannerCanvas" style="display:none;"></canvas>
+        <!-- Targeting reticle -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <div style="width:65%;aspect-ratio:1;border:3px solid #fff200;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.35);"></div>
+        </div>
+      </div>
+
+      <!-- Status strip -->
+      <div id="scannerStatus" style="min-height:48px; display:flex; align-items:center; justify-content:center; gap:10px; border-radius:10px; padding:10px 16px; background:rgba(245,240,232,0.05); font-size:0.875rem; font-weight:600; color:var(--on-surface-variant);">
+        <span id="scannerStatusIcon">🔍</span>
+        <span id="scannerStatusText">Scanning…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- jsQR — fast QR decoder -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+      authDomain: "spic-macay-vnit.firebaseapp.com",
+      projectId: "spic-macay-vnit",
+      storageBucket: "spic-macay-vnit.firebasestorage.app",
+      messagingSenderId: "768698124036",
+      appId: "1:768698124036:web:311cc550bef0ac56133251",
+      measurementId: "G-MP0S6HFP5T"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Session observer
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('authCard').style.display = 'none';
+        document.getElementById('adminWorkspace').classList.add('active');
+        loadAllData();
+      } else {
+        document.getElementById('authCard').style.display = 'block';
+        document.getElementById('adminWorkspace').classList.remove('active');
+      }
+    });
+
+    // Sign in handling
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginBtn');
+
+      if (!email || !pass) { showToast('Please enter credentials.', 'error'); return; }
+      btn.textContent = 'Logging in...';
+      btn.disabled = true;
+
+      // Local bypass credentials
+      if (email === 'admin@spicmacay.vnit' && pass === 'Virasat@2026') {
+        document.getElementById('authCard').style.display = 'none';
+        document.getElementById('adminWorkspace').classList.add('active');
+        loadAllData();
+        showToast('Signed in successfully.', 'success');
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+        return;
+      }
+
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+        showToast('Signed in successfully.', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast(err.message || 'Authentication failed.', 'error');
+      } finally {
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
+    }
+
+    async function handleLogout() {
+      await auth.signOut();
+      showToast('Signed out.', 'success');
+    }
+
+    // Switch Panel Tabs
+    function switchTab(tab, el) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+
+      document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
+      document.getElementById('section-' + tab).classList.add('active');
+
+      // Show stats bar only on registrations tab
+      const statsBar = document.getElementById('attendeeStatsBar');
+      if (tab === 'registrations') {
+        updateAttendeeStats();
+      } else {
+        statsBar.style.display = 'none';
+      }
+    }
+
+    // Toast notices
+    function showToast(msg, type) {
+      const toast = document.getElementById('adminToast');
+      toast.textContent = msg;
+      toast.className = `toast ${type}`;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    }
+
+    let allRegistrations = [];
+
+    function updateAttendeeStats() {
+      const total = allRegistrations.length;
+      const checkedIn = allRegistrations.filter(r => r.checkedIn).length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statCheckedIn').textContent = checkedIn;
+      document.getElementById('attendeeStatsBar').style.display = total > 0 ? 'flex' : 'none';
+    }
+
+    function filterRegistrations() {
+      const query = document.getElementById('regSearchInput').value.toLowerCase().trim();
+      const filtered = allRegistrations.filter(r => {
+        const fullName = `${r.firstName} ${r.lastName}`.toLowerCase();
+        const email = (r.email || '').toLowerCase();
+        const phone = (r.phone || '').toLowerCase();
+        const roll = (r.rollNumber || '').toLowerCase();
+        const regId = (r.registrationId || '').toLowerCase();
+        
+        return fullName.includes(query) || 
+               email.includes(query) || 
+               phone.includes(query) || 
+               roll.includes(query) || 
+               regId.includes(query);
+      });
+
+      let html = '';
+      filtered.forEach(d => {
+        const checkInClass = d.checkedIn ? 'badge-success' : 'badge-warning';
+        const checkInText = d.checkedIn ? 'Checked In' : 'Pending';
+        html += `
+          <tr>
+            <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;">${d.registrationId}</span></td>
+            <td style="font-weight:600;">${d.firstName} ${d.lastName}</td>
+            <td>${d.email}</td>
+            <td>${d.phone}</td>
+            <td>${d.rollNumber || '—'}</td>
+            <td><span style="font-size:0.8rem;opacity:0.8;">${[...(d.streams||[]), ...(d.activities||[])].join(', ') || '—'}</span></td>
+            <td>
+              <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${d.id}', ${!!d.checkedIn})" style="cursor:pointer;">
+                ${checkInText}
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No matching registrations found.</td></tr>';
+    }
+
+    function downloadRegistrationsCSV() {
+      if (!allRegistrations.length) {
+        showToast('No registrations to download.', 'error');
+        return;
+      }
+      
+      const headers = ['Registration ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Roll Number', 'Branch', 'Year of Study', 'Preferences', 'Checked In'];
+      const rows = allRegistrations.map(r => [
+        r.registrationId || '',
+        r.firstName || '',
+        r.lastName || '',
+        r.email || '',
+        r.phone || '',
+        r.rollNumber || '',
+        r.branch || '',
+        r.yearOfStudy || '',
+        [...(r.streams || []), ...(r.activities || [])].join('; '),
+        r.checkedIn ? 'Yes' : 'No'
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + [headers.join(','), ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))].join('\n');
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `spic_macay_registrations_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV downloaded successfully.', 'success');
+    }
+
+    // LOAD ALL DATA LISTS
+    function loadAllData() {
+      // Listen to real-time registrations
+      db.collection('registrations').orderBy('createdAt', 'desc').onSnapshot(snap => {
+        allRegistrations = [];
+        snap.forEach(doc => {
+          const d = doc.data();
+          allRegistrations.push({ id: doc.id, ...d });
+        });
+        filterRegistrations();
+        updateAttendeeStats();
+      });
+
+      db.collection('artists').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <tr>
+              <td><img src="${d.imageUrl || DEFAULT_AVATAR}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"/></td>
+              <td style="font-weight:600;">${d.name}</td>
+              <td><span class="admin-badge badge-success">${d.discipline}</span></td>
+              <td style="max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.8;">${d.excerpt}</td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editArtist('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('artists', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById('artistsTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No artists added.</td></tr>';
+      });
+
+      // Listen to events
+      db.collection('events').orderBy('day').onSnapshot(snap => {
+        const dayMap = { 'Day 1': [], 'Day 2': [], 'Day 3': [] };
+        snap.forEach(doc => {
+          const d = { id: doc.id, ...doc.data() };
+          if (dayMap[d.day] !== undefined) dayMap[d.day].push(d);
+          else dayMap['Day 1'].push(d);
+        });
+        ['Day 1', 'Day 2', 'Day 3'].forEach((day, i) => {
+          const bodyId = `scheduleBody-day${i + 1}`;
+          const events = dayMap[day];
+          if (!events.length) {
+            document.getElementById(bodyId).innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for ${day}.</td></tr>`;
+            return;
+          }
+          let html = '';
+          events.forEach(d => {
+            let statusClass = 'badge-warning';
+            if (d.status === 'live') statusClass = 'badge-success';
+            if (d.status === 'over') statusClass = 'admin-badge';
+            html += `
+              <tr>
+                <td><span style="font-weight:600;">${d.timeRange || '—'}</span><br/><span style="font-size:0.75rem;opacity:0.7;">${d.duration || ''}</span></td>
+                <td style="font-weight:600;">${d.title}</td>
+                <td>${d.artistName || '—'}</td>
+                <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.category}</span></td>
+                <td><span class="admin-badge ${statusClass}">${d.status}</span></td>
+                <td>
+                  <div class="action-btn-group">
+                    <button class="btn btn-secondary btn-sm" onclick="editEvent('${d.id}')">Edit</button>
+                    <button class="btn btn-secondary btn-sm" onclick="deleteDoc('events', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                  </div>
+                </td>
+              </tr>`;
+          });
+          document.getElementById(bodyId).innerHTML = html;
+        });
+      });
+
+      // Listen to gallery
+      db.collection('gallery').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <tr>
+              <td><img src="${d.imageUrl || DEFAULT_AVATAR}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;"/></td>
+              <td style="font-weight:600;">${d.caption}</td>
+              <td>${d.category}</td>
+              <td><span class="admin-badge badge-warning">${d.tag}</span></td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editGallery('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('gallery', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        document.getElementById('galleryTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No moments added.</td></tr>';
+      });
+    }
+
+    // Toggle Registration Gate Check-In Status
+    async function toggleCheckIn(id, currentStatus) {
+      try {
+        await db.collection('registrations').doc(id).update({ checkedIn: !currentStatus });
+        showToast('Registration status updated.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // DELETE document utility
+    async function deleteDoc(col, id) {
+      if (!confirm('Are you sure you want to delete this item?')) return;
+      try {
+        await db.collection(col).doc(id).delete();
+        showToast('Item deleted successfully.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ARTIST EDIT / SAVE
+    function openArtistModal() {
+      document.getElementById('artistForm').reset();
+      document.getElementById('artistId').value = '';
+      document.getElementById('artistModalTitle').textContent = 'Add Performing Artist';
+      document.getElementById('otherDisciplineGroup').style.display = 'none';
+      document.getElementById('artImgPreview').style.display = 'none';
+      document.getElementById('artImgPreviewImg').src = '';
+      document.getElementById('artistModal').classList.add('active');
+    }
+    function closeArtistModal() {
+      document.getElementById('artistModal').classList.remove('active');
+    }
+    function toggleOtherDiscipline(sel) {
+      document.getElementById('otherDisciplineGroup').style.display = sel.value === 'other' ? 'block' : 'none';
+    }
+    function previewArtistImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('artImgPreviewImg').src = e.target.result;
+          document.getElementById('artImgPreview').style.display = 'block';
+          document.getElementById('artImg').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function previewArtistImageUrl(input) {
+      if (input.value) {
+        document.getElementById('artImgPreviewImg').src = input.value;
+        document.getElementById('artImgPreview').style.display = 'block';
+        document.getElementById('artImgFile').value = '';
+      }
+    }
+    function clearArtistImage() {
+      document.getElementById('artImgFile').value = '';
+      document.getElementById('artImg').value = '';
+      document.getElementById('artImgPreviewImg').src = '';
+      document.getElementById('artImgPreview').style.display = 'none';
+    }
+    // Convert plain text bio to HTML paragraphs
+    function plainTextToHTML(text) {
+      if (!text) return '';
+      // If it already looks like HTML, return as-is
+      if (/<[a-z][\s\S]*>/i.test(text)) return text;
+      return text.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`).join('\n');
+    }
+    const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23333"/><circle cx="100" cy="80" r="40" fill="%23666"/><ellipse cx="100" cy="170" rx="60" ry="40" fill="%23555"/></svg>';
+    async function editArtist(id) {
+      try {
+        const doc = await db.collection('artists').doc(id).get();
+        const d = doc.data();
+        document.getElementById('artistId').value = id;
+        document.getElementById('artName').value = d.name;
+        // Handle discipline — if not in list, set to other
+        const disciplineOpts = ['vocal','instrumental','dance','craft'];
+        if (disciplineOpts.includes(d.discipline)) {
+          document.getElementById('artDiscipline').value = d.discipline;
+          document.getElementById('otherDisciplineGroup').style.display = 'none';
+        } else {
+          document.getElementById('artDiscipline').value = 'other';
+          document.getElementById('artDisciplineOther').value = d.discipline || '';
+          document.getElementById('otherDisciplineGroup').style.display = 'block';
+        }
+        document.getElementById('artCategory').value = d.category;
+        document.getElementById('artMeta').value = d.metaSubtitle || d.artistMetaDesc || '';
+        document.getElementById('artImg').value = d.imageUrl || '';
+        // Show image preview
+        if (d.imageUrl) {
+          document.getElementById('artImgPreviewImg').src = d.imageUrl;
+          document.getElementById('artImgPreview').style.display = 'block';
+        } else {
+          document.getElementById('artImgPreview').style.display = 'none';
+        }
+        document.getElementById('artExcerpt').value = d.excerpt;
+        document.getElementById('artBio').value = d.bioHTML || d.fullDescHTML || '';
+        document.getElementById('artistModalTitle').textContent = 'Edit Performing Artist';
+        document.getElementById('artistModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+    async function saveArtist(e) {
+      e.preventDefault();
+      const id = document.getElementById('artistId').value;
+      // Resolve discipline
+      const disciplineRaw = document.getElementById('artDiscipline').value;
+      const discipline = disciplineRaw === 'other'
+        ? (document.getElementById('artDisciplineOther').value.trim() || 'Other')
+        : disciplineRaw;
+      // Resolve image — file upload takes priority over URL
+      const fileInput = document.getElementById('artImgFile');
+      let imageUrl = document.getElementById('artImg').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        // Convert uploaded file to base64 data URL for storage
+        imageUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
+      if (!imageUrl) imageUrl = DEFAULT_AVATAR;
+      // Convert plain text bio to HTML
+      const bioRaw = document.getElementById('artBio').value.trim();
+      const bioHTML = plainTextToHTML(bioRaw);
+      const data = {
+        name: document.getElementById('artName').value.trim(),
+        discipline,
+        category: document.getElementById('artCategory').value.trim(),
+        metaSubtitle: document.getElementById('artMeta').value.trim(),
+        imageUrl,
+        excerpt: document.getElementById('artExcerpt').value.trim(),
+        bioHTML
+      };
+      try {
+        if (id) {
+          await db.collection('artists').doc(id).update(data);
+        } else {
+          await db.collection('artists').add(data);
+        }
+        closeArtistModal();
+        showToast('Artist profile saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // EVENT EDIT / SAVE
+    function openEventModal() {
+      document.getElementById('eventForm').reset();
+      document.getElementById('eventId').value = '';
+      document.getElementById('eventModalTitle').textContent = 'Add Schedule Event';
+      document.getElementById('eventModal').classList.add('active');
+    }
+    function closeEventModal() {
+      document.getElementById('eventModal').classList.remove('active');
+    }
+    async function editEvent(id) {
+      try {
+        const doc = await db.collection('events').doc(id).get();
+        const d = doc.data();
+        document.getElementById('eventId').value = id;
+        document.getElementById('evTitle').value = d.title;
+        document.getElementById('evArtist').value = d.artistName || '';
+        document.getElementById('evTime').value = d.timeRange;
+        document.getElementById('evDuration').value = d.duration || '';
+        document.getElementById('evDay').value = d.day;
+        document.getElementById('evCategory').value = d.category;
+        document.getElementById('evStatus').value = d.status;
+        document.getElementById('evDesc').value = d.description || '';
+        document.getElementById('eventModalTitle').textContent = 'Edit Schedule Event';
+        document.getElementById('eventModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+    async function saveEvent(e) {
+      e.preventDefault();
+      const id = document.getElementById('eventId').value;
+      const data = {
+        title: document.getElementById('evTitle').value.trim(),
+        artistName: document.getElementById('evArtist').value.trim(),
+        timeRange: document.getElementById('evTime').value.trim(),
+        duration: document.getElementById('evDuration').value.trim(),
+        day: document.getElementById('evDay').value,
+        category: document.getElementById('evCategory').value,
+        status: document.getElementById('evStatus').value,
+        description: document.getElementById('evDesc').value.trim()
+      };
+      try {
+        if (id) {
+          await db.collection('events').doc(id).update(data);
+        } else {
+          await db.collection('events').add(data);
+        }
+        closeEventModal();
+        showToast('Schedule event saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // GALLERY EDIT / SAVE
+    function openGalleryModal() {
+      document.getElementById('galleryForm').reset();
+      document.getElementById('galleryId').value = '';
+      document.getElementById('galleryModalTitle').textContent = 'Add Gallery Moment';
+      document.getElementById('galImgPreview').style.display = 'none';
+      document.getElementById('galImgPreviewImg').src = '';
+      document.getElementById('galleryModal').classList.add('active');
+    }
+    function closeGalleryModal() {
+      document.getElementById('galleryModal').classList.remove('active');
+    }
+    function previewGalleryImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('galImgPreviewImg').src = e.target.result;
+          document.getElementById('galImgPreview').style.display = 'block';
+          document.getElementById('galImg').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function previewGalleryImageUrl(input) {
+      if (input.value) {
+        document.getElementById('galImgPreviewImg').src = input.value;
+        document.getElementById('galImgPreview').style.display = 'block';
+        document.getElementById('galImgFile').value = '';
+      }
+    }
+    function clearGalleryImage() {
+      document.getElementById('galImgFile').value = '';
+      document.getElementById('galImg').value = '';
+      document.getElementById('galImgPreviewImg').src = '';
+      document.getElementById('galImgPreview').style.display = 'none';
+    }
+    async function editGallery(id) {
+      try {
+        const doc = await db.collection('gallery').doc(id).get();
+        const d = doc.data();
+        document.getElementById('galleryId').value = id;
+        document.getElementById('galImg').value = d.imageUrl || '';
+        if (d.imageUrl) {
+          document.getElementById('galImgPreviewImg').src = d.imageUrl;
+          document.getElementById('galImgPreview').style.display = 'block';
+        } else {
+          document.getElementById('galImgPreview').style.display = 'none';
+        }
+        document.getElementById('galCaption').value = d.caption || '';
+        document.getElementById('galCategory').value = d.category || 'concerts';
+        document.getElementById('galTag').value = d.tag || '';
+        document.getElementById('galleryModalTitle').textContent = 'Edit Gallery Moment';
+        document.getElementById('galleryModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+    async function saveGallery(e) {
+      e.preventDefault();
+      const id = document.getElementById('galleryId').value;
+      // Resolve image
+      const fileInput = document.getElementById('galImgFile');
+      let imageUrl = document.getElementById('galImg').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        imageUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
+      const data = {
+        imageUrl,
+        caption: document.getElementById('galCaption').value.trim(),
+        category: document.getElementById('galCategory').value,
+        tag: document.getElementById('galTag').value.trim()
+      };
+      try {
+        if (id) {
+          await db.collection('gallery').doc(id).update(data);
+        } else {
+          await db.collection('gallery').add(data);
+        }
+        closeGalleryModal();
+        showToast('Gallery moment saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // DAY SUB-TAB SWITCHER
+    function switchDayTab(day, el) {
+      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.day-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('dayPanel-' + day).style.display = 'block';
+    }
+
+    // ── QR SCANNER ─────────────────────────────────────
+    let scannerStream = null;
+    let scannerRaf = null;
+    let scannerCooldown = false;
+
+    function openScanner() {
+      document.getElementById('scannerModal').style.display = 'flex';
+      setStatus('scanning', '🔍', 'Scanning…');
+      startCamera();
+    }
+
+    function closeScanner() {
+      document.getElementById('scannerModal').style.display = 'none';
+      stopCamera();
+    }
+
+    function setStatus(type, icon, text) {
+      const strip = document.getElementById('scannerStatus');
+      const iconEl = document.getElementById('scannerStatusIcon');
+      const textEl = document.getElementById('scannerStatusText');
+      iconEl.textContent = icon;
+      textEl.textContent = text;
+      strip.style.background = type === 'success' ? 'rgba(76,175,125,0.15)'
+                             : type === 'error'   ? 'rgba(196,38,28,0.15)'
+                             : type === 'warn'    ? 'rgba(255,242,0,0.1)'
+                             : 'rgba(245,240,232,0.05)';
+      strip.style.color = type === 'success' ? '#4caf7d'
+                        : type === 'error'   ? '#f47272'
+                        : type === 'warn'    ? '#fff200'
+                        : 'var(--on-surface-variant)';
+    }
+
+    async function startCamera() {
+      try {
+        scannerStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 1280 } }
+        });
+        const video = document.getElementById('scannerVideo');
+        video.srcObject = scannerStream;
+        await video.play();
+        scanFrame();
+      } catch (err) {
+        setStatus('error', '❌', 'Camera access denied. Please allow camera permissions.');
+      }
+    }
+
+    function stopCamera() {
+      if (scannerRaf) { cancelAnimationFrame(scannerRaf); scannerRaf = null; }
+      if (scannerStream) { scannerStream.getTracks().forEach(t => t.stop()); scannerStream = null; }
+    }
+
+    function scanFrame() {
+      const video = document.getElementById('scannerVideo');
+      const canvas = document.getElementById('scannerCanvas');
+
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width  = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+
+        if (code && !scannerCooldown) {
+          const data = code.data.trim();
+          if (data.startsWith('VNIT-')) {
+            handleScannedCode(data);
+          } else {
+            setStatus('warn', '⚠️', 'Not a valid SPIC MACAY ticket QR.');
+          }
+        }
+      }
+      scannerRaf = requestAnimationFrame(scanFrame);
+    }
+
+    async function handleScannedCode(regId) {
+      scannerCooldown = true;
+      setStatus('scanning', '⏳', `Found: ${regId} — Checking…`);
+
+      try {
+        const docRef = db.collection('registrations').doc(regId);
+        const snap = await docRef.get();
+
+        if (!snap.exists) {
+          setStatus('error', '❌', `ID not found: ${regId}`);
+          setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+          return;
+        }
+
+        const data = snap.data();
+        if (data.checkedIn) {
+          setStatus('warn', '⚠️', `Already checked in: ${data.firstName} ${data.lastName}`);
+          setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+          return;
+        }
+
+        await docRef.update({ checkedIn: true });
+        setStatus('success', '✅', `Checked in: ${data.firstName} ${data.lastName}`);
+        showToast(`✅ ${data.firstName} ${data.lastName} checked in!`, 'success');
+
+        // Brief pause then resume scanning for next attendee
+        setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2000);
+
+      } catch (err) {
+        setStatus('error', '❌', err.message || 'Error updating check-in.');
+        setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+      }
+    }
+
+    // DATABASE SEEDING UTILITY
+    async function seedInitialData() {
+      if (!confirm('Are you sure you want to seed initial sample data? This will add the default maestros, schedule events, and gallery items.')) return;
+      
+      const artistsSample = [
+        {
+          name: "Pt. Jasraj",
+          discipline: "vocal",
+          category: "Hindustani Vocal",
+          metaSubtitle: "Mewati Gharana Legend",
+          imageUrl: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=800&q=80",
+          excerpt: "Pandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance.",
+          bioHTML: "Gharana & Musical Lineage\n\nPandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance.\n\nKey Contributions\n\nPandit Jasraj introduced the 'Jasrangi' jugalbandi, a unique style of duet singing between a male and a female vocalist."
+        },
+        {
+          name: "Ustad Amjad Ali Khan",
+          discipline: "instrumental",
+          category: "Hindustani Instrumental",
+          metaSubtitle: "Sarod Maestro · Padma Vibhushan",
+          imageUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
+          excerpt: "Ustad Amjad Ali Khan is credited with innovating and modifying the modern Sarod, bringing a unique vocal quality (gayaki ang) to string performances.",
+          bioHTML: "Sarod Legacy\n\nUstad Amjad Ali Khan is the sixth-generation descendant of the illustrious Bangash lineage of musicians."
+        },
+        {
+          name: "Smt. Alarmel Valli",
+          discipline: "dance",
+          category: "Bharatanatyam",
+          metaSubtitle: "Pandanallur Exponent",
+          imageUrl: "https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=800&q=80",
+          excerpt: "Smt. Alarmel Valli is a leading exponent of the Pandanallur style of Bharatanatyam, noted for her synthesis of traditional rigor and personal poetic expression.",
+          bioHTML: "Pandanallur Style\n\nShe has pioneered a deeply expressive approach that translates traditional Bharatanatyam to contemporary stages."
+        }
+      ];
+
+      const eventsSample = [
+        {
+          title: "Sunrise Yoga & Naad Yoga Session",
+          artistName: "Yoga Guru Ravindra Acharya",
+          timeRange: "04:00 AM – 06:00 AM",
+          duration: "2 Hours",
+          day: "Day 1",
+          category: "yoga",
+          status: "upcoming",
+          description: "Vedic chants, breathing control, and early morning meditation session at the central academic lawn."
+        },
+        {
+          title: "Inaugural Ceremony & Lamp Lighting",
+          artistName: "VVIP Dignitaries & Conveners",
+          timeRange: "09:00 AM – 11:30 AM",
+          duration: "2.5 Hours",
+          day: "Day 1",
+          category: "ceremony",
+          status: "upcoming",
+          description: "Lighting of the lamp, conveners opening remarks, and inaugurating the 3-day cultural event."
+        },
+        {
+          title: "Grand Jugalbandi - Vocal & Flute",
+          artistName: "Ustad Amjad Ali Khan & Pandit Jasraj Tribute",
+          timeRange: "06:00 PM – 09:30 PM",
+          duration: "3.5 Hours",
+          day: "Day 1",
+          category: "concert",
+          status: "upcoming",
+          description: "Flagship evening classical concert session in the main auditorium."
+        }
+      ];
+
+      const gallerySample = [
+        {
+          imageUrl: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=900&q=80",
+          caption: "Grand Jugalbandi — Main Auditorium",
+          category: "concerts",
+          tag: "Evening Concert"
+        },
+        {
+          imageUrl: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800&q=80",
+          caption: "Tabla Masterclass — Guru-Shishya Session",
+          category: "workshops",
+          tag: "Workshop"
+        },
+        {
+          imageUrl: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80",
+          caption: "Madhubani Painting Workshop",
+          category: "workshops",
+          tag: "Folk Art"
+        }
+      ];
+
+      try {
+        const batch = db.batch();
+        
+        artistsSample.forEach(art => {
+          const docId = art.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const docRef = db.collection('artists').doc(docId);
+          batch.set(docRef, art);
+        });
+
+        eventsSample.forEach(ev => {
+          const docId = `${ev.day}-${ev.title}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const docRef = db.collection('events').doc(docId);
+          batch.set(docRef, ev);
+        });
+
+        gallerySample.forEach(gal => {
+          const docId = gal.caption.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const docRef = db.collection('gallery').doc(docId);
+          batch.set(docRef, gal);
+        });
+
+        await batch.commit();
+        showToast('Sample data seeded successfully.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>
