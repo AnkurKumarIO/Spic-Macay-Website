@@ -54,51 +54,68 @@
     }
 
     .about-hero {
-      min-height: 85vh;
+      position: relative;
+      min-height: 80vh;
+      background: #000000;
+      overflow: hidden;
+      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      padding: 0;
-      background: var(--background);
+      text-align: left;
     }
     .about-hero-content {
       position: relative;
       z-index: 2;
-      max-width: 980px;
       width: 100%;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 48px 0;
+      padding: 48px 24px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: flex-start;
+      min-height: 75vh;
     }
     .about-hero-content .about-tabs {
-      justify-content: center;
+      justify-content: flex-start;
     }
     .about-hero-bg {
       position: absolute;
       inset: 0;
-      background-color: var(--background);
-      background-image: url('vnit-hero.jpg');
-      background-position: center top;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 100%;
+      min-height: 75vh;
+      background-image: url('assets/campus-vnit.jpg');
       background-size: cover;
+      background-position: center center;
       background-repeat: no-repeat;
       background-attachment: scroll;
-      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 65%, rgba(0,0,0,0) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
     }
 
     .about-hero-content h1 {
       color: #f5f0e8 !important;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
     }
     .about-hero-content p {
       color: rgba(255,255,255,0.85) !important;
       text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.01em;
+    }
+    .about-hero-content .about-tabs .filter-tab {
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.01em;
     }
     .about-hero-content .chip {
       color: #ffffff !important;
@@ -351,7 +368,7 @@
       <div class="about-hero-bg" aria-hidden="true"></div>
       <div class="container about-hero-content">
           <span class="chip reveal">VNIT NAGPUR CHAPTER</span>
-          <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">SPIC MACAY VNIT CHAPTER</h1>
+          <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;">SPIC MACAY VNIT NAGPUR</h1>
           <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:560px;margin-top:16px;">The official Heritage Club of VNIT NAGPUR</p>
           <!-- Tabs -->
           <div class="about-tabs" style="margin-top:32px;">
@@ -372,8 +389,7 @@
           <div style="display:grid;grid-template-columns:1fr;gap:48px;">
 
             <!-- Hero intro -->
-            <div class="reveal">
-              <!-- VNIT Chapter image — full image visible, no cropping -->
+            <div class="reveal" id="hosting">
               <div style="position:relative;border-radius:20px;overflow:hidden;margin-bottom:40px;background:#0a0a0a;">
                 <img src="vnit-campus.jpg" alt="VNIT Nagpur Campus" style="width:100%;max-height:420px;object-fit:contain;display:block;"/>
                 <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(9,9,9,0.92) 0%,rgba(9,9,9,0.2) 50%,transparent 100%);display:flex;align-items:flex-end;padding:36px;pointer-events:none;">
@@ -530,7 +546,7 @@
         <!-- ══ Tab 3: About SPIC MACAY (Global) ═══════════ -->
         <div class="about-tab-panel" id="tab-global">
           <div style="display:grid;grid-template-columns:1fr;gap:48px;">
-            <div class="founder-layout reveal">
+            <div class="founder-layout reveal" id="founder">
               <div>
                 <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=500&q=80" alt="Dr. Kiran Seth" class="founder-img"/>
                 <div style="margin-top:16px;padding:16px;background:var(--surface-container);border-radius:12px;text-align:center;border:1px solid rgba(232,119,34,0.2);">
@@ -652,7 +668,7 @@
 
         <!-- ══ Tab 4: Archives ═════════════════════════════ -->
         <div class="about-tab-panel" id="tab-archives">
-          <div class="reveal">
+          <div class="reveal" id="past">
             <h2 class="headline-lg" style="margin-bottom:8px;">Archives</h2>
             <p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">A look back at the events and workshops organized by the SPIC MACAY chapter at VNIT Nagpur.</p>
 
@@ -831,11 +847,27 @@
       document.getElementById('tab-' + id).classList.add('active');
       btn.classList.add('active');
     }
-    // Check hash on load
-    const hash = window.location.hash;
-    if (hash === '#members')  showAboutTab('members', document.querySelectorAll('.filter-tab')[1]);
-    if (hash === '#global')   showAboutTab('global', document.querySelectorAll('.filter-tab')[2]);
-    if (hash === '#archives') showAboutTab('archives', document.querySelectorAll('.filter-tab')[3]);
+    // Show the matching about tab for supported deep links.
+    function handleAboutHash(hash) {
+      if (hash === '#members') {
+        showAboutTab('members', document.querySelectorAll('.filter-tab')[1]);
+      } else if (hash === '#global' || hash === '#founder') {
+        showAboutTab('global', document.querySelectorAll('.filter-tab')[2]);
+      } else if (hash === '#archives' || hash === '#past') {
+        showAboutTab('archives', document.querySelectorAll('.filter-tab')[3]);
+      } else if (hash === '#hosting') {
+        showAboutTab('vnit', document.querySelectorAll('.filter-tab')[0]);
+      }
+
+      // Ensure the browser scrolls to the anchor after the tab becomes visible.
+      const target = hash ? document.querySelector(hash) : null;
+      if (target) {
+        setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      }
+    }
+
+    handleAboutHash(window.location.hash);
+    window.addEventListener('hashchange', () => handleAboutHash(window.location.hash));
   </script>
 </body>
 </html>
