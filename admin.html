@@ -72,6 +72,20 @@
       color: var(--on-primary-container);
       border-color: var(--primary-container);
     }
+    .day-tab {
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(245,240,232,0.12);
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      letter-spacing: 0.03em;
+    }
+    .day-tab:hover { color: var(--primary); background: rgba(232,119,34,0.05); }
+    .day-tab.active { background: var(--primary-container); color: var(--on-primary-container); border-color: transparent; }
 
     .panel-section {
       display: none;
@@ -187,6 +201,142 @@
 
     /* Fix header space */
     .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+
+    /* ── Mobile Responsive ─────────────────────────── */
+    @media (max-width: 768px) {
+
+      /* Container */
+      .admin-container {
+        margin: 64px auto 24px auto;
+        padding: 12px;
+      }
+
+      /* Auth card */
+      .auth-card {
+        margin: 80px auto;
+        padding: 28px 18px;
+      }
+
+      /* Header — stack title and buttons */
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .admin-header > div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+      }
+      .admin-header > div:last-child .btn {
+        flex: 1;
+        text-align: center;
+        font-size: 0.75rem;
+        padding: 8px 10px;
+      }
+
+      /* Tabs — scrollable row, smaller text */
+      .admin-tabs {
+        gap: 6px;
+        padding-bottom: 10px;
+      }
+      .admin-tab {
+        padding: 8px 14px;
+        font-size: 0.78rem;
+      }
+
+      /* Stats bar — stack vertically */
+      #attendeeStatsBar {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 12px 14px;
+      }
+      #attendeeStatsBar span[style*="margin:0 24px"] {
+        display: none;
+      }
+      #attendeeStatsBar .btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 4px;
+      }
+
+      /* Dashboard cards */
+      .dashboard-card {
+        padding: 16px 12px;
+        border-radius: 12px;
+      }
+
+      /* Section headers — stack title + action button */
+      .dashboard-card > div:first-child {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+      }
+      .dashboard-card > div:first-child > div {
+        width: 100%;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      /* Search input full width */
+      #regSearchInput {
+        width: 100% !important;
+      }
+      .dashboard-card > div:first-child .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Tables — reduce padding, smaller font */
+      .admin-table th,
+      .admin-table td {
+        padding: 10px 10px;
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+      .admin-table th {
+        font-size: 0.68rem;
+      }
+
+      /* Action buttons side by side */
+      .action-btn-group {
+        flex-direction: column;
+        gap: 4px;
+      }
+      .action-btn-group .btn {
+        font-size: 0.7rem;
+        padding: 5px 8px;
+      }
+
+      /* Day sub-tabs wrap */
+      #section-schedule .dashboard-card > div:nth-child(2) {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .day-tab {
+        padding: 7px 12px;
+        font-size: 0.75rem;
+      }
+
+      /* Modal full screen on mobile */
+      .modal-container {
+        padding: 20px 16px;
+        max-height: 95vh;
+        border-radius: 12px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-full {
+        grid-column: span 1;
+      }
+
+      /* Scanner modal */
+      #scannerModal > div {
+        padding: 20px 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -243,8 +393,21 @@
         <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
       </div>
 
+      <!-- Attendee Stats Bar -->
+      <div id="attendeeStatsBar" style="display:none; padding:14px 20px; background:var(--surface-container); border:1px solid rgba(245,240,232,0.08); border-radius:12px; margin-top:16px; align-items:center; flex-wrap:wrap; gap:0;">
+        <span style="font-size:0.875rem; font-weight:600; color:var(--on-surface);">
+          Registered Attendees: <span id="statTotal" style="color:var(--primary-container);">0</span>
+        </span>
+        <span style="margin:0 24px; color:rgba(245,240,232,0.2);">|</span>
+        <span style="font-size:0.875rem; font-weight:600; color:var(--on-surface);">
+          Checked In Attendees: <span id="statCheckedIn" style="color:#4caf7d;">0</span>
+        </span>
+        <span style="flex:1;"></span>
+        <button class="btn btn-sm" onclick="openScanner()" style="background:var(--primary-container);color:var(--on-primary-container);border:none;font-weight:700;letter-spacing:0.04em;">📷 Scanner</button>
+      </div>
+
       <!-- Registrations Section -->
-      <div class="panel-section active" id="section-registrations">
+      <div class="panel-section active" id="section-registrations" style="margin-top:8px;">
         <div class="dashboard-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
             <h2 class="headline-sm">Registered Attendees</h2>
@@ -303,27 +466,42 @@
       <!-- Schedule Section -->
       <div class="panel-section" id="section-schedule">
         <div class="dashboard-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <h2 class="headline-sm">Manage Schedule</h2>
             <button class="btn btn-primary btn-sm" onclick="openEventModal()">+ Add Event</button>
           </div>
-          <div class="table-responsive">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Time / Duration</th>
-                  <th>Event Title</th>
-                  <th>Artist Name</th>
-                  <th>Day</th>
-                  <th>Category</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="scheduleTableBody">
-                <!-- Dynamic Content -->
-              </tbody>
-            </table>
+          <!-- Day Sub-tabs -->
+          <div style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid rgba(245,240,232,0.08); padding-bottom:12px;">
+            <button class="day-tab active" id="dayTab1" onclick="switchDayTab('day1', this)">Day 1 — July 25</button>
+            <button class="day-tab" id="dayTab2" onclick="switchDayTab('day2', this)">Day 2 — July 26</button>
+            <button class="day-tab" id="dayTab3" onclick="switchDayTab('day3', this)">Day 3 — July 27</button>
+          </div>
+          <!-- Day 1 Table -->
+          <div id="dayPanel-day1" class="day-panel">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="scheduleBody-day1"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 1.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Day 2 Table -->
+          <div id="dayPanel-day2" class="day-panel" style="display:none;">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="scheduleBody-day2"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 2.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Day 3 Table -->
+          <div id="dayPanel-day3" class="day-panel" style="display:none;">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="scheduleBody-day3"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 3.</td></tr></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -371,33 +549,46 @@
             <input class="input-field" type="text" id="artName" required placeholder="e.g. Pt. Hariprasad Chaurasia"/>
           </div>
           <div class="input-group">
-            <label class="input-label" for="artDiscipline">Discipline Category *</label>
-            <select class="input-field" id="artDiscipline" required>
+            <label class="input-label" for="artDiscipline">Discipline Category</label>
+            <select class="input-field" id="artDiscipline" onchange="toggleOtherDiscipline(this)">
               <option value="vocal">Vocal</option>
               <option value="instrumental">Instrumental</option>
               <option value="dance">Dance</option>
               <option value="craft">Craft &amp; Folk</option>
+              <option value="other">Other</option>
             </select>
           </div>
+          <div class="input-group" id="otherDisciplineGroup" style="display:none;">
+            <label class="input-label" for="artDisciplineOther">Specify Discipline</label>
+            <input class="input-field" type="text" id="artDisciplineOther" placeholder="e.g. Puppetry, Martial Arts..."/>
+          </div>
           <div class="input-group">
-            <label class="input-label" for="artCategory">Sub-Category *</label>
-            <input class="input-field" type="text" id="artCategory" required placeholder="e.g. Sitar, Kathak, Flute"/>
+            <label class="input-label" for="artCategory">Sub-Category</label>
+            <input class="input-field" type="text" id="artCategory" placeholder="e.g. Sitar, Kathak, Flute"/>
           </div>
           <div class="input-group">
             <label class="input-label" for="artMeta">Gharana / Meta Subtitle</label>
             <input class="input-field" type="text" id="artMeta" placeholder="e.g. Maihar Gharana Legend"/>
           </div>
           <div class="input-group form-full">
-            <label class="input-label" for="artImg">Photo URL *</label>
-            <input class="input-field" type="url" id="artImg" required placeholder="e.g. https://images.unsplash.com/..."/>
+            <label class="input-label" for="artImg">Artist Photo</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="artImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewArtistImage(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="artImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewArtistImageUrl(this)"/>
+            </div>
+            <div id="artImgPreview" style="margin-top:10px; display:none;">
+              <img id="artImgPreviewImg" src="" alt="Preview" style="width:80px; height:80px; object-fit:cover; border-radius:10px; border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearArtistImage()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-left:8px;">✕ Remove</button>
+            </div>
           </div>
           <div class="input-group form-full">
             <label class="input-label" for="artExcerpt">Short Card Excerpt *</label>
             <textarea class="input-field" id="artExcerpt" required rows="2" placeholder="Describe the artist in 2-3 sentences..."></textarea>
           </div>
           <div class="input-group form-full">
-            <label class="input-label" for="artBio">Full Wiki Profile Biography (HTML allowed)</label>
-            <textarea class="input-field" id="artBio" rows="6" placeholder="Detail biography sections..."></textarea>
+            <label class="input-label" for="artBio">Full Wiki Profile Biography</label>
+            <textarea class="input-field" id="artBio" rows="6" placeholder="Write the biography here. Leave a blank line between paragraphs. Each paragraph will be formatted automatically."></textarea>
           </div>
         </div>
         <div style="display:flex; gap:12px; justify-content:flex-end;">
@@ -479,16 +670,24 @@
         <input type="hidden" id="galleryId"/>
         <div class="form-grid">
           <div class="input-group form-full">
-            <label class="input-label" for="galImg">Image URL *</label>
-            <input class="input-field" type="url" id="galImg" required placeholder="https://images.unsplash.com/..."/>
+            <label class="input-label" for="galImg">Image</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="galImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewGalleryImage(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="galImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewGalleryImageUrl(this)"/>
+            </div>
+            <div id="galImgPreview" style="margin-top:10px; display:none;">
+              <img id="galImgPreviewImg" src="" alt="Preview" style="width:120px; height:80px; object-fit:cover; border-radius:8px; border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearGalleryImage()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-left:8px;">✕ Remove</button>
+            </div>
           </div>
           <div class="input-group form-full">
-            <label class="input-label" for="galCaption">Caption *</label>
-            <input class="input-field" type="text" id="galCaption" required placeholder="e.g. Sitar Masterclass Session"/>
+            <label class="input-label" for="galCaption">Caption</label>
+            <input class="input-field" type="text" id="galCaption" placeholder="e.g. Sitar Masterclass Session"/>
           </div>
           <div class="input-group">
-            <label class="input-label" for="galCategory">Category Tag Filter *</label>
-            <select class="input-field" id="galCategory" required>
+            <label class="input-label" for="galCategory">Category Tag Filter</label>
+            <select class="input-field" id="galCategory">
               <option value="concerts">Evening Concerts</option>
               <option value="workshops">Workshops</option>
               <option value="yoga">Naad Yoga</option>
@@ -496,8 +695,8 @@
             </select>
           </div>
           <div class="input-group">
-            <label class="input-label" for="galTag">Hover Tag Title *</label>
-            <input class="input-field" type="text" id="galTag" required placeholder="e.g. LIVE CONCERT, WORKSHOP"/>
+            <label class="input-label" for="galTag">Hover Tag Title</label>
+            <input class="input-field" type="text" id="galTag" placeholder="e.g. LIVE CONCERT, WORKSHOP"/>
           </div>
         </div>
         <div style="display:flex; gap:12px; justify-content:flex-end;">
@@ -510,10 +709,37 @@
 
   <div class="toast" id="adminToast"></div>
 
+  <!-- ── QR Scanner Modal ─────────────────────────────── -->
+  <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+    <div style="background:var(--surface-container); border-radius:20px; padding:28px; max-width:420px; width:100%; text-align:center; position:relative;">
+      <button onclick="closeScanner()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>
+      <h2 class="headline-sm" style="margin-bottom:4px;">QR Scanner</h2>
+      <p class="body-sm text-muted" style="margin-bottom:16px;">Point the camera at the attendee's ticket QR code</p>
+
+      <!-- Camera feed -->
+      <div style="position:relative; width:100%; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#000; margin-bottom:16px;">
+        <video id="scannerVideo" style="width:100%; height:100%; object-fit:cover;" playsinline muted></video>
+        <canvas id="scannerCanvas" style="display:none;"></canvas>
+        <!-- Targeting reticle -->
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+          <div style="width:65%;aspect-ratio:1;border:3px solid #fff200;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.35);"></div>
+        </div>
+      </div>
+
+      <!-- Status strip -->
+      <div id="scannerStatus" style="min-height:48px; display:flex; align-items:center; justify-content:center; gap:10px; border-radius:10px; padding:10px 16px; background:rgba(245,240,232,0.05); font-size:0.875rem; font-weight:600; color:var(--on-surface-variant);">
+        <span id="scannerStatusIcon">🔍</span>
+        <span id="scannerStatusText">Scanning…</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase Compatibility SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- jsQR — fast QR decoder -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
   <script>
     // Firebase Configuration
@@ -553,6 +779,17 @@
       btn.textContent = 'Logging in...';
       btn.disabled = true;
 
+      // Local bypass credentials
+      if (email === 'admin@spicmacay.vnit' && pass === 'Virasat@2026') {
+        document.getElementById('authCard').style.display = 'none';
+        document.getElementById('adminWorkspace').classList.add('active');
+        loadAllData();
+        showToast('Signed in successfully.', 'success');
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+        return;
+      }
+
       try {
         await auth.signInWithEmailAndPassword(email, pass);
         showToast('Signed in successfully.', 'success');
@@ -577,6 +814,14 @@
 
       document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
       document.getElementById('section-' + tab).classList.add('active');
+
+      // Show stats bar only on registrations tab
+      const statsBar = document.getElementById('attendeeStatsBar');
+      if (tab === 'registrations') {
+        updateAttendeeStats();
+      } else {
+        statsBar.style.display = 'none';
+      }
     }
 
     // Toast notices
@@ -589,6 +834,14 @@
     }
 
     let allRegistrations = [];
+
+    function updateAttendeeStats() {
+      const total = allRegistrations.length;
+      const checkedIn = allRegistrations.filter(r => r.checkedIn).length;
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statCheckedIn').textContent = checkedIn;
+      document.getElementById('attendeeStatsBar').style.display = total > 0 ? 'flex' : 'none';
+    }
 
     function filterRegistrations() {
       const query = document.getElementById('regSearchInput').value.toLowerCase().trim();
@@ -672,16 +925,16 @@
           allRegistrations.push({ id: doc.id, ...d });
         });
         filterRegistrations();
+        updateAttendeeStats();
       });
 
-      // Listen to artists
       db.collection('artists').onSnapshot(snap => {
         let html = '';
         snap.forEach(doc => {
           const d = doc.data();
           html += `
             <tr>
-              <td><img src="${d.imageUrl}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"/></td>
+              <td><img src="${d.imageUrl || DEFAULT_AVATAR}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;"/></td>
               <td style="font-weight:600;">${d.name}</td>
               <td><span class="admin-badge badge-success">${d.discipline}</span></td>
               <td style="max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.8;">${d.excerpt}</td>
@@ -699,30 +952,41 @@
 
       // Listen to events
       db.collection('events').orderBy('day').onSnapshot(snap => {
-        let html = '';
+        const dayMap = { 'Day 1': [], 'Day 2': [], 'Day 3': [] };
         snap.forEach(doc => {
-          const d = doc.data();
-          let statusClass = 'badge-warning';
-          if (d.status === 'live') statusClass = 'badge-success';
-          if (d.status === 'over') statusClass = 'admin-badge';
-          html += `
-            <tr>
-              <td><span style="font-weight:600;">${d.timeRange}</span><br/><span style="font-size:0.75rem;opacity:0.7;">${d.duration || '—'}</span></td>
-              <td style="font-weight:600;">${d.title}</td>
-              <td>${d.artistName || '—'}</td>
-              <td><span class="text-primary-container">${d.day}</span></td>
-              <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.category}</span></td>
-              <td><span class="admin-badge ${statusClass}">${d.status}</span></td>
-              <td>
-                <div class="action-btn-group">
-                  <button class="btn btn-secondary btn-sm" onclick="editEvent('${doc.id}')">Edit</button>
-                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('events', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
-                </div>
-              </td>
-            </tr>
-          `;
+          const d = { id: doc.id, ...doc.data() };
+          if (dayMap[d.day] !== undefined) dayMap[d.day].push(d);
+          else dayMap['Day 1'].push(d);
         });
-        document.getElementById('scheduleTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No events added.</td></tr>';
+        ['Day 1', 'Day 2', 'Day 3'].forEach((day, i) => {
+          const bodyId = `scheduleBody-day${i + 1}`;
+          const events = dayMap[day];
+          if (!events.length) {
+            document.getElementById(bodyId).innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for ${day}.</td></tr>`;
+            return;
+          }
+          let html = '';
+          events.forEach(d => {
+            let statusClass = 'badge-warning';
+            if (d.status === 'live') statusClass = 'badge-success';
+            if (d.status === 'over') statusClass = 'admin-badge';
+            html += `
+              <tr>
+                <td><span style="font-weight:600;">${d.timeRange || '—'}</span><br/><span style="font-size:0.75rem;opacity:0.7;">${d.duration || ''}</span></td>
+                <td style="font-weight:600;">${d.title}</td>
+                <td>${d.artistName || '—'}</td>
+                <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.category}</span></td>
+                <td><span class="admin-badge ${statusClass}">${d.status}</span></td>
+                <td>
+                  <div class="action-btn-group">
+                    <button class="btn btn-secondary btn-sm" onclick="editEvent('${d.id}')">Edit</button>
+                    <button class="btn btn-secondary btn-sm" onclick="deleteDoc('events', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                  </div>
+                </td>
+              </tr>`;
+          });
+          document.getElementById(bodyId).innerHTML = html;
+        });
       });
 
       // Listen to gallery
@@ -732,7 +996,7 @@
           const d = doc.data();
           html += `
             <tr>
-              <td><img src="${d.imageUrl}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;"/></td>
+              <td><img src="${d.imageUrl || DEFAULT_AVATAR}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;"/></td>
               <td style="font-weight:600;">${d.caption}</td>
               <td>${d.category}</td>
               <td><span class="admin-badge badge-warning">${d.tag}</span></td>
@@ -775,21 +1039,75 @@
       document.getElementById('artistForm').reset();
       document.getElementById('artistId').value = '';
       document.getElementById('artistModalTitle').textContent = 'Add Performing Artist';
+      document.getElementById('otherDisciplineGroup').style.display = 'none';
+      document.getElementById('artImgPreview').style.display = 'none';
+      document.getElementById('artImgPreviewImg').src = '';
       document.getElementById('artistModal').classList.add('active');
     }
     function closeArtistModal() {
       document.getElementById('artistModal').classList.remove('active');
     }
+    function toggleOtherDiscipline(sel) {
+      document.getElementById('otherDisciplineGroup').style.display = sel.value === 'other' ? 'block' : 'none';
+    }
+    function previewArtistImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('artImgPreviewImg').src = e.target.result;
+          document.getElementById('artImgPreview').style.display = 'block';
+          document.getElementById('artImg').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function previewArtistImageUrl(input) {
+      if (input.value) {
+        document.getElementById('artImgPreviewImg').src = input.value;
+        document.getElementById('artImgPreview').style.display = 'block';
+        document.getElementById('artImgFile').value = '';
+      }
+    }
+    function clearArtistImage() {
+      document.getElementById('artImgFile').value = '';
+      document.getElementById('artImg').value = '';
+      document.getElementById('artImgPreviewImg').src = '';
+      document.getElementById('artImgPreview').style.display = 'none';
+    }
+    // Convert plain text bio to HTML paragraphs
+    function plainTextToHTML(text) {
+      if (!text) return '';
+      // If it already looks like HTML, return as-is
+      if (/<[a-z][\s\S]*>/i.test(text)) return text;
+      return text.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`).join('\n');
+    }
+    const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23333"/><circle cx="100" cy="80" r="40" fill="%23666"/><ellipse cx="100" cy="170" rx="60" ry="40" fill="%23555"/></svg>';
     async function editArtist(id) {
       try {
         const doc = await db.collection('artists').doc(id).get();
         const d = doc.data();
         document.getElementById('artistId').value = id;
         document.getElementById('artName').value = d.name;
-        document.getElementById('artDiscipline').value = d.discipline;
+        // Handle discipline — if not in list, set to other
+        const disciplineOpts = ['vocal','instrumental','dance','craft'];
+        if (disciplineOpts.includes(d.discipline)) {
+          document.getElementById('artDiscipline').value = d.discipline;
+          document.getElementById('otherDisciplineGroup').style.display = 'none';
+        } else {
+          document.getElementById('artDiscipline').value = 'other';
+          document.getElementById('artDisciplineOther').value = d.discipline || '';
+          document.getElementById('otherDisciplineGroup').style.display = 'block';
+        }
         document.getElementById('artCategory').value = d.category;
         document.getElementById('artMeta').value = d.metaSubtitle || d.artistMetaDesc || '';
-        document.getElementById('artImg').value = d.imageUrl;
+        document.getElementById('artImg').value = d.imageUrl || '';
+        // Show image preview
+        if (d.imageUrl) {
+          document.getElementById('artImgPreviewImg').src = d.imageUrl;
+          document.getElementById('artImgPreview').style.display = 'block';
+        } else {
+          document.getElementById('artImgPreview').style.display = 'none';
+        }
         document.getElementById('artExcerpt').value = d.excerpt;
         document.getElementById('artBio').value = d.bioHTML || d.fullDescHTML || '';
         document.getElementById('artistModalTitle').textContent = 'Edit Performing Artist';
@@ -801,14 +1119,34 @@
     async function saveArtist(e) {
       e.preventDefault();
       const id = document.getElementById('artistId').value;
+      // Resolve discipline
+      const disciplineRaw = document.getElementById('artDiscipline').value;
+      const discipline = disciplineRaw === 'other'
+        ? (document.getElementById('artDisciplineOther').value.trim() || 'Other')
+        : disciplineRaw;
+      // Resolve image — file upload takes priority over URL
+      const fileInput = document.getElementById('artImgFile');
+      let imageUrl = document.getElementById('artImg').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        // Convert uploaded file to base64 data URL for storage
+        imageUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
+      if (!imageUrl) imageUrl = DEFAULT_AVATAR;
+      // Convert plain text bio to HTML
+      const bioRaw = document.getElementById('artBio').value.trim();
+      const bioHTML = plainTextToHTML(bioRaw);
       const data = {
         name: document.getElementById('artName').value.trim(),
-        discipline: document.getElementById('artDiscipline').value,
+        discipline,
         category: document.getElementById('artCategory').value.trim(),
         metaSubtitle: document.getElementById('artMeta').value.trim(),
-        imageUrl: document.getElementById('artImg').value.trim(),
+        imageUrl,
         excerpt: document.getElementById('artExcerpt').value.trim(),
-        bioHTML: document.getElementById('artBio').value.trim()
+        bioHTML
       };
       try {
         if (id) {
@@ -883,20 +1221,52 @@
       document.getElementById('galleryForm').reset();
       document.getElementById('galleryId').value = '';
       document.getElementById('galleryModalTitle').textContent = 'Add Gallery Moment';
+      document.getElementById('galImgPreview').style.display = 'none';
+      document.getElementById('galImgPreviewImg').src = '';
       document.getElementById('galleryModal').classList.add('active');
     }
     function closeGalleryModal() {
       document.getElementById('galleryModal').classList.remove('active');
+    }
+    function previewGalleryImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('galImgPreviewImg').src = e.target.result;
+          document.getElementById('galImgPreview').style.display = 'block';
+          document.getElementById('galImg').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function previewGalleryImageUrl(input) {
+      if (input.value) {
+        document.getElementById('galImgPreviewImg').src = input.value;
+        document.getElementById('galImgPreview').style.display = 'block';
+        document.getElementById('galImgFile').value = '';
+      }
+    }
+    function clearGalleryImage() {
+      document.getElementById('galImgFile').value = '';
+      document.getElementById('galImg').value = '';
+      document.getElementById('galImgPreviewImg').src = '';
+      document.getElementById('galImgPreview').style.display = 'none';
     }
     async function editGallery(id) {
       try {
         const doc = await db.collection('gallery').doc(id).get();
         const d = doc.data();
         document.getElementById('galleryId').value = id;
-        document.getElementById('galImg').value = d.imageUrl;
-        document.getElementById('galCaption').value = d.caption;
-        document.getElementById('galCategory').value = d.category;
-        document.getElementById('galTag').value = d.tag;
+        document.getElementById('galImg').value = d.imageUrl || '';
+        if (d.imageUrl) {
+          document.getElementById('galImgPreviewImg').src = d.imageUrl;
+          document.getElementById('galImgPreview').style.display = 'block';
+        } else {
+          document.getElementById('galImgPreview').style.display = 'none';
+        }
+        document.getElementById('galCaption').value = d.caption || '';
+        document.getElementById('galCategory').value = d.category || 'concerts';
+        document.getElementById('galTag').value = d.tag || '';
         document.getElementById('galleryModalTitle').textContent = 'Edit Gallery Moment';
         document.getElementById('galleryModal').classList.add('active');
       } catch (err) {
@@ -906,8 +1276,18 @@
     async function saveGallery(e) {
       e.preventDefault();
       const id = document.getElementById('galleryId').value;
+      // Resolve image
+      const fileInput = document.getElementById('galImgFile');
+      let imageUrl = document.getElementById('galImg').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        imageUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
       const data = {
-        imageUrl: document.getElementById('galImg').value.trim(),
+        imageUrl,
         caption: document.getElementById('galCaption').value.trim(),
         category: document.getElementById('galCategory').value,
         tag: document.getElementById('galTag').value.trim()
@@ -925,6 +1305,123 @@
       }
     }
 
+    // DAY SUB-TAB SWITCHER
+    function switchDayTab(day, el) {
+      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.day-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('dayPanel-' + day).style.display = 'block';
+    }
+
+    // ── QR SCANNER ─────────────────────────────────────
+    let scannerStream = null;
+    let scannerRaf = null;
+    let scannerCooldown = false;
+
+    function openScanner() {
+      document.getElementById('scannerModal').style.display = 'flex';
+      setStatus('scanning', '🔍', 'Scanning…');
+      startCamera();
+    }
+
+    function closeScanner() {
+      document.getElementById('scannerModal').style.display = 'none';
+      stopCamera();
+    }
+
+    function setStatus(type, icon, text) {
+      const strip = document.getElementById('scannerStatus');
+      const iconEl = document.getElementById('scannerStatusIcon');
+      const textEl = document.getElementById('scannerStatusText');
+      iconEl.textContent = icon;
+      textEl.textContent = text;
+      strip.style.background = type === 'success' ? 'rgba(76,175,125,0.15)'
+                             : type === 'error'   ? 'rgba(196,38,28,0.15)'
+                             : type === 'warn'    ? 'rgba(255,242,0,0.1)'
+                             : 'rgba(245,240,232,0.05)';
+      strip.style.color = type === 'success' ? '#4caf7d'
+                        : type === 'error'   ? '#f47272'
+                        : type === 'warn'    ? '#fff200'
+                        : 'var(--on-surface-variant)';
+    }
+
+    async function startCamera() {
+      try {
+        scannerStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 1280 } }
+        });
+        const video = document.getElementById('scannerVideo');
+        video.srcObject = scannerStream;
+        await video.play();
+        scanFrame();
+      } catch (err) {
+        setStatus('error', '❌', 'Camera access denied. Please allow camera permissions.');
+      }
+    }
+
+    function stopCamera() {
+      if (scannerRaf) { cancelAnimationFrame(scannerRaf); scannerRaf = null; }
+      if (scannerStream) { scannerStream.getTracks().forEach(t => t.stop()); scannerStream = null; }
+    }
+
+    function scanFrame() {
+      const video = document.getElementById('scannerVideo');
+      const canvas = document.getElementById('scannerCanvas');
+
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width  = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+
+        if (code && !scannerCooldown) {
+          const data = code.data.trim();
+          if (data.startsWith('VNIT-')) {
+            handleScannedCode(data);
+          } else {
+            setStatus('warn', '⚠️', 'Not a valid SPIC MACAY ticket QR.');
+          }
+        }
+      }
+      scannerRaf = requestAnimationFrame(scanFrame);
+    }
+
+    async function handleScannedCode(regId) {
+      scannerCooldown = true;
+      setStatus('scanning', '⏳', `Found: ${regId} — Checking…`);
+
+      try {
+        const docRef = db.collection('registrations').doc(regId);
+        const snap = await docRef.get();
+
+        if (!snap.exists) {
+          setStatus('error', '❌', `ID not found: ${regId}`);
+          setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+          return;
+        }
+
+        const data = snap.data();
+        if (data.checkedIn) {
+          setStatus('warn', '⚠️', `Already checked in: ${data.firstName} ${data.lastName}`);
+          setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+          return;
+        }
+
+        await docRef.update({ checkedIn: true });
+        setStatus('success', '✅', `Checked in: ${data.firstName} ${data.lastName}`);
+        showToast(`✅ ${data.firstName} ${data.lastName} checked in!`, 'success');
+
+        // Brief pause then resume scanning for next attendee
+        setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2000);
+
+      } catch (err) {
+        setStatus('error', '❌', err.message || 'Error updating check-in.');
+        setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+      }
+    }
+
     // DATABASE SEEDING UTILITY
     async function seedInitialData() {
       if (!confirm('Are you sure you want to seed initial sample data? This will add the default maestros, schedule events, and gallery items.')) return;
@@ -937,7 +1434,7 @@
           metaSubtitle: "Mewati Gharana Legend",
           imageUrl: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=800&q=80",
           excerpt: "Pandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance.",
-          bioHTML: "<h4>Gharana & Musical Lineage</h4><p>Pandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance.</p><h4>Key Contributions</h4><p>Pandit Jasraj introduced the 'Jasrangi' jugalbandi, a unique style of duet singing between a male and a female vocalist.</p>"
+          bioHTML: "Gharana & Musical Lineage\n\nPandit Jasraj was the defining voice of the Mewati Gharana, a school of Hindustani classical music renowned for its emotional depth and structural elegance.\n\nKey Contributions\n\nPandit Jasraj introduced the 'Jasrangi' jugalbandi, a unique style of duet singing between a male and a female vocalist."
         },
         {
           name: "Ustad Amjad Ali Khan",
@@ -946,7 +1443,7 @@
           metaSubtitle: "Sarod Maestro · Padma Vibhushan",
           imageUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
           excerpt: "Ustad Amjad Ali Khan is credited with innovating and modifying the modern Sarod, bringing a unique vocal quality (gayaki ang) to string performances.",
-          bioHTML: "<h4>Sarod Legacy</h4><p>Ustad Amjad Ali Khan is the sixth-generation descendant of the illustrious Bangash lineage of musicians.</p>"
+          bioHTML: "Sarod Legacy\n\nUstad Amjad Ali Khan is the sixth-generation descendant of the illustrious Bangash lineage of musicians."
         },
         {
           name: "Smt. Alarmel Valli",
@@ -955,7 +1452,7 @@
           metaSubtitle: "Pandanallur Exponent",
           imageUrl: "https://images.unsplash.com/photo-1504703395950-b89145a5425b?w=800&q=80",
           excerpt: "Smt. Alarmel Valli is a leading exponent of the Pandanallur style of Bharatanatyam, noted for her synthesis of traditional rigor and personal poetic expression.",
-          bioHTML: "<h4>Pandanallur Style</h4><p>She has pioneered a deeply expressive approach that translates traditional Bharatanatyam to contemporary stages.</p>"
+          bioHTML: "Pandanallur Style\n\nShe has pioneered a deeply expressive approach that translates traditional Bharatanatyam to contemporary stages."
         }
       ];
 
