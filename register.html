@@ -766,15 +766,28 @@
               </div>
               <div class="input-group">
                 <label class="input-label" for="email">Email Address *</label>
-                <input class="input-field" type="email" id="email" placeholder="arjun@vnit.ac.in" autocomplete="email"/>
+                <input class="input-field" type="email" id="email"
+                  placeholder="arjun@vnit.ac.in"
+                  autocomplete="email"
+                  oninput="validateEmail()"
+                  onblur="validateEmail()"
+                  aria-describedby="emailError"/>
+                <span id="emailError" style="display:none;font-size:0.78rem;color:#e05252;margin-top:5px;display:block;" aria-live="polite"></span>
               </div>
               <div class="input-group">
                 <label class="input-label" for="phone">Phone Number *</label>
-                <input class="input-field" type="tel" id="phone" placeholder="+91 98765 43210" autocomplete="tel"/>
+                <input class="input-field" type="tel" id="phone" placeholder="Enter 10-digit mobile number" autocomplete="tel" maxlength="10" inputmode="numeric"/>
               </div>
               <div class="input-group">
                 <label class="input-label" for="rollno">VNIT Roll Number</label>
-                <input class="input-field" type="text" id="rollno" placeholder="e.g. BT22BCE001"/>
+                <input class="input-field" type="text" id="rollno"
+                  placeholder="e.g. BT24CSE001"
+                  autocomplete="off"
+                  maxlength="10"
+                  oninput="validateRoll()"
+                  onblur="validateRoll()"
+                  aria-describedby="rollnoError"/>
+                <span id="rollnoError" style="display:none;font-size:0.78rem;color:#e05252;margin-top:5px;display:block;" aria-live="polite"></span>
               </div>
               <div class="input-group">
                 <label class="input-label" for="branch">Branch / Department</label>
@@ -807,7 +820,7 @@
               </div>
             </div>
 
-            <button class="btn btn-primary w-full btn-lg" style="margin-top:32px;" onclick="goToStep(2)" id="nextBtn1">Next →</button>
+            <button class="btn btn-primary w-full btn-lg" style="margin-top:32px;" onclick="handleNext()" id="nextBtn1">Next →</button>
           </div>
 
           <!-- ── Step 2: Event Preferences ─────────────── -->
@@ -819,7 +832,7 @@
               <div>
                 <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">MUSIC STREAMS</p>
                 <div class="checkbox-group">
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="hindustani" checked/> <span>Hindustani Classical Vocal</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="hindustani"/> <span>Hindustani Classical Vocal</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="carnatic"/> <span>Carnatic Music</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="instrumental"/> <span>Instrumental — Sitar, Sarod, Tabla</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="folk"/> <span>Folk &amp; Regional Traditions</span></label>
@@ -829,14 +842,14 @@
                 <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">DANCE FORMS</p>
                 <div class="checkbox-group">
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="kathak"/> <span>Kathak</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="bharatanatyam" checked/> <span>Bharatanatyam</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="stream" value="bharatanatyam"/> <span>Bharatanatyam</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="stream" value="odissi"/> <span>Odissi</span></label>
                 </div>
               </div>
               <div>
                 <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">ACTIVITIES</p>
                 <div class="checkbox-group">
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="yoga" checked/> <span>Hatha Yoga &amp; Naad Yoga</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="activity" value="yoga"/> <span>Hatha Yoga &amp; Naad Yoga</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="activity" value="heritage"/> <span>Heritage Walk — VNIT Campus</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="activity" value="craft"/> <span>Craft Workshops</span></label>
                   <label class="checkbox-item"><input type="checkbox" name="activity" value="film"/> <span>Film Screenings &amp; Talks</span></label>
@@ -866,7 +879,7 @@
 
             <div style="background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.2);border-radius:12px;padding:16px;margin-bottom:24px;">
               <p style="font-size:0.875rem;color:var(--on-surface-variant);line-height:1.6;">
-                By submitting, you agree to the <a href="#" style="color:var(--primary);">Terms &amp; Conditions</a> and <a href="#" style="color:var(--primary);">Privacy Policy</a>. You'll receive a confirmation on your registered email.
+                By submitting, you agree to the <a href="terms.html" target="_blank" style="color:var(--primary);">Terms &amp; Conditions</a> and <a href="#" onclick="openPrivacyModal(event)" style="color:var(--primary);">Privacy Policy</a>. You'll receive a confirmation on your registered email.
               </p>
             </div>
 
@@ -877,7 +890,11 @@
               </button>
             </div>
 
-            <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:var(--on-surface-variant);">Need help? <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);">spicmacay@vnit.ac.in</a></p>
+            <div class="privacy-footer-link">
+              <a href="#" onclick="openPrivacyModal(event)">Privacy Policy</a>
+            </div>
+
+            <p style="text-align:center;margin-top:12px;font-size:0.8rem;color:var(--on-surface-variant);">Need help? <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);">spicmacay@vnit.ac.in</a></p>
           </div>
 
 
@@ -922,14 +939,6 @@
     let currentStep = 1;
 
     function goToStep(step) {
-      // Validate step 1
-      if (step === 2 && currentStep === 1) {
-        const fn = document.getElementById('firstName').value.trim();
-        const em = document.getElementById('email').value.trim();
-        const ph = document.getElementById('phone').value.trim();
-        if (!fn || !em || !ph) { showToast('Please fill in Name, Email and Phone.', 'error'); return; }
-        if (!em.includes('@')) { showToast('Please enter a valid email.', 'error'); return; }
-      }
       if (step === 3) buildSummary();
 
       document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
@@ -985,8 +994,6 @@
     async function submitRegistration() {
       const btn = document.getElementById('submitBtn');
       const originalText = btn.textContent;
-      btn.textContent = 'Submitting…';
-      btn.disabled = true;
 
       // Extract form values
       const fn = document.getElementById('firstName').value.trim();
@@ -997,6 +1004,18 @@
       const branch = document.getElementById('branch').value;
       const year = document.getElementById('year').value;
       const message = document.getElementById('message').value.trim();
+
+      // ── Final validation gate ────────────────────────
+      validateEmail();
+      validateRoll();
+      if (!fn || !em || !ph) { showToast('Please fill in Name, Email and Phone.', 'error'); return; }
+      if (emailError)        { showToast('Please enter a valid email address.', 'error'); return; }
+      if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
+      if (rollNumberError)   { showToast('Invalid Roll Number.', 'error'); return; }
+      // ────────────────────────────────────────────────
+
+      btn.textContent = 'Submitting…';
+      btn.disabled = true;
 
       const streams = [...document.querySelectorAll('input[name="stream"]:checked')].map(i => i.value);
       const activities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i => i.value);
@@ -1113,5 +1132,214 @@
       </div>
     </div>
   </div>
+  <!-- ══ Validation, handleNext, Privacy Modal ════════════════════════ -->
+  <style>
+    /* Privacy Policy Modal */
+    .privacy-modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      z-index: 3000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .privacy-modal-backdrop.open { opacity: 1; pointer-events: all; }
+    .privacy-modal {
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.1);
+      border-radius: 20px;
+      max-width: 600px; width: 100%; max-height: 80vh;
+      display: flex; flex-direction: column; overflow: hidden;
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 32px 64px rgba(0,0,0,0.6);
+    }
+    .privacy-modal-backdrop.open .privacy-modal { transform: translateY(0) scale(1); }
+    .privacy-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid rgba(245,240,232,0.08);
+      flex-shrink: 0;
+    }
+    .privacy-modal-header h2 {
+      font-size: 1.0625rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--on-surface); margin: 0;
+    }
+    .privacy-modal-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--on-surface-variant); font-size: 1.25rem;
+      padding: 4px 8px; border-radius: 8px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .privacy-modal-close:hover { background: rgba(245,240,232,0.08); color: var(--on-surface); }
+    .privacy-modal-body {
+      padding: 24px; overflow-y: auto; flex: 1;
+      color: var(--on-surface-variant); font-size: 0.875rem; line-height: 1.7;
+    }
+    .privacy-modal-body h3 {
+      font-size: 0.8125rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--primary-container); margin: 20px 0 8px;
+    }
+    .privacy-modal-body h3:first-child { margin-top: 0; }
+    .privacy-modal-body p { margin: 0 0 10px; }
+    .privacy-modal-body ul { margin: 6px 0 10px; padding-left: 20px; }
+    .privacy-modal-body ul li { margin-bottom: 4px; }
+    .privacy-modal-body .warn-note {
+      background: rgba(232,119,34,0.08); border: 1px solid rgba(232,119,34,0.2);
+      border-radius: 10px; padding: 12px 16px;
+      color: var(--on-surface); font-size: 0.8125rem; line-height: 1.6; margin-top: 4px;
+    }
+    .privacy-footer-link { text-align: center; margin-top: 20px; }
+    .privacy-footer-link a {
+      font-size: 0.8rem; color: var(--on-surface-variant);
+      text-decoration: none; opacity: 0.7;
+      transition: opacity 0.15s ease, color 0.15s ease;
+    }
+    .privacy-footer-link a:hover { opacity: 1; color: var(--primary); text-decoration: underline; }
+    [data-theme="light"] .privacy-modal { border-color: rgba(28,27,26,0.1) !important; }
+    [data-theme="light"] .privacy-modal-header { border-bottom-color: rgba(28,27,26,0.08) !important; }
+  </style>
+
+  <!-- Privacy Policy Modal -->
+  <div class="privacy-modal-backdrop" id="privacyModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="privacyModalTitle">
+    <div class="privacy-modal">
+      <div class="privacy-modal-header">
+        <h2 id="privacyModalTitle">Privacy Policy</h2>
+        <button class="privacy-modal-close" onclick="closePrivacyModal()" aria-label="Close privacy policy">✕</button>
+      </div>
+      <div class="privacy-modal-body">
+        <h3>1. Information We Collect</h3>
+        <p>When you register for an event, we collect personal information necessary to process your registration and ensure a smooth experience. This includes:</p>
+        <p><strong>Identity &amp; Contact Data:</strong> Full Name, VNIT Roll Number/ID, Email Address, and Mobile Number.</p>
+        <div class="warn-note">
+          ⚠️ We do not collect registration fees — so never share your bank account details, UPI PINs, or credit/debit card numbers to anyone if asked, regarding our events.
+        </div>
+        <h3>2. How We Use Your Information</h3>
+        <p>We use your data strictly for the following purpose:</p>
+        <ul><li>To confirm your registration and issue event passes/receipts.</li></ul>
+        <h3>3. Data Security and Sharing</h3>
+        <p>Your privacy is paramount. In alignment with VNIT Nagpur's data policies:</p>
+        <ul>
+          <li>We never sell, rent, or share your personal data with third parties for commercial or marketing purposes.</li>
+          <li>Data is only accessible to authorized SPIC MACAY VNIT organizing committee members.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Constants & state ────────────────────────────
+    const ROLL_REGEX  = /^[A-Za-z]{2}\d{2}[A-Za-z]{3}\d{3}$/;  // BT24CSE001
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const IS_LOCALHOST = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname === '';
+
+    let rollNumberError = false;
+    let emailError      = false;
+
+    // ── Real-time validators ─────────────────────────
+    function validateRoll() {
+      const inp = document.getElementById('rollno');
+      const el  = document.getElementById('rollnoError');
+      const normalised = inp.value.toUpperCase().replace(/\s/g, '');
+      if (inp.value !== normalised) inp.value = normalised;
+      const val = normalised;
+      clearRollDuplicate();
+      if (!val) {
+        rollNumberError = false; el.style.display = 'none'; el.textContent = ''; inp.style.borderColor = ''; return;
+      }
+      if (!ROLL_REGEX.test(val)) {
+        rollNumberError = true; el.textContent = 'Invalid Roll Number'; el.style.display = 'block'; inp.style.borderColor = '#e05252';
+      } else {
+        rollNumberError = false; el.style.display = 'none'; el.textContent = ''; inp.style.borderColor = '';
+      }
+    }
+
+    function validateEmail() {
+      const inp = document.getElementById('email');
+      const el  = document.getElementById('emailError');
+      const val = inp.value.trim();
+      if (!val) {
+        emailError = false; el.style.display = 'none'; el.textContent = ''; inp.style.borderColor = ''; return;
+      }
+      if (!EMAIL_REGEX.test(val)) {
+        emailError = true; el.textContent = 'Invalid Email Address'; el.style.display = 'block'; inp.style.borderColor = '#e05252';
+      } else {
+        emailError = false; el.style.display = 'none'; el.textContent = ''; inp.style.borderColor = '';
+      }
+    }
+
+    // ── Duplicate roll helpers ───────────────────────
+    function showRollDuplicate(msg) {
+      const el = document.getElementById('rollnoError');
+      const inp = document.getElementById('rollno');
+      el.textContent = msg; el.style.display = 'block'; inp.style.borderColor = '#e05252'; rollNumberError = true;
+    }
+    function clearRollDuplicate() {
+      const el = document.getElementById('rollnoError');
+      if (el && el.textContent === 'This Roll Number is already registered.') {
+        el.style.display = 'none'; el.textContent = '';
+        document.getElementById('rollno').style.borderColor = '';
+        rollNumberError = false;
+      }
+    }
+
+    // ── Stage-1 → Stage-2 with async duplicate check ─
+    async function handleNext() {
+      const btn  = document.getElementById('nextBtn1');
+      const fn   = document.getElementById('firstName').value.trim();
+      const em   = document.getElementById('email').value.trim();
+      const ph   = document.getElementById('phone').value.trim();
+      const roll = document.getElementById('rollno').value.trim();
+
+      if (!fn || !em || !ph) { showToast('Please fill in Name, Email and Phone.', 'error'); return; }
+
+      validateEmail();
+      validateRoll();
+
+      if (emailError) { showToast('Please enter a valid email address.', 'error'); document.getElementById('email').focus(); return; }
+      if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
+      if (rollNumberError) { showToast('Invalid Roll Number.', 'error'); document.getElementById('rollno').focus(); return; }
+
+      if (roll) {
+        btn.disabled = true; btn.textContent = 'Checking…';
+        try {
+          const snap = await db.collection('registrations')
+            .where('rollNumber', '==', roll.toUpperCase()).limit(1).get();
+          if (!snap.empty) {
+            showRollDuplicate('This Roll Number is already registered.');
+            document.getElementById('rollno').focus();
+            return;
+          }
+        } catch (err) {
+          if (IS_LOCALHOST) { console.warn('[Dev] Duplicate roll check failed — bypassing for local testing.', err); }
+          else { showToast('Could not verify Roll Number. Please try again.', 'error'); return; }
+        } finally {
+          btn.disabled = false; btn.textContent = 'Next →';
+        }
+      }
+      goToStep(2);
+    }
+
+    // ── Privacy modal ────────────────────────────────
+    function openPrivacyModal(e) {
+      if (e) e.preventDefault();
+      document.getElementById('privacyModalBackdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePrivacyModal() {
+      document.getElementById('privacyModalBackdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('privacyModalBackdrop').addEventListener('click', function(e) {
+      if (e.target === this) closePrivacyModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closePrivacyModal();
+    });
+  </script>
 </body>
 </html>
