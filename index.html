@@ -1006,37 +1006,50 @@
       if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       const db = firebase.firestore();
 
+      // Re-observe any .reveal elements injected after DOMContentLoaded
+      // so the IntersectionObserver in main.js picks them up
+      function reObserveReveal() {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('.reveal:not(.visible)').forEach(el => io.observe(el));
+      }
+
       // ── Upcoming Events & Workshops ──────────────────────────────────────
       db.collection('homeEvents').orderBy('order').get().then(snap => {
         const grid = document.getElementById('workshopsGrid');
         if (snap.empty) {
-          // Fall back to default hardcoded cards
           grid.innerHTML = defaultWorkshopCards();
-          return;
+        } else {
+          const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
+          grid.innerHTML = snap.docs.map((doc, i) => {
+            const d = doc.data();
+            const delay = delays[i % delays.length];
+            const imgSrc = d.imageUrl || 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80';
+            const ctaLabel = d.ctaLabel || 'Reserve Slot';
+            const ctaHref = d.ctaHref || 'register.html';
+            return `
+              <div class="workshop-card reveal ${delay}">
+                <div class="workshop-img-wrap">
+                  <img src="${escHtml(imgSrc)}" alt="${escHtml(d.title)}" class="workshop-img" loading="lazy"/>
+                </div>
+                <div class="workshop-body">
+                  <h3 class="workshop-card-title">${escHtml(d.title)}</h3>
+                  <p class="workshop-desc">${escHtml(d.description)}</p>
+                  <button class="workshop-cta" onclick="location.href='${escHtml(ctaHref)}'">${escHtml(ctaLabel)} →</button>
+                </div>
+              </div>`;
+          }).join('');
         }
-        const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
-        grid.innerHTML = snap.docs.map((doc, i) => {
-          const d = doc.data();
-          const delay = delays[i % delays.length];
-          const imgSrc = d.imageUrl || 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80';
-          const ctaLabel = d.ctaLabel || 'Reserve Slot';
-          const ctaHref = d.ctaHref || 'register.html';
-          return `
-            <div class="workshop-card reveal ${delay}">
-              <div class="workshop-img-wrap">
-                <img src="${escHtml(imgSrc)}" alt="${escHtml(d.title)}" class="workshop-img"/>
-              </div>
-              <div class="workshop-body">
-                <h3 class="workshop-card-title">${escHtml(d.title)}</h3>
-                <p class="workshop-desc">${escHtml(d.description)}</p>
-                <button class="workshop-cta" onclick="location.href='${escHtml(ctaHref)}'">${escHtml(ctaLabel)} →</button>
-              </div>
-            </div>`;
-        }).join('');
-        // Re-trigger reveal animations on newly injected elements
-        if (window.initReveal) window.initReveal();
+        reObserveReveal();
       }).catch(() => {
         document.getElementById('workshopsGrid').innerHTML = defaultWorkshopCards();
+        reObserveReveal();
       });
 
       // ── Evening Concerts ─────────────────────────────────────────────────
@@ -1044,30 +1057,31 @@
         const list = document.getElementById('concertItinerary');
         if (snap.empty) {
           list.innerHTML = defaultConcertTracks();
-          return;
+        } else {
+          const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
+          list.innerHTML = snap.docs.map((doc, i) => {
+            const d = doc.data();
+            const delay = delays[i % delays.length];
+            return `
+              <div class="concert-track reveal ${delay}">
+                <div class="concert-time-badge">
+                  <span class="concert-time">${escHtml(d.time || '')}</span>
+                  <span class="concert-session-label">${escHtml(d.sessionLabel || '')}</span>
+                </div>
+                <div class="concert-info">
+                  <h3 class="concert-title">${escHtml(d.title)}</h3>
+                  <p class="concert-details text-muted">${escHtml(d.description)}</p>
+                </div>
+                <div class="concert-venue-tag">
+                  <span class="concert-venue-icon"></span> ${escHtml(d.venue || '')}
+                </div>
+              </div>`;
+          }).join('');
         }
-        const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
-        list.innerHTML = snap.docs.map((doc, i) => {
-          const d = doc.data();
-          const delay = delays[i % delays.length];
-          return `
-            <div class="concert-track reveal ${delay}">
-              <div class="concert-time-badge">
-                <span class="concert-time">${escHtml(d.time || '')}</span>
-                <span class="concert-session-label">${escHtml(d.sessionLabel || '')}</span>
-              </div>
-              <div class="concert-info">
-                <h3 class="concert-title">${escHtml(d.title)}</h3>
-                <p class="concert-details text-muted">${escHtml(d.description)}</p>
-              </div>
-              <div class="concert-venue-tag">
-                <span class="concert-venue-icon"></span> ${escHtml(d.venue || '')}
-              </div>
-            </div>`;
-        }).join('');
-        if (window.initReveal) window.initReveal();
+        reObserveReveal();
       }).catch(() => {
         document.getElementById('concertItinerary').innerHTML = defaultConcertTracks();
+        reObserveReveal();
       });
 
       // ── Helpers ──────────────────────────────────────────────────────────
