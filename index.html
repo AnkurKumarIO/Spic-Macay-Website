@@ -842,9 +842,10 @@
         </p>
       </div>
 
-      <div class="workshops-grid" id="workshopsGrid">
-        <!-- Loaded dynamically from Firestore; fallback below if empty -->
-        <div class="workshop-card reveal reveal-delay-1" data-fallback>
+      <div class="workshops-grid">
+
+        <!-- Workshop 1 -->
+        <div class="workshop-card reveal reveal-delay-1">
           <div class="workshop-img-wrap">
             <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80" alt="Classical Instrument Workshops" class="workshop-img"/>
           </div>
@@ -856,7 +857,9 @@
             <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
           </div>
         </div>
-        <div class="workshop-card reveal reveal-delay-2" data-fallback>
+
+        <!-- Workshop 2 -->
+        <div class="workshop-card reveal reveal-delay-2">
           <div class="workshop-img-wrap">
             <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80" alt="Traditional Art & Painting Masterclasses" class="workshop-img"/>
           </div>
@@ -868,7 +871,9 @@
             <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
           </div>
         </div>
-        <div class="workshop-card reveal reveal-delay-3" data-fallback>
+
+        <!-- Workshop 3 -->
+        <div class="workshop-card reveal reveal-delay-3">
           <div class="workshop-img-wrap">
             <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&q=80" alt="Guru-Shishya Lecture-Demonstrations" class="workshop-img"/>
           </div>
@@ -895,9 +900,10 @@
         </p>
       </div>
 
-      <div class="concert-itinerary" id="concertsItinerary">
-        <!-- Loaded dynamically from Firestore; fallback below if empty -->
-        <div class="concert-track reveal reveal-delay-1" data-fallback>
+      <div class="concert-itinerary">
+
+        <!-- Concert Track 1 -->
+        <div class="concert-track reveal reveal-delay-1">
           <div class="concert-time-badge">
             <span class="concert-time">06:00 PM</span>
             <span class="concert-session-label">Twilight Session</span>
@@ -912,7 +918,9 @@
             <span class="concert-venue-icon"></span> Academic Lawn
           </div>
         </div>
-        <div class="concert-track reveal reveal-delay-2" data-fallback>
+
+        <!-- Concert Track 2 -->
+        <div class="concert-track reveal reveal-delay-2">
           <div class="concert-time-badge">
             <span class="concert-time">07:30 PM</span>
             <span class="concert-session-label">Grand Recital</span>
@@ -927,7 +935,9 @@
             <span class="concert-venue-icon"></span> Main Auditorium
           </div>
         </div>
-        <div class="concert-track reveal reveal-delay-3" data-fallback>
+
+        <!-- Concert Track 3 -->
+        <div class="concert-track reveal reveal-delay-3">
           <div class="concert-time-badge">
             <span class="concert-time">09:00 PM</span>
             <span class="concert-session-label">Late Night Raga</span>
@@ -1063,72 +1073,6 @@
 
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
   <script src="scripts/main.js"></script>
-
-  <!-- Firebase — Homepage Content Loader -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script>
-    (function() {
-      const firebaseConfig = {
-        apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
-        authDomain: "spic-macay-vnit.firebaseapp.com",
-        projectId: "spic-macay-vnit",
-        storageBucket: "spic-macay-vnit.firebasestorage.app",
-        messagingSenderId: "768698124036",
-        appId: "1:768698124036:web:311cc550bef0ac56133251"
-      };
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-
-      db.collection('homepageContent').orderBy('order').get()
-        .then(snap => {
-          if (snap.empty) return; // keep fallback content
-          const workshops = [];
-          const concerts  = [];
-          snap.forEach(doc => {
-            const d = { id: doc.id, ...doc.data() };
-            if (d.type === 'workshop') workshops.push(d);
-            else if (d.type === 'concert') concerts.push(d);
-          });
-
-          // Replace workshops grid if data exists
-          if (workshops.length) {
-            const grid = document.getElementById('workshopsGrid');
-            grid.innerHTML = workshops.map((d, i) => `
-              <div class="workshop-card reveal reveal-delay-${i + 1}">
-                <div class="workshop-img-wrap">
-                  <img src="${d.imageUrl || ''}" alt="${d.title || ''}" class="workshop-img" onerror="this.style.display='none'"/>
-                </div>
-                <div class="workshop-body">
-                  <h3 class="workshop-card-title">${d.title || ''}</h3>
-                  <p class="workshop-desc">${d.description || ''}</p>
-                  ${d.ctaLabel ? `<button class="workshop-cta" onclick="location.href='${d.ctaLink || '#'}'">` + d.ctaLabel + `</button>` : ''}
-                </div>
-              </div>`).join('');
-          }
-
-          // Replace concerts itinerary if data exists
-          if (concerts.length) {
-            const itinerary = document.getElementById('concertsItinerary');
-            itinerary.innerHTML = concerts.map((d, i) => `
-              <div class="concert-track reveal reveal-delay-${i + 1}">
-                <div class="concert-time-badge">
-                  <span class="concert-time">${d.time || ''}</span>
-                  <span class="concert-session-label">${d.sessionLabel || ''}</span>
-                </div>
-                <div class="concert-info">
-                  <h3 class="concert-title">${d.title || ''}</h3>
-                  <p class="concert-details text-muted">${d.details || ''}</p>
-                </div>
-                <div class="concert-venue-tag">
-                  <span class="concert-venue-icon"></span> ${d.venue || ''}
-                </div>
-              </div>`).join('');
-          }
-        })
-        .catch(() => {}); // silently keep fallback on error
-    })();
-  </script>
 
 </body>
 </html>
