@@ -388,6 +388,7 @@
 
       <div class="admin-tabs">
         <button class="admin-tab active" onclick="switchTab('registrations', this)">Registrations</button>
+        <button class="admin-tab" onclick="switchTab('intensives', this)">Intensives</button>
         <button class="admin-tab" onclick="switchTab('artists', this)">Artists &amp; Gurus</button>
         <button class="admin-tab" onclick="switchTab('schedule', this)">Events/Schedule</button>
         <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
@@ -425,11 +426,43 @@
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Roll Number</th>
-                  <th>Streams / Preferences</th>
+                  <th>Confirmed Intensive</th>
+                  <th>Preferences (1→2→3)</th>
                   <th>Check-In</th>
                 </tr>
               </thead>
               <tbody id="registrationsTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Intensives Section -->
+      <div class="panel-section" id="section-intensives">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <h2 class="headline-sm">Manage Intensives</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">Attendees pick up to 3 preferences; 1 is confirmed based on seat availability.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openIntensiveModal()">+ Add Intensive</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Day</th>
+                  <th>Time</th>
+                  <th>Category</th>
+                  <th>Total Seats</th>
+                  <th>Seats Left</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="intensivesTableBody">
                 <!-- Dynamic Content -->
               </tbody>
             </table>
@@ -536,6 +569,59 @@
   </div>
 
   <!-- ── Modals Section ──────────────────────────────── -->
+
+  <!-- Intensive Modal -->
+  <div class="admin-modal" id="intensiveModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="intensiveModalTitle" style="margin-bottom:24px;">Add Intensive</h2>
+      <form id="intensiveForm" onsubmit="saveIntensive(event)">
+        <input type="hidden" id="intensiveId"/>
+        <div class="form-grid">
+          <div class="input-group form-full">
+            <label class="input-label" for="intName">Intensive Name *</label>
+            <input class="input-field" type="text" id="intName" required placeholder="e.g. Tabla Masterclass"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="intDay">Day *</label>
+            <select class="input-field" id="intDay" required>
+              <option value="Day 1">Day 1 (July 25)</option>
+              <option value="Day 2">Day 2 (July 26)</option>
+              <option value="Day 3">Day 3 (July 27)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="intTime">Time *</label>
+            <input class="input-field" type="text" id="intTime" required placeholder="e.g. 10:00 AM – 12:00 PM"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="intCategory">Category *</label>
+            <select class="input-field" id="intCategory" required>
+              <option value="vocal">Vocal</option>
+              <option value="instrumental">Instrumental</option>
+              <option value="dance">Dance</option>
+              <option value="yoga">Yoga</option>
+              <option value="craft">Craft &amp; Folk</option>
+              <option value="heritage">Heritage Walk</option>
+              <option value="workshop">Workshop</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="intSeats">Total Seat Capacity *</label>
+            <input class="input-field" type="number" id="intSeats" required min="1" placeholder="e.g. 30"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="intDesc">Description</label>
+            <textarea class="input-field" id="intDesc" rows="3" placeholder="Brief description of this intensive session..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeIntensiveModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Intensive</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Artist Modal -->
   <div class="admin-modal" id="artistModal">
@@ -834,6 +920,7 @@
     }
 
     let allRegistrations = [];
+    let allIntensives = []; // cache for name lookups
 
     function updateAttendeeStats() {
       const total = allRegistrations.length;
@@ -859,10 +946,26 @@
                regId.includes(query);
       });
 
+      // Build intensive name lookup
+      const intMap = {};
+      allIntensives.forEach(i => { intMap[i.id] = i.name; });
+
       let html = '';
       filtered.forEach(d => {
         const checkInClass = d.checkedIn ? 'badge-success' : 'badge-warning';
         const checkInText = d.checkedIn ? 'Checked In' : 'Pending';
+
+        // Confirmed intensive
+        const confirmedName = d.confirmedIntensiveId
+          ? (intMap[d.confirmedIntensiveId] || d.confirmedIntensiveId)
+          : (d.confirmedIntensiveName || '—');
+
+        // Preference list
+        const prefNames = (d.intensivePreferences || []).map((id, idx) => {
+          const name = intMap[id] || id;
+          return `${idx + 1}. ${name}`;
+        }).join(' | ') || (d.streams ? [...(d.streams||[]), ...(d.activities||[])].join(', ') : '—');
+
         html += `
           <tr>
             <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;">${d.registrationId}</span></td>
@@ -870,7 +973,8 @@
             <td>${d.email}</td>
             <td>${d.phone}</td>
             <td>${d.rollNumber || '—'}</td>
-            <td><span style="font-size:0.8rem;opacity:0.8;">${[...(d.streams||[]), ...(d.activities||[])].join(', ') || '—'}</span></td>
+            <td><span class="admin-badge badge-success" style="font-size:0.75rem;">${confirmedName}</span></td>
+            <td><span style="font-size:0.78rem;opacity:0.75;">${prefNames}</span></td>
             <td>
               <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${d.id}', ${!!d.checkedIn})" style="cursor:pointer;">
                 ${checkInText}
@@ -879,7 +983,7 @@
           </tr>
         `;
       });
-      document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No matching registrations found.</td></tr>';
+      document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="8" style="text-align:center;">No matching registrations found.</td></tr>';
     }
 
     function downloadRegistrationsCSV() {
@@ -887,20 +991,30 @@
         showToast('No registrations to download.', 'error');
         return;
       }
+
+      const intMap = {};
+      allIntensives.forEach(i => { intMap[i.id] = i.name; });
       
-      const headers = ['Registration ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Roll Number', 'Branch', 'Year of Study', 'Preferences', 'Checked In'];
-      const rows = allRegistrations.map(r => [
-        r.registrationId || '',
-        r.firstName || '',
-        r.lastName || '',
-        r.email || '',
-        r.phone || '',
-        r.rollNumber || '',
-        r.branch || '',
-        r.yearOfStudy || '',
-        [...(r.streams || []), ...(r.activities || [])].join('; '),
-        r.checkedIn ? 'Yes' : 'No'
-      ]);
+      const headers = ['Registration ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Roll Number', 'Branch', 'Year of Study', 'Confirmed Intensive', 'Preference 1', 'Preference 2', 'Preference 3', 'Checked In'];
+      const rows = allRegistrations.map(r => {
+        const prefs = r.intensivePreferences || [];
+        const confirmed = r.confirmedIntensiveId ? (intMap[r.confirmedIntensiveId] || r.confirmedIntensiveId) : (r.confirmedIntensiveName || '');
+        return [
+          r.registrationId || '',
+          r.firstName || '',
+          r.lastName || '',
+          r.email || '',
+          r.phone || '',
+          r.rollNumber || '',
+          r.branch || '',
+          r.yearOfStudy || '',
+          confirmed,
+          prefs[0] ? (intMap[prefs[0]] || prefs[0]) : '',
+          prefs[1] ? (intMap[prefs[1]] || prefs[1]) : '',
+          prefs[2] ? (intMap[prefs[2]] || prefs[2]) : '',
+          r.checkedIn ? 'Yes' : 'No'
+        ];
+      });
 
       const csvContent = "data:text/csv;charset=utf-8," 
         + [headers.join(','), ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))].join('\n');
@@ -917,6 +1031,14 @@
 
     // LOAD ALL DATA LISTS
     function loadAllData() {
+      // Listen to intensives first (needed for registration name lookups)
+      db.collection('intensives').orderBy('day').onSnapshot(snap => {
+        allIntensives = [];
+        snap.forEach(doc => { allIntensives.push({ id: doc.id, ...doc.data() }); });
+        renderIntensivesTable();
+        filterRegistrations(); // re-render once names are loaded
+      });
+
       // Listen to real-time registrations
       db.collection('registrations').orderBy('createdAt', 'desc').onSnapshot(snap => {
         allRegistrations = [];
@@ -1156,6 +1278,95 @@
         }
         closeArtistModal();
         showToast('Artist profile saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ── INTENSIVES CRUD ─────────────────────────────────
+    function renderIntensivesTable() {
+      const cat = { vocal:'Vocal', instrumental:'Instrumental', dance:'Dance', yoga:'Yoga', craft:'Craft & Folk', heritage:'Heritage Walk', workshop:'Workshop', other:'Other' };
+      let html = '';
+      allIntensives.forEach(d => {
+        const seatsLeft = d.seatsLeft !== undefined ? d.seatsLeft : d.totalSeats;
+        const pct = d.totalSeats ? Math.round(((d.totalSeats - seatsLeft) / d.totalSeats) * 100) : 0;
+        const seatClass = seatsLeft === 0 ? 'badge-warning' : 'badge-success';
+        html += `
+          <tr>
+            <td style="font-weight:600;">${d.name}</td>
+            <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.day || '—'}</span></td>
+            <td style="font-size:0.8rem;">${d.time || '—'}</td>
+            <td><span class="admin-badge badge-success">${cat[d.category] || d.category}</span></td>
+            <td style="text-align:center;">${d.totalSeats}</td>
+            <td style="text-align:center;"><span class="admin-badge ${seatClass}">${seatsLeft} left (${pct}% full)</span></td>
+            <td>
+              <div class="action-btn-group">
+                <button class="btn btn-secondary btn-sm" onclick="editIntensive('${d.id}')">Edit</button>
+                <button class="btn btn-secondary btn-sm" onclick="deleteDoc('intensives', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+              </div>
+            </td>
+          </tr>`;
+      });
+      document.getElementById('intensivesTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No intensives added yet.</td></tr>';
+    }
+
+    function openIntensiveModal() {
+      document.getElementById('intensiveForm').reset();
+      document.getElementById('intensiveId').value = '';
+      document.getElementById('intensiveModalTitle').textContent = 'Add Intensive';
+      document.getElementById('intensiveModal').classList.add('active');
+    }
+    function closeIntensiveModal() {
+      document.getElementById('intensiveModal').classList.remove('active');
+    }
+    async function editIntensive(id) {
+      try {
+        const doc = await db.collection('intensives').doc(id).get();
+        const d = doc.data();
+        document.getElementById('intensiveId').value = id;
+        document.getElementById('intName').value = d.name;
+        document.getElementById('intDay').value = d.day;
+        document.getElementById('intTime').value = d.time || '';
+        document.getElementById('intCategory').value = d.category;
+        document.getElementById('intSeats').value = d.totalSeats;
+        document.getElementById('intDesc').value = d.description || '';
+        document.getElementById('intensiveModalTitle').textContent = 'Edit Intensive';
+        document.getElementById('intensiveModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+    async function saveIntensive(e) {
+      e.preventDefault();
+      const id = document.getElementById('intensiveId').value;
+      const totalSeats = parseInt(document.getElementById('intSeats').value, 10);
+      const data = {
+        name: document.getElementById('intName').value.trim(),
+        day: document.getElementById('intDay').value,
+        time: document.getElementById('intTime').value.trim(),
+        category: document.getElementById('intCategory').value,
+        totalSeats,
+        description: document.getElementById('intDesc').value.trim()
+      };
+      try {
+        if (id) {
+          // Preserve seatsLeft when editing (only reset if totalSeats changed upward with no existing value)
+          const existing = await db.collection('intensives').doc(id).get();
+          const existingData = existing.data();
+          if (existingData.seatsLeft === undefined) {
+            data.seatsLeft = totalSeats;
+          } else {
+            // Adjust seatsLeft by the delta in totalSeats
+            const delta = totalSeats - (existingData.totalSeats || totalSeats);
+            data.seatsLeft = Math.max(0, existingData.seatsLeft + delta);
+          }
+          await db.collection('intensives').doc(id).update(data);
+        } else {
+          data.seatsLeft = totalSeats;
+          await db.collection('intensives').add(data);
+        }
+        closeIntensiveModal();
+        showToast('Intensive saved.', 'success');
       } catch (err) {
         showToast(err.message, 'error');
       }

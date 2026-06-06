@@ -1,2 +1,11 @@
 .DS_Store
 Reference/.DS_Store
+
+# Environment variables — never commit these
+.env
+.env.local
+.env.production
+
+# Node
+node_modules/
+package-lock.json

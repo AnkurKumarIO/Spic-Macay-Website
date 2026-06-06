@@ -1,0 +1,12 @@
+{
+  "name": "spic-macay-vnit",
+  "version": "1.0.0",
+  "description": "SPIC MACAY VNIT Nagpur — Virasat 2026 Portal",
+  "private": true,
+  "dependencies": {
+    "nodemailer": "^8.0.10"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

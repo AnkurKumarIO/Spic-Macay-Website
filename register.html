@@ -195,6 +195,14 @@
       background: var(--surface-container) !important;
     }
 
+    /* Intensive card light-theme fix */
+    [data-theme="light"] .intensive-card {
+      border-color: rgba(28, 27, 26, 0.12) !important;
+    }
+    [data-theme="light"] .intensive-card[style*="primary-container"] {
+      background: rgba(232,119,34,0.06) !important;
+    }
+
     /* Visual Ticket Styles */
     .ticket-container {
       margin: 32px auto 0 auto;
@@ -825,42 +833,33 @@
             <button class="btn btn-primary w-full btn-lg" style="margin-top:32px;" onclick="handleNext()" id="nextBtn1">Next →</button>
           </div>
 
-          <!-- ── Step 2: Event Preferences ─────────────── -->
+          <!-- ── Step 2: Intensive Preferences ─────────────── -->
           <div class="step-panel" id="step2">
             <h2 class="headline-md" style="margin-bottom:6px;">Choose Your Intensives</h2>
-            <p class="body-md text-muted" style="margin-bottom:28px;">Select the events and art forms you're most interested in.</p>
+            <p class="body-md text-muted" style="margin-bottom:8px;">Select up to <strong>3 intensives</strong> in order of preference. Only <strong>1 will be confirmed</strong> based on seat availability (preference 1 first, then 2, then 3).</p>
 
-            <div style="display:flex;flex-direction:column;gap:24px;">
-              <div>
-                <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">MUSIC STREAMS</p>
-                <div class="checkbox-group">
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="hindustani"/> <span>Hindustani Classical Vocal</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="carnatic"/> <span>Carnatic Music</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="instrumental"/> <span>Instrumental — Sitar, Sarod, Tabla</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="folk"/> <span>Folk &amp; Regional Traditions</span></label>
-                </div>
-              </div>
-              <div>
-                <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">DANCE FORMS</p>
-                <div class="checkbox-group">
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="kathak"/> <span>Kathak</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="bharatanatyam"/> <span>Bharatanatyam</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="stream" value="odissi"/> <span>Odissi</span></label>
-                </div>
-              </div>
-              <div>
-                <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">ACTIVITIES</p>
-                <div class="checkbox-group">
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="yoga"/> <span>Hatha Yoga &amp; Naad Yoga</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="heritage"/> <span>Heritage Walk — VNIT Campus</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="craft"/> <span>Craft Workshops</span></label>
-                  <label class="checkbox-item"><input type="checkbox" name="activity" value="film"/> <span>Film Screenings &amp; Talks</span></label>
-                </div>
-              </div>
-              <div class="input-group">
-                <label class="input-label" for="message">Any Message / Special Requests</label>
-                <textarea class="input-field" id="message" rows="3" placeholder="e.g. Wheelchair access needed, assistance for visually/hearing impaired, seating accommodation, volunteer to help facilitate for disabled attendees, any other special requests..." style="resize:vertical;"></textarea>
-              </div>
+            <!-- Selection counter -->
+            <div id="intensiveSelectionInfo" style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding:10px 14px;background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.18);border-radius:8px;">
+              <span style="font-size:0.85rem;color:var(--on-surface-variant);">Selected: <strong id="selectedCount" style="color:var(--primary-container);">0</strong> / 3</span>
+              <span style="font-size:0.78rem;opacity:0.6;">— Your top choice gets confirmed first if seats are available</span>
+            </div>
+
+            <!-- Loading state -->
+            <div id="intensivesLoadingState" style="text-align:center;padding:32px 0;opacity:0.5;">
+              <p class="body-md">Loading intensives…</p>
+            </div>
+
+            <!-- Intensives list (grouped by day) -->
+            <div id="intensivesList" style="display:none;flex-direction:column;gap:20px;"></div>
+
+            <!-- No intensives state -->
+            <div id="intensivesEmptyState" style="display:none;text-align:center;padding:32px;background:var(--surface-container-high);border-radius:12px;">
+              <p style="opacity:0.6;">No intensives have been added yet. Please check back later or contact the organizers.</p>
+            </div>
+
+            <div class="input-group" style="margin-top:20px;">
+              <label class="input-label" for="message">Any Message / Special Requests</label>
+              <textarea class="input-field" id="message" rows="3" placeholder="e.g. Wheelchair access needed, seating accommodation, any other requests..." style="resize:vertical;"></textarea>
             </div>
 
             <div style="display:flex;gap:12px;margin-top:32px;">
@@ -940,13 +939,178 @@
 
     let currentStep = 1;
 
+    // ── Intensives state ─────────────────────────────
+    let allIntensives = [];         // [{id, name, day, time, category, totalSeats, seatsLeft, description}]
+    let selectedIntensiveIds = [];  // ordered list of up to 3 ids (preference order)
+
+    // Load intensives from Firestore when page loads
+    async function loadIntensives() {
+      try {
+        const snap = await db.collection('intensives').orderBy('day').get();
+        allIntensives = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderIntensivesList();
+      } catch (err) {
+        console.error('Failed to load intensives:', err);
+        document.getElementById('intensivesLoadingState').innerHTML = '<p style="color:#e05252;">Failed to load intensives. Please refresh.</p>';
+      }
+    }
+
+    const CATEGORY_LABELS = {
+      vocal: 'Vocal', instrumental: 'Instrumental', dance: 'Dance',
+      yoga: 'Yoga', craft: 'Craft & Folk', heritage: 'Heritage Walk',
+      workshop: 'Workshop', other: 'Other'
+    };
+
+    function renderIntensivesList() {
+      const loading = document.getElementById('intensivesLoadingState');
+      const list    = document.getElementById('intensivesList');
+      const empty   = document.getElementById('intensivesEmptyState');
+
+      loading.style.display = 'none';
+
+      if (!allIntensives.length) {
+        empty.style.display = 'block';
+        list.style.display = 'none';
+        return;
+      }
+
+      empty.style.display = 'none';
+      list.style.display = 'flex';
+
+      // Group by day
+      const dayGroups = {};
+      allIntensives.forEach(iv => {
+        const day = iv.day || 'Other';
+        if (!dayGroups[day]) dayGroups[day] = [];
+        dayGroups[day].push(iv);
+      });
+
+      list.innerHTML = Object.entries(dayGroups).map(([day, items]) => `
+        <div>
+          <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">${day.toUpperCase()}</p>
+          <div class="checkbox-group" id="ivGroup-${day.replace(/\s/g,'-')}">
+            ${items.map(iv => buildIntensiveCard(iv)).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function buildIntensiveCard(iv) {
+      const seatsLeft = iv.seatsLeft !== undefined ? iv.seatsLeft : iv.totalSeats;
+      const isFull = seatsLeft <= 0;
+      const catLabel = CATEGORY_LABELS[iv.category] || iv.category;
+      const idx = selectedIntensiveIds.indexOf(iv.id);
+      const isSelected = idx !== -1;
+      const rank = isSelected ? idx + 1 : null;
+
+      const borderStyle = isFull
+        ? 'border-color:rgba(245,240,232,0.06);opacity:0.5;'
+        : isSelected
+          ? 'border-color:var(--primary-container);background:rgba(232,119,34,0.08);'
+          : '';
+
+      return `
+        <label class="checkbox-item intensive-card" data-id="${iv.id}" style="${borderStyle}cursor:${isFull?'not-allowed':'pointer'};"
+          onclick="toggleIntensive(event,'${iv.id}')">
+          <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0;">
+            <!-- Rank badge / empty circle -->
+            <div class="iv-rank-badge" id="rank-${iv.id}" style="
+              width:26px;height:26px;border-radius:50%;flex-shrink:0;
+              display:flex;align-items:center;justify-content:center;
+              font-size:0.8rem;font-weight:700;
+              background:${isSelected ? 'var(--primary-container)' : 'rgba(245,240,232,0.1)'};
+              color:${isSelected ? 'var(--on-primary-container)' : 'var(--outline)'};
+              border:2px solid ${isSelected ? 'var(--primary-container)' : 'rgba(245,240,232,0.2)'};
+              transition:all 0.2s ease;">
+              ${isSelected ? rank : ''}
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                <span style="font-size:0.9rem;font-weight:600;color:var(--on-surface);">${iv.name}</span>
+                <span style="font-size:0.7rem;padding:2px 8px;border-radius:20px;background:rgba(232,119,34,0.12);color:var(--primary);border:1px solid rgba(232,119,34,0.2);">${catLabel}</span>
+                ${isFull ? '<span style="font-size:0.7rem;padding:2px 8px;border-radius:20px;background:rgba(196,38,28,0.12);color:#f47272;border:1px solid rgba(196,38,28,0.2);">Full</span>' : ''}
+              </div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                ${iv.time ? `<span style="font-size:0.78rem;color:var(--on-surface-variant);">🕐 ${iv.time}</span>` : ''}
+                <span style="font-size:0.78rem;color:${seatsLeft <= 5 && !isFull ? '#e87722' : 'var(--on-surface-variant)'};">
+                  ${isFull ? 'No seats left' : `${seatsLeft} seat${seatsLeft===1?'':'s'} left`}
+                </span>
+              </div>
+              ${iv.description ? `<p style="font-size:0.78rem;color:var(--on-surface-variant);margin-top:4px;margin-bottom:0;line-height:1.4;">${iv.description}</p>` : ''}
+            </div>
+          </div>
+        </label>`;
+    }
+
+    function toggleIntensive(e, id) {
+      e.preventDefault();
+      const iv = allIntensives.find(i => i.id === id);
+      if (!iv) return;
+      const seatsLeft = iv.seatsLeft !== undefined ? iv.seatsLeft : iv.totalSeats;
+      if (seatsLeft <= 0) return; // full, can't select
+
+      const idx = selectedIntensiveIds.indexOf(id);
+      if (idx !== -1) {
+        // Deselect
+        selectedIntensiveIds.splice(idx, 1);
+      } else {
+        if (selectedIntensiveIds.length >= 3) {
+          showToast('You can select at most 3 intensives.', 'error');
+          return;
+        }
+        selectedIntensiveIds.push(id);
+      }
+
+      updateSelectionUI();
+    }
+
+    function updateSelectionUI() {
+      // Update counter
+      document.getElementById('selectedCount').textContent = selectedIntensiveIds.length;
+
+      // Re-render all cards to reflect new ranks
+      allIntensives.forEach(iv => {
+        const card = document.querySelector(`.intensive-card[data-id="${iv.id}"]`);
+        if (!card) return;
+        const seatsLeft = iv.seatsLeft !== undefined ? iv.seatsLeft : iv.totalSeats;
+        const isFull = seatsLeft <= 0;
+        const idx = selectedIntensiveIds.indexOf(iv.id);
+        const isSelected = idx !== -1;
+        const rank = isSelected ? idx + 1 : null;
+
+        // Update border/bg
+        if (!isFull) {
+          card.style.borderColor = isSelected ? 'var(--primary-container)' : 'rgba(245,240,232,0.12)';
+          card.style.background  = isSelected ? 'rgba(232,119,34,0.08)' : '';
+        }
+
+        // Update rank badge
+        const badge = document.getElementById(`rank-${iv.id}`);
+        if (badge) {
+          badge.style.background   = isSelected ? 'var(--primary-container)' : 'rgba(245,240,232,0.1)';
+          badge.style.color        = isSelected ? 'var(--on-primary-container)' : 'var(--outline)';
+          badge.style.borderColor  = isSelected ? 'var(--primary-container)' : 'rgba(245,240,232,0.2)';
+          badge.textContent        = isSelected ? String(rank) : '';
+        }
+      });
+    }
+
     function goToStep(step) {
-      if (step === 3) buildSummary();
+      // Validate step 2 before proceeding to step 3
+      if (step === 3) {
+        if (selectedIntensiveIds.length === 0) {
+          showToast('Please select at least 1 intensive.', 'error');
+          return;
+        }
+        buildSummary();
+      }
 
       document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('step' + step).classList.add('active');
 
-      // Update dots (3 steps only)
+      // Load intensives when entering step 2
+      if (step === 2 && allIntensives.length === 0) loadIntensives();
+
       for (let i = 1; i <= 3; i++) {
         const dot = document.getElementById('dot' + i);
         if (!dot) continue;
@@ -972,8 +1136,12 @@
       const roll  = document.getElementById('rollno').value;
       const branch= document.getElementById('branch').value;
       const year  = document.getElementById('year').value;
-      const streams    = [...document.querySelectorAll('input[name="stream"]:checked')].map(i=>i.value).join(', ') || '—';
-      const activities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i=>i.value).join(', ') || '—';
+
+      // Build preference labels
+      const prefLabels = selectedIntensiveIds.map((id, i) => {
+        const iv = allIntensives.find(x => x.id === id);
+        return iv ? `${i+1}. ${iv.name}` : `${i+1}. ${id}`;
+      }).join('  |  ') || '—';
 
       const rows = [
         ['Full Name',       `${fn} ${ln}`],
@@ -982,8 +1150,7 @@
         ['Roll Number',     roll || '—'],
         ['Branch',          branch || '—'],
         ['Year of Study',   year || '—'],
-        ['Streams',         streams],
-        ['Activities',      activities],
+        ['Intensive Preferences', prefLabels],
         ['Chapter',         'SPIC MACAY — VNIT Nagpur'],
       ];
       document.getElementById('summaryContent').innerHTML = rows.map(([k,v])=>`
@@ -997,7 +1164,6 @@
       const btn = document.getElementById('submitBtn');
       const originalText = btn.textContent;
 
-      // Extract form values
       const fn = document.getElementById('firstName').value.trim();
       const ln = document.getElementById('lastName').value.trim();
       const em = document.getElementById('email').value.trim();
@@ -1014,28 +1180,66 @@
       if (emailError)        { showToast('Please enter a valid email address.', 'error'); return; }
       if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
       if (rollNumberError)   { showToast('Invalid Roll Number.', 'error'); return; }
+      if (selectedIntensiveIds.length === 0) { showToast('Please select at least 1 intensive.', 'error'); return; }
       // ────────────────────────────────────────────────
 
-      btn.textContent = 'Submitting…';
+      btn.textContent = 'Confirming seat…';
       btn.disabled = true;
 
-      const streams = [...document.querySelectorAll('input[name="stream"]:checked')].map(i => i.value);
-      const activities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i => i.value);
+      // ── Seat confirmation: try preferences in order ─
+      let confirmedIntensiveId = null;
+      let confirmedIntensiveName = null;
 
+      try {
+        // Use a Firestore transaction to atomically check & decrement seat
+        for (const prefId of selectedIntensiveIds) {
+          const intRef = db.collection('intensives').doc(prefId);
+          let confirmed = false;
+
+          await db.runTransaction(async tx => {
+            const intDoc = await tx.get(intRef);
+            if (!intDoc.exists) return;
+            const data = intDoc.data();
+            const seatsLeft = data.seatsLeft !== undefined ? data.seatsLeft : data.totalSeats;
+            if (seatsLeft > 0) {
+              tx.update(intRef, { seatsLeft: seatsLeft - 1 });
+              confirmed = true;
+            }
+          });
+
+          if (confirmed) {
+            confirmedIntensiveId = prefId;
+            const iv = allIntensives.find(x => x.id === prefId);
+            confirmedIntensiveName = iv ? iv.name : prefId;
+            break;
+          }
+        }
+      } catch (err) {
+        console.error('Seat confirmation failed:', err);
+        showToast('Could not confirm seat. Please try again.', 'error');
+        btn.textContent = originalText;
+        btn.disabled = false;
+        return;
+      }
+
+      if (!confirmedIntensiveId) {
+        showToast('All your selected intensives are full. Please go back and choose different options.', 'error');
+        btn.textContent = originalText;
+        btn.disabled = false;
+        return;
+      }
+
+      btn.textContent = 'Saving registration…';
+
+      // ── Generate / reuse reg ID ──────────────────────
       let regId;
       try {
         const querySnapshot = await db.collection('registrations')
-          .where('email', '==', em)
-          .limit(1)
-          .get();
-
-        if (!querySnapshot.empty) {
-          regId = querySnapshot.docs[0].data().registrationId;
-        } else {
-          regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-        }
+          .where('email', '==', em).limit(1).get();
+        regId = !querySnapshot.empty
+          ? querySnapshot.docs[0].data().registrationId
+          : 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
       } catch (err) {
-        console.error("Checking existing registration failed, fallback to new ID:", err);
         regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
       }
 
@@ -1048,36 +1252,76 @@
         rollNumber: roll || '—',
         branch: branch || '—',
         yearOfStudy: year || '—',
-        streams: streams,
-        activities: activities,
-        message: message,
+        intensivePreferences: selectedIntensiveIds,
+        confirmedIntensiveId,
+        confirmedIntensiveName,
+        message,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       try {
-        // Save to Firestore
         await db.collection('registrations').doc(regId).set(registrationData);
 
-        // Update Ticket UI details
+        // Update ticket UI
         document.getElementById('ticketName').textContent = `${fn} ${ln}`;
         document.getElementById('ticketId').textContent = regId;
         document.getElementById('ticketRoll').textContent = roll || '—';
-        
-        const prefText = [...streams, ...activities].map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ');
-        document.getElementById('ticketEvents').textContent = prefText || 'General Entry';
+        document.getElementById('ticketEvents').textContent = confirmedIntensiveName;
+        document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName;
 
-        // Generate QR code using public api.qrserver.com
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(regId)}`;
         document.getElementById('ticketQr').src = qrUrl;
 
-        // Show Success Page Overlay
         document.getElementById('successOverlay').classList.add('active');
-        showToast('Registered successfully! Pass generated.', 'success');
+        showToast('Registered! Intensive pass confirmed.', 'success');
+
+        // Send confirmation email (non-blocking — don't fail registration if email fails)
+        sendConfirmationEmail({
+          to: em,
+          firstName: fn,
+          lastName: ln,
+          registrationId: regId,
+          confirmedIntensiveName,
+          // Pass preference names (not IDs) for the email
+          intensivePreferences: selectedIntensiveIds.map(id => {
+            const iv = allIntensives.find(x => x.id === id);
+            return iv ? iv.name : id;
+          }),
+          rollNumber: roll || '—',
+          branch: branch || '—',
+          yearOfStudy: year || '—',
+        });
       } catch (error) {
-        console.error("Error saving registration: ", error);
+        console.error('Error saving registration:', error);
         showToast('Registration failed. Please try again.', 'error');
         btn.textContent = originalText;
         btn.disabled = false;
+      }
+    }
+
+    // ── Send confirmation email via Vercel API ───────────────────────────────
+    async function sendConfirmationEmail(payload) {
+      // In local dev, skip silently
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname === '') {
+        console.info('[Dev] Email skipped on localhost. Payload:', payload);
+        return;
+      }
+      try {
+        const res = await fetch('/api/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) {
+          console.info('Confirmation email sent to', payload.to);
+          showToast('Confirmation email sent to ' + payload.to, 'success');
+        } else {
+          const err = await res.json().catch(() => ({}));
+          console.warn('Email API error:', err);
+        }
+      } catch (err) {
+        // Non-fatal — registration is already saved, email failing is not blocking
+        console.warn('Failed to reach email API:', err);
       }
     }
   </script>
@@ -1087,9 +1331,13 @@
     <div class="success-content">
       <div style="font-size:4rem;margin-bottom:12px;">🎉</div>
       <h2 class="headline-md" style="margin-bottom:8px;color:var(--on-surface);">You're Registered!</h2>
-      <p class="body-md text-muted" style="max-width:480px;margin:0 auto 24px;font-size:0.9rem;">
-        Thank you for registering. Below is your official entry pass for SPIC MACAY programmes at VNIT Nagpur.
+      <p class="body-md text-muted" style="max-width:520px;margin:0 auto 12px;font-size:0.9rem;">
+        Thank you for registering. Your intensive seat has been confirmed. Below is your official entry pass.
       </p>
+      <div id="confirmedIntensiveBanner" style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(74,222,128,0.12);border:1px solid rgba(74,222,128,0.3);border-radius:var(--radius-full);margin-bottom:20px;">
+        <span style="color:#86efac;font-size:0.85rem;font-weight:700;">CONFIRMED INTENSIVE:</span>
+        <span id="confirmedIntensiveNameBanner" style="color:#a7f3d0;font-size:0.9rem;font-weight:600;">—</span>
+      </div>
       
       <!-- Visual Ticket Pass -->
       <div class="ticket-container">
