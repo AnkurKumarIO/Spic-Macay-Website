@@ -584,6 +584,7 @@
             <table class="admin-table">
               <thead>
                 <tr>
+                  <th>Image</th>
                   <th>Time</th>
                   <th>Session Label</th>
                   <th>Title</th>
@@ -646,10 +647,15 @@
             <textarea class="input-field" id="heDesc" required rows="3" placeholder="Short description shown on the card…"></textarea>
           </div>
           <div class="input-group form-full">
-            <label class="input-label" for="heImg">Image URL</label>
-            <input class="input-field" type="url" id="heImg" placeholder="https://images.unsplash.com/…" oninput="previewHeImg(this)"/>
-            <div id="heImgPreview" style="margin-top:8px;display:none;">
+            <label class="input-label" for="heImg">Image</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="heImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewHeImgFile(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="heImg" placeholder="https://images.unsplash.com/…" style="flex:1; min-width:0;" oninput="previewHeImg(this)"/>
+            </div>
+            <div id="heImgPreview" style="margin-top:10px;display:none;">
               <img id="heImgPreviewImg" src="" alt="Preview" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearHeImg()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-top:4px;">✕ Remove</button>
             </div>
           </div>
           <div class="input-group">
@@ -695,6 +701,18 @@
           <div class="input-group form-full">
             <label class="input-label" for="hcDesc">Description *</label>
             <textarea class="input-field" id="hcDesc" required rows="3" placeholder="Short description of the concert…"></textarea>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="hcImg">Image</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="hcImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewHcImgFile(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="hcImg" placeholder="https://images.unsplash.com/…" style="flex:1; min-width:0;" oninput="previewHcImg(this)"/>
+            </div>
+            <div id="hcImgPreview" style="margin-top:10px;display:none;">
+              <img id="hcImgPreviewImg" src="" alt="Preview" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearHcImg()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-top:4px;">✕ Remove</button>
+            </div>
           </div>
           <div class="input-group">
             <label class="input-label" for="hcVenue">Venue</label>
@@ -1285,10 +1303,11 @@
           const d = doc.data();
           html += `
             <tr>
+              <td>${d.imageUrl ? `<img src="${d.imageUrl}" style="width:64px;height:44px;object-fit:cover;border-radius:6px;"/>` : '—'}</td>
               <td style="font-weight:700;color:var(--primary);">${d.time || '—'}</td>
               <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.sessionLabel || '—'}</span></td>
-              <td style="font-weight:600;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.title}</td>
-              <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.75;font-size:0.8rem;">${d.description || '—'}</td>
+              <td style="font-weight:600;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.title}</td>
+              <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.75;font-size:0.8rem;">${d.description || '—'}</td>
               <td>${d.venue || '—'}</td>
               <td style="text-align:center;">${d.order ?? '—'}</td>
               <td>
@@ -1299,7 +1318,7 @@
               </td>
             </tr>`;
         });
-        document.getElementById('homeConcertsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No concert tracks added yet.</td></tr>';
+        document.getElementById('homeConcertsTableBody').innerHTML = html || '<tr><td colspan="8" style="text-align:center;opacity:0.5;">No concert tracks added yet.</td></tr>';
       });
 
       // Listen to gallery
@@ -1835,15 +1854,31 @@
     function closeHomeEventModal() {
       document.getElementById('homeEventModal').classList.remove('active');
     }
-    function previewHeImg(input) {
-      const preview = document.getElementById('heImgPreview');
-      const img = document.getElementById('heImgPreviewImg');
-      if (input.value) {
-        img.src = input.value;
-        preview.style.display = 'block';
-      } else {
-        preview.style.display = 'none';
+    function previewHeImgFile(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('heImgPreviewImg').src = e.target.result;
+          document.getElementById('heImgPreview').style.display = 'block';
+          document.getElementById('heImg').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
       }
+    }
+    function previewHeImg(input) {
+      if (input.value) {
+        document.getElementById('heImgPreviewImg').src = input.value;
+        document.getElementById('heImgPreview').style.display = 'block';
+        document.getElementById('heImgFile').value = '';
+      } else {
+        document.getElementById('heImgPreview').style.display = 'none';
+      }
+    }
+    function clearHeImg() {
+      document.getElementById('heImgFile').value = '';
+      document.getElementById('heImg').value = '';
+      document.getElementById('heImgPreviewImg').src = '';
+      document.getElementById('heImgPreview').style.display = 'none';
     }
     async function editHomeEvent(id) {
       try {
@@ -1869,10 +1904,20 @@
     async function saveHomeEvent(e) {
       e.preventDefault();
       const id = document.getElementById('homeEventId').value;
+      // Resolve image — file takes priority over URL
+      const fileInput = document.getElementById('heImgFile');
+      let imageUrl = document.getElementById('heImg').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        imageUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
       const data = {
         title: document.getElementById('heTitle').value.trim(),
         description: document.getElementById('heDesc').value.trim(),
-        imageUrl: document.getElementById('heImg').value.trim(),
+        imageUrl,
         ctaLabel: document.getElementById('heCtaLabel').value.trim() || 'Reserve Slot',
         ctaHref: document.getElementById('heCtaHref').value.trim() || 'register.html',
         order: parseInt(document.getElementById('heOrder').value || '0', 10),
@@ -1890,10 +1935,37 @@
       document.getElementById('homeConcertForm').reset();
       document.getElementById('homeConcertId').value = '';
       document.getElementById('homeConcertModalTitle').textContent = 'Add Concert Track';
+      document.getElementById('hcImgPreview').style.display = 'none';
       document.getElementById('homeConcertModal').classList.add('active');
     }
     function closeHomeConcertModal() {
       document.getElementById('homeConcertModal').classList.remove('active');
+    }
+    function previewHcImgFile(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('hcImgPreviewImg').src = e.target.result;
+          document.getElementById('hcImgPreview').style.display = 'block';
+          document.getElementById('hcImg').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function previewHcImg(input) {
+      if (input.value) {
+        document.getElementById('hcImgPreviewImg').src = input.value;
+        document.getElementById('hcImgPreview').style.display = 'block';
+        document.getElementById('hcImgFile').value = '';
+      } else {
+        document.getElementById('hcImgPreview').style.display = 'none';
+      }
+    }
+    function clearHcImg() {
+      document.getElementById('hcImgFile').value = '';
+      document.getElementById('hcImg').value = '';
+      document.getElementById('hcImgPreviewImg').src = '';
+      document.getElementById('hcImgPreview').style.display = 'none';
     }
     async function editHomeConcert(id) {
       try {
@@ -1906,6 +1978,13 @@
         document.getElementById('hcDesc').value = d.description || '';
         document.getElementById('hcVenue').value = d.venue || '';
         document.getElementById('hcOrder').value = d.order ?? 0;
+        document.getElementById('hcImg').value = d.imageUrl || '';
+        if (d.imageUrl) {
+          document.getElementById('hcImgPreviewImg').src = d.imageUrl;
+          document.getElementById('hcImgPreview').style.display = 'block';
+        } else {
+          document.getElementById('hcImgPreview').style.display = 'none';
+        }
         document.getElementById('homeConcertModalTitle').textContent = 'Edit Concert Track';
         document.getElementById('homeConcertModal').classList.add('active');
       } catch (err) { showToast(err.message, 'error'); }
@@ -1913,11 +1992,22 @@
     async function saveHomeConcert(e) {
       e.preventDefault();
       const id = document.getElementById('homeConcertId').value;
+      // Resolve image — file takes priority over URL
+      const fileInput = document.getElementById('hcImgFile');
+      let imageUrl = document.getElementById('hcImg').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        imageUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
       const data = {
         time: document.getElementById('hcTime').value.trim(),
         sessionLabel: document.getElementById('hcSessionLabel').value.trim(),
         title: document.getElementById('hcTitle').value.trim(),
         description: document.getElementById('hcDesc').value.trim(),
+        imageUrl,
         venue: document.getElementById('hcVenue').value.trim(),
         order: parseInt(document.getElementById('hcOrder').value || '0', 10),
       };
