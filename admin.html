@@ -392,6 +392,7 @@
         <button class="admin-tab" onclick="switchTab('artists', this)">Artists &amp; Gurus</button>
         <button class="admin-tab" onclick="switchTab('schedule', this)">Events/Schedule</button>
         <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
+        <button class="admin-tab" onclick="switchTab('homepage', this)">Homepage Content</button>
       </div>
 
       <!-- Attendee Stats Bar -->
@@ -563,6 +564,67 @@
             </table>
           </div>
         </div>
+      </div>
+
+      <!-- Homepage Content Section -->
+      <div class="panel-section" id="section-homepage">
+
+        <!-- Workshops Sub-card -->
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h2 class="headline-sm">Upcoming Events &amp; Workshops</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">Cards shown in the "Learning & Experiences" section on the home page</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openHomepageModal('workshop')">+ Add Workshop</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>CTA Label</th>
+                  <th>CTA Link</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="workshopsTableBody">
+                <tr><td colspan="6" style="text-align:center;opacity:0.5;">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Concerts Sub-card -->
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h2 class="headline-sm">Evening Concerts</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">Tracks shown in the "Prestigious Evening Concerts" section on the home page</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openHomepageModal('concert')">+ Add Concert</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Session Label</th>
+                  <th>Title</th>
+                  <th>Details</th>
+                  <th>Venue</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="concertsTableBody">
+                <tr><td colspan="6" style="text-align:center;opacity:0.5;">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -794,6 +856,84 @@
   </div>
 
   <div class="toast" id="adminToast"></div>
+
+  <!-- ── Homepage Content Modal ──────────────────────── -->
+  <div class="admin-modal" id="homepageModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="homepageModalTitle" style="margin-bottom:24px;">Add Item</h2>
+      <form id="homepageForm" onsubmit="saveHomepageItem(event)">
+        <input type="hidden" id="homepageItemId"/>
+        <input type="hidden" id="homepageItemType"/>
+        <div class="form-grid">
+
+          <!-- Image upload (shared) -->
+          <div class="input-group form-full">
+            <label class="input-label">Image</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="hpImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewHpImage(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="hpImgUrl" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewHpImageUrl(this)"/>
+            </div>
+            <div id="hpImgPreview" style="margin-top:10px; display:none;">
+              <img id="hpImgPreviewImg" src="" alt="Preview" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearHpImage()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-left:8px;">✕ Remove</button>
+            </div>
+          </div>
+
+          <!-- Workshop fields -->
+          <div class="input-group form-full hp-workshop-field">
+            <label class="input-label" for="hpTitle">Workshop Title</label>
+            <input class="input-field" type="text" id="hpTitle" placeholder="e.g. Classical Instrument Workshops"/>
+          </div>
+          <div class="input-group form-full hp-workshop-field">
+            <label class="input-label" for="hpDesc">Description</label>
+            <textarea class="input-field" id="hpDesc" rows="3" placeholder="Describe the workshop…"></textarea>
+          </div>
+          <div class="input-group hp-workshop-field">
+            <label class="input-label" for="hpCtaLabel">Button Label</label>
+            <input class="input-field" type="text" id="hpCtaLabel" placeholder="e.g. Reserve Slot →"/>
+          </div>
+          <div class="input-group hp-workshop-field">
+            <label class="input-label" for="hpCtaLink">Button Link</label>
+            <input class="input-field" type="text" id="hpCtaLink" placeholder="e.g. register.html"/>
+          </div>
+
+          <!-- Concert fields -->
+          <div class="input-group hp-concert-field" style="display:none;">
+            <label class="input-label" for="hpTime">Time</label>
+            <input class="input-field" type="text" id="hpTime" placeholder="e.g. 07:30 PM"/>
+          </div>
+          <div class="input-group hp-concert-field" style="display:none;">
+            <label class="input-label" for="hpSessionLabel">Session Label</label>
+            <input class="input-field" type="text" id="hpSessionLabel" placeholder="e.g. Grand Recital"/>
+          </div>
+          <div class="input-group form-full hp-concert-field" style="display:none;">
+            <label class="input-label" for="hpConcertTitle">Concert Title</label>
+            <input class="input-field" type="text" id="hpConcertTitle" placeholder="e.g. Grand Classical Vocals &amp; Jugalbandi"/>
+          </div>
+          <div class="input-group form-full hp-concert-field" style="display:none;">
+            <label class="input-label" for="hpConcertDetails">Details / Description</label>
+            <textarea class="input-field" id="hpConcertDetails" rows="3" placeholder="Describe the concert…"></textarea>
+          </div>
+          <div class="input-group hp-concert-field" style="display:none;">
+            <label class="input-label" for="hpVenue">Venue</label>
+            <input class="input-field" type="text" id="hpVenue" placeholder="e.g. Main Auditorium"/>
+          </div>
+
+          <!-- Order field (shared) -->
+          <div class="input-group">
+            <label class="input-label" for="hpOrder">Display Order</label>
+            <input class="input-field" type="number" id="hpOrder" placeholder="1" min="1"/>
+          </div>
+
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:8px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeHomepageModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- ── QR Scanner Modal ─────────────────────────────── -->
   <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
@@ -1132,6 +1272,20 @@
           `;
         });
         document.getElementById('galleryTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No moments added.</td></tr>';
+      });
+
+      // Listen to homepage content (workshops + concerts)
+      db.collection('homepageContent').orderBy('order').onSnapshot(snap => {
+        const items = [];
+        snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+        renderHomepageContent(items);
+      }, () => {
+        // orderBy may fail if index not ready — fall back to unordered
+        db.collection('homepageContent').onSnapshot(snap => {
+          const items = [];
+          snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+          renderHomepageContent(items);
+        });
       });
     }
 
@@ -1524,7 +1678,165 @@
       document.getElementById('dayPanel-' + day).style.display = 'block';
     }
 
-    // ── QR SCANNER ─────────────────────────────────────
+    // ── HOMEPAGE CONTENT (Workshops & Concerts) ─────────
+
+    function openHomepageModal(type, data) {
+      document.getElementById('homepageForm').reset();
+      document.getElementById('homepageItemId').value = data ? data.id : '';
+      document.getElementById('homepageItemType').value = type;
+      document.getElementById('hpImgPreview').style.display = 'none';
+      document.getElementById('hpImgPreviewImg').src = '';
+
+      // Show/hide fields by type
+      document.querySelectorAll('.hp-workshop-field').forEach(el => el.style.display = type === 'workshop' ? '' : 'none');
+      document.querySelectorAll('.hp-concert-field').forEach(el => el.style.display = type === 'concert' ? '' : 'none');
+
+      document.getElementById('homepageModalTitle').textContent =
+        (data ? 'Edit' : 'Add') + (type === 'workshop' ? ' Workshop / Event' : ' Evening Concert');
+
+      if (data) {
+        if (data.imageUrl) {
+          document.getElementById('hpImgUrl').value = data.imageUrl;
+          document.getElementById('hpImgPreviewImg').src = data.imageUrl;
+          document.getElementById('hpImgPreview').style.display = 'block';
+        }
+        document.getElementById('hpOrder').value = data.order || '';
+        if (type === 'workshop') {
+          document.getElementById('hpTitle').value = data.title || '';
+          document.getElementById('hpDesc').value = data.description || '';
+          document.getElementById('hpCtaLabel').value = data.ctaLabel || '';
+          document.getElementById('hpCtaLink').value = data.ctaLink || '';
+        } else {
+          document.getElementById('hpTime').value = data.time || '';
+          document.getElementById('hpSessionLabel').value = data.sessionLabel || '';
+          document.getElementById('hpConcertTitle').value = data.title || '';
+          document.getElementById('hpConcertDetails').value = data.details || '';
+          document.getElementById('hpVenue').value = data.venue || '';
+        }
+      }
+      document.getElementById('homepageModal').classList.add('active');
+    }
+
+    function closeHomepageModal() {
+      document.getElementById('homepageModal').classList.remove('active');
+    }
+
+    function previewHpImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('hpImgPreviewImg').src = e.target.result;
+          document.getElementById('hpImgPreview').style.display = 'block';
+          document.getElementById('hpImgUrl').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function previewHpImageUrl(input) {
+      if (input.value) {
+        document.getElementById('hpImgPreviewImg').src = input.value;
+        document.getElementById('hpImgPreview').style.display = 'block';
+        document.getElementById('hpImgFile').value = '';
+      }
+    }
+    function clearHpImage() {
+      document.getElementById('hpImgFile').value = '';
+      document.getElementById('hpImgUrl').value = '';
+      document.getElementById('hpImgPreviewImg').src = '';
+      document.getElementById('hpImgPreview').style.display = 'none';
+    }
+
+    async function saveHomepageItem(e) {
+      e.preventDefault();
+      const id = document.getElementById('homepageItemId').value;
+      const type = document.getElementById('homepageItemType').value;
+
+      // Resolve image
+      const fileInput = document.getElementById('hpImgFile');
+      let imageUrl = document.getElementById('hpImgUrl').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        imageUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
+
+      const order = parseInt(document.getElementById('hpOrder').value) || 99;
+      let data = { type, imageUrl, order };
+
+      if (type === 'workshop') {
+        data.title = document.getElementById('hpTitle').value.trim();
+        data.description = document.getElementById('hpDesc').value.trim();
+        data.ctaLabel = document.getElementById('hpCtaLabel').value.trim();
+        data.ctaLink = document.getElementById('hpCtaLink').value.trim();
+      } else {
+        data.time = document.getElementById('hpTime').value.trim();
+        data.sessionLabel = document.getElementById('hpSessionLabel').value.trim();
+        data.title = document.getElementById('hpConcertTitle').value.trim();
+        data.details = document.getElementById('hpConcertDetails').value.trim();
+        data.venue = document.getElementById('hpVenue').value.trim();
+      }
+
+      try {
+        if (id) {
+          await db.collection('homepageContent').doc(id).update(data);
+        } else {
+          await db.collection('homepageContent').add(data);
+        }
+        closeHomepageModal();
+        showToast(`${type === 'workshop' ? 'Workshop' : 'Concert'} saved.`, 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderHomepageContent(items) {
+      const workshops = items.filter(d => d.type === 'workshop').sort((a, b) => (a.order || 99) - (b.order || 99));
+      const concerts  = items.filter(d => d.type === 'concert').sort((a, b) => (a.order || 99) - (b.order || 99));
+
+      // Workshops table
+      let wHtml = '';
+      workshops.forEach(d => {
+        wHtml += `<tr>
+          <td><img src="${d.imageUrl || DEFAULT_AVATAR}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;"/></td>
+          <td style="font-weight:600;">${d.title || '—'}</td>
+          <td style="max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.8;">${d.description || '—'}</td>
+          <td>${d.ctaLabel || '—'}</td>
+          <td style="font-size:0.78rem;">${d.ctaLink || '—'}</td>
+          <td>
+            <div class="action-btn-group">
+              <button class="btn btn-secondary btn-sm" onclick='editHomepageItem(${JSON.stringify(d)})'>Edit</button>
+              <button class="btn btn-secondary btn-sm" onclick="deleteDoc('homepageContent','${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+            </div>
+          </td>
+        </tr>`;
+      });
+      document.getElementById('workshopsTableBody').innerHTML = wHtml || '<tr><td colspan="6" style="text-align:center;opacity:0.5;">No workshops added.</td></tr>';
+
+      // Concerts table
+      let cHtml = '';
+      concerts.forEach(d => {
+        cHtml += `<tr>
+          <td style="font-weight:600;color:var(--primary-container);">${d.time || '—'}</td>
+          <td><span class="admin-badge badge-warning">${d.sessionLabel || '—'}</span></td>
+          <td style="font-weight:600;">${d.title || '—'}</td>
+          <td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.8;">${d.details || '—'}</td>
+          <td>${d.venue || '—'}</td>
+          <td>
+            <div class="action-btn-group">
+              <button class="btn btn-secondary btn-sm" onclick='editHomepageItem(${JSON.stringify(d)})'>Edit</button>
+              <button class="btn btn-secondary btn-sm" onclick="deleteDoc('homepageContent','${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+            </div>
+          </td>
+        </tr>`;
+      });
+      document.getElementById('concertsTableBody').innerHTML = cHtml || '<tr><td colspan="6" style="text-align:center;opacity:0.5;">No concerts added.</td></tr>';
+    }
+
+    function editHomepageItem(data) {
+      openHomepageModal(data.type, data);
+    }
     let scannerStream = null;
     let scannerRaf = null;
     let scannerCooldown = false;
