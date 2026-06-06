@@ -391,6 +391,8 @@
         <button class="admin-tab" onclick="switchTab('intensives', this)">Intensives</button>
         <button class="admin-tab" onclick="switchTab('artists', this)">Artists &amp; Gurus</button>
         <button class="admin-tab" onclick="switchTab('schedule', this)">Events/Schedule</button>
+        <button class="admin-tab" onclick="switchTab('homeEvents', this)">Home Events</button>
+        <button class="admin-tab" onclick="switchTab('homeConcerts', this)">Home Concerts</button>
         <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
       </div>
 
@@ -539,6 +541,64 @@
         </div>
       </div>
 
+      <!-- Home Events Section -->
+      <div class="panel-section" id="section-homeEvents">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <h2 class="headline-sm">Upcoming Events &amp; Workshops</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">These cards appear in the "Upcoming Events" section on the homepage.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openHomeEventModal()">+ Add Card</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>CTA Label</th>
+                  <th>CTA Link</th>
+                  <th>Order</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="homeEventsTableBody"><!-- Dynamic --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Home Concerts Section -->
+      <div class="panel-section" id="section-homeConcerts">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <h2 class="headline-sm">Evening Concerts Itinerary</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">These tracks appear in the "Prestigious Evening Concerts" section on the homepage.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openHomeConcertModal()">+ Add Concert Track</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Session Label</th>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Venue</th>
+                  <th>Order</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="homeConcertsTableBody"><!-- Dynamic --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Gallery Section -->
       <div class="panel-section" id="section-gallery">
         <div class="dashboard-card">
@@ -569,6 +629,89 @@
   </div>
 
   <!-- ── Modals Section ──────────────────────────────── -->
+
+  <!-- Home Event Modal -->
+  <div class="admin-modal" id="homeEventModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="homeEventModalTitle" style="margin-bottom:24px;">Add Home Event Card</h2>
+      <form id="homeEventForm" onsubmit="saveHomeEvent(event)">
+        <input type="hidden" id="homeEventId"/>
+        <div class="form-grid">
+          <div class="input-group form-full">
+            <label class="input-label" for="heTitle">Title *</label>
+            <input class="input-field" type="text" id="heTitle" required placeholder="e.g. Classical Instrument Workshops"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="heDesc">Description *</label>
+            <textarea class="input-field" id="heDesc" required rows="3" placeholder="Short description shown on the card…"></textarea>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="heImg">Image URL</label>
+            <input class="input-field" type="url" id="heImg" placeholder="https://images.unsplash.com/…" oninput="previewHeImg(this)"/>
+            <div id="heImgPreview" style="margin-top:8px;display:none;">
+              <img id="heImgPreviewImg" src="" alt="Preview" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;border:1px solid rgba(245,240,232,0.15);"/>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="heCtaLabel">CTA Button Label</label>
+            <input class="input-field" type="text" id="heCtaLabel" placeholder="Reserve Slot"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="heCtaHref">CTA Button Link</label>
+            <input class="input-field" type="text" id="heCtaHref" placeholder="register.html"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="heOrder">Display Order</label>
+            <input class="input-field" type="number" id="heOrder" min="0" placeholder="1"/>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeHomeEventModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Home Concert Modal -->
+  <div class="admin-modal" id="homeConcertModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="homeConcertModalTitle" style="margin-bottom:24px;">Add Concert Track</h2>
+      <form id="homeConcertForm" onsubmit="saveHomeConcert(event)">
+        <input type="hidden" id="homeConcertId"/>
+        <div class="form-grid">
+          <div class="input-group">
+            <label class="input-label" for="hcTime">Time *</label>
+            <input class="input-field" type="text" id="hcTime" required placeholder="e.g. 07:30 PM"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="hcSessionLabel">Session Label</label>
+            <input class="input-field" type="text" id="hcSessionLabel" placeholder="e.g. Grand Recital"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="hcTitle">Concert Title *</label>
+            <input class="input-field" type="text" id="hcTitle" required placeholder="e.g. Grand Classical Vocals &amp; Jugalbandi"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="hcDesc">Description *</label>
+            <textarea class="input-field" id="hcDesc" required rows="3" placeholder="Short description of the concert…"></textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="hcVenue">Venue</label>
+            <input class="input-field" type="text" id="hcVenue" placeholder="e.g. Main Auditorium"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="hcOrder">Display Order</label>
+            <input class="input-field" type="number" id="hcOrder" min="0" placeholder="1"/>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeHomeConcertModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Track</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Intensive Modal -->
   <div class="admin-modal" id="intensiveModal">
@@ -1111,6 +1254,54 @@
         });
       });
 
+      // Listen to homeEvents
+      db.collection('homeEvents').orderBy('order').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <tr>
+              <td>${d.imageUrl ? `<img src="${d.imageUrl}" style="width:64px;height:44px;object-fit:cover;border-radius:6px;"/>` : '—'}</td>
+              <td style="font-weight:600;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.title}</td>
+              <td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.75;font-size:0.8rem;">${d.description || '—'}</td>
+              <td>${d.ctaLabel || 'Reserve Slot'}</td>
+              <td style="font-size:0.8rem;opacity:0.75;">${d.ctaHref || 'register.html'}</td>
+              <td style="text-align:center;">${d.order ?? '—'}</td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editHomeEvent('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('homeEvents','${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+        document.getElementById('homeEventsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No event cards added yet.</td></tr>';
+      });
+
+      // Listen to homeConcerts
+      db.collection('homeConcerts').orderBy('order').onSnapshot(snap => {
+        let html = '';
+        snap.forEach(doc => {
+          const d = doc.data();
+          html += `
+            <tr>
+              <td style="font-weight:700;color:var(--primary);">${d.time || '—'}</td>
+              <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.sessionLabel || '—'}</span></td>
+              <td style="font-weight:600;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.title}</td>
+              <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.75;font-size:0.8rem;">${d.description || '—'}</td>
+              <td>${d.venue || '—'}</td>
+              <td style="text-align:center;">${d.order ?? '—'}</td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editHomeConcert('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('homeConcerts','${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+        document.getElementById('homeConcertsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No concert tracks added yet.</td></tr>';
+      });
+
       // Listen to gallery
       db.collection('gallery').onSnapshot(snap => {
         let html = '';
@@ -1633,6 +1824,111 @@
       }
     }
 
+    // ── HOME EVENTS CRUD ────────────────────────────────────
+    function openHomeEventModal() {
+      document.getElementById('homeEventForm').reset();
+      document.getElementById('homeEventId').value = '';
+      document.getElementById('homeEventModalTitle').textContent = 'Add Home Event Card';
+      document.getElementById('heImgPreview').style.display = 'none';
+      document.getElementById('homeEventModal').classList.add('active');
+    }
+    function closeHomeEventModal() {
+      document.getElementById('homeEventModal').classList.remove('active');
+    }
+    function previewHeImg(input) {
+      const preview = document.getElementById('heImgPreview');
+      const img = document.getElementById('heImgPreviewImg');
+      if (input.value) {
+        img.src = input.value;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+    async function editHomeEvent(id) {
+      try {
+        const doc = await db.collection('homeEvents').doc(id).get();
+        const d = doc.data();
+        document.getElementById('homeEventId').value = id;
+        document.getElementById('heTitle').value = d.title || '';
+        document.getElementById('heDesc').value = d.description || '';
+        document.getElementById('heImg').value = d.imageUrl || '';
+        document.getElementById('heCtaLabel').value = d.ctaLabel || '';
+        document.getElementById('heCtaHref').value = d.ctaHref || '';
+        document.getElementById('heOrder').value = d.order ?? 0;
+        if (d.imageUrl) {
+          document.getElementById('heImgPreviewImg').src = d.imageUrl;
+          document.getElementById('heImgPreview').style.display = 'block';
+        } else {
+          document.getElementById('heImgPreview').style.display = 'none';
+        }
+        document.getElementById('homeEventModalTitle').textContent = 'Edit Home Event Card';
+        document.getElementById('homeEventModal').classList.add('active');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+    async function saveHomeEvent(e) {
+      e.preventDefault();
+      const id = document.getElementById('homeEventId').value;
+      const data = {
+        title: document.getElementById('heTitle').value.trim(),
+        description: document.getElementById('heDesc').value.trim(),
+        imageUrl: document.getElementById('heImg').value.trim(),
+        ctaLabel: document.getElementById('heCtaLabel').value.trim() || 'Reserve Slot',
+        ctaHref: document.getElementById('heCtaHref').value.trim() || 'register.html',
+        order: parseInt(document.getElementById('heOrder').value || '0', 10),
+      };
+      try {
+        if (id) await db.collection('homeEvents').doc(id).update(data);
+        else await db.collection('homeEvents').add(data);
+        closeHomeEventModal();
+        showToast('Event card saved.', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    // ── HOME CONCERTS CRUD ──────────────────────────────────
+    function openHomeConcertModal() {
+      document.getElementById('homeConcertForm').reset();
+      document.getElementById('homeConcertId').value = '';
+      document.getElementById('homeConcertModalTitle').textContent = 'Add Concert Track';
+      document.getElementById('homeConcertModal').classList.add('active');
+    }
+    function closeHomeConcertModal() {
+      document.getElementById('homeConcertModal').classList.remove('active');
+    }
+    async function editHomeConcert(id) {
+      try {
+        const doc = await db.collection('homeConcerts').doc(id).get();
+        const d = doc.data();
+        document.getElementById('homeConcertId').value = id;
+        document.getElementById('hcTime').value = d.time || '';
+        document.getElementById('hcSessionLabel').value = d.sessionLabel || '';
+        document.getElementById('hcTitle').value = d.title || '';
+        document.getElementById('hcDesc').value = d.description || '';
+        document.getElementById('hcVenue').value = d.venue || '';
+        document.getElementById('hcOrder').value = d.order ?? 0;
+        document.getElementById('homeConcertModalTitle').textContent = 'Edit Concert Track';
+        document.getElementById('homeConcertModal').classList.add('active');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+    async function saveHomeConcert(e) {
+      e.preventDefault();
+      const id = document.getElementById('homeConcertId').value;
+      const data = {
+        time: document.getElementById('hcTime').value.trim(),
+        sessionLabel: document.getElementById('hcSessionLabel').value.trim(),
+        title: document.getElementById('hcTitle').value.trim(),
+        description: document.getElementById('hcDesc').value.trim(),
+        venue: document.getElementById('hcVenue').value.trim(),
+        order: parseInt(document.getElementById('hcOrder').value || '0', 10),
+      };
+      try {
+        if (id) await db.collection('homeConcerts').doc(id).update(data);
+        else await db.collection('homeConcerts').add(data);
+        closeHomeConcertModal();
+        showToast('Concert track saved.', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
     // DATABASE SEEDING UTILITY
     async function seedInitialData() {
       if (!confirm('Are you sure you want to seed initial sample data? This will add the default maestros, schedule events, and gallery items.')) return;
@@ -1744,6 +2040,32 @@
 
         await batch.commit();
         showToast('Sample data seeded successfully.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+
+      // Seed homeEvents
+      try {
+        const heBatch = db.batch();
+        [
+          { title: 'Classical Instrument Workshops', description: 'Understand the intricate structures of Hindustani and Carnatic string and percussion systems through guided, practical modules in Sitar, Tabla, Flute, and Violin.', imageUrl: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80', ctaLabel: 'Reserve Slot', ctaHref: 'register.html', order: 1 },
+          { title: 'Traditional Art Masterclasses', description: "Connect with India's rich visual heritage. Master ancient techniques of Madhubani painting and Warli tribal art under national award-winning master craftsmen.", imageUrl: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80', ctaLabel: 'Reserve Slot', ctaHref: 'register.html', order: 2 },
+          { title: 'Guru-Shishya Lecture-Demos', description: 'Immerse yourself in interactive lecture-demonstrations that break down complex music theories, rhythmic patterns, and historical backgrounds behind iconic art forms.', imageUrl: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&q=80', ctaLabel: 'Learn More', ctaHref: 'about.html', order: 3 },
+        ].forEach(item => {
+          heBatch.set(db.collection('homeEvents').doc(item.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')), item);
+        });
+        await heBatch.commit();
+
+        const hcBatch = db.batch();
+        [
+          { time: '06:00 PM', sessionLabel: 'Twilight Session', title: 'Naad Yoga at Twilight', description: 'Begin the cultural transition with ambient, meditative sonic resonance and morning-evening transition raagas designed for absolute inner focus.', venue: 'Academic Lawn', order: 1 },
+          { time: '07:30 PM', sessionLabel: 'Grand Recital', title: 'Grand Classical Vocals & Jugalbandi', description: 'A spellbinding combination of Hindustani classical vocals accompanied by high-energy interactions on the tabla and harmonium by national legends.', venue: 'Main Auditorium', order: 2 },
+          { time: '09:00 PM', sessionLabel: 'Late Night Raga', title: 'Sitar & Flute Symphony', description: 'Experience the complex, fluid melodies of traditional late-night ragas weaving together the brilliant strings of Sitar and resonant echoes of Flute.', venue: 'Main Auditorium', order: 3 },
+        ].forEach(item => {
+          hcBatch.set(db.collection('homeConcerts').doc(item.title.toLowerCase().replace(/[^a-z0-9]+/g,'-')), item);
+        });
+        await hcBatch.commit();
+        showToast('Home sections seeded.', 'success');
       } catch (err) {
         showToast(err.message, 'error');
       }
