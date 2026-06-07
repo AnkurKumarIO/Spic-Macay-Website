@@ -581,7 +581,7 @@
     }
     @media (min-width: 1024px) {
       .sub-tiles-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
       }
     }
     .sub-tile-card {
@@ -817,16 +817,6 @@
               </div>
               <span class="sub-tile-link">Read Guidelines →</span>
             </a>
-
-            <!-- Sub-tile 4: Convention Schedule -->
-            <div class="sub-tile-card" onclick="revealFullSchedule()">
-              <div>
-                <span class="sub-tile-icon"></span>
-                <h4 class="sub-tile-title">Convention Schedule</h4>
-                <p class="sub-tile-desc">Interactive day-wise schedule of all 3 days of the convention.</p>
-              </div>
-              <span class="sub-tile-link">View Schedule ↓</span>
-            </div>
           </div>
         </div>
 
@@ -1559,6 +1549,7 @@
       const panels = document.querySelectorAll('.event-details-panel');
       const cards = document.querySelectorAll('.event-tile-card');
       const panel = document.getElementById('panel-' + panelName);
+      const scheduleSec = document.getElementById('scheduleSection');
       
       const isActive = panel.classList.contains('active');
       
@@ -1572,9 +1563,16 @@
         panel.classList.add('active');
         element.style.borderColor = 'var(--primary)';
         element.style.boxShadow = '0 12px 36px rgba(232, 119, 34, 0.15)';
+        // Also reveal the 3-day schedule below
+        if (panelName === 'virasat') {
+          scheduleSec.style.display = 'block';
+        }
         setTimeout(() => {
           panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }, 100);
+      } else {
+        // Closing the panel — hide schedule too
+        scheduleSec.style.display = 'none';
       }
     }
 
