@@ -842,48 +842,10 @@
         </p>
       </div>
 
-      <div class="workshops-grid">
-
-        <!-- Workshop 1 -->
-        <div class="workshop-card reveal reveal-delay-1">
-          <div class="workshop-img-wrap">
-            <img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80" alt="Classical Instrument Workshops" class="workshop-img"/>
-          </div>
-          <div class="workshop-body">
-            <h3 class="workshop-card-title">Classical Instrument Workshops</h3>
-            <p class="workshop-desc">
-              Understand the intricate structures of Hindustani and Carnatic string and percussion systems through guided, practical modules in Sitar, Tabla, Flute, and Violin.
-            </p>
-            <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
-          </div>
-        </div>
-
-        <!-- Workshop 2 -->
-        <div class="workshop-card reveal reveal-delay-2">
-          <div class="workshop-img-wrap">
-            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80" alt="Traditional Art & Painting Masterclasses" class="workshop-img"/>
-          </div>
-          <div class="workshop-body">
-            <h3 class="workshop-card-title">Traditional Art Masterclasses</h3>
-            <p class="workshop-desc">
-              Connect with India's rich visual heritage. Master ancient techniques of Madhubani painting and Warli tribal art under national award-winning master craftsmen.
-            </p>
-            <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
-          </div>
-        </div>
-
-        <!-- Workshop 3 -->
-        <div class="workshop-card reveal reveal-delay-3">
-          <div class="workshop-img-wrap">
-            <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&q=80" alt="Guru-Shishya Lecture-Demonstrations" class="workshop-img"/>
-          </div>
-          <div class="workshop-body">
-            <h3 class="workshop-card-title">Guru-Shishya Lecture-Demos</h3>
-            <p class="workshop-desc">
-              Immerse yourself in interactive lecture-demonstrations that break down complex music theories, rhythmic patterns, and historical backgrounds behind iconic art forms.
-            </p>
-            <button class="workshop-cta" onclick="location.href='about.html'">Learn More →</button>
-          </div>
+      <div class="workshops-grid" id="workshopsGrid">
+        <!-- Populated dynamically from Firestore -->
+        <div style="text-align:center;padding:48px;opacity:0.4;grid-column:1/-1;">
+          <p class="body-md">Loading events…</p>
         </div>
       </div>
     </div>
@@ -900,57 +862,10 @@
         </p>
       </div>
 
-      <div class="concert-itinerary">
-
-        <!-- Concert Track 1 -->
-        <div class="concert-track reveal reveal-delay-1">
-          <div class="concert-time-badge">
-            <span class="concert-time">06:00 PM</span>
-            <span class="concert-session-label">Twilight Session</span>
-          </div>
-          <div class="concert-info">
-            <h3 class="concert-title">Naad Yoga at Twilight</h3>
-            <p class="concert-details text-muted">
-              Begin the cultural transition with ambient, meditative sonic resonance and morning-evening transition raagas designed for absolute inner focus.
-            </p>
-          </div>
-          <div class="concert-venue-tag">
-            <span class="concert-venue-icon"></span> Academic Lawn
-          </div>
-        </div>
-
-        <!-- Concert Track 2 -->
-        <div class="concert-track reveal reveal-delay-2">
-          <div class="concert-time-badge">
-            <span class="concert-time">07:30 PM</span>
-            <span class="concert-session-label">Grand Recital</span>
-          </div>
-          <div class="concert-info">
-            <h3 class="concert-title">Grand Classical Vocals &amp; Jugalbandi</h3>
-            <p class="concert-details text-muted">
-              A spellbinding combination of Hindustani classical vocals accompanied by high-energy interactions on the tabla and harmonium by national legends.
-            </p>
-          </div>
-          <div class="concert-venue-tag">
-            <span class="concert-venue-icon"></span> Main Auditorium
-          </div>
-        </div>
-
-        <!-- Concert Track 3 -->
-        <div class="concert-track reveal reveal-delay-3">
-          <div class="concert-time-badge">
-            <span class="concert-time">09:00 PM</span>
-            <span class="concert-session-label">Late Night Raga</span>
-          </div>
-          <div class="concert-info">
-            <h3 class="concert-title">Sitar &amp; Flute Symphony</h3>
-            <p class="concert-details text-muted">
-              Experience the complex, fluid melodies of traditional late-night ragas weaving together the brilliant strings of Sitar and resonant echoes of Flute.
-            </p>
-          </div>
-          <div class="concert-venue-tag">
-            <span class="concert-venue-icon"></span> Main Auditorium
-          </div>
+      <div class="concert-itinerary" id="concertItinerary">
+        <!-- Populated dynamically from Firestore -->
+        <div style="text-align:center;padding:48px;opacity:0.4;">
+          <p class="body-md">Loading concerts…</p>
         </div>
       </div>
 
@@ -1073,6 +988,155 @@
 
   <div class="toast" id="toast" role="alert" aria-live="polite"></div>
   <script src="scripts/main.js"></script>
+
+  <!-- Firebase — dynamic home sections -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    (function () {
+      const firebaseConfig = {
+        apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+        authDomain: "spic-macay-vnit.firebaseapp.com",
+        projectId: "spic-macay-vnit",
+        storageBucket: "spic-macay-vnit.firebasestorage.app",
+        messagingSenderId: "768698124036",
+        appId: "1:768698124036:web:311cc550bef0ac56133251"
+      };
+      // Guard against double-init (main.js doesn't init Firebase, but just in case)
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+
+      // Re-observe any .reveal elements injected after DOMContentLoaded
+      // so the IntersectionObserver in main.js picks them up
+      function reObserveReveal() {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('.reveal:not(.visible)').forEach(el => io.observe(el));
+      }
+
+      // ── Upcoming Events & Workshops ──────────────────────────────────────
+      db.collection('homeEvents').orderBy('order').get().then(snap => {
+        const grid = document.getElementById('workshopsGrid');
+        if (snap.empty) {
+          grid.innerHTML = defaultWorkshopCards();
+        } else {
+          const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
+          grid.innerHTML = snap.docs.map((doc, i) => {
+            const d = doc.data();
+            const delay = delays[i % delays.length];
+            const imgSrc = d.imageUrl || 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80';
+            const ctaLabel = d.ctaLabel || 'Reserve Slot';
+            const ctaHref = d.ctaHref || 'register.html';
+            return `
+              <div class="workshop-card reveal ${delay}">
+                <div class="workshop-img-wrap">
+                  <img src="${escHtml(imgSrc)}" alt="${escHtml(d.title)}" class="workshop-img" loading="lazy"/>
+                </div>
+                <div class="workshop-body">
+                  <h3 class="workshop-card-title">${escHtml(d.title)}</h3>
+                  <p class="workshop-desc">${escHtml(d.description)}</p>
+                  <button class="workshop-cta" onclick="location.href='${escHtml(ctaHref)}'">${escHtml(ctaLabel)} →</button>
+                </div>
+              </div>`;
+          }).join('');
+        }
+        reObserveReveal();
+      }).catch(() => {
+        document.getElementById('workshopsGrid').innerHTML = defaultWorkshopCards();
+        reObserveReveal();
+      });
+
+      // ── Evening Concerts ─────────────────────────────────────────────────
+      db.collection('homeConcerts').orderBy('order').get().then(snap => {
+        const list = document.getElementById('concertItinerary');
+        if (snap.empty) {
+          list.innerHTML = defaultConcertTracks();
+        } else {
+          const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
+          list.innerHTML = snap.docs.map((doc, i) => {
+            const d = doc.data();
+            const delay = delays[i % delays.length];
+            return `
+              <div class="concert-track reveal ${delay}">
+                <div class="concert-time-badge">
+                  <span class="concert-time">${escHtml(d.time || '')}</span>
+                  <span class="concert-session-label">${escHtml(d.sessionLabel || '')}</span>
+                </div>
+                <div class="concert-info">
+                  <h3 class="concert-title">${escHtml(d.title)}</h3>
+                  <p class="concert-details text-muted">${escHtml(d.description)}</p>
+                </div>
+                <div class="concert-venue-tag">
+                  <span class="concert-venue-icon"></span> ${escHtml(d.venue || '')}
+                </div>
+              </div>`;
+          }).join('');
+        }
+        reObserveReveal();
+      }).catch(() => {
+        document.getElementById('concertItinerary').innerHTML = defaultConcertTracks();
+        reObserveReveal();
+      });
+
+      // ── Helpers ──────────────────────────────────────────────────────────
+      function escHtml(str) {
+        return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function defaultWorkshopCards() {
+        return `
+          <div class="workshop-card reveal reveal-delay-1">
+            <div class="workshop-img-wrap"><img src="https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=600&q=80" alt="Classical Instrument Workshops" class="workshop-img"/></div>
+            <div class="workshop-body">
+              <h3 class="workshop-card-title">Classical Instrument Workshops</h3>
+              <p class="workshop-desc">Understand the intricate structures of Hindustani and Carnatic string and percussion systems through guided, practical modules in Sitar, Tabla, Flute, and Violin.</p>
+              <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
+            </div>
+          </div>
+          <div class="workshop-card reveal reveal-delay-2">
+            <div class="workshop-img-wrap"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&q=80" alt="Traditional Art Masterclasses" class="workshop-img"/></div>
+            <div class="workshop-body">
+              <h3 class="workshop-card-title">Traditional Art Masterclasses</h3>
+              <p class="workshop-desc">Connect with India's rich visual heritage. Master ancient techniques of Madhubani painting and Warli tribal art under national award-winning master craftsmen.</p>
+              <button class="workshop-cta" onclick="location.href='register.html'">Reserve Slot →</button>
+            </div>
+          </div>
+          <div class="workshop-card reveal reveal-delay-3">
+            <div class="workshop-img-wrap"><img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&q=80" alt="Guru-Shishya Lecture-Demonstrations" class="workshop-img"/></div>
+            <div class="workshop-body">
+              <h3 class="workshop-card-title">Guru-Shishya Lecture-Demos</h3>
+              <p class="workshop-desc">Immerse yourself in interactive lecture-demonstrations that break down complex music theories, rhythmic patterns, and historical backgrounds behind iconic art forms.</p>
+              <button class="workshop-cta" onclick="location.href='about.html'">Learn More →</button>
+            </div>
+          </div>`;
+      }
+
+      function defaultConcertTracks() {
+        return `
+          <div class="concert-track reveal reveal-delay-1">
+            <div class="concert-time-badge"><span class="concert-time">06:00 PM</span><span class="concert-session-label">Twilight Session</span></div>
+            <div class="concert-info"><h3 class="concert-title">Naad Yoga at Twilight</h3><p class="concert-details text-muted">Begin the cultural transition with ambient, meditative sonic resonance and morning-evening transition raagas designed for absolute inner focus.</p></div>
+            <div class="concert-venue-tag"><span class="concert-venue-icon"></span> Academic Lawn</div>
+          </div>
+          <div class="concert-track reveal reveal-delay-2">
+            <div class="concert-time-badge"><span class="concert-time">07:30 PM</span><span class="concert-session-label">Grand Recital</span></div>
+            <div class="concert-info"><h3 class="concert-title">Grand Classical Vocals &amp; Jugalbandi</h3><p class="concert-details text-muted">A spellbinding combination of Hindustani classical vocals accompanied by high-energy interactions on the tabla and harmonium by national legends.</p></div>
+            <div class="concert-venue-tag"><span class="concert-venue-icon"></span> Main Auditorium</div>
+          </div>
+          <div class="concert-track reveal reveal-delay-3">
+            <div class="concert-time-badge"><span class="concert-time">09:00 PM</span><span class="concert-session-label">Late Night Raga</span></div>
+            <div class="concert-info"><h3 class="concert-title">Sitar &amp; Flute Symphony</h3><p class="concert-details text-muted">Experience the complex, fluid melodies of traditional late-night ragas weaving together the brilliant strings of Sitar and resonant echoes of Flute.</p></div>
+            <div class="concert-venue-tag"><span class="concert-venue-icon"></span> Main Auditorium</div>
+          </div>`;
+      }
+    })();
+  </script>
 
 </body>
 </html>
