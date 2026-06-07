@@ -381,7 +381,6 @@
           <p class="body-sm text-muted">Virasat 2026 Management Console</p>
         </div>
         <div style="display: flex; gap: 12px;">
-          <button class="btn btn-secondary btn-sm" onclick="seedInitialData()">Seed Sample Data</button>
           <button class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
         </div>
       </div>
@@ -585,12 +584,12 @@
               <thead>
                 <tr>
                   <th>Image</th>
+                  <th>Day</th>
                   <th>Time</th>
                   <th>Session Label</th>
                   <th>Title</th>
                   <th>Description</th>
                   <th>Venue</th>
-                  <th>Order</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -687,6 +686,14 @@
         <input type="hidden" id="homeConcertId"/>
         <div class="form-grid">
           <div class="input-group">
+            <label class="input-label" for="hcDay">Day *</label>
+            <select class="input-field" id="hcDay" required>
+              <option value="Day 1">Day 1</option>
+              <option value="Day 2">Day 2</option>
+              <option value="Day 3">Day 3</option>
+            </select>
+          </div>
+          <div class="input-group">
             <label class="input-label" for="hcTime">Time *</label>
             <input class="input-field" type="text" id="hcTime" required placeholder="e.g. 07:30 PM"/>
           </div>
@@ -717,10 +724,6 @@
           <div class="input-group">
             <label class="input-label" for="hcVenue">Venue</label>
             <input class="input-field" type="text" id="hcVenue" placeholder="e.g. Main Auditorium"/>
-          </div>
-          <div class="input-group">
-            <label class="input-label" for="hcOrder">Display Order</label>
-            <input class="input-field" type="number" id="hcOrder" min="0" placeholder="1"/>
           </div>
         </div>
         <div style="display:flex; gap:12px; justify-content:flex-end;">
@@ -1296,20 +1299,20 @@
         document.getElementById('homeEventsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No event cards added yet.</td></tr>';
       });
 
-      // Listen to homeConcerts
-      db.collection('homeConcerts').orderBy('order').onSnapshot(snap => {
+      // Listen to homeConcerts — sort by day then time
+      db.collection('homeConcerts').orderBy('day').orderBy('time').onSnapshot(snap => {
         let html = '';
         snap.forEach(doc => {
           const d = doc.data();
           html += `
             <tr>
               <td>${d.imageUrl ? `<img src="${d.imageUrl}" style="width:64px;height:44px;object-fit:cover;border-radius:6px;"/>` : '—'}</td>
+              <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.day || '—'}</span></td>
               <td style="font-weight:700;color:var(--primary);">${d.time || '—'}</td>
               <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.sessionLabel || '—'}</span></td>
               <td style="font-weight:600;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.title}</td>
               <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.75;font-size:0.8rem;">${d.description || '—'}</td>
               <td>${d.venue || '—'}</td>
-              <td style="text-align:center;">${d.order ?? '—'}</td>
               <td>
                 <div class="action-btn-group">
                   <button class="btn btn-secondary btn-sm" onclick="editHomeConcert('${doc.id}')">Edit</button>
@@ -1972,12 +1975,12 @@
         const doc = await db.collection('homeConcerts').doc(id).get();
         const d = doc.data();
         document.getElementById('homeConcertId').value = id;
+        document.getElementById('hcDay').value = d.day || 'Day 1';
         document.getElementById('hcTime').value = d.time || '';
         document.getElementById('hcSessionLabel').value = d.sessionLabel || '';
         document.getElementById('hcTitle').value = d.title || '';
         document.getElementById('hcDesc').value = d.description || '';
         document.getElementById('hcVenue').value = d.venue || '';
-        document.getElementById('hcOrder').value = d.order ?? 0;
         document.getElementById('hcImg').value = d.imageUrl || '';
         if (d.imageUrl) {
           document.getElementById('hcImgPreviewImg').src = d.imageUrl;
@@ -2003,13 +2006,13 @@
         });
       }
       const data = {
+        day: document.getElementById('hcDay').value,
         time: document.getElementById('hcTime').value.trim(),
         sessionLabel: document.getElementById('hcSessionLabel').value.trim(),
         title: document.getElementById('hcTitle').value.trim(),
         description: document.getElementById('hcDesc').value.trim(),
         imageUrl,
         venue: document.getElementById('hcVenue').value.trim(),
-        order: parseInt(document.getElementById('hcOrder').value || '0', 10),
       };
       try {
         if (id) await db.collection('homeConcerts').doc(id).update(data);
@@ -2019,8 +2022,9 @@
       } catch (err) { showToast(err.message, 'error'); }
     }
 
-    // DATABASE SEEDING UTILITY
-    async function seedInitialData() {
+    // DATABASE SEEDING UTILITY (removed — use admin UI to add data)
+    async function seedInitialData() { showToast('Seed function has been removed.', 'error'); return;
+    /* REMOVED — original seed function below kept for reference only
       if (!confirm('Are you sure you want to seed initial sample data? This will add the default maestros, schedule events, and gallery items.')) return;
       
       const artistsSample = [
@@ -2159,7 +2163,7 @@
       } catch (err) {
         showToast(err.message, 'error');
       }
-    }
+    */}
   </script>
 </body>
 </html>

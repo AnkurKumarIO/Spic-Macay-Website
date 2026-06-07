@@ -1053,16 +1053,26 @@
       });
 
       // ── Evening Concerts ─────────────────────────────────────────────────
-      db.collection('homeConcerts').orderBy('order').get().then(snap => {
+      db.collection('homeConcerts').orderBy('day').orderBy('time').get().then(snap => {
         const list = document.getElementById('concertItinerary');
         if (snap.empty) {
           list.innerHTML = defaultConcertTracks();
         } else {
           const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
-          list.innerHTML = snap.docs.map((doc, i) => {
+          let lastDay = '';
+          let html = '';
+          snap.docs.forEach((doc, i) => {
             const d = doc.data();
             const delay = delays[i % delays.length];
-            return `
+            const dayLabel = d.day || '';
+            // Insert a day heading when the day group changes
+            if (dayLabel && dayLabel !== lastDay) {
+              html += `<div class="reveal ${delay}" style="margin-top:${lastDay ? '32px' : '0'};margin-bottom:8px;">
+                <span style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:rgba(232,119,34,0.12);border:1px solid rgba(232,119,34,0.25);font-size:0.75rem;font-weight:700;color:var(--primary-container);letter-spacing:0.06em;text-transform:uppercase;">${escHtml(dayLabel)}</span>
+              </div>`;
+              lastDay = dayLabel;
+            }
+            html += `
               <div class="concert-track reveal ${delay}">
                 <div class="concert-time-badge">
                   <span class="concert-time">${escHtml(d.time || '')}</span>
@@ -1076,7 +1086,8 @@
                   <span class="concert-venue-icon"></span> ${escHtml(d.venue || '')}
                 </div>
               </div>`;
-          }).join('');
+          });
+          list.innerHTML = html;
         }
         reObserveReveal();
       }).catch(() => {
