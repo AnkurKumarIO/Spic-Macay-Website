@@ -1053,16 +1053,24 @@
       });
 
       // ── Evening Concerts ─────────────────────────────────────────────────
-      db.collection('homeConcerts').orderBy('day').orderBy('time').get().then(snap => {
+      db.collection('homeConcerts').get().then(snap => {
         const list = document.getElementById('concertItinerary');
         if (snap.empty) {
           list.innerHTML = defaultConcertTracks();
         } else {
+          // Collect all docs and sort client-side by day then time
+          const concerts = [];
+          snap.forEach(doc => { concerts.push(doc.data()); });
+          concerts.sort((a, b) => {
+            const dayA = (a.day || 'Day 9');
+            const dayB = (b.day || 'Day 9');
+            if (dayA !== dayB) return dayA.localeCompare(dayB);
+            return (a.time || '').localeCompare(b.time || '');
+          });
           const delays = ['reveal-delay-1', 'reveal-delay-2', 'reveal-delay-3', 'reveal-delay-4'];
           let lastDay = '';
           let html = '';
-          snap.docs.forEach((doc, i) => {
-            const d = doc.data();
+          concerts.forEach((d, i) => {
             const delay = delays[i % delays.length];
             const dayLabel = d.day || '';
             // Insert a day heading when the day group changes

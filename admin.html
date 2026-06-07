@@ -1299,11 +1299,19 @@
         document.getElementById('homeEventsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No event cards added yet.</td></tr>';
       });
 
-      // Listen to homeConcerts — sort by day then time
-      db.collection('homeConcerts').orderBy('day').orderBy('time').onSnapshot(snap => {
+      // Listen to homeConcerts — fetch all, sort client-side by day then time
+      db.collection('homeConcerts').onSnapshot(snap => {
+        const concerts = [];
+        snap.forEach(doc => { concerts.push({ id: doc.id, ...doc.data() }); });
+        // Sort by day (Day 1 < Day 2 < Day 3) then by time string
+        concerts.sort((a, b) => {
+          const dayA = (a.day || 'Day 9');
+          const dayB = (b.day || 'Day 9');
+          if (dayA !== dayB) return dayA.localeCompare(dayB);
+          return (a.time || '').localeCompare(b.time || '');
+        });
         let html = '';
-        snap.forEach(doc => {
-          const d = doc.data();
+        concerts.forEach(d => {
           html += `
             <tr>
               <td>${d.imageUrl ? `<img src="${d.imageUrl}" style="width:64px;height:44px;object-fit:cover;border-radius:6px;"/>` : '—'}</td>
@@ -1315,8 +1323,8 @@
               <td>${d.venue || '—'}</td>
               <td>
                 <div class="action-btn-group">
-                  <button class="btn btn-secondary btn-sm" onclick="editHomeConcert('${doc.id}')">Edit</button>
-                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('homeConcerts','${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                  <button class="btn btn-secondary btn-sm" onclick="editHomeConcert('${d.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('homeConcerts','${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
                 </div>
               </td>
             </tr>`;
