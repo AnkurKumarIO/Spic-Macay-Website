@@ -393,6 +393,7 @@
         <button class="admin-tab" onclick="switchTab('homeEvents', this)">Home Events</button>
         <button class="admin-tab" onclick="switchTab('homeConcerts', this)">Home Concerts</button>
         <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
+        <button class="admin-tab" onclick="switchTab('coreMembers', this)">Core Members</button>
       </div>
 
       <!-- Attendee Stats Bar -->
@@ -620,6 +621,55 @@
               <tbody id="galleryTableBody">
                 <!-- Dynamic Content -->
               </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Members Section -->
+      <div class="panel-section" id="section-coreMembers">
+        <!-- Team Sections Manager -->
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <h2 class="headline-sm">Team Sections</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">Manage the section headings (e.g. Faculty Advisor, Core Committee) that group core members.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openTeamSectionModal()">+ Add Section</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Order</th>
+                  <th>Visible</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teamSectionsTableBody"><!-- Dynamic --></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Core Members Table -->
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h2 class="headline-sm">Manage Core Members</h2>
+            <button class="btn btn-primary btn-sm" onclick="openCoreMemberModal()">+ Add Member</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Photo</th>
+                  <th>Name</th>
+                  <th>Post</th>
+                  <th>Branch</th>
+                  <th>Section</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="coreMembersTableBody"><!-- Dynamic --></tbody>
             </table>
           </div>
         </div>
@@ -957,6 +1007,87 @@
     </div>
   </div>
 
+  <!-- Team Section Modal -->
+  <div class="admin-modal" id="teamSectionModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="teamSectionModalTitle" style="margin-bottom:24px;">Add Team Section</h2>
+      <form id="teamSectionForm" onsubmit="saveTeamSection(event)">
+        <input type="hidden" id="teamSectionId"/>
+        <div class="form-grid">
+          <div class="input-group form-full">
+            <label class="input-label" for="tsTitle">Section Title *</label>
+            <input class="input-field" type="text" id="tsTitle" required placeholder="e.g. FACULTY ADVISOR"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="tsOrder">Display Order</label>
+            <input class="input-field" type="number" id="tsOrder" min="0" placeholder="1"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="tsVisible">Visible</label>
+            <div style="display:flex;align-items:center;gap:8px;padding-top:8px;">
+              <input type="checkbox" id="tsVisible" checked style="width:18px;height:18px;accent-color:var(--primary);"/>
+              <span class="body-sm text-muted">Show on About page</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeTeamSectionModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Section</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Core Member Modal -->
+  <div class="admin-modal" id="coreMemberModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="coreMemberModalTitle" style="margin-bottom:24px;">Add Core Member</h2>
+      <form id="coreMemberForm" onsubmit="saveCoreMember(event)">
+        <input type="hidden" id="coreMemberId"/>
+        <div class="form-grid">
+          <div class="input-group">
+            <label class="input-label" for="cmName">Name *</label>
+            <input class="input-field" type="text" id="cmName" required placeholder="e.g. John Doe"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="cmPost">Post *</label>
+            <input class="input-field" type="text" id="cmPost" required placeholder="e.g. President"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="cmBranch">Branch</label>
+            <input class="input-field" type="text" id="cmBranch" placeholder="e.g. Computer Science"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="cmSection">Section *</label>
+            <select class="input-field" id="cmSection" required>
+              <option value="">— Select Section —</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="cmOrder">Sort Order</label>
+            <input class="input-field" type="number" id="cmOrder" min="0" placeholder="1"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="cmImg">Photo</label>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <input class="input-field" type="file" id="cmImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewCmImgFile(this)"/>
+              <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
+              <input class="input-field" type="url" id="cmImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewCmImg(this)"/>
+            </div>
+            <div id="cmImgPreview" style="margin-top:10px; display:none;">
+              <img id="cmImgPreviewImg" src="" alt="Preview" style="width:64px; height:64px; object-fit:cover; border-radius:50%; border:1px solid rgba(245,240,232,0.15);"/>
+              <button type="button" onclick="clearCmImg()" style="background:none;border:none;color:var(--on-surface-variant);cursor:pointer;font-size:0.75rem;margin-left:8px;">✕ Remove</button>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeCoreMemberModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="adminToast"></div>
 
   <!-- ── QR Scanner Modal ─────────────────────────────── -->
@@ -1085,6 +1216,7 @@
 
     let allRegistrations = [];
     let allIntensives = []; // cache for name lookups
+    let allTeamSections = []; // cache for section lookups
 
     function updateAttendeeStats() {
       const total = allRegistrations.length;
@@ -1353,6 +1485,66 @@
           `;
         });
         document.getElementById('galleryTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No moments added.</td></tr>';
+      });
+
+      // Listen to teamSections
+      db.collection('teamSections').orderBy('order').onSnapshot(snap => {
+        allTeamSections = [];
+        let html = '';
+        snap.forEach(doc => {
+          const d = { id: doc.id, ...doc.data() };
+          allTeamSections.push(d);
+          const visBadge = d.visible !== false
+            ? '<span class="admin-badge badge-success">Visible</span>'
+            : '<span class="admin-badge badge-warning">Hidden</span>';
+          html += `
+            <tr>
+              <td style="font-weight:600;">${d.title}</td>
+              <td style="text-align:center;">${d.order ?? '—'}</td>
+              <td>${visBadge}</td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editTeamSection('${doc.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="toggleTeamSectionVisibility('${doc.id}', ${d.visible !== false})" style="font-size:0.75rem;">${d.visible !== false ? '👁 Hide' : '👁 Show'}</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('teamSections', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+        document.getElementById('teamSectionsTableBody').innerHTML = html || '<tr><td colspan="4" style="text-align:center;opacity:0.5;">No sections added yet.</td></tr>';
+        // Populate section dropdown in core member modal
+        const sel = document.getElementById('cmSection');
+        const currentVal = sel.value;
+        sel.innerHTML = '<option value="">— Select Section —</option>' + allTeamSections.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+        sel.value = currentVal;
+      });
+
+      // Listen to coreMembers
+      db.collection('coreMembers').onSnapshot(snap => {
+        let html = '';
+        const members = [];
+        snap.forEach(doc => { members.push({ id: doc.id, ...doc.data() }); });
+        members.sort((a, b) => (a.order || 0) - (b.order || 0));
+        members.forEach(d => {
+          const photoCell = d.photoUrl
+            ? `<img src="${d.photoUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:50%;"/>`
+            : `<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;border:2px solid rgba(232,119,34,0.2);font-weight:700;color:var(--primary-container);">${(d.name || '?')[0].toUpperCase()}</div>`;
+          html += `
+            <tr>
+              <td>${photoCell}</td>
+              <td style="font-weight:600;">${d.name}</td>
+              <td>${d.post || '—'}</td>
+              <td>${d.branch || '—'}</td>
+              <td><span class="admin-badge badge-success">${d.sectionTitle || '—'}</span></td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editCoreMember('${d.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('coreMembers', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+        document.getElementById('coreMembersTableBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;opacity:0.5;">No core members added yet.</td></tr>';
       });
     }
 
@@ -2027,6 +2219,144 @@
         else await db.collection('homeConcerts').add(data);
         closeHomeConcertModal();
         showToast('Concert track saved.', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    // ── TEAM SECTIONS CRUD ──────────────────────────────────
+    function openTeamSectionModal() {
+      document.getElementById('teamSectionForm').reset();
+      document.getElementById('teamSectionId').value = '';
+      document.getElementById('tsVisible').checked = true;
+      document.getElementById('teamSectionModalTitle').textContent = 'Add Team Section';
+      document.getElementById('teamSectionModal').classList.add('active');
+    }
+    function closeTeamSectionModal() {
+      document.getElementById('teamSectionModal').classList.remove('active');
+    }
+    async function editTeamSection(id) {
+      try {
+        const doc = await db.collection('teamSections').doc(id).get();
+        const d = doc.data();
+        document.getElementById('teamSectionId').value = id;
+        document.getElementById('tsTitle').value = d.title || '';
+        document.getElementById('tsOrder').value = d.order ?? 0;
+        document.getElementById('tsVisible').checked = d.visible !== false;
+        document.getElementById('teamSectionModalTitle').textContent = 'Edit Team Section';
+        document.getElementById('teamSectionModal').classList.add('active');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+    async function saveTeamSection(e) {
+      e.preventDefault();
+      const id = document.getElementById('teamSectionId').value;
+      const data = {
+        title: document.getElementById('tsTitle').value.trim(),
+        order: parseInt(document.getElementById('tsOrder').value || '0', 10),
+        visible: document.getElementById('tsVisible').checked
+      };
+      try {
+        if (id) await db.collection('teamSections').doc(id).update(data);
+        else await db.collection('teamSections').add(data);
+        closeTeamSectionModal();
+        showToast('Team section saved.', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+    async function toggleTeamSectionVisibility(id, currentVisible) {
+      try {
+        await db.collection('teamSections').doc(id).update({ visible: !currentVisible });
+        showToast('Section visibility toggled.', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    // ── CORE MEMBERS CRUD ────────────────────────────────────
+    function openCoreMemberModal() {
+      document.getElementById('coreMemberForm').reset();
+      document.getElementById('coreMemberId').value = '';
+      document.getElementById('coreMemberModalTitle').textContent = 'Add Core Member';
+      document.getElementById('cmImgPreview').style.display = 'none';
+      document.getElementById('cmImgPreviewImg').src = '';
+      document.getElementById('coreMemberModal').classList.add('active');
+    }
+    function closeCoreMemberModal() {
+      document.getElementById('coreMemberModal').classList.remove('active');
+    }
+    function previewCmImgFile(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('cmImgPreviewImg').src = e.target.result;
+          document.getElementById('cmImgPreview').style.display = 'block';
+          document.getElementById('cmImg').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function previewCmImg(input) {
+      if (input.value) {
+        document.getElementById('cmImgPreviewImg').src = input.value;
+        document.getElementById('cmImgPreview').style.display = 'block';
+        document.getElementById('cmImgFile').value = '';
+      } else {
+        document.getElementById('cmImgPreview').style.display = 'none';
+      }
+    }
+    function clearCmImg() {
+      document.getElementById('cmImgFile').value = '';
+      document.getElementById('cmImg').value = '';
+      document.getElementById('cmImgPreviewImg').src = '';
+      document.getElementById('cmImgPreview').style.display = 'none';
+    }
+    async function editCoreMember(id) {
+      try {
+        const doc = await db.collection('coreMembers').doc(id).get();
+        const d = doc.data();
+        document.getElementById('coreMemberId').value = id;
+        document.getElementById('cmName').value = d.name || '';
+        document.getElementById('cmPost').value = d.post || '';
+        document.getElementById('cmBranch').value = d.branch || '';
+        document.getElementById('cmSection').value = d.section || '';
+        document.getElementById('cmOrder').value = d.order ?? 0;
+        document.getElementById('cmImg').value = d.photoUrl || '';
+        if (d.photoUrl) {
+          document.getElementById('cmImgPreviewImg').src = d.photoUrl;
+          document.getElementById('cmImgPreview').style.display = 'block';
+        } else {
+          document.getElementById('cmImgPreview').style.display = 'none';
+        }
+        document.getElementById('coreMemberModalTitle').textContent = 'Edit Core Member';
+        document.getElementById('coreMemberModal').classList.add('active');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+    async function saveCoreMember(e) {
+      e.preventDefault();
+      const id = document.getElementById('coreMemberId').value;
+      // Resolve image — file takes priority over URL
+      const fileInput = document.getElementById('cmImgFile');
+      let photoUrl = document.getElementById('cmImg').value.trim();
+      if (fileInput.files && fileInput.files[0]) {
+        photoUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = ev => resolve(ev.target.result);
+          reader.readAsDataURL(fileInput.files[0]);
+        });
+      }
+      // Resolve section title for denormalization
+      const sectionId = document.getElementById('cmSection').value;
+      const sectionObj = allTeamSections.find(s => s.id === sectionId);
+      const sectionTitle = sectionObj ? sectionObj.title : '';
+      const data = {
+        name: document.getElementById('cmName').value.trim(),
+        post: document.getElementById('cmPost').value.trim(),
+        branch: document.getElementById('cmBranch').value.trim(),
+        section: sectionId,
+        sectionTitle,
+        photoUrl,
+        order: parseInt(document.getElementById('cmOrder').value || '0', 10)
+      };
+      try {
+        if (id) await db.collection('coreMembers').doc(id).update(data);
+        else await db.collection('coreMembers').add(data);
+        closeCoreMemberModal();
+        showToast('Core member saved.', 'success');
       } catch (err) { showToast(err.message, 'error'); }
     }
 
