@@ -337,28 +337,114 @@
     <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
   </nav>
 
-  <div>
+    <!-- ══ About Hero ════════════════════════════════════ -->
+    <section id="aboutHero" style="
+      position: relative;
+      overflow: hidden;
+      height: 100vh;
+      min-height: 420px;
+      max-height: 620px;
+      display: flex;
+      align-items: flex-end;
+    ">
+      <!-- Black base — fills sides where image doesn't reach -->
+      <div style="position:absolute;inset:0;background:#000;z-index:0;"></div>
+      <!-- Image at natural aspect ratio, centred horizontally, shifted down -->
+      <img src="vnit-hero.jpg" alt="VNIT Nagpur Campus" style="
+        position: absolute;
+        left: 50%;
+        bottom: -25%;
+        transform: translateX(-50%);
+        width: 70%;
+        height: auto;
+        max-width: none;
+        z-index: 0;
+      "/>
+      <!-- Overlay: transparent at top-right (show building), dark at bottom-left (text area) -->
+      <div style="
+        position: absolute; inset: 0;
+        background:
+          linear-gradient(to bottom, rgba(5,3,1,0.10) 0%, rgba(5,3,1,0.30) 40%, rgba(5,3,1,0.88) 100%),
+          linear-gradient(to right,  rgba(5,3,1,0.72) 0%, rgba(5,3,1,0.20) 55%, rgba(5,3,1,0.0) 100%);
+        z-index: 1;
+      "></div>
 
-    <!-- Page Header with Hero Image -->
-    <!-- Page Header with Hero Image -->
-    <section class="hero artists-hero" style="align-items:flex-end; min-height:520px; padding-top:255px;">
-      <img src="assets/campus-vnit.jpg" alt="VNIT Nagpur Campus" class="hero-media"/>
-      <div class="hero-overlay"></div>
-      <div class="hero-content" style="padding-bottom:60px;width:100%;justify-content:flex-end;">
+      <!-- Content — pinned to bottom left -->
+      <div style="position:relative;z-index:2;width:100%;padding-bottom:36px;">
         <div class="container">
-          <span class="chip reveal">VNIT NAGPUR CHAPTER</span>
-          <h1 class="display-lg reveal reveal-delay-1" style="margin-top:16px;max-width:600px;">SPIC MACAY<br/><span class="text-gradient">VNIT Nagpur</span></h1>
-          <p class="body-lg text-muted reveal reveal-delay-2" style="max-width:520px;margin-top:16px;">The official Heritage Club of VNIT Nagpur</p>
-          <!-- Tabs -->
-          <div class="about-tabs" style="margin-top:32px;">
-            <button class="filter-tab active" onclick="showAboutTab('vnit',this)">SPIC MACAY VNIT</button>
-            <button class="filter-tab" onclick="showAboutTab('members',this)">Core Members</button>
-            <button class="filter-tab" onclick="showAboutTab('global',this)">SPIC MACAY Global</button>
-            <button class="filter-tab" onclick="showAboutTab('archives',this)">Archives</button>
+
+          <!-- Badge pill -->
+          <div style="
+            display: inline-flex; align-items: center;
+            padding: 5px 14px; border-radius: 9999px;
+            background: rgba(12,7,2,0.80);
+            border: 1px solid rgba(232,119,34,0.55);
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: #e87722; margin-bottom: 18px;
+            backdrop-filter: blur(8px);
+          ">VNIT NAGPUR CHAPTER</div>
+
+          <!-- Heading: "About" white + "SPIC MACAY" orange, both bold serif -->
+          <h1 style="
+            font-family: var(--font-serif);
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            font-weight: 800; line-height: 1.05;
+            margin: 0 0 14px;
+            letter-spacing: -0.015em;
+          ">
+            <span style="color:#f5f0e8;">About </span><span class="text-gradient" style="font-style:normal;">SPIC MACAY</span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p style="
+            font-size: clamp(0.875rem, 1.5vw, 0.975rem);
+            color: rgba(245,240,232,0.62);
+            max-width: 420px; line-height: 1.65;
+            margin: 0 0 28px; font-weight: 400;
+          ">The official SPIC MACAY chapter at VNIT Nagpur — preserving<br/>and promoting India's classical heritage on campus.</p>
+
+          <!-- Tab pills -->
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="about-hero-tab active" onclick="showAboutTab('vnit',this)">SPIC MACAY VNIT</button>
+            <button class="about-hero-tab" onclick="showAboutTab('members',this)">Core Members</button>
+            <button class="about-hero-tab" onclick="showAboutTab('global',this)">About SPIC MACAY</button>
+            <button class="about-hero-tab" onclick="showAboutTab('archives',this)">Archives</button>
           </div>
         </div>
       </div>
     </section>
+
+    <style>
+      .about-hero-tab {
+        padding: 9px 20px; border-radius: 9999px;
+        font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em;
+        cursor: pointer;
+        border: 1px solid rgba(245,240,232,0.22);
+        background: rgba(10,6,3,0.65);
+        color: rgba(245,240,232,0.78);
+        backdrop-filter: blur(10px);
+        transition: all 0.2s ease;
+        font-family: var(--font-sans, sans-serif);
+      }
+      .about-hero-tab:hover {
+        border-color: rgba(232,119,34,0.55);
+        color: #e87722;
+        background: rgba(232,119,34,0.1);
+      }
+      .about-hero-tab.active {
+        background: #e87722 !important;
+        border-color: #e87722 !important;
+        color: #fff !important;
+      }
+      @media (max-width: 600px) {
+        .about-hero-tab { font-size: 0.75rem; padding: 8px 15px; }
+      }
+
+      /* Light theme: keep hero text white since image is always dark */
+      [data-theme="light"] #aboutHero h1 span:first-child { color: #f5f0e8 !important; }
+      [data-theme="light"] #aboutHero p                   { color: rgba(245,240,232,0.65) !important; }
+    </style>
 
     <section class="section-gap" style="padding-top:65px;">
       <div class="container">
@@ -761,20 +847,21 @@
   <script>
     function showAboutTab(id, btn) {
       document.querySelectorAll('.about-tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.about-tabs .filter-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.about-hero-tab').forEach(t => t.classList.remove('active'));
       document.getElementById('tab-' + id).classList.add('active');
       btn.classList.add('active');
     }
     // Show the matching about tab for supported deep links.
     function handleAboutHash(hash) {
+      const tabs = document.querySelectorAll('.about-hero-tab');
       if (hash === '#members') {
-        showAboutTab('members', document.querySelectorAll('.filter-tab')[1]);
+        showAboutTab('members', tabs[1]);
       } else if (hash === '#global' || hash === '#founder') {
-        showAboutTab('global', document.querySelectorAll('.filter-tab')[2]);
+        showAboutTab('global', tabs[2]);
       } else if (hash === '#archives' || hash === '#past') {
-        showAboutTab('archives', document.querySelectorAll('.filter-tab')[3]);
+        showAboutTab('archives', tabs[3]);
       } else if (hash === '#hosting') {
-        showAboutTab('vnit', document.querySelectorAll('.filter-tab')[0]);
+        showAboutTab('vnit', tabs[0]);
       }
 
       // Ensure the browser scrolls to the anchor after the tab becomes visible.
