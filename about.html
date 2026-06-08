@@ -11,6 +11,66 @@
     .about-tab-panel { display:none; animation:fadeIn 0.35s ease; }
     .about-tab-panel.active { display:block; }
 
+    /* ── Core Members Two-Col Layout (desktop only) ─── */
+    #membersWrapper {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+    #coreMembersContainer {
+      flex: 1;
+      min-width: 0;
+    }
+    #memberPreviewPane {
+      display: none; /* hidden on mobile */
+      width: 38%;
+      flex-shrink: 0;
+      position: sticky;
+      top: 100px;
+      align-self: flex-start;
+    }
+    @media (min-width: 1024px) {
+      #memberPreviewPane { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 360px; }
+    }
+    #memberPreviewCard {
+      display: none;
+      width: 100%;
+      background: var(--surface-container-high);
+      border: 1px solid rgba(232,119,34,0.35);
+      border-radius: 20px;
+      padding: 32px 28px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      animation: fadeIn 0.25s ease;
+    }
+    #mpPhotoWrap {
+      width: 160px; height: 160px;
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 0 auto 20px;
+      border: 2px solid rgba(232,119,34,0.35);
+      display: none;
+    }
+    #mpPhotoWrap img { width: 100%; height: 100%; object-fit: cover; }
+    #mpInitialWrap {
+      width: 160px; height: 160px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(232,119,34,0.2), rgba(232,119,34,0.05));
+      margin: 0 auto 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(232,119,34,0.3);
+    }
+    #mpInitialText { font-size: 3.5rem; font-weight: 700; color: var(--primary-container); }
+    #mpName { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; color: var(--on-surface); margin-bottom: 8px; }
+    #mpPost { font-size: 0.875rem; color: var(--on-surface-variant); }
+    #memberPreviewEmpty {
+      text-align: center;
+      color: var(--on-surface-variant);
+      padding: 40px 0;
+    }
+
     .founder-layout {
       display:grid; grid-template-columns:1fr; gap:40px;
     }
@@ -369,8 +429,31 @@
           <div class="reveal">
             <h2 class="headline-lg" style="margin-bottom:8px;">Core Team</h2>
             <p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">The dedicated students behind SPIC MACAY at VNIT Nagpur — organising, curating, and keeping the spirit of classical arts alive on campus.</p>
-            <div id="coreMembersContainer">
-              <p class="body-md text-muted" style="text-align:center;padding:40px 0;">Loading...</p>
+
+            <!-- Two-col layout: members left, sticky preview right (desktop only) -->
+            <div id="membersWrapper">
+              <!-- Members grid -->
+              <div id="coreMembersContainer">
+                <p class="body-md text-muted" style="text-align:center;padding:40px 0;">Loading...</p>
+              </div>
+
+              <!-- Sticky preview pane — only shown on desktop when hovering -->
+              <div id="memberPreviewPane">
+                <div id="memberPreviewCard">
+                  <div id="mpPhotoWrap">
+                    <img id="mpImg" src="" alt=""/>
+                  </div>
+                  <div id="mpInitialWrap">
+                    <span id="mpInitialText"></span>
+                  </div>
+                  <p id="mpName"></p>
+                  <p id="mpPost"></p>
+                </div>
+                <div id="memberPreviewEmpty">
+                  <span style="font-size:2rem;opacity:0.2;">👤</span>
+                  <p style="margin-top:8px;font-size:0.8rem;opacity:0.35;">Hover a member to preview</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -763,7 +846,11 @@
               ? `<img src="${m.photoUrl}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:2px solid rgba(232,119,34,0.2);"/>`
               : `<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);"><span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">${initial}</span></div>`;
 
-            html += `<div style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+            const photoAttr = m.photoUrl ? `data-photo="${m.photoUrl}"` : '';
+            html += `<div class="member-hover-card" ${photoAttr} data-name="${m.name}" data-post="${m.post || ''}${m.branch ? ' · ' + m.branch : ''}" data-initial="${initial}"
+              style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;cursor:default;"
+              onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)';showMemberPreview(this)"
+              onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow='';hideMemberPreview()">
               ${avatarHtml}
               <p class="headline-sm" style="margin-bottom:4px;">${m.name}</p>
               <p class="body-md text-muted" style="font-size:0.8rem;">${m.post || ''}${m.branch ? ' · ' + m.branch : ''}</p>
@@ -778,6 +865,100 @@
         console.error('Error loading core members:', err);
         container.innerHTML = '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">Unable to load team information.</p>';
       }
+    }
+
+    // ── Member Hover Preview (desktop only) ───────────────
+    (function() {
+      const card = document.getElementById('memberPreviewCard');
+      if (!card) return;
+
+      // Track mouse position to position card dynamically
+      document.addEventListener('mousemove', function(e) {
+        if (card.style.opacity === '0' || card.style.display === 'none') return;
+        // Position 24px to the right of cursor, vertically centred on cursor
+        let x = e.clientX + 24;
+        let y = e.clientY - 100;
+        // Keep within viewport
+        if (x + 240 > window.innerWidth) x = e.clientX - 244;
+        if (y < 8) y = 8;
+        if (y + 280 > window.innerHeight) y = window.innerHeight - 288;
+        card.style.left = x + 'px';
+        card.style.top  = y + 'px';
+      });
+    })();
+
+    function showMemberPreview(el) {
+      // Desktop only
+      if (window.innerWidth < 1024) return;
+      const card = document.getElementById('memberPreviewCard');
+      const photo = el.dataset.photo;
+      const name  = el.dataset.name;
+      const post  = el.dataset.post;
+      const init  = el.dataset.initial;
+
+      document.getElementById('mpName').textContent = name || '';
+      document.getElementById('mpPost').textContent = post || '';
+
+      const imgEl     = document.getElementById('mpImg');
+      const photoWrap = document.getElementById('mpPhoto');
+      const initWrap  = document.getElementById('mpInitial');
+      const initText  = document.getElementById('mpInitialText');
+
+      if (photo) {
+        imgEl.src = photo;
+        photoWrap.style.display = 'block';
+        initWrap.style.display  = 'none';
+      } else {
+        initText.textContent    = init || '?';
+        photoWrap.style.display = 'none';
+        initWrap.style.display  = 'flex';
+      }
+
+      card.style.display   = 'block';
+      requestAnimationFrame(() => {
+        card.style.opacity   = '1';
+        card.style.transform = 'scale(1)';
+      });
+    }
+
+    function hideMemberPreview() {
+      const card = document.getElementById('memberPreviewCard');
+      card.style.opacity   = '0';
+      card.style.transform = 'scale(0.95)';
+      setTimeout(() => { if (card.style.opacity === '0') card.style.display = 'none'; }, 200);
+    }
+
+    function showMemberPreview(el) {
+      if (window.innerWidth < 1024) return;
+      const photo = el.dataset.photo;
+      const name  = el.dataset.name;
+      const post  = el.dataset.post;
+      const init  = el.dataset.initial;
+
+      document.getElementById('mpName').textContent = name || '';
+      document.getElementById('mpPost').textContent = post || '';
+
+      const photoWrap = document.getElementById('mpPhotoWrap');
+      const initWrap  = document.getElementById('mpInitialWrap');
+
+      if (photo) {
+        document.getElementById('mpImg').src = photo;
+        photoWrap.style.display = 'block';
+        initWrap.style.display  = 'none';
+      } else {
+        document.getElementById('mpInitialText').textContent = init || '?';
+        photoWrap.style.display = 'none';
+        initWrap.style.display  = 'flex';
+      }
+
+      document.getElementById('memberPreviewCard').style.display = 'block';
+      document.getElementById('memberPreviewEmpty').style.display = 'none';
+    }
+
+    function hideMemberPreview() {
+      if (window.innerWidth < 1024) return;
+      document.getElementById('memberPreviewCard').style.display = 'none';
+      document.getElementById('memberPreviewEmpty').style.display = 'block';
     }
 
     loadCoreMembers();
