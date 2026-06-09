@@ -428,7 +428,9 @@
       font-size: 3rem;
       font-weight: 700;
       color: #f5f0e8;
-      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      text-shadow: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
       letter-spacing: 0.03em;
       line-height: 1.15;
     }
@@ -437,19 +439,21 @@
       background: linear-gradient(135deg, #f5f0e8 0%, #ffb68b 50%, #dfb15b 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      font-weight: 800;
+      background-clip: text;
+      text-shadow: none; /* gradient spans can't use text-shadow */
     }
 
     .schedule-hero-subtitle {
       font-family: var(--font-serif);
       font-style: italic;
-      font-size: 1.25rem;
-      color: #ddc1b2;
-      margin-top: 16px;
+      font-size: 1.05rem;
+      color: rgba(245, 240, 232, 0.78);
       max-width: 550px;
-      line-height: 1.6;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      line-height: 1.7;
+      text-shadow: none;
       letter-spacing: 0.02em;
+      margin-top: 14px;
+      margin-bottom: 0;
     }
 
     @media (max-width: 768px) {
@@ -741,7 +745,7 @@
         <p class="schedule-hero-subtitle reveal reveal-delay-2">3 immersive days — from 4 AM Naad Yoga to overnight grand finale concerts.</p>
 
         <!-- Legend -->
-        <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:4px;" class="reveal reveal-delay-3">
+        <div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:6px;" class="reveal reveal-delay-3">
           <span class="stream-pill pill-yoga">Yoga</span>
           <span class="stream-pill pill-concert">Concert</span>
           <span class="stream-pill pill-workshop">Workshop</span>
