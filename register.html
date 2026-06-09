@@ -106,6 +106,8 @@
     /* Step panel */
     .step-panel { display: none; }
     .step-panel.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+    @keyframes spin    { to { transform:rotate(360deg); } }
 
     /* Checkbox group */
     .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
@@ -898,6 +900,16 @@
               <p style="opacity:0.6;">No intensives have been added yet. Please check back later or contact the organizers.</p>
             </div>
 
+            <!-- Tentative Allocation Preview Card -->
+            <div id="allocationPreview" style="display:none;margin-top:20px;border-radius:14px;overflow:hidden;border:1px solid rgba(245,240,232,0.1);">
+              <div style="padding:12px 18px;background:rgba(245,240,232,0.04);border-bottom:1px solid rgba(245,240,232,0.08);">
+                <p class="label-sm" style="margin:0;letter-spacing:0.08em;color:var(--on-surface-variant);text-transform:uppercase;font-size:0.72rem;">Your Tentative Allocation</p>
+              </div>
+              <div id="allocationPreviewBody" style="padding:16px 18px;display:flex;align-items:center;gap:12px;min-height:64px;">
+                <!-- populated by JS -->
+              </div>
+            </div>
+
             <div class="input-group" style="margin-top:20px;">
               <label class="input-label" for="message">Any Message / Special Requests</label>
               <textarea class="input-field" id="message" rows="3" placeholder="e.g. Wheelchair access needed, seating accommodation, any other requests..." style="resize:vertical;"></textarea>
@@ -1063,9 +1075,6 @@
               </div>
               <div style="display:flex;gap:12px;flex-wrap:wrap;">
                 ${iv.time ? `<span style="font-size:0.78rem;color:var(--on-surface-variant);">🕐 ${iv.time}</span>` : ''}
-                <span style="font-size:0.78rem;color:${seatsLeft <= 5 && !isFull ? '#e87722' : 'var(--on-surface-variant)'};">
-                  ${isFull ? 'No seats left' : `${seatsLeft} seat${seatsLeft===1?'':'s'} left`}
-                </span>
               </div>
               ${iv.description ? `<p style="font-size:0.78rem;color:var(--on-surface-variant);margin-top:4px;margin-bottom:0;line-height:1.4;">${iv.description}</p>` : ''}
             </div>
@@ -1124,7 +1133,90 @@
           badge.textContent        = isSelected ? String(rank) : '';
         }
       });
+
+      // Show / hide allocation preview and trigger debounced check
+      const preview = document.getElementById('allocationPreview');
+      if (selectedIntensiveIds.length === 0) {
+        preview.style.display = 'none';
+      } else {
+        preview.style.display = 'block';
+        scheduleAllocationPreview();
+      }
     }
+
+    // ── Tentative Allocation Preview (debounced, read-only FCFS sim) ──────────
+    let _allocDebounce = null;
+
+    function scheduleAllocationPreview() {
+      clearTimeout(_allocDebounce);
+      // Show spinner immediately
+      const body = document.getElementById('allocationPreviewBody');
+      body.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;opacity:0.6;">
+          <div style="width:18px;height:18px;border:2px solid rgba(245,240,232,0.2);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;"></div>
+          <span style="font-size:0.85rem;color:var(--on-surface-variant);">Checking availability…</span>
+        </div>`;
+      _allocDebounce = setTimeout(runAllocationPreview, 500);
+    }
+
+    async function runAllocationPreview() {
+      const body = document.getElementById('allocationPreviewBody');
+      if (selectedIntensiveIds.length === 0) { document.getElementById('allocationPreview').style.display = 'none'; return; }
+
+      try {
+        // Fetch fresh seatsLeft for all selected intensives in parallel
+        const snaps = await Promise.all(
+          selectedIntensiveIds.map(id => db.collection('intensives').doc(id).get())
+        );
+
+        let allocatedId   = null;
+        let allocatedName = null;
+
+        for (let i = 0; i < snaps.length; i++) {
+          const snap = snaps[i];
+          if (!snap.exists) continue;
+          const data = snap.data();
+          const left = data.seatsLeft !== undefined ? data.seatsLeft : data.totalSeats;
+          if (left > 0) {
+            allocatedId   = selectedIntensiveIds[i];
+            allocatedName = data.name;
+            break;
+          }
+        }
+
+        if (allocatedId) {
+          const rank = selectedIntensiveIds.indexOf(allocatedId) + 1;
+          const rankLabel = rank === 1 ? '1st choice' : rank === 2 ? '2nd choice' : '3rd choice';
+          body.innerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(74,222,128,0.18);border:2px solid rgba(74,222,128,0.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-7" stroke="#86efac" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div>
+                <p style="margin:0;font-size:0.9rem;font-weight:600;color:var(--on-surface);">${allocatedName}</p>
+                <p style="margin:0;font-size:0.75rem;color:#86efac;opacity:0.9;">Likely to confirm · ${rankLabel}</p>
+              </div>
+              <span style="margin-left:auto;font-size:0.72rem;padding:3px 10px;background:rgba(74,222,128,0.1);color:#86efac;border:1px solid rgba(74,222,128,0.25);border-radius:20px;">Available</span>
+            </div>`;
+        } else {
+          body.innerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border-radius:50%;background:rgba(196,38,28,0.12);border:2px solid rgba(196,38,28,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke="#f47272" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <p style="margin:0;font-size:0.9rem;font-weight:600;color:var(--on-surface);">All selected intensives are full</p>
+                <p style="margin:0;font-size:0.75rem;color:#f47272;opacity:0.9;">Consider adding more preferences or choosing different ones</p>
+              </div>
+              <span style="margin-left:auto;font-size:0.72rem;padding:3px 10px;background:rgba(196,38,28,0.08);color:#f47272;border:1px solid rgba(196,38,28,0.2);border-radius:20px;">Waiting List</span>
+            </div>`;
+        }
+      } catch (err) {
+        body.innerHTML = `<span style="font-size:0.82rem;color:var(--on-surface-variant);opacity:0.6;">Could not load preview — your preferences are saved.</span>`;
+        console.warn('Allocation preview error:', err);
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     function goToStep(step) {
       // Validate step 2 before proceeding to step 3
