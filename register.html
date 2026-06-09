@@ -33,26 +33,38 @@
     /* Left panel — decorative */
     .reg-left {
       position: relative;
-      background: var(--surface-container);
+      background: #0a0705;
       display: none;
       flex-direction: column;
       justify-content: flex-start;
-      padding: 60px;
+      padding: 52px 48px;
       overflow: hidden;
     }
     @media(min-width:1024px){ .reg-left { display: flex; } }
-    .reg-left img {
+
+    /* Background image — sits fully behind everything */
+    .reg-left-bg {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      opacity: 0.35;
+      opacity: 0.55;
+      transition: opacity 0.4s ease;
     }
+
+    /* Dark-mode overlay: deep cinematic gradient */
     .reg-left-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(9,9,9,0.96) 0%, rgba(9,9,9,0.3) 100%);
+      background:
+        linear-gradient(160deg,
+          rgba(6,4,2,0.88) 0%,
+          rgba(18,10,4,0.60) 55%,
+          rgba(6,4,2,0.82) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 100%);
+      transition: background 0.4s ease;
     }
-    .reg-left-content { 
-      position: relative; 
+
+    .reg-left-content {
+      position: relative;
       z-index: 2;
       display: flex;
       flex-direction: column;
@@ -66,7 +78,7 @@
       align-items: center;
       justify-content: center;
       flex: 1;
-      padding: 24px 0;
+      padding: 28px 0;
     }
     .reg-left-bottom { /* need help — stays at bottom */ }
 
@@ -181,26 +193,40 @@
       border-color: rgba(28, 27, 26, 0.08) !important;
       box-shadow: 0 8px 30px rgba(28, 27, 26, 0.03) !important;
     }
-    [data-theme="light"] .reg-left-overlay {
-      background: linear-gradient(to bottom, rgba(248, 244, 236, 0.96) 0%, rgba(248, 244, 236, 0.3) 100%) !important;
-    }
+    /* Light-mode left panel: frosted-glass look */
     [data-theme="light"] .reg-left {
-      background: var(--surface-container-low) !important;
+      background: #f5ede0 !important;
     }
-    [data-theme="light"] .reg-left-content h2,
-    [data-theme="light"] .reg-left-content p,
+    [data-theme="light"] .reg-left-bg {
+      opacity: 0.22 !important;
+      filter: saturate(0.7) brightness(1.1);
+    }
+    [data-theme="light"] .reg-left-overlay {
+      background:
+        linear-gradient(160deg,
+          rgba(255,248,240,0.92) 0%,
+          rgba(255,243,226,0.70) 55%,
+          rgba(255,248,240,0.90) 100%) !important;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    [data-theme="light"] .reg-left-content h2 {
+      color: #1a120a !important;
+      text-shadow: none !important;
+    }
+    [data-theme="light"] .reg-left-content p {
+      color: var(--on-surface) !important;
+    }
     [data-theme="light"] .reg-left-content div {
       color: var(--on-surface) !important;
     }
-    [data-theme="light"] .reg-left-content p.text-muted {
+    [data-theme="light"] .reg-left-content p.text-muted,
+    [data-theme="light"] .reg-left-content p[style*="rgba(245"] {
       color: var(--on-surface-variant) !important;
     }
     [data-theme="light"] .reg-left-content div[style*="background"] {
       background: rgba(28, 27, 26, 0.04) !important;
       border-color: rgba(28, 27, 26, 0.1) !important;
-    }
-    [data-theme="light"] .reg-left img {
-      opacity: 0.25 !important;
     }
     [data-theme="light"] .tech-promo-card {
       border-color: rgba(28, 27, 26, 0.08) !important;
@@ -534,15 +560,16 @@
 
       <!-- ── Left Decorative Panel ─────────────────────── -->
       <div class="reg-left">
-        <img src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=900&q=80" alt=""/>
+        <!-- Indian classical arts background -->
+        <img src="images/reg-bg.png" alt="Indian classical tabla with marigolds" class="reg-left-bg"/>
         <div class="reg-left-overlay"></div>
         <div class="reg-left-content">
 
           <!-- TOP: Heading block -->
           <div class="reg-left-top">
             <span class="branch-badge" style="margin-bottom:20px;">VNIT Nagpur Chapter</span>
-            <h2 class="headline-lg" style="margin-bottom:16px;">Begin Your Journey Into<br/>Indian Classical Arts</h2>
-            <p class="body-md text-muted" style="margin-bottom:24px;">Join students, scholars, and enthusiasts for an immersive experience of Indian classical music, dance, and culture at VNIT Nagpur.</p>
+            <h2 class="headline-lg" style="margin-bottom:16px;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,0.5);">Begin Your Journey Into<br/>Indian Classical Arts</h2>
+            <p class="body-md text-muted" style="margin-bottom:24px;color:rgba(245,230,210,0.82);">Join students, scholars, and enthusiasts for an immersive experience of Indian classical music, dance, and culture at VNIT Nagpur.</p>
             <div style="flex-wrap:wrap;display:flex;">
               <span class="info-pill">Upcoming Events</span>
               <span class="info-pill">VNIT Nagpur</span>
@@ -553,10 +580,12 @@
 
           <!-- MIDDLE: Interactive Logo -->
           <div class="reg-left-mid">
-            <div class="logo-interactive-wrap" id="logoWrap" title="Click me!">
+            <div class="logo-interactive-wrap" id="logoWrap" title="Click me!" style="height:auto;padding:16px 0;">
               <div class="logo-ripple-ring" id="rippleRing"></div>
               <div class="logo-particles" id="logoParticles"></div>
-              <img src="logo-dark.svg" alt="SPIC MACAY Logo" class="logo-interactive-img" id="interactiveLogo" />
+              <!-- Always use dark (white-text) logo — panel bg is always dark/warm -->
+              <img src="logo-dark.svg" alt="SPIC MACAY Logo" class="logo-interactive-img" id="interactiveLogo"
+                style="width:clamp(180px,70%,280px);max-width:100%;height:auto;" />
               <div class="logo-tooltip" id="logoTooltip">✨ Preserving India's Classical Heritage</div>
             </div>
           </div>
