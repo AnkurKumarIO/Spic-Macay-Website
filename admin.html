@@ -394,6 +394,7 @@
         <button class="admin-tab" onclick="switchTab('homeConcerts', this)">Home Concerts</button>
         <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
         <button class="admin-tab" onclick="switchTab('coreMembers', this)">Core Members</button>
+        <button class="admin-tab" onclick="switchTab('archives', this)">Archives</button>
       </div>
 
       <!-- Attendee Stats Bar -->
@@ -670,6 +671,40 @@
                 </tr>
               </thead>
               <tbody id="coreMembersTableBody"><!-- Dynamic --></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Archives Section -->
+      <div class="panel-section" id="section-archives">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <h2 class="headline-sm">Manage Archives</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">Past events, workshops, and conventions shown on the About page Archives tab.</p>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-secondary btn-sm" onclick="seedArchives()" id="seedArchivesBtn">Seed Default Data</button>
+              <button class="btn btn-primary btn-sm" onclick="openArchiveModal()">+ Add Entry</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Academic Year</th>
+                  <th>Month</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Order</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="archivesTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
             </table>
           </div>
         </div>
@@ -1083,6 +1118,52 @@
         <div style="display:flex; gap:12px; justify-content:flex-end;">
           <button type="button" class="btn btn-secondary btn-sm" onclick="closeCoreMemberModal()">Cancel</button>
           <button type="submit" class="btn btn-primary btn-sm">Save Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Archive Modal -->
+  <div class="admin-modal" id="archiveModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="archiveModalTitle" style="margin-bottom:24px;">Add Archive Entry</h2>
+      <form id="archiveForm" onsubmit="saveArchive(event)">
+        <input type="hidden" id="archiveId"/>
+        <div class="form-grid">
+          <div class="input-group form-full">
+            <label class="input-label" for="archTitle">Event Title *</label>
+            <input class="input-field" type="text" id="archTitle" required placeholder="e.g. Madhubani Painting Workshop"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="archYear">Academic Year *</label>
+            <input class="input-field" type="text" id="archYear" required placeholder="e.g. 2024-25"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="archMonth">Month *</label>
+            <input class="input-field" type="text" id="archMonth" required placeholder="e.g. Mar 2025"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="archType">Type *</label>
+            <select class="input-field" id="archType" required>
+              <option value="Workshop">Workshop</option>
+              <option value="Performance">Performance</option>
+              <option value="Convention">Convention</option>
+              <option value="Lecture">Lecture</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="archOrder">Sort Order</label>
+            <input class="input-field" type="number" id="archOrder" placeholder="e.g. 1 (lower = first)" min="0"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="archDesc">Description</label>
+            <textarea class="input-field" id="archDesc" rows="3" placeholder="Brief description of the event..."></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeArchiveModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Entry</button>
         </div>
       </form>
     </div>
@@ -1545,6 +1626,12 @@
             </tr>`;
         });
         document.getElementById('coreMembersTableBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;opacity:0.5;">No core members added yet.</td></tr>';
+      });
+
+      db.collection('archives').orderBy('order').onSnapshot(snap => {
+        allArchives = [];
+        snap.forEach(doc => { allArchives.push({ id: doc.id, ...doc.data() }); });
+        renderArchivesTable();
       });
     }
 
@@ -2502,6 +2589,118 @@
         showToast(err.message, 'error');
       }
     */}
+
+    // ── ARCHIVES CRUD ─────────────────────────────────
+    let allArchives = [];
+
+    function renderArchivesTable() {
+      let html = '';
+      allArchives.forEach(d => {
+        const isConvention = d.type === 'Convention';
+        html += `
+          <tr>
+            <td style="font-weight:600;">${d.title}</td>
+            <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.academicYear || '—'}</span></td>
+            <td style="font-size:0.85rem;">${d.month || '—'}</td>
+            <td><span class="admin-badge ${isConvention ? 'badge-warning' : 'badge-success'}">${d.type || '—'}</span></td>
+            <td style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.7;font-size:0.82rem;">${d.description || '—'}</td>
+            <td style="text-align:center;">${d.order !== undefined ? d.order : '—'}</td>
+            <td>
+              <div class="action-btn-group">
+                <button class="btn btn-secondary btn-sm" onclick="editArchive('${d.id}')">Edit</button>
+                <button class="btn btn-secondary btn-sm" onclick="deleteDoc('archives', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+              </div>
+            </td>
+          </tr>`;
+      });
+      document.getElementById('archivesTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No archive entries yet. Click "Seed Default Data" to populate.</td></tr>';
+    }
+
+    function openArchiveModal() {
+      document.getElementById('archiveForm').reset();
+      document.getElementById('archiveId').value = '';
+      document.getElementById('archiveModalTitle').textContent = 'Add Archive Entry';
+      document.getElementById('archiveModal').classList.add('active');
+    }
+    function closeArchiveModal() {
+      document.getElementById('archiveModal').classList.remove('active');
+    }
+
+    async function editArchive(id) {
+      try {
+        const doc = await db.collection('archives').doc(id).get();
+        const d = doc.data();
+        document.getElementById('archiveId').value = id;
+        document.getElementById('archTitle').value = d.title || '';
+        document.getElementById('archYear').value = d.academicYear || '';
+        document.getElementById('archMonth').value = d.month || '';
+        document.getElementById('archType').value = d.type || 'Workshop';
+        document.getElementById('archOrder').value = d.order !== undefined ? d.order : '';
+        document.getElementById('archDesc').value = d.description || '';
+        document.getElementById('archiveModalTitle').textContent = 'Edit Archive Entry';
+        document.getElementById('archiveModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function saveArchive(e) {
+      e.preventDefault();
+      const id = document.getElementById('archiveId').value;
+      const orderVal = document.getElementById('archOrder').value;
+      const data = {
+        title: document.getElementById('archTitle').value.trim(),
+        academicYear: document.getElementById('archYear').value.trim(),
+        month: document.getElementById('archMonth').value.trim(),
+        type: document.getElementById('archType').value,
+        order: orderVal !== '' ? parseInt(orderVal, 10) : 99,
+        description: document.getElementById('archDesc').value.trim()
+      };
+      try {
+        if (id) {
+          await db.collection('archives').doc(id).update(data);
+        } else {
+          await db.collection('archives').add(data);
+        }
+        closeArchiveModal();
+        showToast('Archive entry saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function seedArchives() {
+      const btn = document.getElementById('seedArchivesBtn');
+      if (!confirm('This will add the default 8 archive entries to Firestore. Existing entries will NOT be overwritten. Continue?')) return;
+      btn.disabled = true;
+      btn.textContent = 'Seeding…';
+
+      const defaultEntries = [
+        { title: 'Madhubani Painting', academicYear: '2024-25', month: 'Mar 2025', type: 'Workshop', order: 1, description: 'Two-day intensive workshop with 60+ participants learning the ancient Mithila art form.' },
+        { title: 'Kathak & Tabla', academicYear: '2024-25', month: 'Feb 2025', type: 'Workshop', order: 2, description: 'Live rhythm workshop exploring the synergy between Kathak footwork and Tabla compositions.' },
+        { title: 'Hindustani Vocals Evening', academicYear: '2024-25', month: 'Jan 2025', type: 'Performance', order: 3, description: 'An enchanting evening of ragas performed by visiting artists from the Gwalior gharana.' },
+        { title: 'Warli & Mural Art', academicYear: '2024-25', month: 'Nov 2024', type: 'Workshop', order: 4, description: 'Hands-on session exploring tribal Warli patterns and large-scale campus mural creation.' },
+        { title: '8th International Convention', academicYear: '2023-24', month: 'Dec 2023', type: 'Convention', order: 5, description: 'VNIT Nagpur hosted the 8th SPIC MACAY International Convention — 3 days, 500+ participants, world-class artists.' },
+        { title: 'Dr. Chaerin Kim — International', academicYear: '2023-24', month: 'Oct 2023', type: 'Performance', order: 6, description: 'A captivating international performance bridging global traditions with Indian classical arts.' },
+        { title: 'Bharatanatyam & Pottery', academicYear: '2023-24', month: 'Sep 2023', type: 'Workshop', order: 7, description: 'Back-to-back workshops exploring classical dance and traditional pottery techniques.' },
+        { title: 'Flute & Folk Music', academicYear: '2023-24', month: 'Aug 2023', type: 'Workshop', order: 8, description: '' },
+      ];
+
+      try {
+        const batch = db.batch();
+        defaultEntries.forEach(entry => {
+          const ref = db.collection('archives').doc();
+          batch.set(ref, entry);
+        });
+        await batch.commit();
+        showToast('8 archive entries seeded successfully!', 'success');
+      } catch (err) {
+        showToast('Seed failed: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Seed Default Data';
+      }
+    }
   </script>
 </body>
 </html>
