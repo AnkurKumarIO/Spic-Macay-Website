@@ -861,8 +861,8 @@
               <p class="body-md">Loading intensives…</p>
             </div>
 
-            <!-- Intensives list (grouped by day) -->
-            <div id="intensivesList" style="display:none;flex-direction:column;gap:20px;"></div>
+            <!-- Intensives list (flat, single continuous list) -->
+            <div id="intensivesList" style="display:none;flex-direction:column;gap:0;"></div>
 
             <!-- No intensives state -->
             <div id="intensivesEmptyState" style="display:none;text-align:center;padding:32px;background:var(--surface-container-high);border-radius:12px;">
@@ -989,22 +989,12 @@
       empty.style.display = 'none';
       list.style.display = 'flex';
 
-      // Group by day
-      const dayGroups = {};
-      allIntensives.forEach(iv => {
-        const day = iv.day || 'Other';
-        if (!dayGroups[day]) dayGroups[day] = [];
-        dayGroups[day].push(iv);
-      });
-
-      list.innerHTML = Object.entries(dayGroups).map(([day, items]) => `
-        <div>
-          <p class="label-md" style="margin-bottom:12px;color:var(--on-surface);">${day.toUpperCase()}</p>
-          <div class="checkbox-group" id="ivGroup-${day.replace(/\s/g,'-')}">
-            ${items.map(iv => buildIntensiveCard(iv)).join('')}
-          </div>
+      // Render all intensives as a single flat list (no day grouping)
+      list.innerHTML = `
+        <div class="checkbox-group" id="ivGroupAll">
+          ${allIntensives.map(iv => buildIntensiveCard(iv)).join('')}
         </div>
-      `).join('');
+      `;
     }
 
     function buildIntensiveCard(iv) {
