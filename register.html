@@ -588,7 +588,7 @@
               <!-- Always use dark (white-text) logo — panel bg is always dark/warm -->
               <img src="logo-dark.svg" alt="SPIC MACAY Logo" class="logo-interactive-img" id="interactiveLogo"
                 style="width:clamp(180px,70%,280px);max-width:100%;height:auto;" />
-              <div class="logo-tooltip" id="logoTooltip">✨ Preserving India's Classical Heritage</div>
+              <div class="logo-tooltip" id="logoTooltip">Preserving India's Classical Heritage</div>
             </div>
           </div>
 
@@ -721,12 +721,12 @@
             const logo = document.getElementById('interactiveLogo');
 
             const messages = [
-              '🎵 Raag Yaman flows through the air...',
-              '🪘 Feel the rhythm of the Tabla',
-              '💃 Kathak — where feet tell stories',
-              '🪷 Rooted in 5000 years of tradition',
-              '🎶 Hindustani Classical — pure soul',
-              '🌸 Bharatanatyam — devotion in motion',
+              'Raag Yaman flows through the air...',
+              'Feel the rhythm of the Tabla',
+              'Kathak — where feet tell stories',
+              'Rooted in 5000 years of tradition',
+              'Hindustani Classical — pure soul',
+              'Bharatanatyam — devotion in motion',
             ];
             const tooltip = document.getElementById('logoTooltip');
             let msgIndex = 0;
@@ -900,15 +900,7 @@
               <p style="opacity:0.6;">No intensives have been added yet. Please check back later or contact the organizers.</p>
             </div>
 
-            <!-- Tentative Allocation Preview Card -->
-            <div id="allocationPreview" style="display:none;margin-top:20px;border-radius:14px;overflow:hidden;border:1px solid rgba(245,240,232,0.1);">
-              <div style="padding:12px 18px;background:rgba(245,240,232,0.04);border-bottom:1px solid rgba(245,240,232,0.08);">
-                <p class="label-sm" style="margin:0;letter-spacing:0.08em;color:var(--on-surface-variant);text-transform:uppercase;font-size:0.72rem;">Your Tentative Allocation</p>
-              </div>
-              <div id="allocationPreviewBody" style="padding:16px 18px;display:flex;align-items:center;gap:12px;min-height:64px;">
-                <!-- populated by JS -->
-              </div>
-            </div>
+
 
             <div class="input-group" style="margin-top:20px;">
               <label class="input-label" for="message">Any Message / Special Requests</label>
@@ -1046,14 +1038,12 @@
       const isSelected = idx !== -1;
       const rank = isSelected ? idx + 1 : null;
 
-      const borderStyle = isFull
-        ? 'border-color:rgba(245,240,232,0.06);opacity:0.5;'
-        : isSelected
-          ? 'border-color:var(--primary-container);background:rgba(232,119,34,0.08);'
-          : '';
+      const borderStyle = isSelected
+        ? 'border-color:var(--primary-container);background:rgba(232,119,34,0.08);'
+        : '';
 
       return `
-        <label class="checkbox-item intensive-card" data-id="${iv.id}" style="${borderStyle}cursor:${isFull?'not-allowed':'pointer'};"
+        <label class="checkbox-item intensive-card" data-id="${iv.id}" style="${borderStyle}cursor:pointer;"
           onclick="toggleIntensive(event,'${iv.id}')">
           <div style="display:flex;align-items:flex-start;gap:10px;flex:1;min-width:0;">
             <!-- Rank badge / empty circle -->
@@ -1071,10 +1061,10 @@
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
                 <span style="font-size:0.9rem;font-weight:600;color:var(--on-surface);">${iv.name}</span>
                 <span style="font-size:0.7rem;padding:2px 8px;border-radius:20px;background:rgba(232,119,34,0.12);color:var(--primary);border:1px solid rgba(232,119,34,0.2);">${catLabel}</span>
-                ${isFull ? '<span style="font-size:0.7rem;padding:2px 8px;border-radius:20px;background:rgba(196,38,28,0.12);color:#f47272;border:1px solid rgba(196,38,28,0.2);">Full</span>' : ''}
+                ${isFull ? '' : ''}
               </div>
               <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                ${iv.time ? `<span style="font-size:0.78rem;color:var(--on-surface-variant);">🕐 ${iv.time}</span>` : ''}
+                ${iv.time ? `<span style="font-size:0.78rem;color:var(--on-surface-variant);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:3px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${iv.time}</span>` : ''}
               </div>
               ${iv.description ? `<p style="font-size:0.78rem;color:var(--on-surface-variant);margin-top:4px;margin-bottom:0;line-height:1.4;">${iv.description}</p>` : ''}
             </div>
@@ -1086,8 +1076,6 @@
       e.preventDefault();
       const iv = allIntensives.find(i => i.id === id);
       if (!iv) return;
-      const seatsLeft = iv.seatsLeft !== undefined ? iv.seatsLeft : iv.totalSeats;
-      if (seatsLeft <= 0) return; // full, can't select
 
       const idx = selectedIntensiveIds.indexOf(id);
       if (idx !== -1) {
@@ -1119,10 +1107,8 @@
         const rank = isSelected ? idx + 1 : null;
 
         // Update border/bg
-        if (!isFull) {
-          card.style.borderColor = isSelected ? 'var(--primary-container)' : 'rgba(245,240,232,0.12)';
-          card.style.background  = isSelected ? 'rgba(232,119,34,0.08)' : '';
-        }
+        card.style.borderColor = isSelected ? 'var(--primary-container)' : 'rgba(245,240,232,0.12)';
+        card.style.background  = isSelected ? 'rgba(232,119,34,0.08)' : '';
 
         // Update rank badge
         const badge = document.getElementById(`rank-${iv.id}`);
@@ -1134,14 +1120,9 @@
         }
       });
 
-      // Show / hide allocation preview and trigger debounced check
+      // Show / hide selection counter
       const preview = document.getElementById('allocationPreview');
-      if (selectedIntensiveIds.length === 0) {
-        preview.style.display = 'none';
-      } else {
-        preview.style.display = 'block';
-        scheduleAllocationPreview();
-      }
+      if (preview) preview.style.display = 'none';
     }
 
     // ── Tentative Allocation Preview (debounced, read-only FCFS sim) ──────────
@@ -1346,7 +1327,7 @@
       }
 
       if (!confirmedIntensiveId) {
-        showToast('All your selected intensives are full. Please go back and choose different options.', 'error');
+        showToast('Registrations for all your selected intensives are already full. Please go back and choose different options.', 'error');
         btn.textContent = originalText;
         btn.disabled = false;
         return;
@@ -1452,7 +1433,9 @@
   <!-- Full-Screen Success Overlay -->
   <div class="success-overlay" id="successOverlay">
     <div class="success-content">
-      <div style="font-size:4rem;margin-bottom:12px;">🎉</div>
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(74,222,128,0.15);border:2px solid rgba(74,222,128,0.4);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#86efac" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+</div>
       <h2 class="headline-md" style="margin-bottom:8px;color:var(--on-surface);">You're Registered!</h2>
       <p class="body-md text-muted" style="max-width:520px;margin:0 auto 12px;font-size:0.9rem;">
         Thank you for registering. Your intensive seat has been confirmed. Below is your official entry pass.
@@ -1500,7 +1483,7 @@
       </div>
       
       <div style="display:flex;gap:16px;justify-content:center;margin-top:36px;">
-        <button onclick="window.print()" class="btn btn-secondary btn-sm">🖨️ Print Pass</button>
+        <button onclick="window.print()" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>Print Pass</button>
         <a href="index.html" class="btn btn-primary btn-sm">Back to Home</a>
       </div>
     </div>
