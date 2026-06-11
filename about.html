@@ -1,785 +1,800 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About — Spic Macay VNIT Nagpur</title>
-  <meta name="description" content="Learn about SPIC MACAY, its founder Dr. Kiran Seth, the VNIT Nagpur chapter, and the history of this legendary cultural movement."/>
-  <!-- Open Graph / Social Preview -->
-  <meta property="og:type" content="website"/>
-  <meta property="og:site_name" content="SPIC MACAY — VNIT Nagpur"/>
-  <meta property="og:title" content="About — Spic Macay VNIT Nagpur"/>
-  <meta property="og:description" content="Learn about SPIC MACAY, its founder Dr. Kiran Seth, the VNIT Nagpur chapter, and the history of this legendary cultural movement."/>
-  <meta property="og:image" content="https://spic-macay-website.vercel.app/spiclogo.jpeg"/>
-  <meta property="og:image:width" content="1200"/>
-  <meta property="og:image:height" content="630"/>
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:title" content="About — Spic Macay VNIT Nagpur"/>
-  <meta name="twitter:description" content="Learn about SPIC MACAY, its founder Dr. Kiran Seth, the VNIT Nagpur chapter, and the history of this legendary cultural movement."/>
-  <meta name="twitter:image" content="https://spic-macay-website.vercel.app/spiclogo.jpeg"/>
-  <link rel="stylesheet" href="styles/main.css"/>
-  <style>
-    .about-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:40px; }
-    .about-tab-panel { display:none; animation:fadeIn 0.35s ease; }
-    .about-tab-panel.active { display:block; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>About — Spic Macay VNIT Nagpur</title>
+<meta name="description" content="Learn about SPIC MACAY, its founder Dr. Kiran Seth, the VNIT Nagpur chapter, and the history of this legendary cultural movement."/>
+<!-- Open Graph / Social Preview -->
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="SPIC MACAY — VNIT Nagpur"/>
+<meta property="og:title" content="About — Spic Macay VNIT Nagpur"/>
+<meta property="og:description" content="Learn about SPIC MACAY, its founder Dr. Kiran Seth, the VNIT Nagpur chapter, and the history of this legendary cultural movement."/>
+<meta property="og:image" content="https://spic-macay-website.vercel.app/spiclogo.jpeg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="About — Spic Macay VNIT Nagpur"/>
+<meta name="twitter:description" content="Learn about SPIC MACAY, its founder Dr. Kiran Seth, the VNIT Nagpur chapter, and the history of this legendary cultural movement."/>
+<meta name="twitter:image" content="https://spic-macay-website.vercel.app/spiclogo.jpeg"/>
+<link rel="stylesheet" href="styles/main.css"/>
+<style>
+.about-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:40px; }
+.about-tab-panel { display:none; animation:fadeIn 0.35s ease; }
+.about-tab-panel.active { display:block; }
 
-    /* ── Core Members Two-Col Layout (desktop only) ─── */
-    #membersWrapper {
-      display: flex;
-      gap: 32px;
-      align-items: flex-start;
-    }
-    #coreMembersContainer {
-      flex: 1;
-      min-width: 0;
-    }
-    #memberPreviewPane {
-      display: none; /* hidden on mobile */
-      width: 38%;
-      flex-shrink: 0;
-      position: sticky;
-      top: 100px;
-      align-self: flex-start;
-    }
-    @media (min-width: 1024px) {
-      #memberPreviewPane { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 360px; }
-    }
-    #memberPreviewCard {
-      display: none;
-      width: 100%;
-      background: var(--surface-container-high);
-      border: 1px solid rgba(232,119,34,0.35);
-      border-radius: 20px;
-      padding: 32px 28px;
-      text-align: center;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
-      animation: fadeIn 0.25s ease;
-    }
-    #mpPhotoWrap {
-      width: 160px; height: 160px;
-      border-radius: 14px;
-      overflow: hidden;
-      margin: 0 auto 20px;
-      border: 2px solid rgba(232,119,34,0.35);
-      display: none;
-    }
-    #mpPhotoWrap img { width: 100%; height: 100%; object-fit: cover; }
-    #mpInitialWrap {
-      width: 160px; height: 160px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, rgba(232,119,34,0.2), rgba(232,119,34,0.05));
-      margin: 0 auto 20px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid rgba(232,119,34,0.3);
-    }
-    #mpInitialText { font-size: 3.5rem; font-weight: 700; color: var(--primary-container); }
-    #mpName { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; color: var(--on-surface); margin-bottom: 8px; }
-    #mpPost { font-size: 0.875rem; color: var(--on-surface-variant); }
-    #memberPreviewEmpty {
-      text-align: center;
-      color: var(--on-surface-variant);
-      padding: 40px 0;
-    }
+/* ── Core Members Two-Col Layout (desktop only) ─── */
+#membersWrapper {
+display: flex;
+gap: 32px;
+align-items: flex-start;
+}
+#coreMembersContainer {
+flex: 1;
+min-width: 0;
+}
+#memberPreviewPane {
+display: none; /* hidden on mobile */
+width: 38%;
+flex-shrink: 0;
+position: sticky;
+top: 100px;
+align-self: flex-start;
+}
+@media (min-width: 1024px) {
+#memberPreviewPane { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 360px; }
+}
+#memberPreviewCard {
+display: none;
+width: 100%;
+background: var(--surface-container-high);
+border: 1px solid rgba(232,119,34,0.35);
+border-radius: 20px;
+padding: 32px 28px;
+text-align: center;
+box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+animation: fadeIn 0.25s ease;
+}
+#mpPhotoWrap {
+width: 160px; height: 160px;
+border-radius: 14px;
+overflow: hidden;
+margin: 0 auto 20px;
+border: 2px solid rgba(232,119,34,0.35);
+display: none;
+}
+#mpPhotoWrap img { width: 100%; height: 100%; object-fit: cover; }
+#mpInitialWrap {
+width: 160px; height: 160px;
+border-radius: 14px;
+background: linear-gradient(135deg, rgba(232,119,34,0.2), rgba(232,119,34,0.05));
+margin: 0 auto 20px;
+display: none;
+align-items: center;
+justify-content: center;
+border: 2px solid rgba(232,119,34,0.3);
+}
+#mpInitialText { font-size: 3.5rem; font-weight: 700; color: var(--primary-container); }
+#mpName { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; color: var(--on-surface); margin-bottom: 8px; }
+#mpPost { font-size: 0.875rem; color: var(--on-surface-variant); }
+#memberPreviewEmpty {
+text-align: center;
+color: var(--on-surface-variant);
+padding: 40px 0;
+}
 
-    /* ── Mobile Member Modal ────────────────────────────── */
-    #memberModal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: rgba(6, 4, 2, 0.55);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      align-items: flex-end;
-      justify-content: center;
-      padding: 0;
-    }
-    #memberModal.open { display: flex; }
-    #memberModalCard {
-      background: linear-gradient(160deg, var(--surface-container-high) 0%, var(--surface-container) 100%);
-      border: 1.5px solid;
-      border-color: rgba(212, 148, 48, 0.55);
-      border-bottom: none;
-      border-radius: 28px 28px 0 0;
-      padding: 28px 28px 48px;
-      width: 100%;
-      max-width: 480px;
-      text-align: center;
-      box-shadow: 0 -12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,148,48,0.1);
-      animation: slideUpModal 0.38s cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
-      position: relative;
-    }
-    @keyframes slideUpModal {
-      from { transform: translateY(100%); opacity: 0; }
-      to   { transform: translateY(0);    opacity: 1; }
-    }
-    #memberModalBack {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(212,148,48,0.1);
-      border: 1px solid rgba(212,148,48,0.25);
-      border-radius: 20px;
-      color: var(--primary-container);
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 7px 14px;
-      cursor: pointer;
-      margin-bottom: 28px;
-      letter-spacing: 0.03em;
-    }
-    #mmPhotoWrap {
-      width: 160px; height: 160px;
-      border-radius: 20px;
-      overflow: hidden;
-      margin: 0 auto 20px;
-      border: 2px solid rgba(212,148,48,0.5);
-      box-shadow: 0 0 30px rgba(212,148,48,0.2);
-    }
-    #mmPhotoWrap img { width: 100%; height: 100%; object-fit: cover; }
-    #mmInitialWrap {
-      width: 160px; height: 160px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, rgba(212,148,48,0.18), rgba(212,148,48,0.04));
-      margin: 0 auto 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid rgba(212,148,48,0.4);
-      box-shadow: 0 0 30px rgba(212,148,48,0.15);
-    }
-    #mmInitial {
-      font-size: 4rem;
-      font-weight: 700;
-      color: var(--primary-container);
-      font-family: var(--font-serif);
-    }
-    #mmName {
-      font-family: var(--font-serif);
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--on-surface);
-      margin-bottom: 10px;
-      line-height: 1.2;
-    }
-    #mmPost {
-      font-size: 0.875rem;
-      color: var(--primary-container);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-    }
-    /* Only show modal on mobile */
-    @media (min-width: 1024px) {
-      #memberModal { display: none !important; }
-    }
+/* ── Mobile Member Modal ────────────────────────────── */
+#memberModal {
+display: none;
+position: fixed;
+inset: 0;
+z-index: 2000;
+background: rgba(6, 4, 2, 0.55);
+backdrop-filter: blur(14px);
+-webkit-backdrop-filter: blur(14px);
+align-items: flex-end;
+justify-content: center;
+padding: 0;
+}
+#memberModal.open { display: flex; }
+#memberModalCard {
+background: linear-gradient(160deg, var(--surface-container-high) 0%, var(--surface-container) 100%);
+border: 1.5px solid;
+border-color: rgba(212, 148, 48, 0.55);
+border-bottom: none;
+border-radius: 28px 28px 0 0;
+padding: 28px 28px 48px;
+width: 100%;
+max-width: 480px;
+text-align: center;
+box-shadow: 0 -12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,148,48,0.1);
+animation: slideUpModal 0.38s cubic-bezier(0.34, 1.3, 0.64, 1) forwards;
+position: relative;
+}
+@keyframes slideUpModal {
+from { transform: translateY(100%); opacity: 0; }
+to   { transform: translateY(0);    opacity: 1; }
+}
+#memberModalBack {
+display: flex;
+align-items: center;
+gap: 6px;
+background: rgba(212,148,48,0.1);
+border: 1px solid rgba(212,148,48,0.25);
+border-radius: 20px;
+color: var(--primary-container);
+font-size: 0.8rem;
+font-weight: 600;
+padding: 7px 14px;
+cursor: pointer;
+margin-bottom: 28px;
+letter-spacing: 0.03em;
+}
+#mmPhotoWrap {
+width: 160px; height: 160px;
+border-radius: 20px;
+overflow: hidden;
+margin: 0 auto 20px;
+border: 2px solid rgba(212,148,48,0.5);
+box-shadow: 0 0 30px rgba(212,148,48,0.2);
+}
+#mmPhotoWrap img { width: 100%; height: 100%; object-fit: cover; }
+#mmInitialWrap {
+width: 160px; height: 160px;
+border-radius: 20px;
+background: linear-gradient(135deg, rgba(212,148,48,0.18), rgba(212,148,48,0.04));
+margin: 0 auto 20px;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 2px solid rgba(212,148,48,0.4);
+box-shadow: 0 0 30px rgba(212,148,48,0.15);
+}
+#mmInitial {
+font-size: 4rem;
+font-weight: 700;
+color: var(--primary-container);
+font-family: var(--font-serif);
+}
+#mmName {
+font-family: var(--font-serif);
+font-size: 1.5rem;
+font-weight: 600;
+color: var(--on-surface);
+margin-bottom: 10px;
+line-height: 1.2;
+}
+#mmPost {
+font-size: 0.875rem;
+color: var(--primary-container);
+font-weight: 500;
+letter-spacing: 0.04em;
+}
+/* Only show modal on mobile */
+@media (min-width: 1024px) {
+#memberModal { display: none !important; }
+}
 
-    .founder-layout {
-      display:grid; grid-template-columns:1fr; gap:40px;
-    }
-    @media(min-width:768px){ .founder-layout { grid-template-columns:340px 1fr; } }
-    .founder-img {
-      width:100%; border-radius:20px; aspect-ratio:3/4; object-fit:cover; object-position:top;
-      border:2px solid rgba(232,119,34,0.2);
-    }
+.founder-layout {
+display:grid; grid-template-columns:1fr; gap:40px;
+}
+@media(min-width:768px){ .founder-layout { grid-template-columns:340px 1fr; } }
+.founder-img {
+width:100%; border-radius:20px; aspect-ratio:3/4; object-fit:cover; object-position:top;
+border:2px solid rgba(232,119,34,0.2);
+}
 
-    .timeline-vertical { position:relative; padding-left:32px; }
-    .timeline-vertical::before {
-      content:''; position:absolute; left:7px; top:0; bottom:0;
-      width:2px; background:linear-gradient(to bottom, var(--primary-container), transparent);
-    }
-    .tv-item { position:relative; margin-bottom:36px; }
-    .tv-dot {
-      position:absolute; left:-32px; top:4px;
-      width:16px; height:16px; border-radius:50%;
-      background:var(--primary-container);
-      border:3px solid var(--surface);
-    }
-    .tv-year { font-family:var(--font-sans); font-size:0.75rem; font-weight:700; color:var(--primary-container); letter-spacing:0.08em; margin-bottom:4px; }
-    .tv-title { font-family:var(--font-serif); font-size:1rem; font-weight:600; color:var(--on-surface); margin-bottom:4px; }
-    .tv-desc { font-size:0.875rem; color:var(--on-surface-variant); line-height:1.6; }
+.timeline-vertical { position:relative; padding-left:32px; }
+.timeline-vertical::before {
+content:''; position:absolute; left:7px; top:0; bottom:0;
+width:2px; background:linear-gradient(to bottom, var(--primary-container), transparent);
+}
+.tv-item { position:relative; margin-bottom:36px; }
+.tv-dot {
+position:absolute; left:-32px; top:4px;
+width:16px; height:16px; border-radius:50%;
+background:var(--primary-container);
+border:3px solid var(--surface);
+}
+.tv-year { font-family:var(--font-sans); font-size:0.75rem; font-weight:700; color:var(--primary-container); letter-spacing:0.08em; margin-bottom:4px; }
+.tv-title { font-family:var(--font-serif); font-size:1rem; font-weight:600; color:var(--on-surface); margin-bottom:4px; }
+.tv-desc { font-size:0.875rem; color:var(--on-surface-variant); line-height:1.6; }
 
-    .hosting-grid { display:grid; grid-template-columns:1fr; gap:24px; }
-    @media(min-width:768px){ .hosting-grid { grid-template-columns:1fr 1fr; } }
+.hosting-grid { display:grid; grid-template-columns:1fr; gap:24px; }
+@media(min-width:768px){ .hosting-grid { grid-template-columns:1fr 1fr; } }
 
-    .key-contact-card {
-      background:var(--surface-container);
-      border:1px solid rgba(245,240,232,0.08);
-      border-radius:14px; padding:24px;
-      display:flex; gap:16px; align-items:flex-start;
-    }
-    .contact-avatar {
-      width:52px; height:52px; border-radius:50%;
-      background:rgba(232,119,34,0.15);
-      border:2px solid rgba(232,119,34,0.2);
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.25rem; flex-shrink:0;
-    }
+.key-contact-card {
+background:var(--surface-container);
+border:1px solid rgba(245,240,232,0.08);
+border-radius:14px; padding:24px;
+display:flex; gap:16px; align-items:flex-start;
+}
+.contact-avatar {
+width:52px; height:52px; border-radius:50%;
+background:rgba(232,119,34,0.15);
+border:2px solid rgba(232,119,34,0.2);
+display:flex; align-items:center; justify-content:center;
+font-size:1.25rem; flex-shrink:0;
+}
 
-    .about-hero-standard { height: 50vh; min-height: 400px; }
+.about-hero-standard { height: 50vh; min-height: 400px; }
 
-    .past-conv-card {
-      background:var(--surface-container);
-      border:1px solid rgba(245,240,232,0.07);
-      border-radius:12px; padding:20px;
-      transition:all var(--transition-base);
-    }
-    .past-conv-card:hover { border-color:rgba(232,119,34,0.3); transform:translateY(-4px); }
-    .past-conv-num { font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--primary-container); }
+/* Responsive hero heights */
+@media (max-width: 767px) {
+  #aboutHero {
+    height: 60vh !important;
+    min-height: 320px !important;
+    max-height: 480px !important;
+  }
+}
 
-    /* ── Why SPIC MACAY Section ────────────────────────────── */
-    .why-section { padding-block: 96px 80px; background: var(--background); }
-    .why-section-header { margin-bottom: 60px; }
-    .why-section-pretitle {
-      font-family: var(--font-display);
-      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-      letter-spacing: 0.35em;
-      color: var(--primary-container);
-      display: block;
-      margin-bottom: 16px;
-    }
-    .why-section-title {
-      font-family: var(--font-serif);
-      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.025em;
-      color: var(--on-surface);
-      max-width: 680px;
-    }
-    .why-section-divider {
-      width: 56px; height: 3px;
-      background: linear-gradient(90deg, var(--primary-container), transparent);
-      margin-top: 24px; border-radius: 2px;
-    }
+.past-conv-card {
+background:var(--surface-container);
+border:1px solid rgba(245,240,232,0.07);
+border-radius:12px; padding:20px;
+transition:all var(--transition-base);
+}
+.past-conv-card:hover { border-color:rgba(232,119,34,0.3); transform:translateY(-4px); }
+.past-conv-num { font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--primary-container); }
 
-    /* 3 image cards */
-    .why-cards-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    @media (min-width: 640px)  { .why-cards-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1024px) { .why-cards-grid { grid-template-columns: repeat(3, 1fr); } }
+/* ── Why SPIC MACAY Section ────────────────────────────── */
+.why-section { padding-block: 96px 80px; background: var(--background); }
+.why-section-header { margin-bottom: 60px; }
+.why-section-pretitle {
+font-family: var(--font-display);
+font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+letter-spacing: 0.35em;
+color: var(--primary-container);
+display: block;
+margin-bottom: 16px;
+}
+.why-section-title {
+font-family: var(--font-serif);
+font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+font-weight: 700;
+line-height: 1.1;
+letter-spacing: -0.025em;
+color: var(--on-surface);
+max-width: 680px;
+}
+.why-section-divider {
+width: 56px; height: 3px;
+background: linear-gradient(90deg, var(--primary-container), transparent);
+margin-top: 24px; border-radius: 2px;
+}
 
-    .why-card {
-      background: var(--surface-container);
-      border: 1px solid rgba(245,240,232,0.07);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      transition: all var(--transition-base);
-      display: flex; flex-direction: column;
-    }
-    .why-card:hover { transform: translateY(-6px); border-color: rgba(232,119,34,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.55); }
-    .why-card-img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform var(--transition-slow); }
-    .why-card:hover .why-card-img { transform: scale(1.07); }
-    .why-card-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
-    .why-card-title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; color: var(--on-surface); margin-bottom: 8px; margin-top: 4px; }
-    .why-card-desc { font-size: 0.875rem; color: var(--on-surface-variant); line-height: 1.65; flex: 1; }
-    .why-card-link { margin-top: 16px; }
+/* 3 image cards */
+.why-cards-grid {
+display: grid;
+grid-template-columns: 1fr;
+gap: 16px;
+margin-bottom: 24px;
+}
+@media (min-width: 640px)  { .why-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .why-cards-grid { grid-template-columns: repeat(3, 1fr); } }
 
-    /* Bento cells with image background */
-    .about-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    @media(min-width: 768px){
-      .about-grid { grid-template-columns: repeat(12,1fr); grid-auto-rows: auto; gap: 20px; }
-      .about-cell-main   { grid-column: span 6; grid-row: span 2; }
-      .about-cell-3      { grid-column: span 3; }
-      .about-cell-accent { grid-column: span 3; }
-    }
-    .bento-img-cell { position: relative; overflow: hidden; }
-    .bento-bg-img {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover; opacity: 0.18;
-      transition: opacity var(--transition-base), transform var(--transition-slow);
-      pointer-events: none;
-    }
-    .bento-img-cell:hover .bento-bg-img { opacity: 0.28; transform: scale(1.06); }
-    .bento-cell-content { position: relative; z-index: 1; }
+.why-card {
+background: var(--surface-container);
+border: 1px solid rgba(245,240,232,0.07);
+border-radius: var(--radius-xl);
+overflow: hidden;
+transition: all var(--transition-base);
+display: flex; flex-direction: column;
+}
+.why-card:hover { transform: translateY(-6px); border-color: rgba(232,119,34,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.55); }
+.why-card-img { width: 100%; height: 200px; object-fit: cover; display: block; transition: transform var(--transition-slow); }
+.why-card:hover .why-card-img { transform: scale(1.07); }
+.why-card-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
+.why-card-title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; color: var(--on-surface); margin-bottom: 8px; margin-top: 4px; }
+.why-card-desc { font-size: 0.875rem; color: var(--on-surface-variant); line-height: 1.65; flex: 1; }
+.why-card-link { margin-top: 16px; }
 
-    /* ── Stats Section ─────────────────────────────────────── */
-    .stats-section {
-      padding-block: 80px 72px;
-      background: var(--background);
-      overflow: hidden;
-      position: relative;
-    }
-    .stats-section::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232,119,34,0.04) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .stats-grid-premium {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-    }
-    @media (min-width: 768px) { .stats-grid-premium { grid-template-columns: repeat(4, 1fr); } }
+/* Bento cells with image background */
+.about-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media(min-width: 768px){
+.about-grid { grid-template-columns: repeat(12,1fr); grid-auto-rows: auto; gap: 20px; }
+.about-cell-main   { grid-column: span 6; grid-row: span 2; }
+.about-cell-3      { grid-column: span 3; }
+.about-cell-accent { grid-column: span 3; }
+}
+.bento-img-cell { position: relative; overflow: hidden; }
+.bento-bg-img {
+position: absolute; inset: 0;
+width: 100%; height: 100%;
+object-fit: cover; opacity: 0.18;
+transition: opacity var(--transition-base), transform var(--transition-slow);
+pointer-events: none;
+}
+.bento-img-cell:hover .bento-bg-img { opacity: 0.28; transform: scale(1.06); }
+.bento-cell-content { position: relative; z-index: 1; }
 
-    .stat-item-premium {
-      padding: 36px 20px;
-      text-align: center;
-      border: 1px solid rgba(245,240,232,0.05);
-      position: relative;
-      overflow: hidden;
-      cursor: default;
-    }
-    .stat-item-premium::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary-container), transparent);
-      transform: scaleX(0);
-      transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
-    }
-    .stat-item-premium.stat-visible::after { transform: scaleX(1); }
-    /* Number — Bebas Neue for that rigid impact */
-    .stat-big-num {
-      font-family: var(--font-display);
-      font-size: clamp(3.5rem, 10vw, 6.5rem);
-      font-weight: 400;
-      color: var(--primary-container);
-      line-height: 1;
-      letter-spacing: 0.01em;
-      display: block;
-      opacity: 0;
-      transform: translateY(50px) scale(0.85);
-    }
-    @keyframes statSlam {
-      0%   { opacity: 0; transform: translateY(60px) scale(0.8); filter: blur(3px); }
-      55%  { opacity: 1; transform: translateY(-6px) scale(1.04); filter: blur(0); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .stat-big-num.stat-animate {
-      animation: statSlam 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-    .stat-label-premium {
-      font-family: var(--font-sans);
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--outline);
-      margin-top: 8px;
-      display: block;
-    }
-  </style>
+/* ── Stats Section ─────────────────────────────────────── */
+.stats-section {
+padding-block: 80px 72px;
+background: var(--background);
+overflow: hidden;
+position: relative;
+}
+.stats-section::before {
+content: '';
+position: absolute; inset: 0;
+background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(232,119,34,0.04) 0%, transparent 70%);
+pointer-events: none;
+}
+.stats-grid-premium {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 0;
+}
+@media (min-width: 768px) { .stats-grid-premium { grid-template-columns: repeat(4, 1fr); } }
+
+.stat-item-premium {
+padding: 36px 20px;
+text-align: center;
+border: 1px solid rgba(245,240,232,0.05);
+position: relative;
+overflow: hidden;
+cursor: default;
+}
+.stat-item-premium::after {
+content: '';
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(--primary-container), transparent);
+transform: scaleX(0);
+transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.stat-item-premium.stat-visible::after { transform: scaleX(1); }
+/* Number — Bebas Neue for that rigid impact */
+.stat-big-num {
+font-family: var(--font-display);
+font-size: clamp(3.5rem, 10vw, 6.5rem);
+font-weight: 400;
+color: var(--primary-container);
+line-height: 1;
+letter-spacing: 0.01em;
+display: block;
+opacity: 0;
+transform: translateY(50px) scale(0.85);
+}
+@keyframes statSlam {
+0%   { opacity: 0; transform: translateY(60px) scale(0.8); filter: blur(3px); }
+55%  { opacity: 1; transform: translateY(-6px) scale(1.04); filter: blur(0); }
+100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.stat-big-num.stat-animate {
+animation: statSlam 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.stat-label-premium {
+font-family: var(--font-sans);
+font-size: 0.68rem;
+font-weight: 700;
+letter-spacing: 0.18em;
+text-transform: uppercase;
+color: var(--outline);
+margin-top: 8px;
+display: block;
+}
+</style>
 </head>
 <body>
-  <!-- ══ Progress Bar ══════════════════════════════════ -->
-  <div class="progress-bar" id="progressBar"></div>
-  <!-- ══ Navigation ════════════════════════════════════ -->
-                <header class="nav" id="mainNav">
-    <div class="container nav-inner">
-      <a href="index.html" class="nav-logo">
-        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
-        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
-      </a>
+<!-- ══ Progress Bar ══════════════════════════════════ -->
+<div class="progress-bar" id="progressBar"></div>
+<!-- ══ Navigation ════════════════════════════════════ -->
+<header class="nav" id="mainNav">
+<div class="container nav-inner">
+<a href="index.html" class="nav-logo">
+<img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+<img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+</a>
 
-      <nav aria-label="Main navigation">
-        <ul class="nav-links">
-          <li><a href="index.html" >Home</a></li>
-          <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle active">About</a>
-            <div class="nav-dropdown-menu">
-              <a href="about.html">About the Convention</a>
-              <a href="about.html#founder">Founder</a>
-              <a href="about.html#hosting">Hosting Institute</a>
-              <a href="about.html#past">Past Conventions</a>
-            </div>
-          </li>
-          <li><a href="artists.html" >Artists</a></li>
-          <li><a href="schedule.html" >Events</a></li>
-          <li class="nav-dropdown">
-            <a href="#" class="nav-dropdown-toggle ">Guidelines</a>
-            <div class="nav-dropdown-menu">
-              <a href="guidelines.html">Convention Guidelines</a>
-              <a href="guidelines.html#travel">Travel Guidelines</a>
-            </div>
-          </li>
-          <li><a href="gallery.html" >Gallery</a></li>
-          <li><a href="faq.html" >FAQ</a></li>
-        </ul>
-      </nav>
+<nav aria-label="Main navigation">
+<ul class="nav-links">
+<li><a href="index.html" >Home</a></li>
+<li class="nav-dropdown">
+<a href="#" class="nav-dropdown-toggle active">About</a>
+<div class="nav-dropdown-menu">
+<a href="about.html">About the Convention</a>
+<a href="about.html#founder">Founder</a>
+<a href="about.html#hosting">Hosting Institute</a>
+<a href="about.html#past">Past Conventions</a>
+</div>
+</li>
+<li><a href="artists.html" >Artists</a></li>
+<li><a href="schedule.html" >Events</a></li>
+<li class="nav-dropdown">
+<a href="#" class="nav-dropdown-toggle ">Guidelines</a>
+<div class="nav-dropdown-menu">
+<a href="guidelines.html">Convention Guidelines</a>
+<a href="guidelines.html#travel">Travel Guidelines</a>
+</div>
+</li>
+<li><a href="gallery.html" >Gallery</a></li>
+<li><a href="faq.html" >FAQ</a></li>
+</ul>
+</nav>
 
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
-          <span class="theme-toggle-icon icon-moon">☾</span>
-          <span class="theme-toggle-icon icon-sun">☀</span>
-        </button>
-        <a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
-        <a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
-        <button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-          <span class="hamburger-bar"></span>
-        </button>
-      </div>
-    </div>
-  </header>
-              <!-- ══ Mobile Drawer ════════════════════════════════ -->
-  <div class="drawer-overlay" id="drawerOverlay"></div>
-  <nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
-    <div class="drawer-header">
-      <span class="nav-logo">
-        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" style="height:24px;" />
-        <img src="logo.svg" alt="SPIC MACAY" class="logo-light" style="height:24px;" />
-      </span>
-      <button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
-    </div>
-    <a href="index.html" class="drawer-link ">Home</a>
-    <a href="about.html" class="drawer-link active">About</a>
-    <a href="artists.html" class="drawer-link ">Artists &amp; Gurus</a>
-    <a href="schedule.html" class="drawer-link ">Events</a>
-    <a href="guidelines.html" class="drawer-link ">Guidelines</a>
-    <a href="gallery.html" class="drawer-link ">Gallery</a>
-    <a href="faq.html" class="drawer-link ">FAQ</a>
-    <a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
-  </nav>
+<div class="nav-actions">
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+<span class="theme-toggle-icon icon-moon">☾</span>
+<span class="theme-toggle-icon icon-sun">☀</span>
+</button>
+<a href="register.html" class="btn btn-primary btn-sm nav-register-btn">Register Now</a>
+<a href="register.html" class="nav-mobile-btn nav-mobile-btn--register">Register</a>
+<button class="hamburger-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+<span class="hamburger-bar"></span>
+<span class="hamburger-bar"></span>
+<span class="hamburger-bar"></span>
+</button>
+</div>
+</div>
+</header>
+<!-- ══ Mobile Drawer ════════════════════════════════ -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<nav class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+<div class="drawer-header">
+<span class="nav-logo">
+<img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" style="height:24px;" />
+<img src="logo.svg" alt="SPIC MACAY" class="logo-light" style="height:24px;" />
+</span>
+<button id="drawerClose" aria-label="Close menu" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.5rem;cursor:pointer;line-height:1;padding:4px;">✕</button>
+</div>
+<a href="index.html" class="drawer-link ">Home</a>
+<a href="about.html" class="drawer-link active">About</a>
+<a href="artists.html" class="drawer-link ">Artists &amp; Gurus</a>
+<a href="schedule.html" class="drawer-link ">Events</a>
+<a href="guidelines.html" class="drawer-link ">Guidelines</a>
+<a href="gallery.html" class="drawer-link ">Gallery</a>
+<a href="faq.html" class="drawer-link ">FAQ</a>
+<a href="register.html" class="btn btn-primary w-full" style="margin-top:auto;text-align:center;justify-content:center;">Register Now</a>
+</nav>
 
-    <!-- ══ About Hero ════════════════════════════════════ -->
-    <section id="aboutHero" style="
-      position: relative;
-      overflow: hidden;
-      height: 100vh;
-      min-height: 420px;
-      max-height: 620px;
-      display: flex;
-      align-items: flex-end;
-    ">
-      <!-- Black base — fills sides where image doesn't reach -->
-      <div style="position:absolute;inset:0;background:#000;z-index:0;"></div>
-      <!-- Image at natural aspect ratio, centred horizontally, shifted down -->
-      <img src="vnit-hero.jpg" alt="VNIT Nagpur Campus" style="
-        position: absolute;
-        left: 50%;
-        bottom: -25%;
-        transform: translateX(-50%);
-        width: 70%;
-        height: auto;
-        max-width: none;
-        z-index: 0;
-      "/>
-      <!-- Overlay: transparent at top-right (show building), dark at bottom-left (text area) -->
-      <div class="hero-side-overlay" style="
-        position: absolute; inset: 0;
-        background:
-          linear-gradient(to bottom, rgba(5,3,1,0.10) 0%, rgba(5,3,1,0.30) 40%, rgba(5,3,1,0.88) 100%),
-          linear-gradient(to right,  rgba(5,3,1,0.72) 0%, rgba(5,3,1,0.20) 55%, rgba(5,3,1,0.0) 100%);
-        z-index: 1;
-      "></div>
+<!-- ══ About Hero ════════════════════════════════════ -->
+<section id="aboutHero" style="
+     position: relative;
+     overflow: hidden;
+     height: 100vh;
+     min-height: 420px;
+     max-height: 620px;
+     display: flex;
+     align-items: flex-end;
+   ">
+<!-- Black base — fills sides where image doesn't reach -->
+<div style="position:absolute;inset:0;background:#000;z-index:0;"></div>
+<!-- Image: full-cover, centred focal point, responsive on all screen sizes -->
+<img src="vnit-hero.jpg" alt="VNIT Nagpur Campus" style="
+       position: absolute;
+       inset: 0;
+       width: 100%;
+       height: 100%;
+       object-fit: cover;
+       object-position: center;
+       z-index: 0;
+     "/>
+<!-- Overlay: transparent at top-right (show building), dark at bottom-left (text area) -->
+<div class="hero-side-overlay" style="
+       position: absolute; inset: 0;
+       background:
+         linear-gradient(to bottom, rgba(5,3,1,0.10) 0%, rgba(5,3,1,0.30) 40%, rgba(5,3,1,0.88) 100%),
+         linear-gradient(to right,  rgba(5,3,1,0.72) 0%, rgba(5,3,1,0.20) 55%, rgba(5,3,1,0.0) 100%);
+       z-index: 1;
+     "></div>
 
-      <!-- Content — pinned to bottom left -->
-      <div style="position:relative;z-index:2;width:100%;padding-bottom:36px;">
-        <div class="container">
+<!-- Content — pinned to bottom left -->
+<div style="position:relative;z-index:2;width:100%;padding-bottom:36px;">
+<div class="container">
 
-          <!-- Badge pill -->
-          <div style="
-            display: inline-flex; align-items: center;
-            padding: 5px 14px; border-radius: 9999px;
-            background: rgba(12,7,2,0.80);
-            border: 1px solid rgba(232,119,34,0.55);
-            font-size: 0.68rem; font-weight: 700;
-            letter-spacing: 0.12em; text-transform: uppercase;
-            color: #e87722; margin-bottom: 18px;
-            backdrop-filter: blur(8px);
-          ">VNIT NAGPUR CHAPTER</div>
+<!-- Badge pill -->
+<div style="
+           display: inline-flex; align-items: center;
+           padding: 5px 14px; border-radius: 9999px;
+           background: rgba(12,7,2,0.80);
+           border: 1px solid rgba(232,119,34,0.55);
+           font-size: 0.68rem; font-weight: 700;
+           letter-spacing: 0.12em; text-transform: uppercase;
+           color: #e87722; margin-bottom: 18px;
+           backdrop-filter: blur(8px);
+         ">VNIT NAGPUR CHAPTER</div>
 
-          <!-- Heading: "About" white + "SPIC MACAY" orange, both bold serif -->
-          <h1 style="
-            font-family: var(--font-serif);
-            font-size: clamp(2.4rem, 5vw, 3.8rem);
-            font-weight: 800; line-height: 1.05;
-            margin: 0 0 14px;
-            letter-spacing: -0.015em;
-          ">
-            <span style="color:#f5f0e8;">About </span><span class="text-gradient" style="font-style:normal;">SPIC MACAY</span>
-          </h1>
+<!-- Heading: "About" white + "SPIC MACAY" orange, both bold serif -->
+<h1 style="
+           font-family: var(--font-serif);
+           font-size: clamp(2.4rem, 5vw, 3.8rem);
+           font-weight: 800; line-height: 1.05;
+           margin: 0 0 14px;
+           letter-spacing: -0.015em;
+         ">
+<span style="color:#f5f0e8;">About </span><span class="text-gradient" style="font-style:normal;">SPIC MACAY</span>
+</h1>
 
-          <!-- Subtitle -->
-          <p style="
-            font-size: clamp(0.875rem, 1.5vw, 0.975rem);
-            color: rgba(245,240,232,0.62);
-            max-width: 420px; line-height: 1.65;
-            margin: 0 0 28px; font-weight: 400;
-          ">The official SPIC MACAY chapter at VNIT Nagpur — preserving<br/>and promoting India's classical heritage on campus.</p>
+<!-- Subtitle -->
+<p style="
+           font-size: clamp(0.875rem, 1.5vw, 0.975rem);
+           color: rgba(245,240,232,0.62);
+           max-width: 420px; line-height: 1.65;
+           margin: 0 0 28px; font-weight: 400;
+         ">The official SPIC MACAY chapter at VNIT Nagpur — preserving<br/>and promoting India's classical heritage on campus.</p>
 
-          <!-- Tab pills -->
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="about-hero-tab active" onclick="showAboutTab('vnit',this)">SPIC MACAY VNIT</button>
-            <button class="about-hero-tab" onclick="showAboutTab('members',this)">Core Members</button>
-            <button class="about-hero-tab" onclick="showAboutTab('global',this)">About SPIC MACAY</button>
-            <button class="about-hero-tab" onclick="showAboutTab('archives',this)">Archives</button>
-          </div>
-        </div>
-      </div>
-    </section>
+<!-- Tab pills -->
+<div style="display:flex;gap:10px;flex-wrap:wrap;">
+<button class="about-hero-tab active" onclick="showAboutTab('vnit',this)">SPIC MACAY VNIT</button>
+<button class="about-hero-tab" onclick="showAboutTab('members',this)">Core Members</button>
+<button class="about-hero-tab" onclick="showAboutTab('global',this)">About SPIC MACAY</button>
+<button class="about-hero-tab" onclick="showAboutTab('archives',this)">Archives</button>
+</div>
+</div>
+</div>
+</section>
 
-    <style>
-      .about-hero-tab {
-        padding: 9px 20px; border-radius: 9999px;
-        font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em;
-        cursor: pointer;
-        border: 1px solid rgba(245,240,232,0.22);
-        background: rgba(10,6,3,0.65);
-        color: rgba(245,240,232,0.78);
-        backdrop-filter: blur(10px);
-        transition: all 0.2s ease;
-        font-family: var(--font-sans, sans-serif);
-      }
-      .about-hero-tab:hover {
-        border-color: rgba(232,119,34,0.55);
-        color: #e87722;
-        background: rgba(232,119,34,0.1);
-      }
-      .about-hero-tab.active {
-        background: #e87722 !important;
-        border-color: #e87722 !important;
-        color: #fff !important;
-      }
-      @media (max-width: 600px) {
-        .about-hero-tab { font-size: 0.75rem; padding: 8px 15px; }
-      }
+<style>
+.about-hero-tab {
+padding: 9px 20px; border-radius: 9999px;
+font-size: 0.8rem; font-weight: 600; letter-spacing: 0.03em;
+cursor: pointer;
+border: 1px solid rgba(245,240,232,0.22);
+background: rgba(10,6,3,0.65);
+color: rgba(245,240,232,0.78);
+backdrop-filter: blur(10px);
+transition: all 0.2s ease;
+font-family: var(--font-sans, sans-serif);
+}
+.about-hero-tab:hover {
+border-color: rgba(232,119,34,0.55);
+color: #e87722;
+background: rgba(232,119,34,0.1);
+}
+.about-hero-tab.active {
+background: #e87722 !important;
+border-color: #e87722 !important;
+color: #fff !important;
+}
+@media (max-width: 600px) {
+.about-hero-tab { font-size: 0.75rem; padding: 8px 15px; }
+}
 
-      /* Light theme: side bars and overlay use light bg instead of black */
-      [data-theme="light"] #aboutHero > div:first-child   { background: #f8f4ec !important; }
-      [data-theme="light"] #aboutHero .hero-side-overlay  {
-        background:
-          linear-gradient(to bottom, rgba(248,244,236,0.10) 0%, rgba(248,244,236,0.30) 40%, rgba(248,244,236,0.92) 100%),
-          linear-gradient(to right,  rgba(248,244,236,0.72) 0%, rgba(248,244,236,0.20) 55%, rgba(248,244,236,0.0) 100%) !important;
-      }
-      /* Light theme: keep hero text readable */
-      [data-theme="light"] #aboutHero h1 span:first-child { color: #1a1208 !important; }
-      [data-theme="light"] #aboutHero p                   { color: rgba(26,18,8,0.65) !important; }
-    </style>
+/* Light theme: side bars and overlay use light bg instead of black */
+[data-theme="light"] #aboutHero > div:first-child   { background: #f8f4ec !important; }
+[data-theme="light"] #aboutHero .hero-side-overlay  {
+background:
+linear-gradient(to bottom, rgba(248,244,236,0.10) 0%, rgba(248,244,236,0.30) 40%, rgba(248,244,236,0.92) 100%),
+linear-gradient(to right,  rgba(248,244,236,0.72) 0%, rgba(248,244,236,0.20) 55%, rgba(248,244,236,0.0) 100%) !important;
+}
+/* Light theme: keep hero text readable */
+[data-theme="light"] #aboutHero h1 span:first-child { color: #1a1208 !important; }
+[data-theme="light"] #aboutHero p                   { color: rgba(26,18,8,0.65) !important; }
+</style>
 
-    <section class="section-gap" style="padding-top:65px;">
-      <div class="container">
+<section class="section-gap" style="padding-top:65px;">
+<div class="container">
 
-        <!-- ══ Tab 1: SPIC MACAY VNIT ══════════════════════ -->
-        <div class="about-tab-panel active" id="tab-vnit">
-          <div style="display:grid;grid-template-columns:1fr;gap:48px;" id="hosting">
+<!-- ══ Tab 1: SPIC MACAY VNIT ══════════════════════ -->
+<div class="about-tab-panel active" id="tab-vnit">
+<div style="display:grid;grid-template-columns:1fr;gap:48px;" id="hosting">
 
-            <!-- Our Mission -->
-            <div class="reveal">
-              <h3 class="headline-md" style="margin-bottom:16px;">Our Mission</h3>
-              <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
-                The SPIC MACAY chapter at VNIT Nagpur is dedicated to bringing the richness of India's classical arts to the campus. We organise workshops, live performances, and interactive sessions that let students experience the depth of classical music, dance, painting, and folk traditions first-hand.
-              </p>
-              <p class="body-md text-muted" style="line-height:1.85;">
-                Our chapter has been a vibrant force on campus — hosting the 8th International Convention in 2023, conducting year-round workshops in Madhubani, Warli, Kathak, Tabla, and more. We believe that exposure to classical arts cultivates patience, focus, and a deeper connection to India's heritage.
-              </p>
-            </div>
+<!-- Our Mission -->
+<div class="reveal">
+<h3 class="headline-md" style="margin-bottom:16px;">Our Mission</h3>
+<p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
+The SPIC MACAY chapter at VNIT Nagpur is dedicated to bringing the richness of India's classical arts to the campus. We organise workshops, live performances, and interactive sessions that let students experience the depth of classical music, dance, painting, and folk traditions first-hand.
+</p>
+<p class="body-md text-muted" style="line-height:1.85;">
+Our chapter has been a vibrant force on campus — hosting the 8th International Convention in 2023, conducting year-round workshops in Madhubani, Warli, Kathak, Tabla, and more. We believe that exposure to classical arts cultivates patience, focus, and a deeper connection to India's heritage.
+</p>
+</div>
 
-            <!-- What we do cards -->
-            <div class="reveal reveal-delay-1">
-              <h3 class="headline-md" style="margin-bottom:24px;">What We Do</h3>
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
-                <div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+<!-- What we do cards -->
+<div class="reveal reveal-delay-1">
+<h3 class="headline-md" style="margin-bottom:24px;">What We Do</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
+<div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
                   <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">🎨</div>
-                  <h4 class="headline-sm" style="margin-bottom:8px;">Art Workshops</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Madhubani, Warli, Mural Paintings, Pottery — hands-on sessions with skilled artists throughout the year.</p>
-                </div>
-                <div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+<h4 class="headline-sm" style="margin-bottom:8px;">Art Workshops</h4>
+<p class="body-md text-muted" style="font-size:0.875rem;">Madhubani, Warli, Mural Paintings, Pottery — hands-on sessions with skilled artists throughout the year.</p>
+</div>
+<div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
                   <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">🎵</div>
-                  <h4 class="headline-sm" style="margin-bottom:8px;">Music & Dance</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Kathak, Bharatanatyam, Tabla, Flute, Hindustani Vocals — live performances and learning sessions on campus.</p>
-                </div>
-                <div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
+                  <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+<h4 class="headline-sm" style="margin-bottom:8px;">Music & Dance</h4>
+<p class="body-md text-muted" style="font-size:0.875rem;">Kathak, Bharatanatyam, Tabla, Flute, Hindustani Vocals — live performances and learning sessions on campus.</p>
+</div>
+<div style="padding:28px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 48px rgba(0,0,0,0.3)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow=''">
                   <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px;">🎭</div>
-                  <h4 class="headline-sm" style="margin-bottom:8px;">Cultural Events</h4>
-                  <p class="body-md text-muted" style="font-size:0.875rem;">Guest lectures, heritage screenings, and collaborations with artists of national and international repute.</p>
-                </div>
-              </div>
-            </div>
+                  <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,119,34,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10s3-3 3-8h14s3 5 3 8"/><path d="M8 21s-3-1-5-6h18c-2 5-5 6-5 6H8z"/><path d="M9 12c0 1-.9 2-2 2s-2-1-2-2"/><path d="M19 12c0 1-.9 2-2 2s-2-1-2-2"/></svg></div>
+<h4 class="headline-sm" style="margin-bottom:8px;">Cultural Events</h4>
+<p class="body-md text-muted" style="font-size:0.875rem;">Guest lectures, heritage screenings, and collaborations with artists of national and international repute.</p>
+</div>
+</div>
+</div>
 
-            <!-- Highlight numbers -->
-            <div class="reveal reveal-delay-2">
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
-                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">2018</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Chapter Founded</div>
-                </div>
-                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">9+</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Workshop Disciplines</div>
-                </div>
-                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">500+</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Annual Participants</div>
-                </div>
-                <div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                  <div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">8th</div>
-                  <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Intl. Convention Host</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+<!-- Highlight numbers -->
+<div class="reveal reveal-delay-2">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
+<div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">2018</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Chapter Founded</div>
+</div>
+<div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">9+</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Workshop Disciplines</div>
+</div>
+<div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">500+</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Annual Participants</div>
+</div>
+<div style="background:var(--surface-container);border-radius:12px;padding:24px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-family:var(--font-display);font-size:2.5rem;color:var(--primary-container);line-height:1;">8th</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:8px;">Intl. Convention Host</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-        <!-- ══ Tab 2: Core Members ═════════════════════════ -->
-        <div class="about-tab-panel" id="tab-members">
-          <div class="reveal">
-            <h2 class="headline-lg" style="margin-bottom:8px;">Core Team</h2>
-            <p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">The dedicated students behind SPIC MACAY at VNIT Nagpur — organising, curating, and keeping the spirit of classical arts alive on campus.</p>
+<!-- ══ Tab 2: Core Members ═════════════════════════ -->
+<div class="about-tab-panel" id="tab-members">
+<div class="reveal">
+<h2 class="headline-lg" style="margin-bottom:8px;">Core Team</h2>
+<p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">The dedicated students behind SPIC MACAY at VNIT Nagpur — organising, curating, and keeping the spirit of classical arts alive on campus.</p>
 
-            <!-- Two-col layout: members left, sticky preview right (desktop only) -->
-            <div id="membersWrapper">
-              <!-- Members grid -->
-              <div id="coreMembersContainer">
-                <p class="body-md text-muted" style="text-align:center;padding:40px 0;">Loading...</p>
-              </div>
+<!-- Two-col layout: members left, sticky preview right (desktop only) -->
+<div id="membersWrapper">
+<!-- Members grid -->
+<div id="coreMembersContainer">
+<p class="body-md text-muted" style="text-align:center;padding:40px 0;">Loading...</p>
+</div>
 
-              <!-- Sticky preview pane — only shown on desktop when hovering -->
-              <div id="memberPreviewPane">
-                <div id="memberPreviewCard">
-                  <div id="mpPhotoWrap">
-                    <img id="mpImg" src="" alt=""/>
-                  </div>
-                  <div id="mpInitialWrap">
-                    <span id="mpInitialText"></span>
-                  </div>
-                  <p id="mpName"></p>
-                  <p id="mpPost"></p>
-                </div>
-                <div id="memberPreviewEmpty">
+<!-- Sticky preview pane — only shown on desktop when hovering -->
+<div id="memberPreviewPane">
+<div id="memberPreviewCard">
+<div id="mpPhotoWrap">
+<img id="mpImg" src="" alt=""/>
+</div>
+<div id="mpInitialWrap">
+<span id="mpInitialText"></span>
+</div>
+<p id="mpName"></p>
+<p id="mpPost"></p>
+</div>
+<div id="memberPreviewEmpty">
                   <span style="font-size:2rem;opacity:0.2;">👤</span>
-                  <p style="margin-top:8px;font-size:0.8rem;opacity:0.35;">Hover a member to preview</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.2;"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+<p style="margin-top:8px;font-size:0.8rem;opacity:0.35;">Hover a member to preview</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-        <!-- ══ Tab 3: About SPIC MACAY (Global) ═══════════ -->
-        <div class="about-tab-panel" id="tab-global">
-          <div style="display:grid;grid-template-columns:1fr;gap:48px;">
-            <div class="founder-layout reveal" id="founder">
-              <div>
-                <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=500&q=80" alt="Dr. Kiran Seth" class="founder-img"/>
-                <div style="margin-top:16px;padding:16px;background:var(--surface-container);border-radius:12px;text-align:center;border:1px solid rgba(232,119,34,0.2);">
-                  <p class="label-md" style="color:var(--primary-container);margin-bottom:4px;">FOUNDER</p>
-                  <h3 class="headline-sm">Dr. Kiran Seth</h3>
-                  <p class="body-md text-muted" style="font-size:0.875rem;margin-top:4px;">Professor Emeritus, IIT Delhi<br/>Padma Shri Awardee (2009)</p>
-                </div>
-              </div>
-              <div>
-                <span class="chip" style="margin-bottom:20px;display:inline-flex;">SINCE 1977</span>
-                <h2 class="headline-lg" style="margin-bottom:20px;">SPIC MACAY</h2>
-                <p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
-                  SPIC MACAY (Society for the Promotion of Indian Classical Music And Culture Amongst Youth) is a voluntary youth movement founded in 1977 by Dr. Kiran Seth at IIT Delhi. What began as a small series of classical music programmes has grown into one of the largest cultural movements in the world.
-                </p>
-                <p class="body-md text-muted" style="margin-bottom:20px;line-height:1.85;">
-                  The movement is driven by a simple philosophy — expose young people to the depth and beauty of Indian classical arts, and they will be transformed. SPIC MACAY has presented over 15,000 programmes in 900+ cities across India and abroad, bringing maestros into classrooms, campuses, and communities.
-                </p>
-                <p class="body-md text-muted" style="margin-bottom:32px;line-height:1.85;">
-                  Today, SPIC MACAY has active chapters in hundreds of colleges, schools, and institutions worldwide — each driven by student volunteers who carry forward the mission of preserving India's intangible cultural heritage for future generations.
-                </p>
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
-                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">1977</div>
-                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Founded</div>
-                  </div>
-                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">900+</div>
-                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Cities Reached</div>
-                  </div>
-                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">15k+</div>
-                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Programmes Held</div>
-                  </div>
-                  <div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
-                    <div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">40+</div>
-                    <div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Countries</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+<!-- ══ Tab 3: About SPIC MACAY (Global) ═══════════ -->
+<div class="about-tab-panel" id="tab-global">
+<div style="display:grid;grid-template-columns:1fr;gap:48px;">
+<div class="founder-layout reveal" id="founder">
+<div>
+<img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=500&q=80" alt="Dr. Kiran Seth" class="founder-img"/>
+<div style="margin-top:16px;padding:16px;background:var(--surface-container);border-radius:12px;text-align:center;border:1px solid rgba(232,119,34,0.2);">
+<p class="label-md" style="color:var(--primary-container);margin-bottom:4px;">FOUNDER</p>
+<h3 class="headline-sm">Dr. Kiran Seth</h3>
+<p class="body-md text-muted" style="font-size:0.875rem;margin-top:4px;">Professor Emeritus, IIT Delhi<br/>Padma Shri Awardee (2009)</p>
+</div>
+</div>
+<div>
+<span class="chip" style="margin-bottom:20px;display:inline-flex;">SINCE 1977</span>
+<h2 class="headline-lg" style="margin-bottom:20px;">SPIC MACAY</h2>
+<p class="body-lg text-muted" style="margin-bottom:20px;line-height:1.85;">
+SPIC MACAY (Society for the Promotion of Indian Classical Music And Culture Amongst Youth) is a voluntary youth movement founded in 1977 by Dr. Kiran Seth at IIT Delhi. What began as a small series of classical music programmes has grown into one of the largest cultural movements in the world.
+</p>
+<p class="body-md text-muted" style="margin-bottom:20px;line-height:1.85;">
+The movement is driven by a simple philosophy — expose young people to the depth and beauty of Indian classical arts, and they will be transformed. SPIC MACAY has presented over 15,000 programmes in 900+ cities across India and abroad, bringing maestros into classrooms, campuses, and communities.
+</p>
+<p class="body-md text-muted" style="margin-bottom:32px;line-height:1.85;">
+Today, SPIC MACAY has active chapters in hundreds of colleges, schools, and institutions worldwide — each driven by student volunteers who carry forward the mission of preserving India's intangible cultural heritage for future generations.
+</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
+<div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">1977</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Founded</div>
+</div>
+<div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">900+</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Cities Reached</div>
+</div>
+<div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">15k+</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Programmes Held</div>
+</div>
+<div style="background:var(--surface-container);border-radius:10px;padding:16px;text-align:center;border:1px solid rgba(245,240,232,0.07);">
+<div style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">40+</div>
+<div style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;">Countries</div>
+</div>
+</div>
+</div>
+</div>
 
-            <!-- Global pillars -->
-            <div class="reveal">
-              <h3 class="headline-md" style="margin-bottom:24px;">Core Pillars</h3>
-              <div style="display:flex;flex-direction:column;gap:16px;">
-                <div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
+<!-- Global pillars -->
+<div class="reveal">
+<h3 class="headline-md" style="margin-bottom:24px;">Core Pillars</h3>
+<div style="display:flex;flex-direction:column;gap:16px;">
+<div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
                   <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🎵</div>
-                  <div>
-                    <h4 class="headline-sm" style="margin-bottom:6px;">Classical Music & Dance</h4>
-                    <p class="body-md text-muted" style="font-size:0.875rem;">Hindustani, Carnatic, Kathak, Bharatanatyam, Odissi — world-class performances by legendary maestros.</p>
-                  </div>
-                </div>
-                <div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
+                  <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+<div>
+<h4 class="headline-sm" style="margin-bottom:6px;">Classical Music & Dance</h4>
+<p class="body-md text-muted" style="font-size:0.875rem;">Hindustani, Carnatic, Kathak, Bharatanatyam, Odissi — world-class performances by legendary maestros.</p>
+</div>
+</div>
+<div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
                   <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🎓</div>
-                  <div>
-                    <h4 class="headline-sm" style="margin-bottom:6px;">Guru-Shishya Parampara</h4>
-                    <p class="body-md text-muted" style="font-size:0.875rem;">The ancient tradition of direct transmission — intimate workshops and baithaks with masters.</p>
-                  </div>
-                </div>
-                <div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
+                  <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg></div>
+<div>
+<h4 class="headline-sm" style="margin-bottom:6px;">Guru-Shishya Parampara</h4>
+<p class="body-md text-muted" style="font-size:0.875rem;">The ancient tradition of direct transmission — intimate workshops and baithaks with masters.</p>
+</div>
+</div>
+<div style="display:flex;gap:16px;padding:22px;background:var(--surface-container);border-radius:14px;border:1px solid rgba(245,240,232,0.07);transition:all 0.3s ease;" onmouseover="this.style.borderColor='rgba(232,119,34,0.25)';this.style.boxShadow='0 8px 32px rgba(0,0,0,0.2)'" onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.boxShadow=''">
                   <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;">🏛️</div>
-                  <div>
-                    <h4 class="headline-sm" style="margin-bottom:6px;">Heritage & Craft</h4>
-                    <p class="body-md text-muted" style="font-size:0.875rem;">Heritage walks, folk art workshops, cinema classics, and yoga — a holistic cultural immersion.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                  <div style="width:44px;height:44px;border-radius:10px;background:rgba(232,119,34,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h18M3 10h18M12 2l9 8H3l9-8z"/><path d="M9 22V10M15 22V10"/></svg></div>
+<div>
+<h4 class="headline-sm" style="margin-bottom:6px;">Heritage & Craft</h4>
+<p class="body-md text-muted" style="font-size:0.875rem;">Heritage walks, folk art workshops, cinema classics, and yoga — a holistic cultural immersion.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-            <!-- Why SPIC MACAY (inside global tab only) -->
-            <div id="why" style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:80px;">
-              <div class="why-section-header reveal">
-                <span class="why-section-pretitle">Why SPIC MACAY</span>
-                <h2 class="why-section-title">Rediscovering India's<br/><span class="text-gradient">Classical Heritage</span></h2>
-                <div class="why-section-divider"></div>
-                <p class="body-md text-muted reveal reveal-delay-1" style="max-width:540px;margin-top:20px;">For nearly five decades, SPIC MACAY has been the bridge between India's timeless art forms and the hearts of the youth — bringing maestros into classrooms, campuses, and communities.</p>
-              </div>
-              <div class="why-cards-grid" style="margin-top:40px;">
-                <div class="why-card reveal">
-                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Volunteers" class="why-card-img"/></div>
-                  <div class="why-card-body">
-                    <div class="artist-discipline">Community</div>
-                    <div class="why-card-title">Volunteering</div>
-                    <p class="why-card-desc">Be part of something larger than yourself. Volunteers are the backbone of this incredible week.</p>
-                  </div>
-                </div>
-                <div class="why-card reveal reveal-delay-1">
-                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Classical music" class="why-card-img"/></div>
-                  <div class="why-card-body">
-                    <div class="artist-discipline">Learning</div>
-                    <div class="why-card-title">Enrichment</div>
-                    <p class="why-card-desc">Immerse yourself in workshops, baithaks, and interactions with legendary gurus.</p>
-                  </div>
-                </div>
-                <div class="why-card reveal reveal-delay-2">
-                  <div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage" class="why-card-img"/></div>
-                  <div class="why-card-body">
-                    <div class="artist-discipline">Culture</div>
-                    <div class="why-card-title">Heritage Preservation</div>
-                    <p class="why-card-desc">SPIC MACAY has dedicated nearly five decades to ensuring India's timeless art forms remain alive and accessible.</p>
-                  </div>
-                </div>
-              </div>
-              <!-- Stats -->
-              <div style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:64px;">
-                <div class="stats-grid-premium">
-                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="1977">1977</span><span class="stat-label-premium">Est. Year</span></div>
-                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="400" data-stat-suffix="+">400+</span><span class="stat-label-premium">Cities Served</span></div>
-                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+">10000+</span><span class="stat-label-premium">Events</span></div>
-                  <div class="stat-item-premium"><span class="stat-big-num" data-stat-target="120">120</span><span class="stat-label-premium">Artists &amp; Gurus</span></div>
-                </div>
-              </div>
-            </div>
-        </div>
+<!-- Why SPIC MACAY (inside global tab only) -->
+<div id="why" style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:80px;">
+<div class="why-section-header reveal">
+<span class="why-section-pretitle">Why SPIC MACAY</span>
+<h2 class="why-section-title">Rediscovering India's<br/><span class="text-gradient">Classical Heritage</span></h2>
+<div class="why-section-divider"></div>
+<p class="body-md text-muted reveal reveal-delay-1" style="max-width:540px;margin-top:20px;">For nearly five decades, SPIC MACAY has been the bridge between India's timeless art forms and the hearts of the youth — bringing maestros into classrooms, campuses, and communities.</p>
+</div>
+<div class="why-cards-grid" style="margin-top:40px;">
+<div class="why-card reveal">
+<div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80" alt="Volunteers" class="why-card-img"/></div>
+<div class="why-card-body">
+<div class="artist-discipline">Community</div>
+<div class="why-card-title">Volunteering</div>
+<p class="why-card-desc">Be part of something larger than yourself. Volunteers are the backbone of this incredible week.</p>
+</div>
+</div>
+<div class="why-card reveal reveal-delay-1">
+<div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=600&q=80" alt="Classical music" class="why-card-img"/></div>
+<div class="why-card-body">
+<div class="artist-discipline">Learning</div>
+<div class="why-card-title">Enrichment</div>
+<p class="why-card-desc">Immerse yourself in workshops, baithaks, and interactions with legendary gurus.</p>
+</div>
+</div>
+<div class="why-card reveal reveal-delay-2">
+<div style="overflow:hidden;"><img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=600&q=80" alt="Heritage" class="why-card-img"/></div>
+<div class="why-card-body">
+<div class="artist-discipline">Culture</div>
+<div class="why-card-title">Heritage Preservation</div>
+<p class="why-card-desc">SPIC MACAY has dedicated nearly five decades to ensuring India's timeless art forms remain alive and accessible.</p>
+</div>
+</div>
+</div>
+<!-- Stats -->
+<div style="margin-top:56px;border-top:1px solid rgba(245,240,232,0.07);padding-top:64px;">
+<div class="stats-grid-premium">
+<div class="stat-item-premium"><span class="stat-big-num" data-stat-target="1977">1977</span><span class="stat-label-premium">Est. Year</span></div>
+<div class="stat-item-premium"><span class="stat-big-num" data-stat-target="400" data-stat-suffix="+">400+</span><span class="stat-label-premium">Cities Served</span></div>
+<div class="stat-item-premium"><span class="stat-big-num" data-stat-target="10000" data-stat-suffix="+">10000+</span><span class="stat-label-premium">Events</span></div>
+<div class="stat-item-premium"><span class="stat-big-num" data-stat-target="120">120</span><span class="stat-label-premium">Artists &amp; Gurus</span></div>
+</div>
+</div>
+</div>
+</div>
 
-        <!-- ══ Tab 4: Archives ═════════════════════════════ -->
-        <div class="about-tab-panel" id="tab-archives">
-          <div class="reveal" id="past">
-            <h2 class="headline-lg" style="margin-bottom:8px;">Archives</h2>
-            <p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">A look back at the events and workshops organized by the SPIC MACAY chapter at VNIT Nagpur.</p>
+<!-- ══ Tab 4: Archives ═════════════════════════════ -->
+<div class="about-tab-panel" id="tab-archives">
+<div class="reveal" id="past">
+<h2 class="headline-lg" style="margin-bottom:8px;">Archives</h2>
+<p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">A look back at the events and workshops organized by the SPIC MACAY chapter at VNIT Nagpur.</p>
 
             <!-- 2024-25 -->
             <div style="margin-bottom:48px;">
@@ -856,353 +871,421 @@
                   <h4 class="headline-sm" style="margin-bottom:6px;">Flute & Folk Music</h4>
                 </div>
               </div>
-            </div>
+            <div id="archivesLoadingState" style="text-align:center;padding:32px 0;opacity:0.5;">
+              <p class="body-md">Loading archives…</p>
+</div>
+            <div id="archivesContent" style="display:none;"></div>
 
-            <!-- CTA -->
-            <div style="padding:32px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(232,119,34,0.15);text-align:center;">
-              <p class="headline-sm" style="margin-bottom:8px;">Want to be part of the next chapter?</p>
-              <p class="body-md text-muted" style="margin-bottom:20px;">Register for upcoming events and workshops at VNIT Nagpur.</p>
-              <a href="register.html" class="btn btn-primary">Register Now</a>
-            </div>
-          </div>
-        </div>
+<!-- CTA -->
+<div style="padding:32px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(232,119,34,0.15);text-align:center;">
+<p class="headline-sm" style="margin-bottom:8px;">Want to be part of the next chapter?</p>
+<p class="body-md text-muted" style="margin-bottom:20px;">Register for upcoming events and workshops at VNIT Nagpur.</p>
+<a href="register.html" class="btn btn-primary">Register Now</a>
+</div>
+</div>
+</div>
 
-    </div>
-  </div>
+</div>
+</div>
 
-  <!-- Footer -->
-  <!-- ══ Footer ═════════════════════════════════════════ -->
-    <!-- ══ Footer ═════════════════════════════════════════ -->
-    <!-- ══ Footer ═════════════════════════════════════════ -->
-    <!-- ══ Footer ═════════════════════════════════════════ -->
-    <!-- ══ Footer ═════════════════════════════════════════ -->
-    <!-- ══ Footer ═════════════════════════════════════════ -->
-    <!-- ══ Footer ═════════════════════════════════════════ -->
-  <footer class="footer">
-    <div class="container">
-      <div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
-        <div>
-          <div class="footer-logo">
-            <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
-            <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
-          </div>
-          <p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
-          <div class="flex gap-4" style="margin-top:20px;">
-            <a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
-            <a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
-            </a>
-            <a href="https://www.linkedin.com/company/spic-macay-vnit-chapter/" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </a>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
-          <div>
-            <div class="footer-heading">Quick Links</div>
-            <ul class="footer-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="artists.html">Artists</a></li>
-              <li><a href="schedule.html">Events</a></li>
-              <li><a href="gallery.html">Gallery</a></li>
-              <li><a href="faq.html">FAQ</a></li>
-              <li><a href="about.html">About</a></li>
-            </ul>
-          </div>
-          <div>
-            <div class="footer-heading">Legal</div>
-            <ul class="footer-links">
-              <li><a href="terms.html">Terms &amp; Conditions</a></li>
-              <li><a href="privacy.html">Privacy Policy</a></li>
-              <li><a href="gdpr.html">GDPR Compliance</a></li>
-              <li><a href="guidelines.html">Guidelines</a></li>
-            </ul>
-          </div>
-        </div>
-        <div>
-          <div class="footer-heading">Contact Us</div>
-          <address style="font-style:normal;font-size:0.875rem;color:var(--on-surface-variant);line-height:1.9;">
-            VNIT Nagpur Campus,<br/>
-            South Ambazari Road,<br/>
-            Nagpur – 440010
-          </address>
-          <a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">spicmacay@vnit.ac.in</a>
-          <a href="https://vnit.ac.in/" target="_blank" rel="noopener" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:8px;">VNIT Nagpur Website →</a>
-          <div style="margin-top:20px;">
-            <div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
-            <div class="flex gap-4">
-              <input type="email" class="input-field" placeholder="your@email.com" style="font-size:0.875rem;padding:10px 14px;" id="newsletterEmail"/>
-              <button class="btn btn-primary btn-sm" onclick="subscribeNewsletter()">Join</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="divider" style="margin-block:40px;"></div>
-      <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
-        <p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
-        <p class="label-sm text-muted" style="display:flex;align-items:center;gap:6px;">
-          Developed by 
-          <a href="acm-chapter.html" style="color:var(--primary);display:inline-flex;align-items:center;gap:6px;">
-            <img src="acm-logo.png" alt="ACM Logo" style="height:18px;width:auto;" />
-            ACM Student Chapter, VNIT
-          </a>
-        </p>
-      </div>
-    </div>
-  </footer>
+<!-- Footer -->
+<!-- ══ Footer ═════════════════════════════════════════ -->
+<!-- ══ Footer ═════════════════════════════════════════ -->
+<!-- ══ Footer ═════════════════════════════════════════ -->
+<!-- ══ Footer ═════════════════════════════════════════ -->
+<!-- ══ Footer ═════════════════════════════════════════ -->
+<!-- ══ Footer ═════════════════════════════════════════ -->
+<!-- ══ Footer ═════════════════════════════════════════ -->
+<footer class="footer">
+<div class="container">
+<div style="display:grid;grid-template-columns:1fr;gap:48px;" class="footer-grid">
+<div>
+<div class="footer-logo">
+<img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
+<img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
+</div>
+<p class="body-md text-muted" style="margin-top:12px;max-width:280px;font-size:0.875rem;">Society for the Promotion of Indian Classical Music And Culture Amongst Youth.</p>
+<div class="flex gap-4" style="margin-top:20px;">
+<a href="https://www.youtube.com/@SPICMACAYOFFICIAL" class="social-link" aria-label="YouTube" target="_blank" rel="noopener">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+</a>
+<a href="https://www.instagram.com/spicmacay_vnit?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+</a>
+<a href="https://www.linkedin.com/company/spic-macay-vnit-chapter/" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+</a>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;">
+<div>
+<div class="footer-heading">Quick Links</div>
+<ul class="footer-links">
+<li><a href="index.html">Home</a></li>
+<li><a href="artists.html">Artists</a></li>
+<li><a href="schedule.html">Events</a></li>
+<li><a href="gallery.html">Gallery</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="about.html">About</a></li>
+</ul>
+</div>
+<div>
+<div class="footer-heading">Legal</div>
+<ul class="footer-links">
+<li><a href="terms.html">Terms &amp; Conditions</a></li>
+<li><a href="privacy.html">Privacy Policy</a></li>
+<li><a href="gdpr.html">GDPR Compliance</a></li>
+<li><a href="guidelines.html">Guidelines</a></li>
+</ul>
+</div>
+</div>
+<div>
+<div class="footer-heading">Contact Us</div>
+<address style="font-style:normal;font-size:0.875rem;color:var(--on-surface-variant);line-height:1.9;">
+VNIT Nagpur Campus,<br/>
+South Ambazari Road,<br/>
+Nagpur – 440010
+</address>
+<a href="mailto:spicmacay@vnit.ac.in" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:12px;">spicmacay@vnit.ac.in</a>
+<a href="https://vnit.ac.in/" target="_blank" rel="noopener" style="color:var(--primary);font-size:0.875rem;display:block;margin-top:8px;">VNIT Nagpur Website →</a>
+<div style="margin-top:20px;">
+<div class="footer-heading" style="margin-bottom:8px;">Newsletter</div>
+<div class="flex gap-4">
+<input type="email" class="input-field" placeholder="your@email.com" style="font-size:0.875rem;padding:10px 14px;" id="newsletterEmail"/>
+<button class="btn btn-primary btn-sm" onclick="subscribeNewsletter()">Join</button>
+</div>
+</div>
+</div>
+</div>
+<div class="divider" style="margin-block:40px;"></div>
+<div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;">
+<p class="label-sm text-muted">© 2026 SPIC MACAY. Dedicated to the enrichment of Indian Classical Arts.</p>
+<p class="label-sm text-muted" style="display:flex;align-items:center;gap:6px;">
+Developed by 
+<a href="acm-chapter.html" style="color:var(--primary);display:inline-flex;align-items:center;gap:6px;">
+<img src="acm-logo.png" alt="ACM Logo" style="height:18px;width:auto;" />
+ACM Student Chapter, VNIT
+</a>
+</p>
+</div>
+</div>
+</footer>
 
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-  <!-- ── Mobile Member Modal ─────────────────────────── -->
-  <div id="memberModal" onclick="closeMemberModal(event)">
-    <div id="memberModalCard">
-      <button id="memberModalBack" onclick="closeMemberModal()" aria-label="Back">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        Back
-      </button>
-      <div id="mmPhotoWrap">
-        <img id="mmImg" src="" alt=""/>
-      </div>
-      <div id="mmInitialWrap">
-        <span id="mmInitial"></span>
-      </div>
-      <h2 id="mmName"></h2>
-      <p id="mmPost"></p>
-    </div>
-  </div>
-  <script src="scripts/main.js"></script>
+<!-- ── Mobile Member Modal ─────────────────────────── -->
+<div id="memberModal" onclick="closeMemberModal(event)">
+<div id="memberModalCard">
+<button id="memberModalBack" onclick="closeMemberModal()" aria-label="Back">
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+Back
+</button>
+<div id="mmPhotoWrap">
+<img id="mmImg" src="" alt=""/>
+</div>
+<div id="mmInitialWrap">
+<span id="mmInitial"></span>
+</div>
+<h2 id="mmName"></h2>
+<p id="mmPost"></p>
+</div>
+</div>
+<script src="scripts/main.js"></script>
+<script>
+function showAboutTab(id, btn) {
+document.querySelectorAll('.about-tab-panel').forEach(p => p.classList.remove('active'));
+document.querySelectorAll('.about-hero-tab').forEach(t => t.classList.remove('active'));
+document.getElementById('tab-' + id).classList.add('active');
+btn.classList.add('active');
+}
+// Show the matching about tab for supported deep links.
+function handleAboutHash(hash) {
+const tabs = document.querySelectorAll('.about-hero-tab');
+if (hash === '#members') {
+showAboutTab('members', tabs[1]);
+} else if (hash === '#global' || hash === '#founder') {
+showAboutTab('global', tabs[2]);
+} else if (hash === '#archives' || hash === '#past') {
+showAboutTab('archives', tabs[3]);
+} else if (hash === '#hosting') {
+showAboutTab('vnit', tabs[0]);
+}
+
+// Ensure the browser scrolls to the anchor after the tab becomes visible.
+const target = hash ? document.querySelector(hash) : null;
+if (target) {
+setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+}
+
+handleAboutHash(window.location.hash);
+window.addEventListener('hashchange', () => handleAboutHash(window.location.hash));
+</script>
+
+<!-- Firebase Compatibility SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+// Firebase Configuration (same as admin)
+const firebaseConfig = {
+apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+authDomain: "spic-macay-vnit.firebaseapp.com",
+projectId: "spic-macay-vnit",
+storageBucket: "spic-macay-vnit.firebasestorage.app",
+messagingSenderId: "768698124036",
+appId: "1:768698124036:web:311cc550bef0ac56133251",
+measurementId: "G-MP0S6HFP5T"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Load Core Members dynamically from Firestore
+async function loadCoreMembers() {
+const container = document.getElementById('coreMembersContainer');
+if (!container) return;
+
+try {
+// Fetch visible sections ordered by 'order'
+const sectionsSnap = await db.collection('teamSections').orderBy('order').get();
+const sections = [];
+sectionsSnap.forEach(doc => {
+const d = doc.data();
+if (d.visible !== false) {
+sections.push({ id: doc.id, ...d });
+}
+});
+
+if (!sections.length) {
+container.innerHTML = '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">No team information available yet.</p>';
+return;
+}
+
+// Fetch all core members at once
+const membersSnap = await db.collection('coreMembers').get();
+const allMembers = [];
+membersSnap.forEach(doc => { allMembers.push({ id: doc.id, ...doc.data() }); });
+allMembers.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+let html = '';
+sections.forEach(section => {
+const sectionMembers = allMembers.filter(m => m.section === section.id);
+
+html += `<div style="margin-bottom:48px;">`;
+html += `<p class="label-md" style="color:var(--primary-container);margin-bottom:16px;letter-spacing:0.12em;">${section.title}</p>`;
+html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">`;
+
+sectionMembers.forEach(m => {
+const initial = (m.name || '?')[0].toUpperCase();
+const avatarHtml = m.photoUrl
+? `<img src="${m.photoUrl}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:2px solid rgba(232,119,34,0.2);"/>`
+: `<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);"><span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">${initial}</span></div>`;
+
+const photoAttr = m.photoUrl ? `data-photo="${m.photoUrl}"` : '';
+html += `<div class="member-hover-card" ${photoAttr} data-name="${m.name}" data-post="${m.post || ''}${m.branch ? ' · ' + m.branch : ''}" data-initial="${initial}"
+             style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;cursor:pointer;"
+             onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)';showMemberPreview(this)"
+             onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow='';hideMemberPreview()"
+             onclick="openMemberModal(this)">
+             ${avatarHtml}
+             <p class="headline-sm" style="margin-bottom:4px;">${m.name}</p>
+             <p class="body-md text-muted" style="font-size:0.8rem;">${m.post || ''}${m.branch ? ' · ' + m.branch : ''}</p>
+           </div>`;
+});
+
+html += `</div></div>`;
+});
+
+container.innerHTML = html || '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">No team information available yet.</p>';
+} catch (err) {
+console.error('Error loading core members:', err);
+container.innerHTML = '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">Unable to load team information.</p>';
+}
+}
+
+// ── Member Hover Preview (desktop only) ───────────────
+(function() {
+const card = document.getElementById('memberPreviewCard');
+if (!card) return;
+
+// Track mouse position to position card dynamically
+document.addEventListener('mousemove', function(e) {
+if (card.style.opacity === '0' || card.style.display === 'none') return;
+// Position 24px to the right of cursor, vertically centred on cursor
+let x = e.clientX + 24;
+let y = e.clientY - 100;
+// Keep within viewport
+if (x + 240 > window.innerWidth) x = e.clientX - 244;
+if (y < 8) y = 8;
+if (y + 280 > window.innerHeight) y = window.innerHeight - 288;
+card.style.left = x + 'px';
+card.style.top  = y + 'px';
+});
+})();
+
+function showMemberPreview(el) {
+// Desktop only
+if (window.innerWidth < 1024) return;
+const card = document.getElementById('memberPreviewCard');
+const photo = el.dataset.photo;
+const name  = el.dataset.name;
+const post  = el.dataset.post;
+const init  = el.dataset.initial;
+
+document.getElementById('mpName').textContent = name || '';
+document.getElementById('mpPost').textContent = post || '';
+
+const imgEl     = document.getElementById('mpImg');
+const photoWrap = document.getElementById('mpPhoto');
+const initWrap  = document.getElementById('mpInitial');
+const initText  = document.getElementById('mpInitialText');
+
+if (photo) {
+imgEl.src = photo;
+photoWrap.style.display = 'block';
+initWrap.style.display  = 'none';
+} else {
+initText.textContent    = init || '?';
+photoWrap.style.display = 'none';
+initWrap.style.display  = 'flex';
+}
+
+}
+
+// ── Desktop hover preview ────────────────────────────
+function showMemberPreview(el) {
+if (window.innerWidth < 1024) return;
+const photo = el.dataset.photo;
+const name  = el.dataset.name;
+const post  = el.dataset.post;
+const init  = el.dataset.initial;
+
+document.getElementById('mpName').textContent = name || '';
+document.getElementById('mpPost').textContent = post || '';
+
+const photoWrap = document.getElementById('mpPhotoWrap');
+const initWrap  = document.getElementById('mpInitialWrap');
+
+if (photo) {
+document.getElementById('mpImg').src = photo;
+photoWrap.style.display = 'block';
+initWrap.style.display  = 'none';
+} else {
+document.getElementById('mpInitialText').textContent = init || '?';
+photoWrap.style.display = 'none';
+initWrap.style.display  = 'flex';
+}
+
+document.getElementById('memberPreviewCard').style.display = 'block';
+document.getElementById('memberPreviewEmpty').style.display = 'none';
+}
+
+function hideMemberPreview() {
+if (window.innerWidth < 1024) return;
+document.getElementById('memberPreviewCard').style.display = 'none';
+document.getElementById('memberPreviewEmpty').style.display = 'block';
+}
+
+// ── Mobile member modal ──────────────────────────────
+function openMemberModal(el) {
+if (window.innerWidth >= 1024) return;
+const photo = el.dataset.photo;
+const name  = el.dataset.name;
+const post  = el.dataset.post;
+const init  = el.dataset.initial;
+
+document.getElementById('mmName').textContent = name || '';
+document.getElementById('mmPost').textContent = post || '';
+
+const photoWrap = document.getElementById('mmPhotoWrap');
+const initWrap  = document.getElementById('mmInitialWrap');
+
+if (photo) {
+document.getElementById('mmImg').src = photo;
+photoWrap.style.display = 'block';
+initWrap.style.display  = 'none';
+} else {
+document.getElementById('mmInitial').textContent = init || '?';
+photoWrap.style.display = 'none';
+initWrap.style.display  = 'flex';
+}
+
+document.getElementById('memberModal').classList.add('open');
+document.body.style.overflow = 'hidden';
+}
+
+function closeMemberModal(e) {
+if (e && e.currentTarget !== document.getElementById('memberModal') &&
+!document.getElementById('memberModalBack').contains(e.target)) return;
+document.getElementById('memberModal').classList.remove('open');
+document.body.style.overflow = '';
+}
+
+loadCoreMembers();
+</script>
+
   <script>
-    function showAboutTab(id, btn) {
-      document.querySelectorAll('.about-tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.about-hero-tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
-      btn.classList.add('active');
-    }
-    // Show the matching about tab for supported deep links.
-    function handleAboutHash(hash) {
-      const tabs = document.querySelectorAll('.about-hero-tab');
-      if (hash === '#members') {
-        showAboutTab('members', tabs[1]);
-      } else if (hash === '#global' || hash === '#founder') {
-        showAboutTab('global', tabs[2]);
-      } else if (hash === '#archives' || hash === '#past') {
-        showAboutTab('archives', tabs[3]);
-      } else if (hash === '#hosting') {
-        showAboutTab('vnit', tabs[0]);
-      }
-
-      // Ensure the browser scrolls to the anchor after the tab becomes visible.
-      const target = hash ? document.querySelector(hash) : null;
-      if (target) {
-        setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-      }
-    }
-
-    handleAboutHash(window.location.hash);
-    window.addEventListener('hashchange', () => handleAboutHash(window.location.hash));
-  </script>
-
-  <!-- Firebase Compatibility SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script>
-    // Firebase Configuration (same as admin)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
-      authDomain: "spic-macay-vnit.firebaseapp.com",
-      projectId: "spic-macay-vnit",
-      storageBucket: "spic-macay-vnit.firebasestorage.app",
-      messagingSenderId: "768698124036",
-      appId: "1:768698124036:web:311cc550bef0ac56133251",
-      measurementId: "G-MP0S6HFP5T"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  // ── Archives: load from Firestore grouped by academicYear ──
+  (function() {
+    if (typeof firebase === 'undefined') return;
     const db = firebase.firestore();
 
-    // Load Core Members dynamically from Firestore
-    async function loadCoreMembers() {
-      const container = document.getElementById('coreMembersContainer');
-      if (!container) return;
+    db.collection('archives').orderBy('order').get().then(snap => {
+      const loading = document.getElementById('archivesLoadingState');
+      const content = document.getElementById('archivesContent');
+      if (!loading || !content) return;
 
-      try {
-        // Fetch visible sections ordered by 'order'
-        const sectionsSnap = await db.collection('teamSections').orderBy('order').get();
-        const sections = [];
-        sectionsSnap.forEach(doc => {
-          const d = doc.data();
-          if (d.visible !== false) {
-            sections.push({ id: doc.id, ...d });
-          }
-        });
+      loading.style.display = 'none';
 
-        if (!sections.length) {
-          container.innerHTML = '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">No team information available yet.</p>';
-          return;
-        }
-
-        // Fetch all core members at once
-        const membersSnap = await db.collection('coreMembers').get();
-        const allMembers = [];
-        membersSnap.forEach(doc => { allMembers.push({ id: doc.id, ...doc.data() }); });
-        allMembers.sort((a, b) => (a.order || 0) - (b.order || 0));
-
-        let html = '';
-        sections.forEach(section => {
-          const sectionMembers = allMembers.filter(m => m.section === section.id);
-
-          html += `<div style="margin-bottom:48px;">`;
-          html += `<p class="label-md" style="color:var(--primary-container);margin-bottom:16px;letter-spacing:0.12em;">${section.title}</p>`;
-          html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">`;
-
-          sectionMembers.forEach(m => {
-            const initial = (m.name || '?')[0].toUpperCase();
-            const avatarHtml = m.photoUrl
-              ? `<img src="${m.photoUrl}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:2px solid rgba(232,119,34,0.2);"/>`
-              : `<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);"><span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">${initial}</span></div>`;
-
-            const photoAttr = m.photoUrl ? `data-photo="${m.photoUrl}"` : '';
-            html += `<div class="member-hover-card" ${photoAttr} data-name="${m.name}" data-post="${m.post || ''}${m.branch ? ' · ' + m.branch : ''}" data-initial="${initial}"
-              style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;cursor:pointer;"
-              onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)';showMemberPreview(this)"
-              onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow='';hideMemberPreview()"
-              onclick="openMemberModal(this)">
-              ${avatarHtml}
-              <p class="headline-sm" style="margin-bottom:4px;">${m.name}</p>
-              <p class="body-md text-muted" style="font-size:0.8rem;">${m.post || ''}${m.branch ? ' · ' + m.branch : ''}</p>
-            </div>`;
-          });
-
-          html += `</div></div>`;
-        });
-
-        container.innerHTML = html || '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">No team information available yet.</p>';
-      } catch (err) {
-        console.error('Error loading core members:', err);
-        container.innerHTML = '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">Unable to load team information.</p>';
+      if (snap.empty) {
+        content.style.display = 'block';
+        content.innerHTML = '<p class="body-md text-muted" style="opacity:0.6;">No archive entries yet.</p>';
+        return;
       }
-    }
 
-    // ── Member Hover Preview (desktop only) ───────────────
-    (function() {
-      const card = document.getElementById('memberPreviewCard');
-      if (!card) return;
-
-      // Track mouse position to position card dynamically
-      document.addEventListener('mousemove', function(e) {
-        if (card.style.opacity === '0' || card.style.display === 'none') return;
-        // Position 24px to the right of cursor, vertically centred on cursor
-        let x = e.clientX + 24;
-        let y = e.clientY - 100;
-        // Keep within viewport
-        if (x + 240 > window.innerWidth) x = e.clientX - 244;
-        if (y < 8) y = 8;
-        if (y + 280 > window.innerHeight) y = window.innerHeight - 288;
-        card.style.left = x + 'px';
-        card.style.top  = y + 'px';
+      // Group by academicYear
+      const groups = {};
+      const groupOrder = [];
+      snap.forEach(doc => {
+        const d = { id: doc.id, ...doc.data() };
+        const yr = d.academicYear || 'Other';
+        if (!groups[yr]) { groups[yr] = []; groupOrder.push(yr); }
+        groups[yr].push(d);
       });
-    })();
 
-    function showMemberPreview(el) {
-      // Desktop only
-      if (window.innerWidth < 1024) return;
-      const card = document.getElementById('memberPreviewCard');
-      const photo = el.dataset.photo;
-      const name  = el.dataset.name;
-      const post  = el.dataset.post;
-      const init  = el.dataset.initial;
+      // Deduplicate groupOrder preserving first occurrence order
+      const seen = new Set();
+      const orderedYears = groupOrder.filter(y => seen.has(y) ? false : seen.add(y));
 
-      document.getElementById('mpName').textContent = name || '';
-      document.getElementById('mpPost').textContent = post || '';
+      let html = '';
+      orderedYears.forEach(year => {
+        html += `
+          <div style="margin-bottom:48px;">
+            <p class="label-md" style="color:var(--primary-container);margin-bottom:20px;letter-spacing:0.12em;">ACADEMIC YEAR ${year}</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
+              ${groups[year].map(ev => {
+                const isHighlight = ev.type === 'Convention';
+                return `
+                  <div class="past-conv-card" style="padding:24px;${isHighlight ? 'border-color:rgba(232,119,34,0.2);' : ''}">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                      <span class="chip" ${isHighlight ? 'style="background:rgba(232,119,34,0.15);color:var(--primary-container);"' : ''}>${ev.type || 'Event'}</span>
+                      <span style="font-size:0.75rem;color:var(--outline);">${ev.month || ''}</span>
+                    </div>
+                    <h4 class="headline-sm" style="margin-bottom:6px;">${ev.title}</h4>
+                    ${ev.description ? `<p class="body-md text-muted" style="font-size:0.85rem;">${ev.description}</p>` : ''}
+                  </div>`;
+              }).join('')}
+            </div>
+          </div>`;
+      });
 
-      const imgEl     = document.getElementById('mpImg');
-      const photoWrap = document.getElementById('mpPhoto');
-      const initWrap  = document.getElementById('mpInitial');
-      const initText  = document.getElementById('mpInitialText');
-
-      if (photo) {
-        imgEl.src = photo;
-        photoWrap.style.display = 'block';
-        initWrap.style.display  = 'none';
-      } else {
-        initText.textContent    = init || '?';
-        photoWrap.style.display = 'none';
-        initWrap.style.display  = 'flex';
-      }
-
-    }
-
-    // ── Desktop hover preview ────────────────────────────
-    function showMemberPreview(el) {
-      if (window.innerWidth < 1024) return;
-      const photo = el.dataset.photo;
-      const name  = el.dataset.name;
-      const post  = el.dataset.post;
-      const init  = el.dataset.initial;
-
-      document.getElementById('mpName').textContent = name || '';
-      document.getElementById('mpPost').textContent = post || '';
-
-      const photoWrap = document.getElementById('mpPhotoWrap');
-      const initWrap  = document.getElementById('mpInitialWrap');
-
-      if (photo) {
-        document.getElementById('mpImg').src = photo;
-        photoWrap.style.display = 'block';
-        initWrap.style.display  = 'none';
-      } else {
-        document.getElementById('mpInitialText').textContent = init || '?';
-        photoWrap.style.display = 'none';
-        initWrap.style.display  = 'flex';
-      }
-
-      document.getElementById('memberPreviewCard').style.display = 'block';
-      document.getElementById('memberPreviewEmpty').style.display = 'none';
-    }
-
-    function hideMemberPreview() {
-      if (window.innerWidth < 1024) return;
-      document.getElementById('memberPreviewCard').style.display = 'none';
-      document.getElementById('memberPreviewEmpty').style.display = 'block';
-    }
-
-    // ── Mobile member modal ──────────────────────────────
-    function openMemberModal(el) {
-      if (window.innerWidth >= 1024) return;
-      const photo = el.dataset.photo;
-      const name  = el.dataset.name;
-      const post  = el.dataset.post;
-      const init  = el.dataset.initial;
-
-      document.getElementById('mmName').textContent = name || '';
-      document.getElementById('mmPost').textContent = post || '';
-
-      const photoWrap = document.getElementById('mmPhotoWrap');
-      const initWrap  = document.getElementById('mmInitialWrap');
-
-      if (photo) {
-        document.getElementById('mmImg').src = photo;
-        photoWrap.style.display = 'block';
-        initWrap.style.display  = 'none';
-      } else {
-        document.getElementById('mmInitial').textContent = init || '?';
-        photoWrap.style.display = 'none';
-        initWrap.style.display  = 'flex';
-      }
-
-      document.getElementById('memberModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeMemberModal(e) {
-      if (e && e.currentTarget !== document.getElementById('memberModal') &&
-          !document.getElementById('memberModalBack').contains(e.target)) return;
-      document.getElementById('memberModal').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    loadCoreMembers();
+      content.innerHTML = html;
+      content.style.display = 'block';
+    }).catch(err => {
+      console.warn('Archives load error:', err);
+      const loading = document.getElementById('archivesLoadingState');
+      if (loading) loading.innerHTML = '<p class="body-md text-muted">Could not load archives.</p>';
+    });
+  })();
   </script>
 </body>
 </html>
