@@ -459,6 +459,7 @@
         max-width: 100%;
         max-height: 100%;
         z-index: 0;
+        filter: var(--hero-img-filter);
       "/>
       <!-- Overlay: transparent at top-right (show building), dark at bottom-left (text area) -->
       <div class="hero-side-overlay"></div>
@@ -486,14 +487,17 @@
             font-weight: 800; line-height: 1.05;
             margin: 0 0 14px;
             letter-spacing: -0.015em;
+            color: var(--hero-text-title);
+            text-shadow: var(--hero-text-shadow);
           ">
-            <span style="color:#f5f0e8;">About </span><span class="text-gradient" style="font-style:normal;">SPIC MACAY</span>
+            <span>About </span><span style="color:#FF5722; font-style:normal;">SPIC MACAY</span>
           </h1>
 
           <!-- Subtitle -->
           <p style="
             font-size: clamp(0.875rem, 1.5vw, 0.975rem);
-            color: rgba(245,240,232,0.62);
+            color: var(--hero-text-subtitle);
+            text-shadow: var(--hero-text-shadow);
             max-width: 420px; line-height: 1.65;
             margin: 0 0 28px; font-weight: 400;
           ">The official SPIC MACAY chapter at VNIT Nagpur — preserving<br/>and promoting India's classical heritage on campus.</p>

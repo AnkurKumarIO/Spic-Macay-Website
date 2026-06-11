@@ -38,6 +38,10 @@
   --hero-fade-top:        #121212;
   --hero-fade-mid:        rgba(18, 18, 18, 0.18);
   --hero-fade-bottom:     #121212;
+  --hero-text-title:      #ffffff;
+  --hero-text-subtitle:   rgba(255, 255, 255, 0.85);
+  --hero-text-shadow:     0 2px 8px rgba(0, 0, 0, 0.6);
+  --hero-img-filter:      brightness(0.65) contrast(0.75);
 
   /* Type */
   --font-display: 'Bebas Neue', 'Playfair Display', Georgia, serif;
