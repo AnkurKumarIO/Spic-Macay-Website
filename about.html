@@ -445,9 +445,6 @@
     <section id="aboutHero" style="
       position: relative;
       overflow: hidden;
-      height: auto;
-      min-height: clamp(420px, 88vh, 620px);
-      max-height: none;
       display: flex;
       align-items: flex-end;
     ">
@@ -461,8 +458,6 @@
         height: 100%;
         max-width: 100%;
         max-height: 100%;
-        object-fit: contain;
-        object-position: center;
         z-index: 0;
       "/>
       <!-- Overlay: transparent at top-right (show building), dark at bottom-left (text area) -->
@@ -537,6 +532,15 @@
         color: #e87722;
         background: rgba(232,119,34,0.1);
       }
+      #aboutHero {
+        height: clamp(460px, 78vh, 760px);
+        min-height: 460px;
+        max-height: none;
+      }
+      #aboutHero img {
+        object-fit: cover;
+        object-position: center 18%;
+      }
       .about-hero-tab.active {
         background: #e87722 !important;
         border-color: #e87722 !important;
@@ -545,14 +549,27 @@
       @media (max-width: 600px) {
         .about-hero-tab { font-size: 0.75rem; padding: 8px 15px; }
       }
-      @media (min-width: 768px) {
-        #aboutHero { min-height: clamp(480px, 92vh, 620px); }
-      }
-      @media (min-width: 1024px) {
-        #aboutHero img {
-          object-fit: cover;
-          object-position: center 18%;
+      @media (max-width: 767px) {
+        #aboutHero {
+          height: clamp(420px, 88svh, 560px);
+          min-height: 420px;
         }
+        #aboutHero img {
+          object-fit: contain;
+          object-position: center;
+        }
+      }
+      @media (min-width: 768px) and (max-width: 1023px) {
+        #aboutHero { min-height: 500px; }
+        #aboutHero img { object-position: center 12%; }
+      }
+      @media (min-width: 1024px) and (max-width: 1399px) {
+        #aboutHero { min-height: 560px; }
+        #aboutHero img { object-position: center 16%; }
+      }
+      @media (min-width: 1400px) {
+        #aboutHero { min-height: 640px; }
+        #aboutHero img { object-position: center 14%; }
       }
 
       /* Light theme: side bars and overlay use light bg instead of black */
