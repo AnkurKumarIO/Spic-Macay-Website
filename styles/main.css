@@ -33,6 +33,12 @@
   /* Semantic */
   --background:           #090909;
 
+  /* Hero edge fades */
+  --hero-bg-color:        #0b0b0b;
+  --hero-fade-top:        #121212;
+  --hero-fade-mid:        rgba(18, 18, 18, 0.18);
+  --hero-fade-bottom:     #121212;
+
   /* Type */
   --font-display: 'Bebas Neue', 'Playfair Display', Georgia, serif;
   --font-serif:   'Playfair Display', Georgia, serif;
@@ -82,6 +88,12 @@
   --outline-variant:      #d5c8bc;
 
   --background:           #f8f4ec;
+
+  /* Hero edge fades */
+  --hero-bg-color:        #fdfbf7;
+  --hero-fade-top:        #fdfbf7;
+  --hero-fade-mid:        rgba(253, 251, 247, 0.18);
+  --hero-fade-bottom:     #fdfbf7;
 }
 
 /* ─── Reset & Base ──────────────────────────────────────── */
