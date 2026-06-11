@@ -445,23 +445,24 @@
     <section id="aboutHero" style="
       position: relative;
       overflow: hidden;
-      height: 100vh;
-      min-height: 420px;
-      max-height: 620px;
+      height: auto;
+      min-height: clamp(420px, 88vh, 620px);
+      max-height: none;
       display: flex;
       align-items: flex-end;
     ">
       <!-- Black base — fills sides where image doesn't reach -->
       <div style="position:absolute;inset:0;background:#000;z-index:0;"></div>
-      <!-- Image at natural aspect ratio, centred horizontally, shifted down -->
+      <!-- Responsive, viewport-aware hero image that preserves aspect ratio and stays centered -->
       <img src="vnit-hero.jpg" alt="VNIT Nagpur Campus" style="
         position: absolute;
-        left: 50%;
-        bottom: -25%;
-        transform: translateX(-50%);
-        width: 70%;
-        height: auto;
-        max-width: none;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        object-position: center;
         z-index: 0;
       "/>
       <!-- Overlay: transparent at top-right (show building), dark at bottom-left (text area) -->
@@ -543,6 +544,15 @@
       }
       @media (max-width: 600px) {
         .about-hero-tab { font-size: 0.75rem; padding: 8px 15px; }
+      }
+      @media (min-width: 768px) {
+        #aboutHero { min-height: clamp(480px, 92vh, 620px); }
+      }
+      @media (min-width: 1024px) {
+        #aboutHero img {
+          object-fit: cover;
+          object-position: center 18%;
+        }
       }
 
       /* Light theme: side bars and overlay use light bg instead of black */
