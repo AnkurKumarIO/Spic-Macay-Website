@@ -1307,14 +1307,14 @@
   <div class="toast" id="adminToast"></div>
 
   <!-- ── QR Scanner Modal ─────────────────────────────── -->
-  <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px;">
-    <div style="background:var(--surface-container); border-radius:20px; padding:28px; max-width:420px; width:100%; text-align:center; position:relative;">
+  <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
+    <div style="background:var(--surface-container); border-radius:20px; padding:28px; max-width:440px; width:100%; text-align:center; position:relative;">
       <button onclick="closeScanner()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;line-height:1;">✕</button>
       <h2 class="headline-sm" style="margin-bottom:4px;">QR Scanner</h2>
-      <p class="body-sm text-muted" style="margin-bottom:16px;">Point the camera at the attendee's ticket QR code</p>
+      <p class="body-sm text-muted" style="margin-bottom:16px;">Scan ticket QR or enter ID manually</p>
 
       <!-- Camera feed -->
-      <div style="position:relative; width:100%; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#000; margin-bottom:16px;">
+      <div id="scannerCameraWrap" style="position:relative; width:100%; aspect-ratio:1; border-radius:12px; overflow:hidden; background:#000; margin-bottom:16px;">
         <video id="scannerVideo" style="width:100%; height:100%; object-fit:cover;" playsinline muted></video>
         <canvas id="scannerCanvas" style="display:none;"></canvas>
         <!-- Targeting reticle -->
@@ -1323,10 +1323,29 @@
         </div>
       </div>
 
+      <!-- Manual ID Input -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <input type="text" id="manualTicketId" class="input-field" placeholder="Enter Ticket ID (e.g. VNIT-2026-XXXXXX)" style="flex:1;text-transform:uppercase;font-family:monospace;font-size:0.9rem;"/>
+        <button class="btn btn-primary btn-sm" onclick="handleManualEntry()" style="white-space:nowrap;">Check In</button>
+      </div>
+
       <!-- Status strip -->
       <div id="scannerStatus" style="min-height:48px; display:flex; align-items:center; justify-content:center; gap:10px; border-radius:10px; padding:10px 16px; background:rgba(245,240,232,0.05); font-size:0.875rem; font-weight:600; color:var(--on-surface-variant);">
         <span id="scannerStatusIcon">🔍</span>
         <span id="scannerStatusText">Scanning…</span>
+      </div>
+
+      <!-- Result Card (shown after scan/lookup) -->
+      <div id="scannerResultCard" style="display:none; margin-top:16px; border-radius:14px; padding:20px; text-align:left;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div id="resultIcon" style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;"></div>
+          <div>
+            <div id="resultTitle" style="font-size:1.1rem;font-weight:700;color:var(--on-surface);"></div>
+            <div id="resultSubtitle" style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:2px;"></div>
+          </div>
+        </div>
+        <div id="resultDetails" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem;"></div>
+        <button class="btn btn-secondary btn-sm" onclick="dismissResult()" style="margin-top:16px;width:100%;">Scan Next</button>
       </div>
     </div>
   </div>
@@ -2320,10 +2339,19 @@
     let scannerStream = null;
     let scannerRaf = null;
     let scannerCooldown = false;
+    let barcodeDetector = null;
+
+    // Check if native BarcodeDetector is available (Chrome/Android)
+    if ('BarcodeDetector' in window) {
+      try { barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] }); }
+      catch (e) { barcodeDetector = null; }
+    }
 
     function openScanner() {
       document.getElementById('scannerModal').style.display = 'flex';
-      setStatus('scanning', '🔍', 'Scanning…');
+      document.getElementById('scannerResultCard').style.display = 'none';
+      document.getElementById('manualTicketId').value = '';
+      setStatus('scanning', '🔍', barcodeDetector ? 'Scanning (Native)…' : 'Scanning…');
       startCamera();
     }
 
@@ -2358,7 +2386,7 @@
         await video.play();
         scanFrame();
       } catch (err) {
-        setStatus('error', '❌', 'Camera access denied. Please allow camera permissions.');
+        setStatus('error', '❌', 'Camera access denied. Use manual entry below.');
       }
     }
 
@@ -2367,22 +2395,37 @@
       if (scannerStream) { scannerStream.getTracks().forEach(t => t.stop()); scannerStream = null; }
     }
 
-    function scanFrame() {
+    async function scanFrame() {
       const video = document.getElementById('scannerVideo');
       const canvas = document.getElementById('scannerCanvas');
 
-      if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.width  = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
+      if (video.readyState === video.HAVE_ENOUGH_DATA && !scannerCooldown) {
+        let decoded = null;
 
-        if (code && !scannerCooldown) {
-          const data = code.data.trim();
-          if (data.startsWith('VNIT-')) {
-            handleScannedCode(data);
+        // Try native BarcodeDetector first (much more reliable)
+        if (barcodeDetector) {
+          try {
+            const barcodes = await barcodeDetector.detect(video);
+            if (barcodes.length > 0) {
+              decoded = barcodes[0].rawValue.trim();
+            }
+          } catch (e) { /* fall through to jsQR */ }
+        }
+
+        // Fallback to jsQR
+        if (!decoded && typeof jsQR !== 'undefined') {
+          canvas.width  = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
+          if (code) decoded = code.data.trim();
+        }
+
+        if (decoded) {
+          if (decoded.startsWith('VNIT-')) {
+            handleScannedCode(decoded);
           } else {
             scannerCooldown = true;
             setStatus('warn', '⚠️', 'Not a valid SPIC MACAY ticket QR.');
@@ -2391,6 +2434,73 @@
         }
       }
       scannerRaf = requestAnimationFrame(scanFrame);
+    }
+
+    // Manual ticket ID entry
+    function handleManualEntry() {
+      const input = document.getElementById('manualTicketId');
+      let val = input.value.trim().toUpperCase();
+      if (!val) {
+        showToast('Please enter a Ticket ID.', 'error');
+        return;
+      }
+      // Auto-prefix if they just typed the random part
+      if (!val.startsWith('VNIT-')) val = 'VNIT-2026-' + val;
+      handleScannedCode(val);
+    }
+
+    function showResultCard(type, data) {
+      const card = document.getElementById('scannerResultCard');
+      const icon = document.getElementById('resultIcon');
+      const title = document.getElementById('resultTitle');
+      const subtitle = document.getElementById('resultSubtitle');
+      const details = document.getElementById('resultDetails');
+
+      if (type === 'success') {
+        card.style.background = 'rgba(74,222,128,0.08)';
+        card.style.border = '1px solid rgba(74,222,128,0.3)';
+        icon.style.background = 'rgba(74,222,128,0.15)';
+        icon.textContent = '✅';
+        title.textContent = `${data.firstName} ${data.lastName}`;
+        title.style.color = '#86efac';
+        subtitle.textContent = 'Successfully checked in';
+      } else if (type === 'already') {
+        card.style.background = 'rgba(255,242,0,0.06)';
+        card.style.border = '1px solid rgba(255,242,0,0.25)';
+        icon.style.background = 'rgba(255,242,0,0.12)';
+        icon.textContent = '⚠️';
+        title.textContent = `${data.firstName} ${data.lastName}`;
+        title.style.color = '#fff200';
+        subtitle.textContent = 'Already checked in earlier';
+      } else {
+        card.style.background = 'rgba(196,38,28,0.08)';
+        card.style.border = '1px solid rgba(196,38,28,0.25)';
+        icon.style.background = 'rgba(196,38,28,0.12)';
+        icon.textContent = '❌';
+        title.textContent = data.regId || 'Unknown';
+        title.style.color = '#f47272';
+        subtitle.textContent = data.message || 'Not found in records';
+      }
+
+      if (data.firstName) {
+        details.innerHTML = `
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Ticket ID</span><span style="font-weight:600;color:var(--primary);font-family:monospace;">${data.registrationId || data.regId || '—'}</span></div>
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Roll Number</span><span style="font-weight:600;color:var(--on-surface);">${data.rollNumber || '—'}</span></div>
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Intensive</span><span style="font-weight:600;color:var(--on-surface);">${data.confirmedIntensiveName || '—'}</span></div>
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Branch</span><span style="font-weight:600;color:var(--on-surface);">${data.branch || '—'}</span></div>
+        `;
+      } else {
+        details.innerHTML = '';
+      }
+
+      card.style.display = 'block';
+    }
+
+    function dismissResult() {
+      document.getElementById('scannerResultCard').style.display = 'none';
+      document.getElementById('manualTicketId').value = '';
+      setStatus('scanning', '🔍', 'Scanning…');
+      scannerCooldown = false;
     }
 
     async function handleScannedCode(regId) {
@@ -2403,27 +2513,25 @@
 
         if (!snap.exists) {
           setStatus('error', '❌', `ID not found: ${regId}`);
-          setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+          showResultCard('error', { regId, message: 'This ticket ID does not exist in the system.' });
           return;
         }
 
         const data = snap.data();
         if (data.checkedIn) {
           setStatus('warn', '⚠️', `Already checked in: ${data.firstName} ${data.lastName}`);
-          setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+          showResultCard('already', { ...data, regId });
           return;
         }
 
         await docRef.update({ checkedIn: true });
         setStatus('success', '✅', `Checked in: ${data.firstName} ${data.lastName}`);
         showToast(`✅ ${data.firstName} ${data.lastName} checked in!`, 'success');
-
-        // Brief pause then resume scanning for next attendee
-        setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2000);
+        showResultCard('success', { ...data, regId });
 
       } catch (err) {
         setStatus('error', '❌', err.message || 'Error updating check-in.');
-        setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
+        showResultCard('error', { regId, message: err.message || 'Firestore error.' });
       }
     }
 
