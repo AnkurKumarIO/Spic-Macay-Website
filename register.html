@@ -805,6 +805,13 @@
             <p class="body-md text-muted" style="margin-bottom:28px;">Tell us a bit about yourself to complete your registration.</p>
 
             <div style="display:flex;flex-direction:column;gap:20px;">
+              <div class="input-group">
+                <label class="input-label" for="userType">Register As *</label>
+                <select class="input-field" id="userType" style="appearance:none;" onchange="toggleUserType()">
+                  <option value="student" selected>Student</option>
+                  <option value="alumni">Alumni</option>
+                </select>
+              </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                 <div class="input-group">
                   <label class="input-label" for="firstName">First Name *</label>
@@ -831,7 +838,7 @@
                   oninput="clearPhoneDuplicate()"/>
                 <span id="phoneError" style="display:none;font-size:0.78rem;color:#e05252;margin-top:5px;display:block;" aria-live="polite"></span>
               </div>
-              <div class="input-group">
+              <div class="input-group" id="rollnoGroup">
                 <label class="input-label" for="rollno">VNIT Roll Number</label>
                 <input class="input-field" type="text" id="rollno"
                   placeholder="e.g. BT24CSE001"
@@ -841,6 +848,12 @@
                   onblur="validateRoll()"
                   aria-describedby="rollnoError"/>
                 <span id="rollnoError" style="display:none;font-size:0.78rem;color:#e05252;margin-top:5px;display:block;" aria-live="polite"></span>
+              </div>
+              <div class="input-group" id="passingYearGroup" style="display:none;">
+                <label class="input-label" for="passingYear">Passing Year *</label>
+                <select class="input-field" id="passingYear" style="appearance:none;">
+                  <option value="">Select Year</option>
+                </select>
               </div>
               <div class="input-group">
                 <label class="input-label" for="branch">Branch / Department</label>
@@ -857,7 +870,7 @@
                   <option>Architecture</option>
                 </select>
               </div>
-              <div class="input-group">
+              <div class="input-group" id="yearGroup">
                 <label class="input-label" for="year">Year of Study</label>
                 <select class="input-field" id="year" style="appearance:none;">
                   <option value="">Select Year</option>
@@ -982,6 +995,37 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    // Populate Passing Year dropdown
+    function populatePassingYears() {
+      const select = document.getElementById('passingYear');
+      const currentYear = new Date().getFullYear();
+      for (let y = currentYear; y >= 1965; y--) {
+        const option = document.createElement('option');
+        option.value = y;
+        option.textContent = y;
+        select.appendChild(option);
+      }
+    }
+
+    // Toggle Role fields
+    function toggleUserType() {
+      const type = document.getElementById('userType').value;
+      if (type === 'alumni') {
+        document.getElementById('rollnoGroup').style.display = 'none';
+        document.getElementById('passingYearGroup').style.display = 'block';
+        document.getElementById('yearGroup').style.display = 'none';
+        document.getElementById('rollno').value = '';
+        validateRoll(); 
+      } else {
+        document.getElementById('rollnoGroup').style.display = 'block';
+        document.getElementById('passingYearGroup').style.display = 'none';
+        document.getElementById('yearGroup').style.display = 'block';
+        document.getElementById('passingYear').value = '';
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', populatePassingYears);
 
     let currentStep = 1;
 
@@ -1241,6 +1285,8 @@
       const roll  = document.getElementById('rollno').value;
       const branch= document.getElementById('branch').value;
       const year  = document.getElementById('year').value;
+      const userType = document.getElementById('userType').value;
+      const passingYear = document.getElementById('passingYear').value;
 
       // Build preference labels
       const prefLabels = selectedIntensiveIds.map((id, i) => {
@@ -1249,12 +1295,13 @@
       }).join('  |  ') || '—';
 
       const rows = [
+        ['Register As',     userType === 'alumni' ? 'Alumni' : 'Student'],
         ['Full Name',       `${fn} ${ln}`],
         ['Email',           em],
         ['Phone',           ph],
-        ['Roll Number',     roll || '—'],
+        userType === 'alumni' ? ['Passing Year', passingYear] : ['Roll Number', roll || '—'],
         ['Branch',          branch || '—'],
-        ['Year of Study',   year || '—'],
+        ...(userType === 'student' ? [['Year of Study', year || '—']] : []),
         ['Intensive Preferences', prefLabels],
         ['Chapter',         'SPIC MACAY — VNIT Nagpur'],
       ];
@@ -1277,6 +1324,8 @@
       const branch = document.getElementById('branch').value;
       const year = document.getElementById('year').value;
       const message = document.getElementById('message').value.trim();
+      const userType = document.getElementById('userType').value;
+      const passingYear = document.getElementById('passingYear').value;
 
       // ── Final validation gate ────────────────────────
       validateEmail();
@@ -1350,13 +1399,12 @@
 
       const registrationData = {
         registrationId: regId,
+        userType: userType,
         firstName: fn,
         lastName: ln,
         email: em,
         phone: ph,
-        rollNumber: roll || '—',
         branch: branch || '—',
-        yearOfStudy: year || '—',
         intensivePreferences: selectedIntensiveIds,
         confirmedIntensiveId,
         confirmedIntensiveName,
@@ -1364,13 +1412,20 @@
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
+      if (userType === 'alumni') {
+        registrationData.passingYear = passingYear;
+      } else {
+        registrationData.rollNumber = roll || '—';
+        registrationData.yearOfStudy = year || '—';
+      }
+
       try {
         await db.collection('registrations').doc(regId).set(registrationData);
 
         // Update ticket UI
         document.getElementById('ticketName').textContent = `${fn} ${ln}`;
         document.getElementById('ticketId').textContent = regId;
-        document.getElementById('ticketRoll').textContent = roll || '—';
+        document.getElementById('ticketRoll').textContent = userType === 'alumni' ? `Alumni '${passingYear}` : (roll || '—');
         document.getElementById('ticketEvents').textContent = confirmedIntensiveName;
         document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName;
 
@@ -1381,7 +1436,7 @@
         showToast('Registered! Intensive pass confirmed.', 'success');
 
         // Send confirmation email (non-blocking — don't fail registration if email fails)
-        sendConfirmationEmail({
+        const emailPayload = {
           to: em,
           type: 'registration',
           firstName: fn,
@@ -1393,10 +1448,18 @@
             const iv = allIntensives.find(x => x.id === id);
             return iv ? iv.name : id;
           }),
-          rollNumber: roll || '—',
           branch: branch || '—',
-          yearOfStudy: year || '—',
-        });
+          userType: userType
+        };
+        if (userType === 'alumni') {
+          emailPayload.passingYear = passingYear;
+          emailPayload.rollNumber = '—';
+          emailPayload.yearOfStudy = '—';
+        } else {
+          emailPayload.rollNumber = roll || '—';
+          emailPayload.yearOfStudy = year || '—';
+        }
+        sendConfirmationEmail(emailPayload);
       } catch (error) {
         console.error('Error saving registration:', error);
         showToast('Registration failed. Please try again.', 'error');
@@ -1680,12 +1743,21 @@
       if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
       if (rollNumberError) { showToast('Invalid Roll Number.', 'error'); document.getElementById('rollno').focus(); return; }
 
+      const type = document.getElementById('userType').value;
+      const passingYear = document.getElementById('passingYear').value;
+
+      if (type === 'alumni' && !passingYear) {
+        showToast('Please select your Passing Year.', 'error');
+        document.getElementById('passingYear').focus();
+        return;
+      }
+
       if (roll || ph) {
         btn.disabled = true; btn.textContent = 'Checking…';
         try {
           // Run both duplicate checks in parallel for speed
           const [rollSnap, phoneSnap] = await Promise.all([
-            roll
+            (type === 'student' && roll)
               ? db.collection('registrations').where('rollNumber', '==', roll.toUpperCase()).limit(1).get()
               : Promise.resolve({ empty: true }),
             db.collection('registrations').where('phone', '==', ph).limit(1).get()

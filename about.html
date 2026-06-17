@@ -1060,6 +1060,25 @@
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    function normalizeMemberName(value) {
+      return String(value || '')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
     // Load Core Members dynamically from Firestore
     async function loadCoreMembers() {
       const container = document.getElementById('coreMembersContainer');
@@ -1096,13 +1115,18 @@
           html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">`;
 
           sectionMembers.forEach(m => {
+            const safeName = escapeHtml(m.name || '');
+            const safePost = escapeHtml(m.post || '');
+            const safeBranch = escapeHtml(m.branch || '');
+            const safePhoto = escapeHtml(m.photoUrl || '');
+            const displayPost = safePost + (m.branch ? ' · ' + safeBranch : '');
             const initial = (m.name || '?')[0].toUpperCase();
             const avatarHtml = m.photoUrl
-              ? `<img src="${m.photoUrl}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:2px solid rgba(232,119,34,0.2);"/>`
+              ? `<img src="${safePhoto}" alt="${safeName}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:center 20%;margin:0 auto 14px;display:block;border:2px solid rgba(232,119,34,0.2);"/>`
               : `<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(232,119,34,0.15),rgba(232,119,34,0.05));display:flex;align-items:center;justify-content:center;margin:0 auto 14px;border:2px solid rgba(232,119,34,0.2);"><span style="font-size:1.5rem;font-weight:700;color:var(--primary-container);">${initial}</span></div>`;
 
-            const photoAttr = m.photoUrl ? `data-photo="${m.photoUrl}"` : '';
-            html += `<div class="member-hover-card" ${photoAttr} data-name="${m.name}" data-post="${m.post || ''}${m.branch ? ' · ' + m.branch : ''}" data-initial="${initial}"
+            const photoAttr = m.photoUrl ? `data-photo="${safePhoto}"` : '';
+            html += `<div class="member-hover-card" ${photoAttr} data-name="${safeName}" data-name-key="${escapeHtml(normalizeMemberName(m.name))}" data-post="${displayPost}" data-initial="${initial}"
               style="padding:24px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(245,240,232,0.07);text-align:center;transition:all 0.3s ease;cursor:pointer;"
               onmouseover="this.style.borderColor='rgba(232,119,34,0.3)';this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.25)';showMemberPreview(this)"
               onmouseout="this.style.borderColor='rgba(245,240,232,0.07)';this.style.transform='';this.style.boxShadow='';hideMemberPreview()"

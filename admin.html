@@ -190,11 +190,14 @@
     .admin-badge {
       display: inline-flex;
       align-items: center;
-      padding: 4px 10px;
-      border-radius: var(--radius, 4px);
+      justify-content: center;
+      text-align: center;
+      padding: 6px 12px;
+      border-radius: 12px;
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
+      line-height: 1.3;
     }
     .badge-success { background: rgba(74, 222, 128, 0.15); color: #86efac; border: 1px solid rgba(74, 222, 128, 0.25); }
     .badge-warning { background: rgba(232, 119, 34, 0.15); color: var(--primary); border: 1px solid rgba(232, 119, 34, 0.25); }
@@ -799,7 +802,6 @@
                 <tr>
                   <th>Photo</th>
                   <th>Name</th>
-                  <th>Post</th>
                   <th>Branch</th>
                   <th>Section</th>
                   <th>Actions</th>
@@ -868,7 +870,7 @@
           <div class="input-group form-full">
             <label class="input-label" for="heImg">Image</label>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-              <input class="input-field" type="file" id="heImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewHeImgFile(this)"/>
+              <input class="input-field" type="file" id="heImgFile" data-upload-key="home-event-image" accept=".png,.jpg,.jpeg" style="flex:1; min-width:0;" onchange="previewHeImgFile(this)"/>
               <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
               <input class="input-field" type="url" id="heImg" placeholder="https://images.unsplash.com/…" style="flex:1; min-width:0;" oninput="previewHeImg(this)"/>
             </div>
@@ -932,7 +934,7 @@
           <div class="input-group form-full">
             <label class="input-label" for="hcImg">Image</label>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-              <input class="input-field" type="file" id="hcImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewHcImgFile(this)"/>
+              <input class="input-field" type="file" id="hcImgFile" data-upload-key="home-concert-image" accept=".png,.jpg,.jpeg" style="flex:1; min-width:0;" onchange="previewHcImgFile(this)"/>
               <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
               <input class="input-field" type="url" id="hcImg" placeholder="https://images.unsplash.com/…" style="flex:1; min-width:0;" oninput="previewHcImg(this)"/>
             </div>
@@ -1043,7 +1045,7 @@
           <div class="input-group form-full">
             <label class="input-label" for="artImg">Artist Photo</label>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-              <input class="input-field" type="file" id="artImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewArtistImage(this)"/>
+              <input class="input-field" type="file" id="artImgFile" data-upload-key="artist-image" accept=".png,.jpg,.jpeg" style="flex:1; min-width:0;" onchange="previewArtistImage(this)"/>
               <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
               <input class="input-field" type="url" id="artImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewArtistImageUrl(this)"/>
             </div>
@@ -1142,7 +1144,7 @@
           <div class="input-group form-full">
             <label class="input-label" for="galImg">Image</label>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-              <input class="input-field" type="file" id="galImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewGalleryImage(this)"/>
+              <input class="input-field" type="file" id="galImgFile" data-upload-key="gallery-image" accept=".png,.jpg,.jpeg" style="flex:1; min-width:0;" onchange="previewGalleryImage(this)"/>
               <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
               <input class="input-field" type="url" id="galImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewGalleryImageUrl(this)"/>
             </div>
@@ -1219,10 +1221,7 @@
             <label class="input-label" for="cmName">Name *</label>
             <input class="input-field" type="text" id="cmName" required placeholder="e.g. John Doe"/>
           </div>
-          <div class="input-group">
-            <label class="input-label" for="cmPost">Post *</label>
-            <input class="input-field" type="text" id="cmPost" required placeholder="e.g. President"/>
-          </div>
+
           <div class="input-group">
             <label class="input-label" for="cmBranch">Branch</label>
             <input class="input-field" type="text" id="cmBranch" placeholder="e.g. Computer Science"/>
@@ -1240,7 +1239,7 @@
           <div class="input-group form-full">
             <label class="input-label" for="cmImg">Photo</label>
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-              <input class="input-field" type="file" id="cmImgFile" accept="image/*" style="flex:1; min-width:0;" onchange="previewCmImgFile(this)"/>
+              <input class="input-field" type="file" id="cmImgFile" data-upload-key="core-member-image" accept=".png,.jpg,.jpeg" style="flex:1; min-width:0;" onchange="previewCmImgFile(this)"/>
               <span style="font-size:0.75rem; color:var(--on-surface-variant);">or URL:</span>
               <input class="input-field" type="url" id="cmImg" placeholder="https://..." style="flex:1; min-width:0;" oninput="previewCmImg(this)"/>
             </div>
@@ -1824,7 +1823,6 @@
             <tr>
               <td>${photoCell}</td>
               <td style="font-weight:600;">${d.name}</td>
-              <td>${d.post || '—'}</td>
               <td>${d.branch || '—'}</td>
               <td><span class="admin-badge badge-success">${d.sectionTitle || '—'}</span></td>
               <td>
@@ -2014,7 +2012,79 @@
       if (/<[a-z][\s\S]*>/i.test(text)) return text;
       return text.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`).join('\n');
     }
-    const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23333'/><circle cx='100' cy='80' r='40' fill='%23666'/><ellipse cx='100' cy='170' rx='60' ry='40' fill='%23555'/></svg>";
+    const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23333"/><circle cx="100" cy="80" r="40" fill="%23666"/><ellipse cx="100" cy="170" rx="60" ry="40" fill="%23555"/></svg>';
+    const IMAGE_UPLOAD_MAX_BYTES = 4 * 1024 * 1024;
+    const IMAGE_UPLOAD_ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
+
+    function sanitizeUploadKey(value) {
+      return String(value || 'upload')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .toLowerCase()
+        || 'upload';
+    }
+
+    function getUploadFieldKey(input) {
+      if (!input) return 'upload';
+      return sanitizeUploadKey(input.dataset?.uploadKey || input.id || input.name || 'upload');
+    }
+
+    function sanitizeImageUrl(value) {
+      const raw = String(value ?? '').trim();
+      if (!raw) return '';
+      if (/^https?:\/\//i.test(raw) || /^data:image\//i.test(raw)) return raw;
+      return '';
+    }
+
+    function validateImageUpload(file, fieldKey) {
+      if (!file) {
+        return { valid: false, error: 'No image file was selected.' };
+      }
+      if (!file.type || !IMAGE_UPLOAD_ALLOWED_TYPES.includes(file.type.toLowerCase())) {
+        return { valid: false, error: 'Only .png, .jpg, and .jpeg image files are allowed.' };
+      }
+      if (file.size > IMAGE_UPLOAD_MAX_BYTES) {
+        return { valid: false, error: 'Image file is too large. Max size is 4MB.' };
+      }
+      return { valid: true, error: '' };
+    }
+
+    async function readImageFileAsDataUrl(file, fieldKey) {
+      const validation = validateImageUpload(file, fieldKey);
+      if (!validation.valid) {
+        const error = new Error(validation.error || 'Invalid image upload.');
+        console.error(`[upload:${fieldKey}] ${error.message}`, file);
+        throw error;
+      }
+
+      try {
+        return await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = e => resolve(e.target.result);
+          reader.onerror = () => reject(new Error('Failed to read the selected image file.'));
+          reader.readAsDataURL(file);
+        });
+      } catch (err) {
+        console.error(`[upload:${fieldKey}] ${err.message || 'Image read failed.'}`, err);
+        throw err;
+      }
+    }
+
+    async function resolveImageUpload(fileInput, urlInput) {
+      const fieldKey = getUploadFieldKey(fileInput);
+      try {
+        if (fileInput?.files?.[0]) {
+          return await readImageFileAsDataUrl(fileInput.files[0], fieldKey);
+        }
+        return sanitizeImageUrl(typeof urlInput === 'string' ? urlInput : urlInput?.value);
+      } catch (err) {
+        console.error(`[upload:${fieldKey}] ${err.message || 'Unknown upload error.'}`, err);
+        throw new Error(`Upload failed for ${fieldKey}: ${err.message || 'Unknown error'}`);
+      }
+    }
+>>>>>>> 235c27e (Update registration form and other pending changes)
     async function editArtist(id) {
       try {
         const doc = await db.collection('artists').doc(id).get();
@@ -2059,14 +2129,12 @@
         : disciplineRaw;
       // Resolve image — file upload takes priority over URL
       const fileInput = document.getElementById('artImgFile');
-      let imageUrl = document.getElementById('artImg').value.trim();
-      if (fileInput.files && fileInput.files[0]) {
-        // Convert uploaded file to base64 data URL for storage
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+      let imageUrl = '';
+      try {
+        imageUrl = await resolveImageUpload(fileInput, document.getElementById('artImg'));
+      } catch (err) {
+        showToast(err.message, 'error');
+        return;
       }
       if (!imageUrl) imageUrl = DEFAULT_AVATAR;
       // Convert plain text bio to HTML
@@ -2300,13 +2368,12 @@
       const id = document.getElementById('galleryId').value;
       // Resolve image
       const fileInput = document.getElementById('galImgFile');
-      let imageUrl = document.getElementById('galImg').value.trim();
-      if (fileInput.files && fileInput.files[0]) {
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+      let imageUrl = '';
+      try {
+        imageUrl = await resolveImageUpload(fileInput, document.getElementById('galImg'));
+      } catch (err) {
+        showToast(err.message, 'error');
+        return;
       }
       const data = {
         imageUrl,
@@ -2601,13 +2668,12 @@
       const id = document.getElementById('homeEventId').value;
       // Resolve image — file takes priority over URL
       const fileInput = document.getElementById('heImgFile');
-      let imageUrl = document.getElementById('heImg').value.trim();
-      if (fileInput.files && fileInput.files[0]) {
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+      let imageUrl = '';
+      try {
+        imageUrl = await resolveImageUpload(fileInput, document.getElementById('heImg'));
+      } catch (err) {
+        showToast(err.message, 'error');
+        return;
       }
       const data = {
         title: document.getElementById('heTitle').value.trim(),
@@ -2689,13 +2755,12 @@
       const id = document.getElementById('homeConcertId').value;
       // Resolve image — file takes priority over URL
       const fileInput = document.getElementById('hcImgFile');
-      let imageUrl = document.getElementById('hcImg').value.trim();
-      if (fileInput.files && fileInput.files[0]) {
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+      let imageUrl = '';
+      try {
+        imageUrl = await resolveImageUpload(fileInput, document.getElementById('hcImg'));
+      } catch (err) {
+        showToast(err.message, 'error');
+        return;
       }
       const data = {
         day: document.getElementById('hcDay').value,
@@ -2797,13 +2862,52 @@
       document.getElementById('cmImgPreviewImg').src = '';
       document.getElementById('cmImgPreview').style.display = 'none';
     }
+    async function compressCmImage(file, maxWidth = 900, quality = 0.82) {
+      if (!file || !file.type || !file.type.startsWith('image/')) {
+        return '';
+      }
+
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const image = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = dataUrl;
+      });
+
+      const canvas = document.createElement('canvas');
+      const ratio = Math.min(maxWidth / image.width, 1);
+      canvas.width = Math.max(1, Math.round(image.width * ratio));
+      canvas.height = Math.max(1, Math.round(image.height * ratio));
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const outputQuality = mimeType === 'image/png' ? 1 : quality;
+      return canvas.toDataURL(mimeType, outputQuality);
+    }
+    function normalizeMemberName(value) {
+      return String(value || '')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+    }
     async function editCoreMember(id) {
       try {
         const doc = await db.collection('coreMembers').doc(id).get();
         const d = doc.data();
         document.getElementById('coreMemberId').value = id;
         document.getElementById('cmName').value = d.name || '';
-        document.getElementById('cmPost').value = d.post || '';
         document.getElementById('cmBranch').value = d.branch || '';
         document.getElementById('cmSection').value = d.section || '';
         document.getElementById('cmOrder').value = d.order ?? 0;
@@ -2821,28 +2925,48 @@
     async function saveCoreMember(e) {
       e.preventDefault();
       const id = document.getElementById('coreMemberId').value;
+      const rawName = document.getElementById('cmName').value.trim().replace(/\s+/g, ' ');
+      if (!rawName) {
+        showToast('Please enter a core member name.', 'error');
+        return;
+      }
       // Resolve image — file takes priority over URL
       const fileInput = document.getElementById('cmImgFile');
-      let photoUrl = document.getElementById('cmImg').value.trim();
-      if (fileInput.files && fileInput.files[0]) {
-        photoUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+      let photoUrl = '';
+      try {
+        photoUrl = await resolveImageUpload(fileInput, document.getElementById('cmImg'));
+      } catch (err) {
+        showToast(err.message, 'error');
+        return;
       }
       // Resolve section title for denormalization
       const sectionId = document.getElementById('cmSection').value;
       const sectionObj = allTeamSections.find(s => s.id === sectionId);
       const sectionTitle = sectionObj ? sectionObj.title : '';
+      const requestedOrder = parseInt(document.getElementById('cmOrder').value || '0', 10);
+      
+      if (requestedOrder > 1) {
+        try {
+          const prevOrderSnap = await db.collection('coreMembers').where('order', '==', requestedOrder - 1).limit(1).get();
+          if (prevOrderSnap.empty) {
+            showToast('Cannot skip ordering sequence. Please ensure the preceding order rank exists.', 'error');
+            return;
+          }
+        } catch (err) {
+          showToast('Validation failed: ' + err.message, 'error');
+          return;
+        }
+      }
+
       const data = {
-        name: document.getElementById('cmName').value.trim(),
-        post: document.getElementById('cmPost').value.trim(),
+        name: rawName,
+        nameKey: normalizeMemberName(rawName),
+        post: sectionTitle,
         branch: document.getElementById('cmBranch').value.trim(),
         section: sectionId,
         sectionTitle,
-        photoUrl,
-        order: parseInt(document.getElementById('cmOrder').value || '0', 10)
+        photoUrl: photoUrl || '',
+        order: requestedOrder
       };
       try {
         if (id) await db.collection('coreMembers').doc(id).update(data);
