@@ -1374,7 +1374,7 @@
         document.getElementById('ticketEvents').textContent = confirmedIntensiveName;
         document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName;
 
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(regId)}`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
         document.getElementById('ticketQr').src = qrUrl;
 
         document.getElementById('successOverlay').classList.add('active');

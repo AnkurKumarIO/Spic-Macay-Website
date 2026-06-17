@@ -18,7 +18,7 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
   
   // Fetch QR Code image
   try {
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(registrationId)}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(registrationId)}`;
     const qrRes = await fetch(qrUrl);
     if (qrRes.ok) {
       const qrBytes = Buffer.from(await qrRes.arrayBuffer());
