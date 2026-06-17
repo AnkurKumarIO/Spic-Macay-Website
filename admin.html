@@ -2377,14 +2377,16 @@
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'attemptBoth' });
 
         if (code && !scannerCooldown) {
           const data = code.data.trim();
           if (data.startsWith('VNIT-')) {
             handleScannedCode(data);
           } else {
+            scannerCooldown = true;
             setStatus('warn', '⚠️', 'Not a valid SPIC MACAY ticket QR.');
+            setTimeout(() => { setStatus('scanning', '🔍', 'Scanning…'); scannerCooldown = false; }, 2500);
           }
         }
       }
