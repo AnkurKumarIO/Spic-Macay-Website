@@ -129,12 +129,69 @@
       background: rgba(245, 240, 232, 0.02);
     }
 
+    .registrations-table th, .registrations-table td {
+      padding: 10px 8px !important;
+    }
+
+    /* Hub Grid Styles */
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+      margin-top: 16px;
+    }
+    .hub-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245, 240, 232, 0.06);
+      border-radius: 16px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 180px;
+    }
+    .hub-card:hover {
+      border-color: rgba(232, 119, 34, 0.35);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      transform: translateY(-4px);
+    }
+    .hub-card-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hub-card-desc {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+    .hub-card-metric {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary-container);
+      background: rgba(245, 240, 232, 0.04);
+      border: 1px solid rgba(245, 240, 232, 0.08);
+      padding: 6px 12px;
+      border-radius: 8px;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
     /* Badges */
     .admin-badge {
       display: inline-flex;
       align-items: center;
       padding: 4px 10px;
-      border-radius: var(--radius-full);
+      border-radius: var(--radius, 4px);
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -336,6 +393,16 @@
       #scannerModal > div {
         padding: 20px 16px;
       }
+
+      /* Stats bar in header — compact on mobile */
+      #attendeeStatsBar {
+        gap: 8px !important;
+        font-size: 0.72rem !important;
+      }
+      #attendeeStatsBar .btn {
+        padding: 5px 10px !important;
+        font-size: 0.72rem !important;
+      }
     }
   </style>
 </head>
@@ -376,42 +443,110 @@
     <!-- ── Admin Workspace Screen ──────────────────────── -->
     <div class="admin-workspace" id="adminWorkspace">
       <div class="admin-header">
-        <div>
-          <h1 class="headline-md">Admin Dashboard</h1>
-          <p class="body-sm text-muted">Virasat 2026 Management Console</p>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <button id="hubBackButton" class="btn btn-secondary btn-sm" onclick="backToHub()" style="display:none; padding: 6px 12px; border-radius: var(--radius-md);">← Back</button>
+          <div>
+            <h1 class="headline-md" id="adminHeaderTitle">Admin Dashboard</h1>
+            <p class="body-sm text-muted" id="adminHeaderSubtitle">Virasat 2026 Management Console</p>
+          </div>
         </div>
-        <div style="display: flex; gap: 12px;">
+        <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+          <!-- Live Attendance Stats -->
+          <div id="attendeeStatsBar" style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:0.8rem; font-weight:600; color:var(--on-surface-variant);">
+              Registered: <span id="statTotal" style="color:var(--primary-container); font-size:0.95rem;">0</span>
+            </span>
+            <span style="color:rgba(245,240,232,0.2);">|</span>
+            <span style="font-size:0.8rem; font-weight:600; color:var(--on-surface-variant);">
+              Checked In: <span id="statCheckedIn" style="color:#4caf7d; font-size:0.95rem;">0</span>
+            </span>
+            <button class="btn btn-sm" onclick="openScanner()" style="background:var(--primary-container);color:var(--on-primary-container);border:none;font-weight:700;letter-spacing:0.04em;padding:6px 14px;">📷 Scanner</button>
+          </div>
           <button class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
         </div>
       </div>
 
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchTab('registrations', this)">Registrations</button>
-        <button class="admin-tab" onclick="switchTab('intensives', this)">Intensives</button>
-        <button class="admin-tab" onclick="switchTab('artists', this)">Artists &amp; Gurus</button>
-        <button class="admin-tab" onclick="switchTab('schedule', this)">Events/Schedule</button>
-        <button class="admin-tab" onclick="switchTab('homeEvents', this)">Home Events</button>
-        <button class="admin-tab" onclick="switchTab('homeConcerts', this)">Home Concerts</button>
-        <button class="admin-tab" onclick="switchTab('gallery', this)">Gallery Moments</button>
-        <button class="admin-tab" onclick="switchTab('coreMembers', this)">Core Members</button>
-        <button class="admin-tab" onclick="switchTab('archives', this)">Archives</button>
+      <!-- Hub Section -->
+      <div class="panel-section active" id="section-hub">
+        <div class="hub-grid">
+          <!-- Registrations -->
+          <div class="hub-card" onclick="switchTab('registrations')">
+            <div>
+              <h2 class="hub-card-title">🎟 Registrations</h2>
+              <p class="hub-card-desc">View and manage all registered attendees, check-in status, and Ticket ID passes.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricRegistrations">Loading stats...</div>
+          </div>
+          <!-- Intensives -->
+          <div class="hub-card" onclick="switchTab('intensives')">
+            <div>
+              <h2 class="hub-card-title">🎭 Intensives</h2>
+              <p class="hub-card-desc">Manage intensives, tracks, category tags, schedules, and monitor seat counts.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricIntensives">Loading stats...</div>
+          </div>
+          <!-- Artists -->
+          <div class="hub-card" onclick="switchTab('artists')">
+            <div>
+              <h2 class="hub-card-title">👨‍🏫 Artists & Gurus</h2>
+              <p class="hub-card-desc">Manage profiles of performing artists and workshop gurus, including disciplines.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricArtists">Loading stats...</div>
+          </div>
+          <!-- Schedule -->
+          <div class="hub-card" onclick="switchTab('schedule')">
+            <div>
+              <h2 class="hub-card-title">📅 Events/Schedule</h2>
+              <p class="hub-card-desc">Organize the three-day convention schedule, events, time blocks, and artists.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricSchedule">Loading stats...</div>
+          </div>
+          <!-- Home Events -->
+          <div class="hub-card" onclick="switchTab('homeEvents')">
+            <div>
+              <h2 class="hub-card-title">🏠 Home Events</h2>
+              <p class="hub-card-desc">Edit event highlight cards displayed in the upcoming events section on the homepage.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricHomeEvents">Loading stats...</div>
+          </div>
+          <!-- Home Concerts -->
+          <div class="hub-card" onclick="switchTab('homeConcerts')">
+            <div>
+              <h2 class="hub-card-title">🎶 Home Concerts</h2>
+              <p class="hub-card-desc">Update the evening concert itinerary and timelines displayed on the homepage.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricHomeConcerts">Loading stats...</div>
+          </div>
+          <!-- Gallery -->
+          <div class="hub-card" onclick="switchTab('gallery')">
+            <div>
+              <h2 class="hub-card-title">🖼 Gallery Moments</h2>
+              <p class="hub-card-desc">Manage the convention's visual photo gallery grid, captions, and categories.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricGallery">Loading stats...</div>
+          </div>
+          <!-- Core Members -->
+          <div class="hub-card" onclick="switchTab('coreMembers')">
+            <div>
+              <h2 class="hub-card-title">🤝 Core Committee</h2>
+              <p class="hub-card-desc">Manage the student chapter core organizing committee, team sections, and roles.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricCoreMembers">Loading stats...</div>
+          </div>
+          <!-- Archives -->
+          <div class="hub-card" onclick="switchTab('archives')">
+            <div>
+              <h2 class="hub-card-title">📁 Archives</h2>
+              <p class="hub-card-desc">Manage past conventions, events history, and types shown on the about page.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricArchives">Loading stats...</div>
+          </div>
+        </div>
       </div>
 
-      <!-- Attendee Stats Bar -->
-      <div id="attendeeStatsBar" style="display:none; padding:14px 20px; background:var(--surface-container); border:1px solid rgba(245,240,232,0.08); border-radius:12px; margin-top:16px; align-items:center; flex-wrap:wrap; gap:0;">
-        <span style="font-size:0.875rem; font-weight:600; color:var(--on-surface);">
-          Registered Attendees: <span id="statTotal" style="color:var(--primary-container);">0</span>
-        </span>
-        <span style="margin:0 24px; color:rgba(245,240,232,0.2);">|</span>
-        <span style="font-size:0.875rem; font-weight:600; color:var(--on-surface);">
-          Checked In Attendees: <span id="statCheckedIn" style="color:#4caf7d;">0</span>
-        </span>
-        <span style="flex:1;"></span>
-        <button class="btn btn-sm" onclick="openScanner()" style="background:var(--primary-container);color:var(--on-primary-container);border:none;font-weight:700;letter-spacing:0.04em;">📷 Scanner</button>
-      </div>
 
       <!-- Registrations Section -->
-      <div class="panel-section active" id="section-registrations" style="margin-top:8px;">
+      <div class="panel-section" id="section-registrations" style="margin-top:8px;">
         <div class="dashboard-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
             <h2 class="headline-sm">Registered Attendees</h2>
@@ -421,7 +556,7 @@
             </div>
           </div>
           <div class="table-responsive">
-            <table class="admin-table">
+            <table class="admin-table registrations-table">
               <thead>
                 <tr>
                   <th>Ticket ID</th>
@@ -1270,20 +1405,44 @@
     }
 
     // Switch Panel Tabs
+    const sectionTitles = {
+      hub: { title: 'Admin Dashboard', subtitle: 'Virasat 2026 Management Console' },
+      registrations: { title: '🎟 Registrations', subtitle: 'Manage attendee passes and ticket check-ins' },
+      intensives: { title: '🎭 Intensives', subtitle: 'Manage workshops, category tags, and seats' },
+      artists: { title: '👨‍🏫 Artists & Gurus', subtitle: 'Manage performing masters and biographies' },
+      schedule: { title: '📅 Events & Schedule', subtitle: 'Manage three-day convention timeline events' },
+      homeEvents: { title: '🏠 Home Events', subtitle: 'Manage upcoming event highlight cards' },
+      homeConcerts: { title: '🎶 Home Concerts', subtitle: 'Manage evening concert tracks and itineraries' },
+      gallery: { title: '🖼 Gallery Moments', subtitle: 'Manage photo gallery moments and categories' },
+      coreMembers: { title: '🤝 Core Committee', subtitle: 'Manage organizing student committee members and sections' },
+      archives: { title: '📁 Archives', subtitle: 'Manage past conventions and history logs' }
+    };
+
     function switchTab(tab, el) {
-      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
+      if (el) {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+      }
 
       document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
-      document.getElementById('section-' + tab).classList.add('active');
+      const secEl = document.getElementById('section-' + tab);
+      if (secEl) secEl.classList.add('active');
 
-      // Show stats bar only on registrations tab
-      const statsBar = document.getElementById('attendeeStatsBar');
-      if (tab === 'registrations') {
-        updateAttendeeStats();
-      } else {
-        statsBar.style.display = 'none';
+      // Update Header Back Button and Titles
+      const backBtn = document.getElementById('hubBackButton');
+      const titleEl = document.getElementById('adminHeaderTitle');
+      const subtitleEl = document.getElementById('adminHeaderSubtitle');
+
+      if (backBtn && titleEl && subtitleEl) {
+        const info = sectionTitles[tab] || { title: 'Admin Dashboard', subtitle: 'Virasat 2026 Management Console' };
+        titleEl.textContent = info.title;
+        subtitleEl.textContent = info.subtitle;
+        backBtn.style.display = tab === 'hub' ? 'none' : 'block';
       }
+    }
+
+    function backToHub() {
+      switchTab('hub');
     }
 
     // Toast notices
@@ -1304,7 +1463,6 @@
       const checkedIn = allRegistrations.filter(r => r.checkedIn).length;
       document.getElementById('statTotal').textContent = total;
       document.getElementById('statCheckedIn').textContent = checkedIn;
-      document.getElementById('attendeeStatsBar').style.display = total > 0 ? 'flex' : 'none';
     }
 
     function filterRegistrations() {
@@ -1345,15 +1503,23 @@
 
         html += `
           <tr>
-            <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;">${d.registrationId}</span></td>
+            <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;" title="${d.registrationId}">${d.registrationId.replace('VNIT-2026-', '')}</span></td>
             <td style="font-weight:600;">${d.firstName} ${d.lastName}</td>
-            <td>${d.email}</td>
-            <td>${d.phone}</td>
+            <td style="max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.8rem;" title="${d.email}">${d.email}</td>
+            <td style="font-size:0.8rem;">${d.phone}</td>
             <td>${d.rollNumber || '—'}</td>
-            <td><span class="admin-badge badge-success" style="font-size:0.75rem;">${confirmedName}</span></td>
-            <td><span style="font-size:0.78rem;opacity:0.75;">${prefNames}</span></td>
             <td>
-              <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${d.id}', ${!!d.checkedIn})" style="cursor:pointer;">
+              <select onchange="changeConfirmedIntensive('${d.id}', this.value)" style="font-size:0.72rem; padding:4px 6px; margin:0; max-width:150px; background:var(--surface-container-high); border:1px solid rgba(245,240,232,0.15); border-radius:4px; color:var(--on-surface); cursor:pointer; outline:none;">
+                <option value="">— General Entry / None —</option>
+                ${allIntensives.map(iv => {
+                  const isSelected = (d.confirmedIntensiveId === iv.id) || (!d.confirmedIntensiveId && d.confirmedIntensiveName === iv.name);
+                  return `<option value="${iv.id}" ${isSelected ? 'selected' : ''}>${iv.name}</option>`;
+                }).join('')}
+              </select>
+            </td>
+            <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${prefNames}"><span style="font-size:0.78rem;opacity:0.75;">${prefNames}</span></td>
+            <td>
+              <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${d.id}', ${!!d.checkedIn})" style="cursor:pointer; font-size:0.68rem; padding:3px 8px;">
                 ${checkInText}
               </button>
             </td>
@@ -1414,6 +1580,8 @@
         snap.forEach(doc => { allIntensives.push({ id: doc.id, ...doc.data() }); });
         renderIntensivesTable();
         filterRegistrations(); // re-render once names are loaded
+        const el = document.getElementById('hubMetricIntensives');
+        if (el) el.textContent = `${allIntensives.length} intensive${allIntensives.length !== 1 ? 's' : ''} configured`;
       });
 
       // Listen to real-time registrations
@@ -1425,11 +1593,16 @@
         });
         filterRegistrations();
         updateAttendeeStats();
+        const checkedInCount = allRegistrations.filter(r => r.checkedIn).length;
+        const el = document.getElementById('hubMetricRegistrations');
+        if (el) el.textContent = `${allRegistrations.length} registered · ${checkedInCount} checked in`;
       });
 
       db.collection('artists').onSnapshot(snap => {
         let html = '';
+        let artistCount = 0;
         snap.forEach(doc => {
+          artistCount++;
           const d = doc.data();
           html += `
             <tr>
@@ -1447,16 +1620,22 @@
           `;
         });
         document.getElementById('artistsTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No artists added.</td></tr>';
+        const el = document.getElementById('hubMetricArtists');
+        if (el) el.textContent = `${artistCount} artist${artistCount !== 1 ? 's' : ''} & guru${artistCount !== 1 ? 's' : ''}`;
       });
 
       // Listen to events
       db.collection('events').orderBy('day').onSnapshot(snap => {
         const dayMap = { 'Day 1': [], 'Day 2': [], 'Day 3': [] };
+        let totalEvents = 0;
         snap.forEach(doc => {
+          totalEvents++;
           const d = { id: doc.id, ...doc.data() };
           if (dayMap[d.day] !== undefined) dayMap[d.day].push(d);
           else dayMap['Day 1'].push(d);
         });
+        const schEl = document.getElementById('hubMetricSchedule');
+        if (schEl) schEl.textContent = `${totalEvents} event${totalEvents !== 1 ? 's' : ''} across 3 days`;
         ['Day 1', 'Day 2', 'Day 3'].forEach((day, i) => {
           const bodyId = `scheduleBody-day${i + 1}`;
           const events = dayMap[day];
@@ -1491,7 +1670,9 @@
       // Listen to homeEvents
       db.collection('homeEvents').orderBy('order').onSnapshot(snap => {
         let html = '';
+        let homeEvtCount = 0;
         snap.forEach(doc => {
+          homeEvtCount++;
           const d = doc.data();
           html += `
             <tr>
@@ -1510,12 +1691,16 @@
             </tr>`;
         });
         document.getElementById('homeEventsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No event cards added yet.</td></tr>';
+        const heEl = document.getElementById('hubMetricHomeEvents');
+        if (heEl) heEl.textContent = `${homeEvtCount} event card${homeEvtCount !== 1 ? 's' : ''} on homepage`;
       });
 
       // Listen to homeConcerts — fetch all, sort client-side by day then time
       db.collection('homeConcerts').onSnapshot(snap => {
         const concerts = [];
         snap.forEach(doc => { concerts.push({ id: doc.id, ...doc.data() }); });
+        const hcEl = document.getElementById('hubMetricHomeConcerts');
+        if (hcEl) hcEl.textContent = `${concerts.length} concert track${concerts.length !== 1 ? 's' : ''} listed`;
         // Sort by day (Day 1 < Day 2 < Day 3) then by time string
         concerts.sort((a, b) => {
           const dayA = (a.day || 'Day 9');
@@ -1548,7 +1733,9 @@
       // Listen to gallery
       db.collection('gallery').onSnapshot(snap => {
         let html = '';
+        let galCount = 0;
         snap.forEach(doc => {
+          galCount++;
           const d = doc.data();
           html += `
             <tr>
@@ -1566,6 +1753,8 @@
           `;
         });
         document.getElementById('galleryTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No moments added.</td></tr>';
+        const galEl = document.getElementById('hubMetricGallery');
+        if (galEl) galEl.textContent = `${galCount} photo${galCount !== 1 ? 's' : ''} in gallery`;
       });
 
       // Listen to teamSections
@@ -1605,6 +1794,8 @@
         let html = '';
         const members = [];
         snap.forEach(doc => { members.push({ id: doc.id, ...doc.data() }); });
+        const cmEl = document.getElementById('hubMetricCoreMembers');
+        if (cmEl) cmEl.textContent = `${members.length} committee member${members.length !== 1 ? 's' : ''}`;
         members.sort((a, b) => (a.order || 0) - (b.order || 0));
         members.forEach(d => {
           const photoCell = d.photoUrl
@@ -1632,6 +1823,8 @@
         allArchives = [];
         snap.forEach(doc => { allArchives.push({ id: doc.id, ...doc.data() }); });
         renderArchivesTable();
+        const archEl = document.getElementById('hubMetricArchives');
+        if (archEl) archEl.textContent = `${allArchives.length} archive${allArchives.length !== 1 ? 's' : ''} on record`;
       });
     }
 
@@ -1642,6 +1835,74 @@
         showToast('Registration status updated.', 'success');
       } catch (err) {
         showToast(err.message, 'error');
+      }
+    }
+
+    // Change Registration Confirmed Intensive
+    async function changeConfirmedIntensive(id, newIntensiveId) {
+      try {
+        const registrationRef = db.collection('registrations').doc(id);
+        const reg = allRegistrations.find(r => r.id === id);
+        if (!reg) {
+          showToast('Registration record not found.', 'error');
+          return;
+        }
+
+        let confirmedIntensiveName = 'General Entry';
+        if (newIntensiveId) {
+          const iv = allIntensives.find(x => x.id === newIntensiveId);
+          confirmedIntensiveName = iv ? iv.name : newIntensiveId;
+        }
+
+        await registrationRef.update({
+          confirmedIntensiveId: newIntensiveId || null,
+          confirmedIntensiveName: confirmedIntensiveName
+        });
+
+        showToast(`Confirmed intensive changed to ${confirmedIntensiveName}.`, 'success');
+
+        // Send email notification (non-blocking)
+        sendConfirmationEmail({
+          to: reg.email,
+          firstName: reg.firstName,
+          lastName: reg.lastName,
+          registrationId: reg.registrationId || reg.id,
+          confirmedIntensiveName: confirmedIntensiveName,
+          intensivePreferences: (reg.intensivePreferences || []).map(prefId => {
+            const iv = allIntensives.find(x => x.id === prefId);
+            return iv ? iv.name : prefId;
+          }),
+          rollNumber: reg.rollNumber || '—',
+          branch: reg.branch || '—',
+          yearOfStudy: reg.yearOfStudy || '—'
+        });
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+
+    // Send confirmation email via Vercel API
+    async function sendConfirmationEmail(payload) {
+      // In local dev, skip silently
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname === '') {
+        console.info('[Dev] Email skipped on localhost. Payload:', payload);
+        return;
+      }
+      try {
+        const res = await fetch('/api/send-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (res.ok) {
+          console.info('Confirmation email sent to', payload.to);
+          showToast('Confirmation email sent to ' + payload.to, 'success');
+        } else {
+          const err = await res.json().catch(() => ({}));
+          console.warn('Email API error:', err);
+        }
+      } catch (err) {
+        console.warn('Failed to reach email API:', err);
       }
     }
 
@@ -1703,7 +1964,7 @@
       if (/<[a-z][\s\S]*>/i.test(text)) return text;
       return text.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`).join('\n');
     }
-    const DEFAULT_AVATAR = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23333"/><circle cx="100" cy="80" r="40" fill="%23666"/><ellipse cx="100" cy="170" rx="60" ry="40" fill="%23555"/></svg>';
+    const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23333'/><circle cx='100' cy='80' r='40' fill='%23666'/><ellipse cx='100' cy='170' rx='60' ry='40' fill='%23555'/></svg>";
     async function editArtist(id) {
       try {
         const doc = await db.collection('artists').doc(id).get();
