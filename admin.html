@@ -2084,7 +2084,6 @@
         throw new Error(`Upload failed for ${fieldKey}: ${err.message || 'Unknown error'}`);
       }
     }
->>>>>>> 235c27e (Update registration form and other pending changes)
     async function editArtist(id) {
       try {
         const doc = await db.collection('artists').doc(id).get();
