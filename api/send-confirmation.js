@@ -34,12 +34,13 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
   const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const timesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
   
-  const x = 279;
+  const x = 325;
+  const rollX = 485;
   
   // 1. ATTENDEE PASS Label
   page.drawText('ATTENDEE PASS', {
     x,
-    y: 190,
+    y: 165,
     size: 7,
     font: helveticaBold,
     color: rgb(169/255, 146/255, 133/255),
@@ -48,8 +49,8 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
   // 2. Attendee Name (Times-Roman Bold / serif style)
   page.drawText(`${firstName} ${lastName}`, {
     x,
-    y: 168,
-    size: 18,
+    y: 145,
+    size: 16,
     font: timesRomanBold,
     color: rgb(255/255, 215/255, 0/255),
   });
@@ -57,32 +58,31 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
   // 3. TICKET ID Label & Value
   page.drawText('TICKET ID', {
     x,
-    y: 140,
+    y: 110,
     size: 6,
     font: helveticaBold,
     color: rgb(169/255, 146/255, 133/255),
   });
   page.drawText(registrationId, {
     x,
-    y: 126,
-    size: 10,
+    y: 96,
+    size: 9,
     font: helveticaBold,
     color: rgb(232/255, 119/255, 34/255),
   });
   
   // 4. ROLL NUMBER Label & Value
-  const rollX = x + 150;
   page.drawText('ROLL NUMBER', {
     x: rollX,
-    y: 140,
+    y: 110,
     size: 6,
     font: helveticaBold,
     color: rgb(169/255, 146/255, 133/255),
   });
   page.drawText(rollNumber || '—', {
     x: rollX,
-    y: 126,
-    size: 10,
+    y: 96,
+    size: 9,
     font: helvetica,
     color: rgb(232/255, 229/255, 228/255),
   });
@@ -90,14 +90,14 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
   // 5. INTENSIVES Label & Value
   page.drawText('INTENSIVES', {
     x,
-    y: 98,
+    y: 70,
     size: 6,
     font: helveticaBold,
     color: rgb(169/255, 146/255, 133/255),
   });
   page.drawText(confirmedIntensiveName || 'General Entry', {
     x,
-    y: 84,
+    y: 56,
     size: 9,
     font: helvetica,
     color: rgb(201/255, 168/255, 152/255),
