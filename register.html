@@ -1382,6 +1382,7 @@
         // Send confirmation email (non-blocking — don't fail registration if email fails)
         sendConfirmationEmail({
           to: em,
+          type: 'registration',
           firstName: fn,
           lastName: ln,
           registrationId: regId,

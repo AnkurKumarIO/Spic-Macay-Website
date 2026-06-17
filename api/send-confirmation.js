@@ -8,10 +8,18 @@ function setCors(res) {
 }
 
 // ── Email HTML template ──────────────────────────────────────────────────────
-function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiveName, intensivePreferences, rollNumber, branch, yearOfStudy }) {
+function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiveName, intensivePreferences, rollNumber, branch, yearOfStudy, type }) {
   const prefList = (intensivePreferences || [])
     .map((name, i) => `<li style="margin-bottom:4px;">${i + 1}. ${name}</li>`)
     .join('');
+
+  const isUpdate = type === 'update';
+  const subtitleText = isUpdate ? 'Intensive Updated' : 'Registration Confirmed';
+  const titleText = isUpdate ? 'Intensive Updated — SPIC MACAY VNIT' : 'Registration Confirmed — SPIC MACAY VNIT';
+  const greetingText = isUpdate
+    ? `Your confirmed intensive for <strong style="color:#e87722;">SPIC MACAY Virasat 2026</strong> has been updated by the organizing team.`
+    : `You are successfully registered for <strong style="color:#e87722;">SPIC MACAY Virasat 2026</strong> at VNIT Nagpur.
+                Your intensive seat has been confirmed. Find all your details below.`;
 
   return `
 <!DOCTYPE html>
@@ -19,7 +27,7 @@ function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiv
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Registration Confirmed — SPIC MACAY VNIT</title>
+  <title>${titleText}</title>
 </head>
 <body style="margin:0;padding:0;background:#0f0c0a;font-family:'Segoe UI',Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#0f0c0a;padding:40px 16px;">
@@ -32,7 +40,7 @@ function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiv
             <td style="background:linear-gradient(135deg,#1c1108 0%,#2a1a08 100%);padding:32px 40px;text-align:center;border-bottom:2px solid rgba(232,119,34,0.3);">
               <p style="margin:0 0 8px;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:#e87722;font-weight:700;">SPIC MACAY — VNIT NAGPUR</p>
               <h1 style="margin:0;font-size:1.6rem;color:#ffd700;font-weight:800;letter-spacing:0.02em;">Virasat 2026</h1>
-              <p style="margin:6px 0 0;font-size:0.85rem;color:#c9a898;">Registration Confirmed</p>
+              <p style="margin:6px 0 0;font-size:0.85rem;color:#c9a898;">${subtitleText}</p>
             </td>
           </tr>
 
@@ -41,8 +49,7 @@ function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiv
             <td style="padding:32px 40px 0;">
               <p style="margin:0 0 6px;font-size:1rem;color:#f5f0e8;">Dear <strong style="color:#ffd700;">${firstName} ${lastName}</strong>,</p>
               <p style="margin:0;font-size:0.875rem;color:#a09080;line-height:1.6;">
-                You are successfully registered for <strong style="color:#e87722;">SPIC MACAY Virasat 2026</strong> at VNIT Nagpur.
-                Your intensive seat has been confirmed. Find all your details below.
+                ${greetingText}
               </p>
             </td>
           </tr>
@@ -188,6 +195,7 @@ module.exports = async function handler(req, res) {
     rollNumber,
     branch,
     yearOfStudy,
+    type,
   } = req.body;
 
   // Basic validation
@@ -208,16 +216,26 @@ module.exports = async function handler(req, res) {
     firstName, lastName, registrationId,
     confirmedIntensiveName, intensivePreferences,
     rollNumber, branch, yearOfStudy,
+    type,
   });
+
+  const isUpdate = type === 'update';
+  const subject = isUpdate
+    ? `Your Intensive Has Been Updated — ${registrationId}`
+    : `Your Virasat 2026 Pass — ${registrationId}`;
+
+  const plainText = isUpdate
+    ? `Hi ${firstName},\n\nYour confirmed intensive for SPIC MACAY Virasat 2026 has been updated by the organizing team.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`
+    : `Hi ${firstName},\n\nYou are registered for SPIC MACAY Virasat 2026 at VNIT Nagpur.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`;
 
   try {
     await transporter.sendMail({
       from: `"SPIC MACAY VNIT Nagpur" <${process.env.GMAIL_USER}>`,
       to,
-      subject: `Your Virasat 2026 Pass — ${registrationId}`,
+      replyTo: 'spicmacay@vnit.ac.in',
+      subject,
       html,
-      // Plain-text fallback
-      text: `Hi ${firstName},\n\nYou are registered for SPIC MACAY Virasat 2026 at VNIT Nagpur.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`,
+      text: plainText,
     });
 
     return res.status(200).json({ success: true, message: 'Confirmation email sent.' });

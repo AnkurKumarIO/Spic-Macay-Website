@@ -1864,6 +1864,7 @@
         // Send email notification (non-blocking)
         sendConfirmationEmail({
           to: reg.email,
+          type: 'update',
           firstName: reg.firstName,
           lastName: reg.lastName,
           registrationId: reg.registrationId || reg.id,
