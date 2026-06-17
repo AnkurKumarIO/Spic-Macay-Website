@@ -1,4 +1,111 @@
 const nodemailer = require('nodemailer');
+const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+const fs = require('fs');
+const path = require('path');
+
+// ── PDF ticket generator ─────────────────────────────────────────────────────
+async function generateTicketPdf({ firstName, lastName, registrationId, confirmedIntensiveName, rollNumber }) {
+  const pdfDoc = await PDFDocument.create();
+  
+  // Load template image
+  const templatePath = path.join(process.cwd(), 'ticket-template.png');
+  const templateBytes = fs.readFileSync(templatePath);
+  const templateImage = await pdfDoc.embedPng(templateBytes);
+  
+  // Create page matching aspect ratio 900x300
+  const page = pdfDoc.addPage([900, 300]);
+  page.drawImage(templateImage, { x: 0, y: 0, width: 900, height: 300 });
+  
+  // Fetch QR Code image
+  try {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(registrationId)}`;
+    const qrRes = await fetch(qrUrl);
+    if (qrRes.ok) {
+      const qrBytes = Buffer.from(await qrRes.arrayBuffer());
+      const qrImage = await pdfDoc.embedPng(qrBytes);
+      page.drawImage(qrImage, { x: 659, y: 26, width: 108, height: 108 });
+    }
+  } catch (qrErr) {
+    console.error('Failed to embed QR code in PDF:', qrErr);
+  }
+  
+  // Load fonts
+  const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const timesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+  
+  const x = 279;
+  
+  // 1. ATTENDEE PASS Label
+  page.drawText('ATTENDEE PASS', {
+    x,
+    y: 190,
+    size: 7,
+    font: helveticaBold,
+    color: rgb(169/255, 146/255, 133/255),
+  });
+  
+  // 2. Attendee Name (Times-Roman Bold / serif style)
+  page.drawText(`${firstName} ${lastName}`, {
+    x,
+    y: 168,
+    size: 18,
+    font: timesRomanBold,
+    color: rgb(255/255, 215/255, 0/255),
+  });
+  
+  // 3. TICKET ID Label & Value
+  page.drawText('TICKET ID', {
+    x,
+    y: 140,
+    size: 6,
+    font: helveticaBold,
+    color: rgb(169/255, 146/255, 133/255),
+  });
+  page.drawText(registrationId, {
+    x,
+    y: 126,
+    size: 10,
+    font: helveticaBold,
+    color: rgb(232/255, 119/255, 34/255),
+  });
+  
+  // 4. ROLL NUMBER Label & Value
+  const rollX = x + 150;
+  page.drawText('ROLL NUMBER', {
+    x: rollX,
+    y: 140,
+    size: 6,
+    font: helveticaBold,
+    color: rgb(169/255, 146/255, 133/255),
+  });
+  page.drawText(rollNumber || '—', {
+    x: rollX,
+    y: 126,
+    size: 10,
+    font: helvetica,
+    color: rgb(232/255, 229/255, 228/255),
+  });
+  
+  // 5. INTENSIVES Label & Value
+  page.drawText('INTENSIVES', {
+    x,
+    y: 98,
+    size: 6,
+    font: helveticaBold,
+    color: rgb(169/255, 146/255, 133/255),
+  });
+  page.drawText(confirmedIntensiveName || 'General Entry', {
+    x,
+    y: 84,
+    size: 9,
+    font: helvetica,
+    color: rgb(201/255, 168/255, 152/255),
+  });
+  
+  const pdfBytes = await pdfDoc.save();
+  return Buffer.from(pdfBytes);
+}
 
 // ── CORS helper ──────────────────────────────────────────────────────────────
 function setCors(res) {
@@ -228,15 +335,37 @@ module.exports = async function handler(req, res) {
     ? `Hi ${firstName},\n\nYour confirmed intensive for SPIC MACAY Virasat 2026 has been updated by the organizing team.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`
     : `Hi ${firstName},\n\nYou are registered for SPIC MACAY Virasat 2026 at VNIT Nagpur.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`;
 
+  let pdfBuffer;
   try {
-    await transporter.sendMail({
+    pdfBuffer = await generateTicketPdf({
+      firstName,
+      lastName,
+      registrationId,
+      confirmedIntensiveName,
+      rollNumber,
+    });
+  } catch (pdfErr) {
+    console.error('PDF generation failed:', pdfErr);
+  }
+
+  try {
+    const mailOptions = {
       from: `"SPIC MACAY VNIT Nagpur" <${process.env.GMAIL_USER}>`,
       to,
       replyTo: 'spicmacay@vnit.ac.in',
       subject,
       html,
       text: plainText,
-    });
+    };
+    if (pdfBuffer) {
+      mailOptions.attachments = [
+        {
+          filename: `Virasat_Pass_${registrationId}.pdf`,
+          content: pdfBuffer,
+        }
+      ];
+    }
+    await transporter.sendMail(mailOptions);
 
     return res.status(200).json({ success: true, message: 'Confirmation email sent.' });
   } catch (err) {
