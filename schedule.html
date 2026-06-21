@@ -767,34 +767,8 @@
           </p>
         </div>
 
-        <div class="events-grid">
-          <!-- Tile 1: Virasat -->
-          <div class="event-tile-card reveal" onclick="toggleEventPanel('virasat', this)" id="tile-virasat">
-            <div class="event-tile-content">
-              <div class="event-tile-icon-wrap" style="padding: 0; overflow: hidden;">
-                <img src="Reference/sitar-lotus.png" alt="Sitar Lotus Icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;" />
-              </div>
-              <h3 class="event-tile-title">VIRASAT</h3>
-              <p class="event-tile-desc">
-                Our flagship 3-day cultural immersion. Experience classical concerts, guru-shishya workshops, and heritage arts.
-              </p>
-            </div>
-            <span class="event-tile-arrow">Open Portal →</span>
-          </div>
-
-          <!-- Tile 2: Inaugural Event -->
-          <div class="event-tile-card reveal reveal-delay-1" onclick="revealInauguralDay()" id="tile-inaugural">
-            <div class="event-tile-content">
-              <div class="event-tile-icon-wrap" style="padding: 0; overflow: hidden; background: #fff;">
-                <img src="Reference/krishna-flute.png" alt="Krishna Flute Icon" style="width: 100%; height: 100%; object-fit: contain; border-radius: inherit; display: block;" />
-              </div>
-              <h3 class="event-tile-title">Inaugural Event</h3>
-              <p class="event-tile-desc">
-                The grand opening ceremony. Welcoming recitals, lamp lighting, and inaugural addresses by state dignitaries.
-              </p>
-            </div>
-            <span class="event-tile-arrow">View Schedule →</span>
-          </div>
+        <div class="events-grid" id="eventsGridContainer">
+          <!-- Dynamically populated from flagshipEvents -->
         </div>
 
         <!-- Panel 1: Virasat Details (Subpage Map) -->
@@ -850,7 +824,7 @@
           <button class="day-tab" onclick="showDay('day3',this)">Day 3 — July 27</button>
         </div>
 
-        <!-- ── Day 1 ─────────────────────────────────────── -->
+        <!-- Day 1 ─────────────────────────────────────── -->
         <div class="day-view active" id="day1">
           <div class="day-header">
             <div>
@@ -858,166 +832,16 @@
               <h2 class="headline-md">Day 1 · 25th July 2026</h2>
               <p class="body-md text-muted" style="margin-top:6px;">Inauguration &amp; Opening Ceremonies</p>
             </div>
-            <span class="chip">9 Events</span>
+            <span class="chip" id="day1Chip">— Events</span>
           </div>
-          
-          <div class="event-list">
-            <!-- Event 1 -->
-            <div data-start="2026-07-25T07:00:00" data-end="2026-07-25T08:30:00" class="event-card category-yoga">
-              <span class="status-badge status-over">Over</span>
-              <div class="event-timeline">
-                <span class="event-time-range">07:00 AM - 08:30 AM</span>
-                <span class="event-duration">1.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Personal Time &amp; Holistic Breakfast</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">Settle into your rooms, freshen up, and enjoy a nourishing, traditional satvik breakfast served at the community dining space.</p>
-              </div>
-            </div>
-
-            <!-- Event 2 -->
-            <div data-start="2026-07-25T08:30:00" data-end="2026-07-25T09:00:00" class="event-card category-workshop">
-              <span class="status-badge status-over">Over</span>
-              <div class="event-timeline">
-                <span class="event-time-range">08:30 AM - 09:00 AM</span>
-                <span class="event-duration">30 mins</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Ceremony</span>
-                </div>
-                <h3 class="event-title">Morning Inauguration Ceremony</h3>
-                <span class="event-artist">Convention Dignitaries &amp; Gurus</span>
-                <p class="event-desc">The formal commencement of the convention with chanting, welcome speeches, and lighting of the sacred ceremonial lamp.</p>
-              </div>
-            </div>
-
-            <!-- Event 3 -->
-            <div data-start="2026-07-25T09:00:00" data-end="2026-07-25T12:00:00" class="event-card category-cinema">
-              <span class="status-badge status-over">Over</span>
-              <div class="event-timeline">
-                <span class="event-time-range">09:00 AM - 12:00 PM</span>
-                <span class="event-duration">3 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Special</span>
-                </div>
-                <h3 class="event-title">Screening of 'The Making of the Mahatma'</h3>
-                <span class="event-artist">Shri Rajit Kapur</span>
-                <p class="event-desc">A special cinematic showcase followed by an interactive discussion with the national award-winning lead actor and director.</p>
-              </div>
-            </div>
-
-            <!-- Event 4 -->
-            <div data-start="2026-07-25T12:40:00" data-end="2026-07-25T13:40:00" class="event-card category-yoga">
-              <span class="status-badge status-over">Over</span>
-              <div class="event-timeline">
-                <span class="event-time-range">12:40 PM - 01:40 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Holistic Satvik Lunch</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">A carefully curated organic vegetarian meal designed to refresh and energize the delegates.</p>
-              </div>
-            </div>
-
-            <!-- Event 5 -->
-            <div data-start="2026-07-25T14:00:00" data-end="2026-07-25T15:30:00" class="event-card category-workshop">
-              <span class="status-badge status-over">Over</span>
-              <div class="event-timeline">
-                <span class="event-time-range">02:00 PM - 03:30 PM</span>
-                <span class="event-duration">1.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Ceremony</span>
-                </div>
-                <h3 class="event-title">Orientation of All Delegates</h3>
-                <span class="event-artist">SPIC MACAY Volunteers</span>
-                <p class="event-desc">An essential briefing session detailing convention venues, workshop allotments, guidelines, and interactive sessions.</p>
-              </div>
-            </div>
-
-            <!-- Event 6 -->
-            <div data-start="2026-07-25T16:00:00" data-end="2026-07-25T17:00:00" class="event-card category-concert">
-              <span class="status-badge status-over">Over</span>
-              <div class="event-timeline">
-                <span class="event-time-range">04:00 PM - 05:00 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Concert</span>
-                </div>
-                <h3 class="event-title">Welcoming Nadaswaram Recital</h3>
-                <span class="event-artist">Seshampatti T. Sivalingam</span>
-                <p class="event-desc">An auspicious and soul-stirring wind recital at the foyer entrance, setting a spiritual tone for the evening.</p>
-              </div>
-            </div>
-
-            <!-- Event 7 -->
-            <div data-start="2026-07-25T17:00:00" data-end="2026-07-25T18:00:00" class="event-card category-yoga">
-              <span class="status-badge status-over">Over</span>
-              <div class="event-timeline">
-                <span class="event-time-range">05:00 PM - 06:00 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Holistic Dinner</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">An early wholesome dinner served to ensure light digestion before the grand evening concerts begin.</p>
-              </div>
-            </div>
-
-            <!-- Event 8 -->
-            <div data-start="2026-07-25T18:00:00" data-end="2026-07-25T19:30:00" class="event-card category-workshop">
-              <span class="status-badge status-live">Live</span>
-              <div class="event-timeline">
-                <span class="event-time-range">06:00 PM - 07:30 PM</span>
-                <span class="event-duration">1.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Ceremony</span>
-                </div>
-                <h3 class="event-title">Formal Inauguration of 11th Convention</h3>
-                <span class="event-artist">State Dignitaries &amp; Maestro Gurus</span>
-                <p class="event-desc">The grand formal opening with addresses from eminent visionaries, cultural legends, and the host institution's director.</p>
-              </div>
-            </div>
-
-            <!-- Event 9 -->
-            <div data-start="2026-07-25T19:30:00" data-end="2026-07-25T22:00:00" class="event-card category-concert">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">07:30 PM - 10:00 PM</span>
-                <span class="event-duration">2.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Concert</span>
-                </div>
-                <h3 class="event-title">Opening Night Evening Classical Concert</h3>
-                <span class="event-artist">Vidushi Sudha Ragunathan (Carnatic Vocal)</span>
-                <p class="event-desc">A sublime vocal concert exploring intricate South Indian classical ragas accompanied by violin and mridangam.</p>
-              </div>
+          <div class="event-list" id="eventList-day1">
+            <div style="text-align:center; padding:48px; opacity:0.5;">
+              <p>Loading schedule...</p>
             </div>
           </div>
         </div>
 
-        <!-- ── Days 2–5 ──────────────────────────────────── -->
+        <!-- Day 2 ──────────────────────────────────────── -->
         <div class="day-view" id="day2">
           <div class="day-header">
             <div>
@@ -1025,166 +849,16 @@
               <h2 class="headline-md">Day 2 · 26th July 2026</h2>
               <p class="body-md text-muted" style="margin-top:6px;">Core Immersive Day — Workshops, Talks &amp; Concerts</p>
             </div>
-            <span class="chip">9 Events</span>
+            <span class="chip" id="day2Chip">— Events</span>
           </div>
-          
-          <div class="event-list">
-            <!-- Event 1 -->
-            <div data-start="2026-07-26T04:00:00" data-end="2026-07-26T06:00:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">04:00 AM - 06:00 AM</span>
-                <span class="event-duration">2 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Yoga</span>
-                </div>
-                <h3 class="event-title">Dawn Hatha Yoga &amp; Naad Yoga Meditation</h3>
-                <span class="event-artist">Yogi Devendra &amp; Pt. Sabyasachi Sarkhel</span>
-                <p class="event-desc">A peaceful morning spiritual practice at the open lawns. Experience the alignment of postures and sacred sound vibration meditation.</p>
-              </div>
-            </div>
-
-            <!-- Event 2 -->
-            <div data-start="2026-07-26T06:00:00" data-end="2026-07-26T07:00:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">06:00 AM - 07:00 AM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Community</span>
-                </div>
-                <h3 class="event-title">Shramdaan (Collective Cleaning Service)</h3>
-                <span class="event-artist">All Delegates &amp; Volunteers</span>
-                <p class="event-desc">Fostering humility and cooperation through selfless service, cleaning the campus workshop spaces together as one family.</p>
-              </div>
-            </div>
-
-            <!-- Event 3 -->
-            <div data-start="2026-07-26T07:00:00" data-end="2026-07-26T08:30:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">07:00 AM - 08:30 AM</span>
-                <span class="event-duration">1.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Holistic Breakfast</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">A traditional, nourishing breakfast designed to keep energy high for the extensive workshop intensives ahead.</p>
-              </div>
-            </div>
-
-            <!-- Event 4 -->
-            <div data-start="2026-07-26T09:00:00" data-end="2026-07-26T12:00:00" class="event-card category-workshop">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">09:00 AM - 12:00 PM</span>
-                <span class="event-duration">3 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Workshop</span>
-                </div>
-                <h3 class="event-title">Guru-Shishya Intensive Workshops</h3>
-                <span class="event-artist">Pt. Ajoy Chakrabarty &amp; Vidushi Shovana Narayan</span>
-                <p class="event-desc">3-hour deep learning batches across 15+ concurrent venues, covering classical vocals, instrumental sitar, Kathak dance, and tribal crafts.</p>
-              </div>
-            </div>
-
-            <!-- Event 5 -->
-            <div data-start="2026-07-26T12:15:00" data-end="2026-07-26T13:15:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">12:15 PM - 01:15 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Holistic Satvik Lunch</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">Nourishing seasonal satvik lunch served in the dining halls to restore balance and strength.</p>
-              </div>
-            </div>
-
-            <!-- Event 6 -->
-            <div data-start="2026-07-26T13:30:00" data-end="2026-07-26T14:30:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">01:30 PM - 02:30 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Yoga</span>
-                </div>
-                <h3 class="event-title">Yog Nidra (Guided Deep Relaxation)</h3>
-                <span class="event-artist">Yoga Acharyas</span>
-                <p class="event-desc">Guided psychophysiological meditation for active rest. A mandatory cool-down and recharge session for all participants.</p>
-              </div>
-            </div>
-
-            <!-- Event 7 -->
-            <div data-start="2026-07-26T15:00:00" data-end="2026-07-26T17:00:00" class="event-card category-cinema">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">03:00 PM - 05:00 PM</span>
-                <span class="event-duration">2 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Talk</span>
-                </div>
-                <h3 class="event-title">Afternoon Inspiration Talks &amp; Cinema Classics</h3>
-                <span class="event-artist">Dr. Kiran Bedi &amp; Shabana Azmi</span>
-                <p class="event-desc">Inspiring lectures on life ethics, social responsibility, and interactive film screenings highlighting the brilliance of Satyajit Ray.</p>
-              </div>
-            </div>
-
-            <!-- Event 8 -->
-            <div data-start="2026-07-26T17:00:00" data-end="2026-07-26T18:00:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">05:00 PM - 06:00 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Holistic Dinner</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">Light satvik supper to prepare delegates' minds and bodies for an immersive night of music and dance.</p>
-              </div>
-            </div>
-
-            <!-- Event 9 -->
-            <div data-start="2026-07-26T18:30:00" data-end="2026-07-26T21:30:00" class="event-card category-concert">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">06:30 PM - 09:30 PM</span>
-                <span class="event-duration">3 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Concert</span>
-                </div>
-                <h3 class="event-title">Evening Maestro Concerts</h3>
-                <span class="event-artist">Pt. Hariprasad Chaurasia &amp; Pt. Vishwa Mohan Bhatt</span>
-                <p class="event-desc">A majestic evening performance by legendary maestros on the Bansuri and Mohan Veena, accompanied by stellar percussionists.</p>
-              </div>
+          <div class="event-list" id="eventList-day2">
+            <div style="text-align:center; padding:48px; opacity:0.5;">
+              <p>Loading schedule...</p>
             </div>
           </div>
         </div>
 
-        <!-- ── Day 3 ──────────────────────────────────────── -->
+        <!-- Day 3 ──────────────────────────────────────── -->
         <div class="day-view" id="day3">
           <div class="day-header" style="border:1px solid rgba(232,119,34,0.3);">
             <div>
@@ -1193,180 +867,13 @@
               <p class="body-md text-muted" style="margin-top:6px;">Grand Finale, Overnight Concerts &amp; Farewell</p>
             </div>
             <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
-              <span class="chip">10 Events</span>
+              <span class="chip" id="day3Chip">— Events</span>
               <span style="background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;">OVERNIGHT &amp; FAREWELL</span>
             </div>
           </div>
-          
-          <div class="event-list">
-            <!-- Event 1 -->
-            <div data-start="2026-07-27T04:00:00" data-end="2026-07-27T06:00:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">04:00 AM - 06:00 AM</span>
-                <span class="event-duration">2 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Yoga</span>
-                </div>
-                <h3 class="event-title">Morning Hatha Yoga Practice</h3>
-                <span class="event-artist">Yogi Devendra</span>
-                <p class="event-desc">The final dawn yoga session focusing on deep breathing, flexibility, and centering the mind for the finale day.</p>
-              </div>
-            </div>
-
-            <!-- Event 2 -->
-            <div data-start="2026-07-27T07:00:00" data-end="2026-07-27T08:30:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">07:00 AM - 08:30 AM</span>
-                <span class="event-duration">1.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Holistic Breakfast</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">Traditional, healthy breakfast followed by final presentations prep and interactions with Gurus.</p>
-              </div>
-            </div>
-
-            <!-- Event 3 -->
-            <div data-start="2026-07-27T09:00:00" data-end="2026-07-27T12:30:00" class="event-card category-workshop">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">09:00 AM - 12:30 PM</span>
-                <span class="event-duration">3.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Special</span>
-                </div>
-                <h3 class="event-title">Participant Presentations &amp; Showcases</h3>
-                <span class="event-artist">All Convention Workshop Batches</span>
-                <p class="event-desc">Delegates showcase their intensive learning in vocal music, classical dances, and fine crafts across multiple arenas.</p>
-              </div>
-            </div>
-
-            <!-- Event 4 -->
-            <div data-start="2026-07-27T13:30:00" data-end="2026-07-27T14:30:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">01:30 PM - 02:30 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Yoga</span>
-                </div>
-                <h3 class="event-title">Mandatory Yog Nidra Rest</h3>
-                <span class="event-artist">Yoga Acharyas</span>
-                <p class="event-desc">Guided rest and deep recovery. Essential for resting prior to the overnight musical journey.</p>
-              </div>
-            </div>
-
-            <!-- Event 5 -->
-            <div data-start="2026-07-27T17:00:00" data-end="2026-07-27T18:00:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">05:00 PM - 06:00 PM</span>
-                <span class="event-duration">1 hr</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Pre-Marathon Satvik Dinner</h3>
-                <span class="event-artist">VNIT Nagpur Catering</span>
-                <p class="event-desc">A hearty and nourishing dinner to fuel delegates for a historic, sleepless night of divine classical concerts.</p>
-              </div>
-            </div>
-
-            <!-- Event 6 -->
-            <div data-start="2026-07-27T18:30:00" data-end="2026-07-27T20:00:00" class="event-card category-workshop">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">06:30 PM - 08:00 PM</span>
-                <span class="event-duration">1.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Ceremony</span>
-                </div>
-                <h3 class="event-title">Valedictory &amp; Appreciation Ceremony</h3>
-                <span class="event-artist">SPIC MACAY Executives &amp; Volunteers</span>
-                <p class="event-desc">Reflections on the convention's journey, feedback sharing, and distribution of appreciation certificates to volunteers and coordinators.</p>
-              </div>
-            </div>
-
-            <!-- Event 7 -->
-            <div data-start="2026-07-27T20:30:00" data-end="2026-07-28T06:00:00" class="event-card category-concert" style="border: 2px solid rgba(232, 119, 34, 0.45); background: rgba(232, 119, 34, 0.04);">
-              <span class="status-badge status-live" style="background: var(--primary-container); color: white;">Marathon</span>
-              <div class="event-timeline">
-                <span class="event-time-range" style="color: var(--primary);">08:30 PM - 06:00 AM</span>
-                <span class="event-duration" style="color: var(--on-surface-variant); font-weight: bold;">9.5 hrs (Overnight)</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category" style="background: rgba(232, 119, 34, 0.2); color: var(--primary); border-color: rgba(232, 119, 34, 0.4);">Concert</span>
-                </div>
-                <h3 class="event-title" style="font-size: 1.35rem; color: #fff;">Legendary Overnight Grand Finale Concerts</h3>
-                <span class="event-artist">Pt. Ulhas Kashalkar (Vocal), Ustad Shahid Parvez (Sitar), Pt. Kushal Das (Sitar)</span>
-                <p class="event-desc">A continuous, sacred cycle of sublime performances spanning Sitar duets, classical Khayal vocal recitals, and concluding with divine early dawn ragas.</p>
-              </div>
-            </div>
-
-            <!-- Event 8 -->
-            <div data-start="2026-07-28T06:00:00" data-end="2026-07-28T07:30:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">06:00 AM - 07:30 AM</span>
-                <span class="event-duration">1.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Holistic</span>
-                </div>
-                <h3 class="event-title">Concluding Shared Breakfast &amp; Farewell</h3>
-                <span class="event-artist">VNIT Nagpur Catering &amp; Delegates</span>
-                <p class="event-desc">A final warm satvik meal together. Opportunities for reflections, exchanging contact details, and taking group photos.</p>
-              </div>
-            </div>
-
-            <!-- Event 9 -->
-            <div data-start="2026-07-28T09:00:00" data-end="2026-07-28T12:00:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">09:00 AM - 12:00 PM</span>
-                <span class="event-duration">3 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Heritage</span>
-                </div>
-                <h3 class="event-title">Guided Historical Tour of VNIT Nagpur Campus</h3>
-                <span class="event-artist">VNIT Heritage Club Volunteers</span>
-                <p class="event-desc">A guided exploration of VNIT Nagpur's beautiful green campus, highlighting its modern architectural marvels, research facilities, and local heritage archives.</p>
-              </div>
-            </div>
-
-            <!-- Event 10 -->
-            <div data-start="2026-07-28T12:30:00" data-end="2026-07-28T21:00:00" class="event-card category-yoga">
-              <span class="status-badge status-upcoming">Upcoming</span>
-              <div class="event-timeline">
-                <span class="event-time-range">12:30 PM - 09:00 PM</span>
-                <span class="event-duration">8.5 hrs</span>
-              </div>
-              <div class="event-main">
-                <div class="event-meta">
-                  <span class="event-category">Community</span>
-                </div>
-                <h3 class="event-title">Delegate Departure and Transport Coordination</h3>
-                <span class="event-artist">Logistics &amp; Transport Team</span>
-                <p class="event-desc">Coordinated shuttles departing for Nagpur Junction Railway Station and Dr. Babasaheb Ambedkar International Airport (NAG).</p>
-              </div>
+          <div class="event-list" id="eventList-day3">
+            <div style="text-align:center; padding:48px; opacity:0.5;">
+              <p>Loading schedule...</p>
             </div>
           </div>
         </div>
@@ -1375,13 +882,14 @@
         <div id="pdf" style="margin-top:48px;background:var(--surface-container);border:1px solid rgba(232,119,34,0.2);border-radius:16px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;" class="reveal">
           <div>
             <h3 class="headline-sm">Download Full Schedule PDF</h3>
-            <p class="body-md text-muted" style="margin-top:6px;">Complete timetable with venue maps and session details — 4 pages.</p>
+            <p class="body-md text-muted" style="margin-top:6px;">Complete timetable with venue maps and session details.</p>
           </div>
-          <a href="https://intcon.spicmacay.org/schedule/pdf/download" class="btn btn-primary" target="_blank">↓ Download PDF</a>
+          <button onclick="downloadPDF()" class="btn btn-primary" id="downloadPdfBtn">↓ Download PDF</button>
         </div>
 
       </div>
     </section>
+
 
   </div>
   <!-- ══ Footer ═════════════════════════════════════════ -->
@@ -1492,71 +1000,294 @@
       console.warn("Firebase failed to load or initialize, using static fallbacks.", e);
     }
 
+    let allFlagshipEvents = [];
+    let allScheduleEvents = [];
+    let activeFlagshipEventId = 'virasat';
+
     async function loadEventsFromFirestore() {
       if (!db) return;
       try {
-        const snapshot = await db.collection('events').get();
-        if (snapshot.empty) {
-          console.log("No dynamic events found, using static fallbacks.");
-          return;
-        }
-
-        const eventsByDay = {
-          'Day 1': [],
-          'Day 2': [],
-          'Day 3': []
-        };
-
-        snapshot.forEach(doc => {
-          const d = doc.data();
-          const day = d.day || 'Day 1';
-          if (eventsByDay[day]) {
-            eventsByDay[day].push(d);
-          }
+        // 1. Fetch Flagship Events
+        const feSnap = await db.collection('flagshipEvents').get();
+        allFlagshipEvents = [];
+        feSnap.forEach(doc => {
+          allFlagshipEvents.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // 2. Fetch Schedule Events
+        const evSnap = await db.collection('events').get();
+        allScheduleEvents = [];
+        evSnap.forEach(doc => {
+          allScheduleEvents.push({ id: doc.id, ...doc.data() });
         });
 
-        for (const [dayKey, events] of Object.entries(eventsByDay)) {
-          const dayId = dayKey.toLowerCase().replace(' ', '');
-          const dayEl = document.getElementById(dayId);
-          if (!dayEl) continue;
-
-          const chipEl = dayEl.querySelector('.day-header .chip');
-          if (chipEl) {
-            chipEl.textContent = `${events.length} Event${events.length !== 1 ? 's' : ''}`;
-          }
-
-          const eventListEl = dayEl.querySelector('.event-list');
-          if (eventListEl) {
-            let html = '';
-            events.forEach(d => {
-              const statusClass = d.status === 'live' ? 'status-live' : (d.status === 'over' || d.status === 'completed' ? 'status-over' : 'status-upcoming');
-              const statusLabel = d.status === 'live' ? 'Live' : (d.status === 'over' || d.status === 'completed' ? 'Over' : 'Upcoming');
-              
-              html += `
-                <div class="event-card category-${d.category || 'concert'}">
-                  <span class="status-badge ${statusClass}">${statusLabel}</span>
-                  <div class="event-timeline">
-                    <span class="event-time-range">${d.timeRange}</span>
-                    <span class="event-duration">${d.duration || ''}</span>
-                  </div>
-                  <div class="event-main">
-                    <div class="event-meta">
-                      <span class="event-category">${d.category || ''}</span>
-                    </div>
-                    <h3 class="event-title">${d.title}</h3>
-                    <span class="event-artist">${d.artistName || ''}</span>
-                    <p class="event-desc">${d.description || ''}</p>
-                  </div>
-                </div>
-              `;
-            });
-            eventListEl.innerHTML = html;
+        // 3. Set default active flagship event
+        if (allFlagshipEvents.length > 0) {
+          // Try to keep 'virasat' as default if it exists
+          if (allFlagshipEvents.some(f => f.id === 'virasat')) {
+            activeFlagshipEventId = 'virasat';
+          } else {
+            activeFlagshipEventId = allFlagshipEvents[0].id;
           }
         }
-        syncEventStatuses();
-        if (typeof initScrollReveal === 'function') initScrollReveal();
+
+        renderFlagshipEventsGrid();
+        renderScheduleForActiveEvent();
+
       } catch (err) {
         console.error("Error loading events from Firestore:", err);
+      }
+    }
+
+    function renderFlagshipEventsGrid() {
+      const container = document.getElementById('eventsGridContainer');
+      if (!container) return;
+      
+      if (allFlagshipEvents.length === 0) {
+        // Fallbacks
+        container.innerHTML = `
+          <div class="event-tile-card reveal active-tile" onclick="selectFlagshipEvent('virasat')" id="tile-virasat">
+            <div class="event-tile-content">
+              <div class="event-tile-icon-wrap" style="padding: 0; overflow: hidden;">
+                <img src="Reference/sitar-lotus.png" alt="Sitar Lotus Icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;" />
+              </div>
+              <h3 class="event-tile-title">VIRASAT</h3>
+              <p class="event-tile-desc">Our flagship 3-day cultural immersion. Experience classical concerts, guru-shishya workshops, and heritage arts.</p>
+            </div>
+            <span class="event-tile-arrow">View Schedule →</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = allFlagshipEvents.map((fe, idx) => {
+        const delayClass = idx > 0 ? `reveal-delay-${idx}` : '';
+        const iconHtml = fe.iconUrl 
+          ? `<img src="${fe.iconUrl}" alt="${fe.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block;" />`
+          : `<div style="font-size: 2rem; display: flex; align-items: center; justify-content: center; height: 100%;">🎪</div>`;
+
+        return `
+          <div class="event-tile-card reveal ${delayClass} ${fe.id === activeFlagshipEventId ? 'active-tile' : ''}" 
+               onclick="selectFlagshipEvent('${fe.id}')" id="tile-${fe.id}">
+            <div class="event-tile-content">
+              <div class="event-tile-icon-wrap" style="padding: 0; overflow: hidden; background: #fff; display: flex; align-items: center; justify-content: center;">
+                ${iconHtml}
+              </div>
+              <h3 class="event-tile-title">${fe.title}</h3>
+              <p class="event-tile-desc">${fe.description}</p>
+            </div>
+            <span class="event-tile-arrow">View Schedule →</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectFlagshipEvent(id) {
+      activeFlagshipEventId = id;
+      
+      document.querySelectorAll('.event-tile-card').forEach(card => {
+        card.classList.remove('active-tile');
+      });
+      const activeCard = document.getElementById('tile-' + id);
+      if (activeCard) {
+        activeCard.classList.add('active-tile');
+      }
+
+      const virasatPanel = document.getElementById('panel-virasat');
+      if (virasatPanel) {
+        if (id === 'virasat') {
+          virasatPanel.classList.add('active');
+        } else {
+          virasatPanel.classList.remove('active');
+        }
+      }
+
+      renderScheduleForActiveEvent();
+
+      const scheduleSec = document.getElementById('scheduleSection');
+      if (scheduleSec) {
+        scheduleSec.style.display = 'block';
+        setTimeout(() => {
+          scheduleSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+      }
+    }
+
+    function renderScheduleForActiveEvent() {
+      const filteredEvents = allScheduleEvents.filter(d => d.flagshipEventId === activeFlagshipEventId);
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+      const eventsByDay = {
+        'Day 1': [],
+        'Day 2': [],
+        'Day 3': []
+      };
+
+      filteredEvents.forEach(d => {
+        const day = d.day || 'Day 1';
+        if (eventsByDay[day]) {
+          eventsByDay[day].push(d);
+        }
+      });
+
+      window.activeScheduleEvents = eventsByDay;
+
+      for (const [dayKey, events] of Object.entries(eventsByDay)) {
+        const dayId = dayKey.toLowerCase().replace(' ', '');
+        const dayEl = document.getElementById(dayId);
+        if (!dayEl) continue;
+
+        const chipEl = dayEl.querySelector('.day-header .chip');
+        if (chipEl) {
+          chipEl.textContent = `${events.length} Event${events.length !== 1 ? 's' : ''}`;
+        }
+
+        const eventListEl = dayEl.querySelector('.event-list');
+        if (eventListEl) {
+          if (events.length === 0) {
+            eventListEl.innerHTML = `
+              <div style="text-align: center; padding: 40px; opacity: 0.5;">
+                <p>No events scheduled for this day.</p>
+              </div>
+            `;
+            continue;
+          }
+
+          let html = '';
+          events.forEach(d => {
+            const statusClass = d.status === 'live' ? 'status-live' : (d.status === 'over' || d.status === 'completed' ? 'status-over' : 'status-upcoming');
+            const statusLabel = d.status === 'live' ? 'Live' : (d.status === 'over' || d.status === 'completed' ? 'Over' : 'Upcoming');
+            
+            const editButton = isAdmin ? `
+              <button class="btn btn-secondary btn-sm edit-event-btn" 
+                      style="position: absolute; bottom: 20px; right: 24px; z-index: 10; border-radius: var(--radius-md); font-weight: bold; background: rgba(245, 240, 232, 0.05); border: 1px solid rgba(245, 240, 232, 0.15); padding: 6px 12px; cursor: pointer; color: var(--primary);"
+                      onclick="redirectToAdminEdit('${d.id}')">
+                ✏️ Edit
+              </button>
+            ` : '';
+
+            html += `
+              <div class="event-card category-${d.category || 'concert'}">
+                <span class="status-badge ${statusClass}">${statusLabel}</span>
+                <div class="event-timeline">
+                  <span class="event-time-range">${d.timeRange}</span>
+                  <span class="event-duration">${d.duration || ''}</span>
+                </div>
+                <div class="event-main">
+                  <div class="event-meta">
+                    <span class="event-category">${d.category || ''}</span>
+                  </div>
+                  <h3 class="event-title" style="${isAdmin ? 'padding-right: 80px;' : ''}">${d.title}</h3>
+                  <span class="event-artist">${d.artistName || ''}</span>
+                  <p class="event-desc">${d.description || ''}</p>
+                </div>
+                ${editButton}
+              </div>
+            `;
+          });
+          eventListEl.innerHTML = html;
+        }
+      }
+      syncEventStatuses();
+      if (typeof initScrollReveal === 'function') initScrollReveal();
+    }
+
+    function redirectToAdminEdit(eventId) {
+      window.location.href = `admin.html?tab=schedule&edit=${eventId}`;
+    }
+
+    async function downloadPDF() {
+      const btn = document.getElementById('downloadPdfBtn');
+      if (!btn) return;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Generating...';
+      btn.style.pointerEvents = 'none';
+
+      try {
+        if (typeof html2pdf === 'undefined') {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+
+        const activeEvent = allFlagshipEvents.find(f => f.id === activeFlagshipEventId) || { title: 'Schedule' };
+        const pdfContainer = document.createElement('div');
+        pdfContainer.style.padding = '40px';
+        pdfContainer.style.background = '#0f0c0a';
+        pdfContainer.style.color = '#f5f0e8';
+        pdfContainer.style.fontFamily = 'system-ui, -apple-system, sans-serif';
+
+        pdfContainer.innerHTML = `
+          <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e87722; padding-bottom: 15px;">
+            <h1 style="font-family: serif; color: #e87722; margin: 0; font-size: 28px;">SPIC MACAY ${activeEvent.title.toUpperCase()}</h1>
+            <p style="margin: 5px 0 0 0; font-size: 14px; color: #a8a29e; letter-spacing: 0.05em; text-transform: uppercase;">Convention Schedule & Timetable</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #78716c;">VNIT Nagpur • July 25 – 27, 2026</p>
+          </div>
+        `;
+
+        const days = ['Day 1', 'Day 2', 'Day 3'];
+        days.forEach(day => {
+          const events = window.activeScheduleEvents ? window.activeScheduleEvents[day] : [];
+          if (!events || !events.length) return;
+
+          pdfContainer.innerHTML += `
+            <div style="margin-top: 30px; page-break-inside: avoid;">
+              <h2 style="font-family: serif; color: #e87722; border-bottom: 1px solid rgba(245,240,232,0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 20px;">
+                ${day} — ${day === 'Day 1' ? 'July 25' : day === 'Day 2' ? 'July 26' : 'July 27'}
+              </h2>
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                <thead>
+                  <tr style="border-bottom: 2px solid rgba(232,119,34,0.3); color: #e87722;">
+                    <th style="padding: 10px; width: 25%;">Time / Duration</th>
+                    <th style="padding: 10px; width: 45%;">Event Details</th>
+                    <th style="padding: 10px; width: 20%;">Artist</th>
+                    <th style="padding: 10px; width: 10%; text-align: right;">Category</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${events.map(ev => `
+                    <tr style="border-bottom: 1px solid rgba(245,240,232,0.06); page-break-inside: avoid;">
+                      <td style="padding: 12px 10px; vertical-align: top;">
+                        <strong style="color: #f5f0e8;">${ev.timeRange}</strong>
+                        ${ev.duration ? `<br><span style="font-size: 11px; color: #a8a29e;">${ev.duration}</span>` : ''}
+                      </td>
+                      <td style="padding: 12px 10px; vertical-align: top;">
+                        <strong style="font-size: 14px; color: #f5f0e8;">${ev.title}</strong>
+                        ${ev.description ? `<p style="margin: 4px 0 0 0; font-size: 12px; color: #a8a29e; line-height: 1.4;">${ev.description}</p>` : ''}
+                      </td>
+                      <td style="padding: 12px 10px; vertical-align: top; color: #f5f0e8;">
+                        ${ev.artistName || '—'}
+                      </td>
+                      <td style="padding: 12px 10px; vertical-align: top; text-align: right; text-transform: uppercase; font-size: 11px; font-weight: bold; color: #e87722;">
+                        ${ev.category || 'concert'}
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        });
+
+        const opt = {
+          margin:       [10, 10, 10, 10],
+          filename:     `${activeEvent.title.replace(/[^a-zA-Z0-9]+/g, '_')}_Schedule.pdf`,
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0f0c0a' },
+          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        await html2pdf().set(opt).from(pdfContainer).save();
+      } catch (err) {
+        console.error("PDF generation failed:", err);
+        alert("Failed to generate PDF. You can try printing the page directly.");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.style.pointerEvents = 'auto';
       }
     }
 

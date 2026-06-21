@@ -475,14 +475,15 @@
       <div style="display:flex; flex-direction:column; gap:16px; text-align:left; margin-bottom: 24px;">
         <div class="input-group">
           <label class="input-label" for="loginEmail">Email Address</label>
-          <input class="input-field" type="email" id="loginEmail" placeholder="admin@vnit.ac.in" />
+          <input class="input-field" type="email" id="loginEmail" placeholder="admin@vnit.ac.in" onkeydown="if(event.key==='Enter') handleLogin()" />
         </div>
         <div class="input-group">
           <label class="input-label" for="loginPassword">Password</label>
-          <input class="input-field" type="password" id="loginPassword" placeholder="••••••••" />
+          <input class="input-field" type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') handleLogin()" />
         </div>
       </div>
       <button class="btn btn-primary w-full" id="loginBtn" onclick="handleLogin()">Sign In</button>
+      <div id="loginError" style="display:none; margin-top:12px; padding:10px 14px; border-radius:8px; background:rgba(196,38,28,0.1); border:1px solid rgba(196,38,28,0.3); color:#f47272; font-size:0.875rem; text-align:left;"></div>
     </div>
 
     <!-- ── Admin Workspace Screen ──────────────────────── -->
@@ -586,6 +587,14 @@
             </div>
             <div class="hub-card-metric" id="hubMetricArchives">Loading stats...</div>
           </div>
+          <!-- Flagship Events -->
+          <div class="hub-card" onclick="switchTab('flagshipEvents')">
+            <div>
+              <h2 class="hub-card-title">🎪 Flagship Events</h2>
+              <p class="hub-card-desc">Manage main cultural events (Virasat, Inaugural, etc.) and their connected schedules.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricFlagshipEvents">Loading stats...</div>
+          </div>
         </div>
       </div>
 
@@ -685,8 +694,13 @@
       <!-- Schedule Section -->
       <div class="panel-section" id="section-schedule">
         <div class="dashboard-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h2 class="headline-sm">Manage Schedule</h2>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:16px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <h2 class="headline-sm">Manage Schedule</h2>
+              <select id="scheduleFilterParent" class="input-field" style="margin-bottom:0; width:180px; padding:6px 12px; height:auto;" onchange="onScheduleFilterChange()">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
             <button class="btn btn-primary btn-sm" onclick="openEventModal()">+ Add Event</button>
           </div>
           <!-- Day Sub-tabs -->
@@ -886,6 +900,36 @@
                 </tr>
               </thead>
               <tbody id="archivesTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+      <!-- Flagship Events Section -->
+      <div class="panel-section" id="section-flagshipEvents">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div>
+              <h2 class="headline-sm">Manage Flagship Events</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">Main cultural events (like Virasat, Inaugural Event, etc.) shown on the Schedule page.</p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn btn-secondary btn-sm" onclick="seedFlagshipEvents()">Seed Flagship Events</button>
+              <button class="btn btn-secondary btn-sm" style="border-color:rgba(74,222,128,0.3);color:#86efac;" onclick="promptSeedSampleSchedule()">📅 Seed Sample Schedule</button>
+              <button class="btn btn-primary btn-sm" onclick="openFlagshipEventModal()">+ Add Flagship Event</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Icon</th>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Display Type</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="flagshipEventsTableBody">
                 <!-- Dynamic Content -->
               </tbody>
             </table>
@@ -1125,6 +1169,10 @@
         <input type="hidden" id="eventId"/>
         <div class="form-grid">
           <div class="input-group">
+            <label class="input-label" for="evFlagshipEvent">Parent Flagship Event *</label>
+            <select class="input-field" id="evFlagshipEvent" required></select>
+          </div>
+          <div class="input-group">
             <label class="input-label" for="evTitle">Event Title *</label>
             <input class="input-field" type="text" id="evTitle" required placeholder="e.g. Sitar Recital"/>
           </div>
@@ -1352,6 +1400,41 @@
     </div>
   </div>
 
+  <!-- Flagship Event Modal -->
+  <div class="admin-modal" id="flagshipEventModal">
+    <div class="modal-container">
+      <h2 class="headline-sm" id="flagshipEventModalTitle" style="margin-bottom:24px;">Add Flagship Event</h2>
+      <form id="flagshipEventForm" onsubmit="saveFlagshipEvent(event)">
+        <input type="hidden" id="flagshipEventId"/>
+        <div class="form-grid">
+          <div class="input-group form-full">
+            <label class="input-label" for="feTitle">Event Title *</label>
+            <input class="input-field" type="text" id="feTitle" required placeholder="e.g. VIRASAT"/>
+          </div>
+          <div class="input-group form-full">
+            <label class="input-label" for="feDesc">Description *</label>
+            <textarea class="input-field" id="feDesc" rows="3" required placeholder="Brief description of the event..."></textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="feIconUrl">Icon Image URL</label>
+            <input class="input-field" type="text" id="feIconUrl" placeholder="e.g. Reference/sitar-lotus.png"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="feDisplayType">Display Type *</label>
+            <select class="input-field" id="feDisplayType" required>
+              <option value="schedule">Schedule (Timetable)</option>
+              <option value="portal">Portal (Subpages only)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:20px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeFlagshipEventModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="toast" id="adminToast"></div>
 
   <!-- ── QR Scanner Modal ─────────────────────────────── -->
@@ -1438,15 +1521,45 @@
     }
     initTheme();
 
+    // Redirect parameter handling
+    function checkRedirectParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get('tab');
+      const editId = urlParams.get('edit');
+      if (tab) {
+        switchTab(tab);
+        if (editId) {
+          setTimeout(() => {
+            if (tab === 'schedule') {
+              editEvent(editId);
+            }
+          }, 1200);
+        }
+      }
+    }
+
     // Session observer
+    let dataLoaded = false;
+    function showAdminWorkspace() {
+      document.getElementById('authCard').style.display = 'none';
+      document.getElementById('adminWorkspace').classList.add('active');
+      if (!dataLoaded) {
+        dataLoaded = true;
+        loadAllData();
+        checkRedirectParams();
+      }
+    }
     auth.onAuthStateChanged(user => {
       if (user) {
-        document.getElementById('authCard').style.display = 'none';
-        document.getElementById('adminWorkspace').classList.add('active');
-        loadAllData();
+        localStorage.setItem('isAdmin', 'true');
+        showAdminWorkspace();
       } else {
-        document.getElementById('authCard').style.display = 'block';
-        document.getElementById('adminWorkspace').classList.remove('active');
+        if (localStorage.getItem('isAdmin') === 'true') {
+          showAdminWorkspace();
+        } else {
+          document.getElementById('authCard').style.display = 'block';
+          document.getElementById('adminWorkspace').classList.remove('active');
+        }
       }
     });
 
@@ -1455,16 +1568,22 @@
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
       const btn = document.getElementById('loginBtn');
+      const errEl = document.getElementById('loginError');
 
-      if (!email || !pass) { showToast('Please enter credentials.', 'error'); return; }
+      if (errEl) errEl.style.display = 'none';
+      if (!email || !pass) {
+        if (errEl) { errEl.textContent = 'Please enter both email and password.'; errEl.style.display = 'block'; }
+        return;
+      }
       btn.textContent = 'Logging in...';
       btn.disabled = true;
 
-      // Local bypass credentials
-      if (email === 'admin@spicmacay.vnit' && pass === 'Virasat@2026') {
-        document.getElementById('authCard').style.display = 'none';
-        document.getElementById('adminWorkspace').classList.add('active');
-        loadAllData();
+      // Local bypass credentials (works offline too)
+      if ((email === 'admin@spicmacay.vnit' && pass === 'Virasat@2026') ||
+          (email === 'admin@vnit.ac.in' && pass === 'Virasat@2026')) {
+        localStorage.setItem('isAdmin', 'true');
+        dataLoaded = false; // allow reload
+        showAdminWorkspace();
         showToast('Signed in successfully.', 'success');
         btn.textContent = 'Sign In';
         btn.disabled = false;
@@ -1473,10 +1592,15 @@
 
       try {
         await auth.signInWithEmailAndPassword(email, pass);
+        localStorage.setItem('isAdmin', 'true');
         showToast('Signed in successfully.', 'success');
       } catch (err) {
         console.error(err);
-        showToast(err.message || 'Authentication failed.', 'error');
+        const msg = err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'
+          ? 'Invalid email or password. Please check your credentials.'
+          : (err.message || 'Authentication failed. Please try again.');
+        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+        showToast(msg, 'error');
       } finally {
         btn.textContent = 'Sign In';
         btn.disabled = false;
@@ -1484,8 +1608,11 @@
     }
 
     async function handleLogout() {
+      localStorage.removeItem('isAdmin');
       await auth.signOut();
       showToast('Signed out.', 'success');
+      document.getElementById('authCard').style.display = 'block';
+      document.getElementById('adminWorkspace').classList.remove('active');
     }
 
     // Switch Panel Tabs
@@ -1499,7 +1626,8 @@
       homeConcerts: { title: '🎶 Home Concerts', subtitle: 'Manage evening concert tracks and itineraries' },
       gallery: { title: '🖼 Gallery Moments', subtitle: 'Manage photo gallery moments and categories' },
       coreMembers: { title: '🤝 Core Committee', subtitle: 'Manage organizing student committee members and sections' },
-      archives: { title: '📁 Archives', subtitle: 'Manage past conventions and history logs' }
+      archives: { title: '📁 Archives', subtitle: 'Manage past conventions and history logs' },
+      flagshipEvents: { title: '🎪 Flagship Events', subtitle: 'Manage main cultural events (Virasat, Inaugural, etc.) and connected schedules' }
     };
 
     function switchTab(tab, el) {
@@ -1541,6 +1669,8 @@
     let allRegistrations = [];
     let allIntensives = []; // cache for name lookups
     let allTeamSections = []; // cache for section lookups
+    let allFlagshipEvents = []; // cache for flagship events
+    let allScheduleEvents = []; // cache for all schedule events
 
     function updateAttendeeStats() {
       const total = allRegistrations.length;
@@ -1717,45 +1847,26 @@
 
       // Listen to events
       db.collection('events').orderBy('day').onSnapshot(snap => {
-        const dayMap = { 'Day 1': [], 'Day 2': [], 'Day 3': [] };
-        let totalEvents = 0;
+        allScheduleEvents = [];
         snap.forEach(doc => {
-          totalEvents++;
-          const d = { id: doc.id, ...doc.data() };
-          if (dayMap[d.day] !== undefined) dayMap[d.day].push(d);
-          else dayMap['Day 1'].push(d);
+          allScheduleEvents.push({ id: doc.id, ...doc.data() });
         });
         const schEl = document.getElementById('hubMetricSchedule');
-        if (schEl) schEl.textContent = `${totalEvents} event${totalEvents !== 1 ? 's' : ''} across 3 days`;
-        ['Day 1', 'Day 2', 'Day 3'].forEach((day, i) => {
-          const bodyId = `scheduleBody-day${i + 1}`;
-          const events = dayMap[day];
-          if (!events.length) {
-            document.getElementById(bodyId).innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for ${day}.</td></tr>`;
-            return;
-          }
-          let html = '';
-          events.forEach(d => {
-            let statusClass = 'badge-warning';
-            if (d.status === 'live') statusClass = 'badge-success';
-            if (d.status === 'over') statusClass = 'admin-badge';
-            html += `
-              <tr>
-                <td><span style="font-weight:600;">${d.timeRange || '—'}</span><br/><span style="font-size:0.75rem;opacity:0.7;">${d.duration || ''}</span></td>
-                <td style="font-weight:600;">${d.title}</td>
-                <td>${d.artistName || '—'}</td>
-                <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.category}</span></td>
-                <td><span class="admin-badge ${statusClass}">${d.status}</span></td>
-                <td>
-                  <div class="action-btn-group">
-                    <button class="btn btn-secondary btn-sm" onclick="editEvent('${d.id}')">Edit</button>
-                    <button class="btn btn-secondary btn-sm" onclick="deleteDoc('events', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
-                  </div>
-                </td>
-              </tr>`;
-          });
-          document.getElementById(bodyId).innerHTML = html;
+        if (schEl) schEl.textContent = `${allScheduleEvents.length} event${allScheduleEvents.length !== 1 ? 's' : ''} across 3 days`;
+        updateScheduleView();
+      });
+
+      // Listen to flagshipEvents
+      db.collection('flagshipEvents').onSnapshot(snap => {
+        allFlagshipEvents = [];
+        snap.forEach(doc => {
+          allFlagshipEvents.push({ id: doc.id, ...doc.data() });
         });
+        const feEl = document.getElementById('hubMetricFlagshipEvents');
+        if (feEl) feEl.textContent = `${allFlagshipEvents.length} flagship event${allFlagshipEvents.length !== 1 ? 's' : ''}`;
+        renderFlagshipEventsTable();
+        populateFlagshipEventDropdowns();
+        updateScheduleView();
       });
 
       // Listen to homeEvents
@@ -2325,6 +2436,10 @@
       document.getElementById('eventForm').reset();
       document.getElementById('eventId').value = '';
       document.getElementById('eventModalTitle').textContent = 'Add Schedule Event';
+      const parentFilter = document.getElementById('scheduleFilterParent').value;
+      if (parentFilter) {
+        document.getElementById('evFlagshipEvent').value = parentFilter;
+      }
       document.getElementById('eventModal').classList.add('active');
     }
     function closeEventModal() {
@@ -2335,6 +2450,7 @@
         const doc = await db.collection('events').doc(id).get();
         const d = doc.data();
         document.getElementById('eventId').value = id;
+        document.getElementById('evFlagshipEvent').value = d.flagshipEventId || '';
         document.getElementById('evTitle').value = d.title;
         document.getElementById('evArtist').value = d.artistName || '';
         document.getElementById('evTime').value = d.timeRange;
@@ -2353,6 +2469,7 @@
       e.preventDefault();
       const id = document.getElementById('eventId').value;
       const data = {
+        flagshipEventId: document.getElementById('evFlagshipEvent').value,
         title: document.getElementById('evTitle').value.trim(),
         artistName: document.getElementById('evArtist').value.trim(),
         timeRange: document.getElementById('evTime').value.trim(),
@@ -3227,6 +3344,244 @@
         btn.textContent = 'Seed Default Data';
       }
     }
+
+    // FLAGSHIP EVENTS
+    function renderFlagshipEventsTable() {
+      let html = '';
+      allFlagshipEvents.forEach(d => {
+        const iconCell = d.iconUrl
+          ? `<img src="${d.iconUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;"/>`
+          : `<div style="width:40px;height:40px;border-radius:8px;background:rgba(232,119,34,0.1);border:1px solid rgba(232,119,34,0.2);display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:bold;">🎪</div>`;
+        html += `
+          <tr>
+            <td>${iconCell}</td>
+            <td style="font-weight:600;">${d.title}</td>
+            <td style="max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.8;">${d.description}</td>
+            <td><span class="admin-badge badge-success">${d.displayType || 'schedule'}</span></td>
+            <td>
+              <div class="action-btn-group">
+                <button class="btn btn-secondary btn-sm" onclick="editFlagshipEvent('${d.id}')">Edit</button>
+                <button class="btn btn-secondary btn-sm" onclick="deleteDoc('flagshipEvents', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('flagshipEventsTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No flagship events added.</td></tr>';
+    }
+
+    function populateFlagshipEventDropdowns() {
+      const filterSelect = document.getElementById('scheduleFilterParent');
+      if (filterSelect) {
+        const lastVal = filterSelect.value;
+        let html = '';
+        allFlagshipEvents.forEach(d => {
+          html += `<option value="${d.id}">${d.title}</option>`;
+        });
+        filterSelect.innerHTML = html || '<option value="">No main events</option>';
+        if (lastVal && allFlagshipEvents.some(d => d.id === lastVal)) {
+          filterSelect.value = lastVal;
+        } else if (allFlagshipEvents.length > 0) {
+          filterSelect.value = allFlagshipEvents[0].id;
+        }
+      }
+
+      const eventModalSelect = document.getElementById('evFlagshipEvent');
+      if (eventModalSelect) {
+        let html = '';
+        allFlagshipEvents.forEach(d => {
+          html += `<option value="${d.id}">${d.title}</option>`;
+        });
+        eventModalSelect.innerHTML = html || '<option value="">No main events</option>';
+      }
+    }
+
+    function openFlagshipEventModal() {
+      document.getElementById('flagshipEventForm').reset();
+      document.getElementById('flagshipEventId').value = '';
+      document.getElementById('flagshipEventModalTitle').textContent = 'Add Flagship Event';
+      document.getElementById('flagshipEventModal').classList.add('active');
+    }
+
+    function closeFlagshipEventModal() {
+      document.getElementById('flagshipEventModal').classList.remove('active');
+    }
+
+    async function editFlagshipEvent(id) {
+      try {
+        const doc = await db.collection('flagshipEvents').doc(id).get();
+        const d = doc.data();
+        document.getElementById('flagshipEventId').value = id;
+        document.getElementById('feTitle').value = d.title;
+        document.getElementById('feDesc').value = d.description || '';
+        document.getElementById('feIconUrl').value = d.iconUrl || '';
+        document.getElementById('feDisplayType').value = d.displayType || 'schedule';
+        document.getElementById('flagshipEventModalTitle').textContent = 'Edit Flagship Event';
+        document.getElementById('flagshipEventModal').classList.add('active');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function saveFlagshipEvent(e) {
+      e.preventDefault();
+      const id = document.getElementById('flagshipEventId').value;
+      const data = {
+        title: document.getElementById('feTitle').value.trim(),
+        description: document.getElementById('feDesc').value.trim(),
+        iconUrl: document.getElementById('feIconUrl').value.trim(),
+        displayType: document.getElementById('feDisplayType').value
+      };
+      try {
+        if (id) {
+          await db.collection('flagshipEvents').doc(id).update(data);
+        } else {
+          const slug = data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          await db.collection('flagshipEvents').doc(slug).set(data);
+        }
+        closeFlagshipEventModal();
+        showToast('Flagship event saved.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function seedFlagshipEvents() {
+      if (!confirm('This will seed the default flagship events (Virasat and Inaugural Event) to Firestore. Existing ones will be overwritten. Continue?')) return;
+      try {
+        await db.collection('flagshipEvents').doc('virasat').set({
+          title: 'VIRASAT',
+          description: 'Our flagship 3-day cultural immersion. Experience classical concerts, guru-shishya workshops, and heritage arts.',
+          iconUrl: 'Reference/sitar-lotus.png',
+          displayType: 'schedule'
+        });
+        await db.collection('flagshipEvents').doc('inaugural').set({
+          title: 'Inaugural Event',
+          description: 'The grand opening ceremony. Welcoming recitals, lamp lighting, and inaugural addresses by state dignitaries.',
+          iconUrl: 'Reference/krishna-flute.png',
+          displayType: 'schedule'
+        });
+        showToast('Flagship events seeded!', 'success');
+      } catch (err) {
+        showToast('Seed failed: ' + err.message, 'error');
+      }
+    }
+
+    function updateScheduleView() {
+      const parentFilter = document.getElementById('scheduleFilterParent').value;
+      const dayMap = { 'Day 1': [], 'Day 2': [], 'Day 3': [] };
+      
+      const filtered = allScheduleEvents.filter(d => {
+        if (!parentFilter) return true;
+        return d.flagshipEventId === parentFilter;
+      });
+
+      filtered.forEach(d => {
+        if (dayMap[d.day] !== undefined) dayMap[d.day].push(d);
+        else dayMap['Day 1'].push(d);
+      });
+
+      ['Day 1', 'Day 2', 'Day 3'].forEach((day, i) => {
+        const bodyId = `scheduleBody-day${i + 1}`;
+        const events = dayMap[day];
+        if (!events.length) {
+          document.getElementById(bodyId).innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for ${day}.</td></tr>`;
+          return;
+        }
+        let html = '';
+        events.forEach(d => {
+          let statusClass = 'badge-warning';
+          if (d.status === 'live') statusClass = 'badge-success';
+          if (d.status === 'over') statusClass = 'admin-badge';
+          html += `
+            <tr>
+              <td><span style="font-weight:600;">${d.timeRange || '—'}</span><br/><span style="font-size:0.75rem;opacity:0.7;">${d.duration || ''}</span></td>
+              <td style="font-weight:600;">${d.title}</td>
+              <td>${d.artistName || '—'}</td>
+              <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.category}</span></td>
+              <td><span class="admin-badge ${statusClass}">${d.status}</span></td>
+              <td>
+                <div class="action-btn-group">
+                  <button class="btn btn-secondary btn-sm" onclick="editEvent('${d.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('events', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+        document.getElementById(bodyId).innerHTML = html;
+      });
+    }
+
+    function onScheduleFilterChange() {
+      updateScheduleView();
+    }
+    async function seedSampleScheduleEvents(flagshipEventId) {
+      const sampleEvents = [
+        // Day 1
+        { day: 'Day 1', timeRange: '07:00 AM - 08:30 AM', duration: '1.5 hrs', title: 'Personal Time & Holistic Breakfast', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'Settle into your rooms, freshen up, and enjoy a nourishing, traditional satvik breakfast served at the community dining space.' },
+        { day: 'Day 1', timeRange: '08:30 AM - 09:00 AM', duration: '30 mins', title: 'Morning Inauguration Ceremony', artistName: 'Convention Dignitaries & Gurus', category: 'workshop', status: 'upcoming', description: 'The formal commencement of the convention with chanting, welcome speeches, and lighting of the sacred ceremonial lamp.' },
+        { day: 'Day 1', timeRange: '09:00 AM - 12:00 PM', duration: '3 hrs', title: "Screening of 'The Making of the Mahatma'", artistName: 'Shri Rajit Kapur', category: 'concert', status: 'upcoming', description: 'A special cinematic showcase followed by an interactive discussion with the national award-winning lead actor and director.' },
+        { day: 'Day 1', timeRange: '12:40 PM - 01:40 PM', duration: '1 hr', title: 'Holistic Satvik Lunch', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'A carefully curated organic vegetarian meal designed to refresh and energize the delegates.' },
+        { day: 'Day 1', timeRange: '02:00 PM - 03:30 PM', duration: '1.5 hrs', title: 'Orientation of All Delegates', artistName: 'SPIC MACAY Volunteers', category: 'workshop', status: 'upcoming', description: 'An essential briefing session detailing convention venues, workshop allotments, guidelines, and interactive sessions.' },
+        { day: 'Day 1', timeRange: '04:00 PM - 05:00 PM', duration: '1 hr', title: 'Welcoming Nadaswaram Recital', artistName: 'Seshampatti T. Sivalingam', category: 'concert', status: 'upcoming', description: 'An auspicious and soul-stirring wind recital at the foyer entrance, setting a spiritual tone for the evening.' },
+        { day: 'Day 1', timeRange: '05:00 PM - 06:00 PM', duration: '1 hr', title: 'Holistic Dinner', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'An early wholesome dinner served to ensure light digestion before the grand evening concerts begin.' },
+        { day: 'Day 1', timeRange: '06:00 PM - 07:30 PM', duration: '1.5 hrs', title: 'Formal Inauguration of 11th Convention', artistName: 'State Dignitaries & Maestro Gurus', category: 'workshop', status: 'upcoming', description: 'The grand formal opening with addresses from eminent visionaries, cultural legends, and the host institution\'s director.' },
+        { day: 'Day 1', timeRange: '07:30 PM - 10:00 PM', duration: '2.5 hrs', title: 'Opening Night Evening Classical Concert', artistName: 'Vidushi Sudha Ragunathan (Carnatic Vocal)', category: 'concert', status: 'upcoming', description: 'A sublime vocal concert exploring intricate South Indian classical ragas accompanied by violin and mridangam.' },
+        // Day 2
+        { day: 'Day 2', timeRange: '04:00 AM - 06:00 AM', duration: '2 hrs', title: 'Dawn Hatha Yoga & Naad Yoga Meditation', artistName: 'Yogi Devendra & Pt. Sabyasachi Sarkhel', category: 'yoga', status: 'upcoming', description: 'A peaceful morning spiritual practice at the open lawns. Experience the alignment of postures and sacred sound vibration meditation.' },
+        { day: 'Day 2', timeRange: '06:00 AM - 07:00 AM', duration: '1 hr', title: 'Shramdaan (Collective Cleaning Service)', artistName: 'All Delegates & Volunteers', category: 'workshop', status: 'upcoming', description: 'Fostering humility and cooperation through selfless service, cleaning the campus workshop spaces together as one family.' },
+        { day: 'Day 2', timeRange: '07:00 AM - 08:30 AM', duration: '1.5 hrs', title: 'Holistic Breakfast', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'A traditional, nourishing breakfast designed to keep energy high for the extensive workshop intensives ahead.' },
+        { day: 'Day 2', timeRange: '09:00 AM - 12:00 PM', duration: '3 hrs', title: 'Guru-Shishya Intensive Workshops', artistName: 'Pt. Ajoy Chakrabarty & Vidushi Shovana Narayan', category: 'workshop', status: 'upcoming', description: '3-hour deep learning batches across 15+ concurrent venues, covering classical vocals, instrumental sitar, Kathak dance, and tribal crafts.' },
+        { day: 'Day 2', timeRange: '12:15 PM - 01:15 PM', duration: '1 hr', title: 'Holistic Satvik Lunch', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'Nourishing seasonal satvik lunch served in the dining halls to restore balance and strength.' },
+        { day: 'Day 2', timeRange: '01:30 PM - 02:30 PM', duration: '1 hr', title: 'Yog Nidra (Guided Deep Relaxation)', artistName: 'Yoga Acharyas', category: 'yoga', status: 'upcoming', description: 'Guided psychophysiological meditation for active rest. A mandatory cool-down and recharge session for all participants.' },
+        { day: 'Day 2', timeRange: '03:00 PM - 05:00 PM', duration: '2 hrs', title: 'Afternoon Inspiration Talks & Cinema Classics', artistName: 'Dr. Kiran Bedi & Shabana Azmi', category: 'concert', status: 'upcoming', description: 'Inspiring lectures on life ethics, social responsibility, and interactive film screenings highlighting the brilliance of Satyajit Ray.' },
+        { day: 'Day 2', timeRange: '05:00 PM - 06:00 PM', duration: '1 hr', title: 'Holistic Dinner', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'Light satvik supper to prepare delegates minds and bodies for an immersive night of music and dance.' },
+        { day: 'Day 2', timeRange: '06:30 PM - 09:30 PM', duration: '3 hrs', title: 'Evening Maestro Concerts', artistName: 'Pt. Hariprasad Chaurasia & Pt. Vishwa Mohan Bhatt', category: 'concert', status: 'upcoming', description: 'A majestic evening performance by legendary maestros on the Bansuri and Mohan Veena, accompanied by stellar percussionists.' },
+        // Day 3
+        { day: 'Day 3', timeRange: '04:00 AM - 06:00 AM', duration: '2 hrs', title: 'Morning Hatha Yoga Practice', artistName: 'Yogi Devendra', category: 'yoga', status: 'upcoming', description: 'The final dawn yoga session focusing on deep breathing, flexibility, and centering the mind for the finale day.' },
+        { day: 'Day 3', timeRange: '07:00 AM - 08:30 AM', duration: '1.5 hrs', title: 'Holistic Breakfast', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'Traditional, healthy breakfast followed by final presentations prep and interactions with Gurus.' },
+        { day: 'Day 3', timeRange: '09:00 AM - 12:30 PM', duration: '3.5 hrs', title: 'Participant Presentations & Showcases', artistName: 'All Convention Workshop Batches', category: 'workshop', status: 'upcoming', description: 'Delegates showcase their intensive learning in vocal music, classical dances, and fine crafts across multiple arenas.' },
+        { day: 'Day 3', timeRange: '01:30 PM - 02:30 PM', duration: '1 hr', title: 'Mandatory Yog Nidra Rest', artistName: 'Yoga Acharyas', category: 'yoga', status: 'upcoming', description: 'Guided rest and deep recovery. Essential for resting prior to the overnight musical journey.' },
+        { day: 'Day 3', timeRange: '05:00 PM - 06:00 PM', duration: '1 hr', title: 'Pre-Marathon Satvik Dinner', artistName: 'VNIT Nagpur Catering', category: 'yoga', status: 'upcoming', description: 'A hearty and nourishing dinner to fuel delegates for a historic, sleepless night of divine classical concerts.' },
+        { day: 'Day 3', timeRange: '06:30 PM - 08:00 PM', duration: '1.5 hrs', title: 'Valedictory & Appreciation Ceremony', artistName: 'SPIC MACAY Executives & Volunteers', category: 'workshop', status: 'upcoming', description: 'Reflections on the convention\'s journey, feedback sharing, and distribution of appreciation certificates to volunteers and coordinators.' },
+        { day: 'Day 3', timeRange: '08:30 PM - 06:00 AM', duration: '9.5 hrs (Overnight)', title: 'Legendary Overnight Grand Finale Concerts', artistName: 'Pt. Ulhas Kashalkar (Vocal), Ustad Shahid Parvez (Sitar), Pt. Kushal Das (Sitar)', category: 'concert', status: 'upcoming', description: 'A continuous, sacred cycle of sublime performances spanning Sitar duets, classical Khayal vocal recitals, and concluding with divine early dawn ragas.' },
+        { day: 'Day 3', timeRange: '06:00 AM - 07:30 AM', duration: '1.5 hrs', title: 'Concluding Shared Breakfast & Farewell', artistName: 'VNIT Nagpur Catering & Delegates', category: 'yoga', status: 'upcoming', description: 'A final warm satvik meal together. Opportunities for reflections, exchanging contact details, and taking group photos.' },
+        { day: 'Day 3', timeRange: '09:00 AM - 12:00 PM', duration: '3 hrs', title: 'Guided Historical Tour of VNIT Nagpur Campus', artistName: 'VNIT Heritage Club Volunteers', category: 'workshop', status: 'upcoming', description: "A guided exploration of VNIT Nagpur's beautiful green campus, highlighting its modern architectural marvels, research facilities, and local heritage archives." },
+        { day: 'Day 3', timeRange: '12:30 PM - 09:00 PM', duration: '8.5 hrs', title: 'Delegate Departure and Transport Coordination', artistName: 'Logistics & Transport Team', category: 'yoga', status: 'upcoming', description: 'Coordinated shuttles departing for Nagpur Junction Railway Station and Dr. Babasaheb Ambedkar International Airport (NAG).' },
+      ];
+
+      try {
+        showToast(`Seeding ${sampleEvents.length} events for ${flagshipEventId}...`, 'success');
+        const batch = db.batch();
+        sampleEvents.forEach(ev => {
+          const ref = db.collection('events').doc();
+          batch.set(ref, { ...ev, flagshipEventId });
+        });
+        await batch.commit();
+        showToast(`✅ ${sampleEvents.length} sample events seeded to Firestore!`, 'success');
+      } catch (err) {
+        showToast('Seed failed: ' + err.message, 'error');
+      }
+    }
+
+    function promptSeedSampleSchedule() {
+      if (allFlagshipEvents.length === 0) {
+        showToast('No flagship events found. Please seed flagship events first.', 'error');
+        return;
+      }
+      const names = allFlagshipEvents.map((fe, i) => `${i + 1}. ${fe.title} (${fe.id})`).join('\n');
+      const choice = prompt(`Choose flagship event to seed sample schedule into:\n${names}\n\nEnter the number:`);
+      if (!choice) return;
+      const idx = parseInt(choice, 10) - 1;
+      if (isNaN(idx) || idx < 0 || idx >= allFlagshipEvents.length) {
+        showToast('Invalid selection.', 'error');
+        return;
+      }
+      const selected = allFlagshipEvents[idx];
+      if (!confirm(`This will add 28 sample schedule events to "${selected.title}". Existing events will NOT be deleted. Continue?`)) return;
+      seedSampleScheduleEvents(selected.id);
+    }
+
   </script>
 </body>
 </html>
