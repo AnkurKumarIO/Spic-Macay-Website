@@ -476,20 +476,24 @@
     
     <!-- ── Auth Guard Screen ──────────────────────────── -->
     <div class="auth-card" id="authCard">
-      <h1 class="headline-md" style="margin-bottom: 8px;">Admin Login</h1>
-      <p class="body-md text-muted" style="margin-bottom: 28px;">Sign in to manage SPIC MACAY details.</p>
+      <h1 class="headline-md" id="authTitle" style="margin-bottom: 8px;">Admin Login</h1>
+      <p class="body-md text-muted" id="authSubtitle" style="margin-bottom: 28px;">Sign in to manage SPIC MACAY details.</p>
       
       <div style="display:flex; flex-direction:column; gap:16px; text-align:left; margin-bottom: 24px;">
         <div class="input-group">
           <label class="input-label" for="loginEmail">Email Address</label>
-          <input class="input-field" type="email" id="loginEmail" placeholder="admin@vnit.ac.in" onkeydown="if(event.key==='Enter') handleLogin()" />
+          <input class="input-field" type="email" id="loginEmail" placeholder="admin@vnit.ac.in" onkeydown="if(event.key==='Enter') handleSubmitAuth()" />
         </div>
         <div class="input-group">
           <label class="input-label" for="loginPassword">Password</label>
-          <input class="input-field" type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') handleLogin()" />
+          <input class="input-field" type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter') handleSubmitAuth()" />
         </div>
       </div>
-      <button class="btn btn-primary w-full" id="loginBtn" onclick="handleLogin()">Sign In</button>
+      <button class="btn btn-primary w-full" id="loginBtn" onclick="handleSubmitAuth()">Sign In</button>
+      <div style="margin-top: 16px; font-size: 0.85rem; text-align: center;">
+        <span id="authToggleText" style="color: var(--on-surface-variant);">Don't have an account? </span>
+        <a href="#" id="authToggleLink" onclick="toggleAuthMode(event)" style="color: var(--primary); font-weight: 600; text-decoration: none;">Create Account</a>
+      </div>
       <div id="loginError" style="display:none; margin-top:12px; padding:10px 14px; border-radius:8px; background:rgba(196,38,28,0.1); border:1px solid rgba(196,38,28,0.3); color:#f47272; font-size:0.875rem; text-align:left;"></div>
     </div>
 
@@ -1553,6 +1557,44 @@
     });
 
     // Sign in handling
+    let isLoginMode = true;
+
+    function toggleAuthMode(e) {
+      if (e) e.preventDefault();
+      isLoginMode = !isLoginMode;
+      
+      const titleEl = document.getElementById('authTitle');
+      const subtitleEl = document.getElementById('authSubtitle');
+      const btnEl = document.getElementById('loginBtn');
+      const toggleText = document.getElementById('authToggleText');
+      const toggleLink = document.getElementById('authToggleLink');
+      const errEl = document.getElementById('loginError');
+
+      if (errEl) errEl.style.display = 'none';
+
+      if (isLoginMode) {
+        titleEl.textContent = 'Admin Login';
+        subtitleEl.textContent = 'Sign in to manage SPIC MACAY details.';
+        btnEl.textContent = 'Sign In';
+        toggleText.textContent = "Don't have an account? ";
+        toggleLink.textContent = 'Create Account';
+      } else {
+        titleEl.textContent = 'Create Admin Account';
+        subtitleEl.textContent = 'Register a dedicated email and password to access the portal.';
+        btnEl.textContent = 'Create Account';
+        toggleText.textContent = 'Already have an account? ';
+        toggleLink.textContent = 'Sign In';
+      }
+    }
+
+    async function handleSubmitAuth() {
+      if (isLoginMode) {
+        await handleLogin();
+      } else {
+        await handleRegister();
+      }
+    }
+
     async function handleLogin() {
       const email = document.getElementById('loginEmail').value.trim();
       const pass = document.getElementById('loginPassword').value;
@@ -1572,13 +1614,59 @@
         showToast('Signed in successfully.', 'success');
       } catch (err) {
         console.error(err);
-        const msg = err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'
+        const msg = err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-login-credentials'
           ? 'Invalid email or password. Please check your credentials.'
           : (err.message || 'Authentication failed. Please try again.');
         if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
         showToast(msg, 'error');
       } finally {
-        btn.textContent = 'Sign In';
+        btn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
+        btn.disabled = false;
+      }
+    }
+
+    async function handleRegister() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginBtn');
+      const errEl = document.getElementById('loginError');
+
+      if (errEl) errEl.style.display = 'none';
+      if (!email || !pass) {
+        if (errEl) { errEl.textContent = 'Please enter both email and password.'; errEl.style.display = 'block'; }
+        return;
+      }
+
+      // Restrict domain to vnit.ac.in or spicmacay.vnit
+      const allowedDomains = ['vnit.ac.in', 'spicmacay.vnit'];
+      const emailDomain = email.split('@')[1];
+      if (!emailDomain || !allowedDomains.includes(emailDomain.toLowerCase())) {
+        const msg = 'Registration is restricted to @vnit.ac.in and @spicmacay.vnit email addresses.';
+        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+        showToast(msg, 'error');
+        return;
+      }
+
+      if (pass.length < 6) {
+        const msg = 'Password must be at least 6 characters.';
+        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+        showToast(msg, 'error');
+        return;
+      }
+
+      btn.textContent = 'Creating account...';
+      btn.disabled = true;
+
+      try {
+        await auth.createUserWithEmailAndPassword(email, pass);
+        showToast('Account created and signed in successfully.', 'success');
+      } catch (err) {
+        console.error(err);
+        const msg = err.message || 'Failed to create account. Please try again.';
+        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+        showToast(msg, 'error');
+      } finally {
+        btn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
         btn.disabled = false;
       }
     }
@@ -3349,7 +3437,29 @@
         { title: 'Kathak & Tabla', academicYear: '2024-25', month: 'Feb 2025', type: 'Workshop', order: 2, description: 'Live rhythm workshop exploring the synergy between Kathak footwork and Tabla compositions.' },
         { title: 'Hindustani Vocals Evening', academicYear: '2024-25', month: 'Jan 2025', type: 'Performance', order: 3, description: 'An enchanting evening of ragas performed by visiting artists from the Gwalior gharana.' },
         { title: 'Warli & Mural Art', academicYear: '2024-25', month: 'Nov 2024', type: 'Workshop', order: 4, description: 'Hands-on session exploring tribal Warli patterns and large-scale campus mural creation.' },
-        { title: '8th International Convention', academicYear:    // FLAGSHIP EVENTS
+        { title: '8th International Convention', academicYear: '2023-24', month: 'Dec 2023', type: 'Convention', order: 5, description: 'VNIT Nagpur hosted the 8th SPIC MACAY International Convention — 3 days, 500+ participants, world-class artists.' },
+        { title: 'Dr. Chaerin Kim — International', academicYear: '2023-24', month: 'Oct 2023', type: 'Performance', order: 6, description: 'A captivating international performance bridging global traditions with Indian classical arts.' },
+        { title: 'Bharatanatyam & Pottery', academicYear: '2023-24', month: 'Sep 2023', type: 'Workshop', order: 7, description: 'Back-to-back workshops exploring classical dance and traditional pottery techniques.' },
+        { title: 'Flute & Folk Music', academicYear: '2023-24', month: 'Aug 2023', type: 'Workshop', order: 8, description: '' },
+      ];
+
+      try {
+        const batch = db.batch();
+        defaultEntries.forEach(entry => {
+          const ref = db.collection('archives').doc();
+          batch.set(ref, entry);
+        });
+        await batch.commit();
+        showToast('8 archive entries seeded successfully!', 'success');
+      } catch (err) {
+        showToast('Seed failed: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Seed Default Data';
+      }
+    }
+
+    // FLAGSHIP EVENTS
     function renderFlagshipEventsTable() {
       let html = '';
       allFlagshipEvents.forEach(d => {
