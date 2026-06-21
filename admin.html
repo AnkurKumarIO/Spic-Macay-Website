@@ -1554,15 +1554,10 @@
     }
     auth.onAuthStateChanged(user => {
       if (user) {
-        localStorage.setItem('isAdmin', 'true');
         showAdminWorkspace();
       } else {
-        if (localStorage.getItem('isAdmin') === 'true') {
-          showAdminWorkspace();
-        } else {
-          document.getElementById('authCard').style.display = 'block';
-          document.getElementById('adminWorkspace').classList.remove('active');
-        }
+        document.getElementById('authCard').style.display = 'block';
+        document.getElementById('adminWorkspace').classList.remove('active');
       }
     });
 
@@ -1581,21 +1576,8 @@
       btn.textContent = 'Logging in...';
       btn.disabled = true;
 
-      // Local bypass credentials (works offline too)
-      if ((email === 'admin@spicmacay.vnit' && pass === 'Virasat@2026') ||
-          (email === 'admin@vnit.ac.in' && pass === 'Virasat@2026')) {
-        localStorage.setItem('isAdmin', 'true');
-        dataLoaded = false; // allow reload
-        showAdminWorkspace();
-        showToast('Signed in successfully.', 'success');
-        btn.textContent = 'Sign In';
-        btn.disabled = false;
-        return;
-      }
-
       try {
         await auth.signInWithEmailAndPassword(email, pass);
-        localStorage.setItem('isAdmin', 'true');
         showToast('Signed in successfully.', 'success');
       } catch (err) {
         console.error(err);
@@ -1611,7 +1593,6 @@
     }
 
     async function handleLogout() {
-      localStorage.removeItem('isAdmin');
       await auth.signOut();
       showToast('Signed out.', 'success');
       document.getElementById('authCard').style.display = 'block';
