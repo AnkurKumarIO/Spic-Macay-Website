@@ -598,6 +598,7 @@
             <div style="display:flex; gap:12px; align-items:center;">
               <input type="text" id="regSearchInput" placeholder="Search name, email, roll..." class="input-field" style="width:260px; padding:8px 12px; margin-bottom:0;" oninput="filterRegistrations()" />
               <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsCSV()">Download CSV</button>
+              <button class="btn btn-secondary btn-sm" onclick="deleteAllRegistrations()" style="border-color:rgba(196,38,28,0.4);color:#f47272;">Delete All</button>
             </div>
           </div>
           <div class="table-responsive">
@@ -1935,6 +1936,29 @@
         showToast(`Registration for ${name} deleted.`, 'success');
       } catch (err) {
         showToast(err.message, 'error');
+      }
+    }
+
+    async function deleteAllRegistrations() {
+      const total = allRegistrations.length;
+      if (total === 0) { showToast('No registrations to delete.', 'error'); return; }
+      if (!confirm(`⚠️ This will permanently delete ALL ${total} registration(s) from the database. This cannot be undone.\n\nAre you absolutely sure?`)) return;
+      if (!confirm(`Final confirmation: Delete all ${total} registrations? Type OK to proceed.`)) return;
+      try {
+        showToast('Deleting all registrations...', 'success');
+        // Firestore batch allows max 500 ops; chunk into batches
+        const chunks = [];
+        for (let i = 0; i < allRegistrations.length; i += 400) {
+          chunks.push(allRegistrations.slice(i, i + 400));
+        }
+        for (const chunk of chunks) {
+          const batch = db.batch();
+          chunk.forEach(r => batch.delete(db.collection('registrations').doc(r.id)));
+          await batch.commit();
+        }
+        showToast(`All ${total} registrations deleted successfully.`, 'success');
+      } catch (err) {
+        showToast('Error deleting registrations: ' + err.message, 'error');
       }
     }
 
