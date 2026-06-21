@@ -2101,6 +2101,37 @@
       if (/<[a-z][\s\S]*>/i.test(text)) return text;
       return text.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br/>')}</p>`).join('\n');
     }
+
+    // ── Image Compression Utility ────────────────────────
+    // Firestore has a 1MB document size limit. Raw base64 data URLs from large
+    // photos easily exceed this. This helper resizes and compresses any image
+    // file to a safe size before storing.
+    function compressImageFile(file, maxDim = 800, quality = 0.7) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Failed to read image file.'));
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onerror = () => reject(new Error('Failed to load image.'));
+          img.onload = () => {
+            let w = img.width, h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+              else        { w = Math.round(w * maxDim / h); h = maxDim; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23333'/><circle cx='100' cy='80' r='40' fill='%23666'/><ellipse cx='100' cy='170' rx='60' ry='40' fill='%23555'/></svg>";
     async function editArtist(id) {
       try {
@@ -2148,12 +2179,7 @@
       const fileInput = document.getElementById('artImgFile');
       let imageUrl = document.getElementById('artImg').value.trim();
       if (fileInput.files && fileInput.files[0]) {
-        // Convert uploaded file to base64 data URL for storage
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+        imageUrl = await compressImageFile(fileInput.files[0]);
       }
       if (!imageUrl) imageUrl = DEFAULT_AVATAR;
       // Convert plain text bio to HTML
@@ -2389,11 +2415,7 @@
       const fileInput = document.getElementById('galImgFile');
       let imageUrl = document.getElementById('galImg').value.trim();
       if (fileInput.files && fileInput.files[0]) {
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+        imageUrl = await compressImageFile(fileInput.files[0]);
       }
       const data = {
         imageUrl,
@@ -2690,11 +2712,7 @@
       const fileInput = document.getElementById('heImgFile');
       let imageUrl = document.getElementById('heImg').value.trim();
       if (fileInput.files && fileInput.files[0]) {
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+        imageUrl = await compressImageFile(fileInput.files[0]);
       }
       const data = {
         title: document.getElementById('heTitle').value.trim(),
@@ -2778,11 +2796,7 @@
       const fileInput = document.getElementById('hcImgFile');
       let imageUrl = document.getElementById('hcImg').value.trim();
       if (fileInput.files && fileInput.files[0]) {
-        imageUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+        imageUrl = await compressImageFile(fileInput.files[0]);
       }
       const data = {
         day: document.getElementById('hcDay').value,
@@ -2912,11 +2926,7 @@
       const fileInput = document.getElementById('cmImgFile');
       let photoUrl = document.getElementById('cmImg').value.trim();
       if (fileInput.files && fileInput.files[0]) {
-        photoUrl = await new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onload = ev => resolve(ev.target.result);
-          reader.readAsDataURL(fileInput.files[0]);
-        });
+        photoUrl = await compressImageFile(fileInput.files[0]);
       }
       // Resolve section title for denormalization
       const sectionId = document.getElementById('cmSection').value;
