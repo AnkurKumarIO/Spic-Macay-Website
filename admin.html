@@ -128,6 +128,13 @@
     .admin-table tr:hover td {
       background: rgba(245, 240, 232, 0.02);
     }
+    .admin-table tr.drag-over td {
+      border-top: 2.5px solid var(--primary-container) !important;
+      background: rgba(232, 119, 34, 0.08) !important;
+    }
+    .admin-table tr.dragging {
+      opacity: 0.3;
+    }
 
     .registrations-table th, .registrations-table td {
       padding: 10px 8px !important;
@@ -703,38 +710,13 @@
             </div>
             <button class="btn btn-primary btn-sm" onclick="openEventModal()">+ Add Event</button>
           </div>
-          <!-- Day Sub-tabs -->
-          <div style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid rgba(245,240,232,0.08); padding-bottom:12px;">
-            <button class="day-tab active" id="dayTab1" onclick="switchDayTab('day1', this)">Day 1 — July 25</button>
-            <button class="day-tab" id="dayTab2" onclick="switchDayTab('day2', this)">Day 2 — July 26</button>
-            <button class="day-tab" id="dayTab3" onclick="switchDayTab('day3', this)">Day 3 — July 27</button>
+          <!-- Day Sub-tabs Container -->
+          <div id="adminScheduleTabs" style="display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid rgba(245,240,232,0.08); padding-bottom:12px;">
+            <!-- Dynamic Day Sub-tabs -->
           </div>
-          <!-- Day 1 Table -->
-          <div id="dayPanel-day1" class="day-panel">
-            <div class="table-responsive">
-              <table class="admin-table">
-                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="scheduleBody-day1"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 1.</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-          <!-- Day 2 Table -->
-          <div id="dayPanel-day2" class="day-panel" style="display:none;">
-            <div class="table-responsive">
-              <table class="admin-table">
-                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="scheduleBody-day2"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 2.</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-          <!-- Day 3 Table -->
-          <div id="dayPanel-day3" class="day-panel" style="display:none;">
-            <div class="table-responsive">
-              <table class="admin-table">
-                <thead><tr><th>Time / Duration</th><th>Event Title</th><th>Artist</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="scheduleBody-day3"><tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for Day 3.</td></tr></tbody>
-              </table>
-            </div>
+          <!-- Day Panels Container -->
+          <div id="adminSchedulePanels">
+            <!-- Dynamic Day Panels -->
           </div>
         </div>
       </div>
@@ -927,6 +909,7 @@
                 <tr>
                   <th>Icon</th>
                   <th>Title</th>
+                  <th>Date &amp; Duration</th>
                   <th>Description</th>
                   <th>Display Type</th>
                   <th>Actions</th>
@@ -1173,7 +1156,7 @@
         <div class="form-grid">
           <div class="input-group">
             <label class="input-label" for="evFlagshipEvent">Parent Flagship Event *</label>
-            <select class="input-field" id="evFlagshipEvent" required></select>
+            <select class="input-field" id="evFlagshipEvent" required onchange="populateEvDaySelect()"></select>
           </div>
           <div class="input-group">
             <label class="input-label" for="evTitle">Event Title *</label>
@@ -1421,6 +1404,14 @@
           <div class="input-group">
             <label class="input-label" for="feIconUrl">Icon Image URL</label>
             <input class="input-field" type="text" id="feIconUrl" placeholder="e.g. Reference/sitar-lotus.png"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="feStartDate">Start Date *</label>
+            <input class="input-field" type="date" id="feStartDate" required value="2026-07-25"/>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="feNumDays">Duration (Days) *</label>
+            <input class="input-field" type="number" id="feNumDays" min="1" max="14" required value="3"/>
           </div>
           <div class="input-group">
             <label class="input-label" for="feDisplayType">Display Type *</label>
@@ -1830,13 +1821,20 @@
       });
 
       // Listen to events
-      db.collection('events').orderBy('day').onSnapshot(snap => {
+      db.collection('events').onSnapshot(snap => {
         allScheduleEvents = [];
         snap.forEach(doc => {
           allScheduleEvents.push({ id: doc.id, ...doc.data() });
         });
+        // Sort by day, then by custom drag order
+        allScheduleEvents.sort((a, b) => {
+          if (a.day !== b.day) {
+            return (a.day || '').localeCompare(b.day || '');
+          }
+          return (a.order ?? 0) - (b.order ?? 0);
+        });
         const schEl = document.getElementById('hubMetricSchedule');
-        if (schEl) schEl.textContent = `${allScheduleEvents.length} event${allScheduleEvents.length !== 1 ? 's' : ''} across 3 days`;
+        if (schEl) schEl.textContent = `${allScheduleEvents.length} event${allScheduleEvents.length !== 1 ? 's' : ''}`;
         updateScheduleView();
       });
 
@@ -2415,6 +2413,48 @@
       }
     }
 
+    // Helper: format date
+    function formatDate(date) {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      
+      const dayOfWeek = days[date.getDay()];
+      const dayOfMonth = date.getDate();
+      const month = months[date.getMonth()];
+      const year = date.getFullYear();
+      
+      let suffix = 'th';
+      if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) suffix = 'st';
+      else if (dayOfMonth === 2 || dayOfMonth === 22) suffix = 'nd';
+      else if (dayOfMonth === 3 || dayOfMonth === 23) suffix = 'rd';
+      
+      return {
+        weekday: dayOfWeek.toUpperCase(),
+        dateStr: `${dayOfMonth}${suffix} ${month} ${year}`,
+        shortDateStr: `${month.substring(0,3)} ${dayOfMonth}`
+      };
+    }
+
+    // Dynamic evDay options population
+    function populateEvDaySelect() {
+      const select = document.getElementById('evDay');
+      if (!select) return;
+      
+      const parentId = document.getElementById('evFlagshipEvent').value || document.getElementById('scheduleFilterParent').value;
+      const activeFE = allFlagshipEvents.find(f => f.id === parentId);
+      const numDays = activeFE ? (activeFE.numDays || 3) : 3;
+      const startDateStr = activeFE ? (activeFE.startDate || '2026-07-25') : '2026-07-25';
+      
+      let html = '';
+      for (let i = 1; i <= numDays; i++) {
+        const d = new Date(startDateStr);
+        d.setDate(d.getDate() + (i - 1));
+        const info = formatDate(d);
+        html += `<option value="Day ${i}">Day ${i} (${info.shortDateStr})</option>`;
+      }
+      select.innerHTML = html;
+    }
+
     // EVENT EDIT / SAVE
     function openEventModal() {
       document.getElementById('eventForm').reset();
@@ -2424,6 +2464,7 @@
       if (parentFilter) {
         document.getElementById('evFlagshipEvent').value = parentFilter;
       }
+      populateEvDaySelect();
       document.getElementById('eventModal').classList.add('active');
     }
     function closeEventModal() {
@@ -2435,6 +2476,7 @@
         const d = doc.data();
         document.getElementById('eventId').value = id;
         document.getElementById('evFlagshipEvent').value = d.flagshipEventId || '';
+        populateEvDaySelect();
         document.getElementById('evTitle').value = d.title;
         document.getElementById('evArtist').value = d.artistName || '';
         document.getElementById('evTime').value = d.timeRange;
@@ -3307,39 +3349,19 @@
         { title: 'Kathak & Tabla', academicYear: '2024-25', month: 'Feb 2025', type: 'Workshop', order: 2, description: 'Live rhythm workshop exploring the synergy between Kathak footwork and Tabla compositions.' },
         { title: 'Hindustani Vocals Evening', academicYear: '2024-25', month: 'Jan 2025', type: 'Performance', order: 3, description: 'An enchanting evening of ragas performed by visiting artists from the Gwalior gharana.' },
         { title: 'Warli & Mural Art', academicYear: '2024-25', month: 'Nov 2024', type: 'Workshop', order: 4, description: 'Hands-on session exploring tribal Warli patterns and large-scale campus mural creation.' },
-        { title: '8th International Convention', academicYear: '2023-24', month: 'Dec 2023', type: 'Convention', order: 5, description: 'VNIT Nagpur hosted the 8th SPIC MACAY International Convention — 3 days, 500+ participants, world-class artists.' },
-        { title: 'Dr. Chaerin Kim — International', academicYear: '2023-24', month: 'Oct 2023', type: 'Performance', order: 6, description: 'A captivating international performance bridging global traditions with Indian classical arts.' },
-        { title: 'Bharatanatyam & Pottery', academicYear: '2023-24', month: 'Sep 2023', type: 'Workshop', order: 7, description: 'Back-to-back workshops exploring classical dance and traditional pottery techniques.' },
-        { title: 'Flute & Folk Music', academicYear: '2023-24', month: 'Aug 2023', type: 'Workshop', order: 8, description: '' },
-      ];
-
-      try {
-        const batch = db.batch();
-        defaultEntries.forEach(entry => {
-          const ref = db.collection('archives').doc();
-          batch.set(ref, entry);
-        });
-        await batch.commit();
-        showToast('8 archive entries seeded successfully!', 'success');
-      } catch (err) {
-        showToast('Seed failed: ' + err.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Seed Default Data';
-      }
-    }
-
-    // FLAGSHIP EVENTS
+        { title: '8th International Convention', academicYear:    // FLAGSHIP EVENTS
     function renderFlagshipEventsTable() {
       let html = '';
       allFlagshipEvents.forEach(d => {
         const iconCell = d.iconUrl
           ? `<img src="${d.iconUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;"/>`
           : `<div style="width:40px;height:40px;border-radius:8px;background:rgba(232,119,34,0.1);border:1px solid rgba(232,119,34,0.2);display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:bold;">🎪</div>`;
+        const durationStr = `${d.startDate || '—'} (${d.numDays || 3} days)`;
         html += `
           <tr>
             <td>${iconCell}</td>
             <td style="font-weight:600;">${d.title}</td>
+            <td style="font-weight:600;">${durationStr}</td>
             <td style="max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.8;">${d.description}</td>
             <td><span class="admin-badge badge-success">${d.displayType || 'schedule'}</span></td>
             <td>
@@ -3351,7 +3373,7 @@
           </tr>
         `;
       });
-      document.getElementById('flagshipEventsTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No flagship events added.</td></tr>';
+      document.getElementById('flagshipEventsTableBody').innerHTML = html || '<tr><td colspan="6" style="text-align:center;">No flagship events added.</td></tr>';
     }
 
     function populateFlagshipEventDropdowns() {
@@ -3383,6 +3405,8 @@
     function openFlagshipEventModal() {
       document.getElementById('flagshipEventForm').reset();
       document.getElementById('flagshipEventId').value = '';
+      document.getElementById('feStartDate').value = '2026-07-25';
+      document.getElementById('feNumDays').value = 3;
       document.getElementById('flagshipEventModalTitle').textContent = 'Add Flagship Event';
       document.getElementById('flagshipEventModal').classList.add('active');
     }
@@ -3400,6 +3424,8 @@
         document.getElementById('feDesc').value = d.description || '';
         document.getElementById('feIconUrl').value = d.iconUrl || '';
         document.getElementById('feDisplayType').value = d.displayType || 'schedule';
+        document.getElementById('feStartDate').value = d.startDate || '2026-07-25';
+        document.getElementById('feNumDays').value = d.numDays || 3;
         document.getElementById('flagshipEventModalTitle').textContent = 'Edit Flagship Event';
         document.getElementById('flagshipEventModal').classList.add('active');
       } catch (err) {
@@ -3414,7 +3440,9 @@
         title: document.getElementById('feTitle').value.trim(),
         description: document.getElementById('feDesc').value.trim(),
         iconUrl: document.getElementById('feIconUrl').value.trim(),
-        displayType: document.getElementById('feDisplayType').value
+        displayType: document.getElementById('feDisplayType').value,
+        startDate: document.getElementById('feStartDate').value,
+        numDays: parseInt(document.getElementById('feNumDays').value) || 3
       };
       try {
         if (id) {
@@ -3437,13 +3465,17 @@
           title: 'VIRASAT',
           description: 'Our flagship 3-day cultural immersion. Experience classical concerts, guru-shishya workshops, and heritage arts.',
           iconUrl: 'Reference/sitar-lotus.png',
-          displayType: 'schedule'
+          displayType: 'schedule',
+          startDate: '2026-07-25',
+          numDays: 3
         });
         await db.collection('flagshipEvents').doc('inaugural').set({
           title: 'Inaugural Event',
           description: 'The grand opening ceremony. Welcoming recitals, lamp lighting, and inaugural addresses by state dignitaries.',
           iconUrl: 'Reference/krishna-flute.png',
-          displayType: 'schedule'
+          displayType: 'schedule',
+          startDate: '2026-07-25',
+          numDays: 1
         });
         showToast('Flagship events seeded!', 'success');
       } catch (err) {
@@ -3453,8 +3485,57 @@
 
     function updateScheduleView() {
       const parentFilter = document.getElementById('scheduleFilterParent').value;
-      const dayMap = { 'Day 1': [], 'Day 2': [], 'Day 3': [] };
-      
+      const activeFE = allFlagshipEvents.find(f => f.id === parentFilter);
+      const numDays = activeFE ? (activeFE.numDays || 3) : 3;
+      const startDateStr = activeFE ? (activeFE.startDate || '2026-07-25') : '2026-07-25';
+
+      // 1. Generate Sub-tabs and panels dynamically
+      let tabsHtml = '';
+      let panelsHtml = '';
+      const dayMap = {};
+
+      for (let i = 1; i <= numDays; i++) {
+        const dayName = `Day ${i}`;
+        dayMap[dayName] = [];
+        
+        const d = new Date(startDateStr);
+        d.setDate(d.getDate() + (i - 1));
+        const info = formatDate(d);
+
+        tabsHtml += `
+          <button class="day-tab ${i === 1 ? 'active' : ''}" id="dayTab${i}" onclick="switchDayTab('day${i}', this)">
+            Day ${i} — ${info.shortDateStr}
+          </button>
+        `;
+
+        panelsHtml += `
+          <div id="dayPanel-day${i}" class="day-panel" style="${i === 1 ? '' : 'display:none;'}">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th style="width: 40px; text-align: center;"></th>
+                    <th>Time / Duration</th>
+                    <th>Event Title</th>
+                    <th>Artist</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="scheduleBody-day${i}">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('adminScheduleTabs').innerHTML = tabsHtml || '<span style="opacity:0.5;">No days configured</span>';
+      document.getElementById('adminSchedulePanels').innerHTML = panelsHtml || '';
+
+      // 2. Filter events
       const filtered = allScheduleEvents.filter(d => {
         if (!parentFilter) return true;
         return d.flagshipEventId === parentFilter;
@@ -3462,23 +3543,29 @@
 
       filtered.forEach(d => {
         if (dayMap[d.day] !== undefined) dayMap[d.day].push(d);
-        else dayMap['Day 1'].push(d);
       });
 
-      ['Day 1', 'Day 2', 'Day 3'].forEach((day, i) => {
-        const bodyId = `scheduleBody-day${i + 1}`;
-        const events = dayMap[day];
+      // 3. Render event rows in each panel
+      for (let i = 1; i <= numDays; i++) {
+        const dayName = `Day ${i}`;
+        const bodyId = `scheduleBody-day${i}`;
+        const events = dayMap[dayName] || [];
+        const tbodyEl = document.getElementById(bodyId);
+        if (!tbodyEl) continue;
+
         if (!events.length) {
-          document.getElementById(bodyId).innerHTML = `<tr><td colspan="6" style="text-align:center;opacity:0.5;">No events for ${day}.</td></tr>`;
-          return;
+          tbodyEl.innerHTML = `<tr><td colspan="7" style="text-align:center;opacity:0.5;">No events for ${dayName}.</td></tr>`;
+          continue;
         }
-        let html = '';
+
+        let rowsHtml = '';
         events.forEach(d => {
           let statusClass = 'badge-warning';
           if (d.status === 'live') statusClass = 'badge-success';
           if (d.status === 'over') statusClass = 'admin-badge';
-          html += `
-            <tr>
+          rowsHtml += `
+            <tr data-id="${d.id}">
+              <td style="text-align: center; cursor: move; color: var(--on-surface-variant); opacity: 0.5; font-size: 1.2rem; user-select: none;" class="drag-handle">☰</td>
               <td><span style="font-weight:600;">${d.timeRange || '—'}</span><br/><span style="font-size:0.75rem;opacity:0.7;">${d.duration || ''}</span></td>
               <td style="font-weight:600;">${d.title}</td>
               <td>${d.artistName || '—'}</td>
@@ -3492,8 +3579,88 @@
               </td>
             </tr>`;
         });
-        document.getElementById(bodyId).innerHTML = html;
+        tbodyEl.innerHTML = rowsHtml;
+        makeTableRowsDraggable(bodyId);
+      }
+    }
+
+    // Native Drag and Drop Row Sorting
+    let dragRow = null;
+    function makeTableRowsDraggable(tbodyId) {
+      const tbody = document.getElementById(tbodyId);
+      if (!tbody) return;
+      
+      const rows = tbody.querySelectorAll('tr');
+      rows.forEach(row => {
+        row.setAttribute('draggable', 'true');
+        
+        row.addEventListener('dragstart', function(e) {
+          dragRow = this;
+          this.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        
+        row.addEventListener('dragover', function(e) {
+          if (e.preventDefault) {
+            e.preventDefault();
+          }
+          this.classList.add('drag-over');
+          e.dataTransfer.dropEffect = 'move';
+          return false;
+        });
+        
+        row.addEventListener('dragleave', function(e) {
+          this.classList.remove('drag-over');
+        });
+        
+        row.addEventListener('drop', async function(e) {
+          if (e.stopPropagation) {
+            e.stopPropagation();
+          }
+          this.classList.remove('drag-over');
+          
+          if (dragRow && dragRow !== this) {
+            const parent = this.parentNode;
+            const children = Array.from(parent.children);
+            const dragIdx = children.indexOf(dragRow);
+            const targetIdx = children.indexOf(this);
+            
+            if (dragIdx < targetIdx) {
+              parent.insertBefore(dragRow, this.nextSibling);
+            } else {
+              parent.insertBefore(dragRow, this);
+            }
+            
+            await saveEventOrder(parent);
+          }
+          return false;
+        });
+        
+        row.addEventListener('dragend', function(e) {
+          this.classList.remove('dragging');
+          rows.forEach(r => r.classList.remove('drag-over'));
+        });
       });
+    }
+
+    async function saveEventOrder(tbody) {
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const batch = db.batch();
+      
+      rows.forEach((row, index) => {
+        const id = row.getAttribute('data-id');
+        if (id) {
+          const ref = db.collection('events').doc(id);
+          batch.update(ref, { order: index });
+        }
+      });
+      
+      try {
+        await batch.commit();
+        showToast('Event order saved successfully!', 'success');
+      } catch (err) {
+        showToast('Failed to save order: ' + err.message, 'error');
+      }
     }
 
     function onScheduleFilterChange() {

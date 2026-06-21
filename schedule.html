@@ -817,65 +817,14 @@
     <section class="schedule-body section-gap" id="scheduleSection" style="display: none;">
       <div class="container">
 
-        <!-- Day Tabs -->
-        <div class="schedule-tabs reveal">
-          <button class="day-tab active" onclick="showDay('day1',this)">Day 1 — July 25</button>
-          <button class="day-tab" onclick="showDay('day2',this)">Day 2 — July 26</button>
-          <button class="day-tab" onclick="showDay('day3',this)">Day 3 — July 27</button>
+        <!-- Day Tabs Container -->
+        <div class="schedule-tabs reveal" id="scheduleTabsContainer">
+          <!-- Dynamic Day Tabs -->
         </div>
 
-        <!-- Day 1 ─────────────────────────────────────── -->
-        <div class="day-view active" id="day1">
-          <div class="day-header">
-            <div>
-              <p class="label-sm text-muted">SATURDAY</p>
-              <h2 class="headline-md">Day 1 · 25th July 2026</h2>
-              <p class="body-md text-muted" style="margin-top:6px;">Inauguration &amp; Opening Ceremonies</p>
-            </div>
-            <span class="chip" id="day1Chip">— Events</span>
-          </div>
-          <div class="event-list" id="eventList-day1">
-            <div style="text-align:center; padding:48px; opacity:0.5;">
-              <p>Loading schedule...</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Day 2 ──────────────────────────────────────── -->
-        <div class="day-view" id="day2">
-          <div class="day-header">
-            <div>
-              <p class="label-sm text-muted">SUNDAY</p>
-              <h2 class="headline-md">Day 2 · 26th July 2026</h2>
-              <p class="body-md text-muted" style="margin-top:6px;">Core Immersive Day — Workshops, Talks &amp; Concerts</p>
-            </div>
-            <span class="chip" id="day2Chip">— Events</span>
-          </div>
-          <div class="event-list" id="eventList-day2">
-            <div style="text-align:center; padding:48px; opacity:0.5;">
-              <p>Loading schedule...</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Day 3 ──────────────────────────────────────── -->
-        <div class="day-view" id="day3">
-          <div class="day-header" style="border:1px solid rgba(232,119,34,0.3);">
-            <div>
-              <p class="label-sm text-muted">MONDAY</p>
-              <h2 class="headline-md">Day 3 · 27th July 2026</h2>
-              <p class="body-md text-muted" style="margin-top:6px;">Grand Finale, Overnight Concerts &amp; Farewell</p>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
-              <span class="chip" id="day3Chip">— Events</span>
-              <span style="background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;">OVERNIGHT &amp; FAREWELL</span>
-            </div>
-          </div>
-          <div class="event-list" id="eventList-day3">
-            <div style="text-align:center; padding:48px; opacity:0.5;">
-              <p>Loading schedule...</p>
-            </div>
-          </div>
+        <!-- Day Views Container -->
+        <div id="dynamicDayViewsContainer">
+          <!-- Dynamic Day Views -->
         </div>
 
         <!-- PDF Download anchor -->
@@ -1020,6 +969,7 @@
         evSnap.forEach(doc => {
           allScheduleEvents.push({ id: doc.id, ...doc.data() });
         });
+        allScheduleEvents.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
         // 3. Set default active flagship event
         if (allFlagshipEvents.length > 0) {
@@ -1113,15 +1063,125 @@
       }
     }
 
-    function renderScheduleForActiveEvent() {
-      const filteredEvents = allScheduleEvents.filter(d => d.flagshipEventId === activeFlagshipEventId);
-
-      const eventsByDay = {
-        'Day 1': [],
-        'Day 2': [],
-        'Day 3': []
+    function formatDate(date) {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      
+      const dayOfWeek = days[date.getDay()];
+      const dayOfMonth = date.getDate();
+      const month = months[date.getMonth()];
+      const year = date.getFullYear();
+      
+      let suffix = 'th';
+      if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) suffix = 'st';
+      else if (dayOfMonth === 2 || dayOfMonth === 22) suffix = 'nd';
+      else if (dayOfMonth === 3 || dayOfMonth === 23) suffix = 'rd';
+      
+      return {
+        weekday: dayOfWeek.toUpperCase(),
+        dateStr: `${dayOfMonth}${suffix} ${month} ${year}`,
+        shortDateStr: `${month} ${dayOfMonth}`
       };
+    }
 
+    function getDaySubtitle(i, numDays) {
+      if (numDays === 1) return 'Full Cultural Timeline';
+      if (i === 1) return 'Inauguration & Opening Ceremonies';
+      if (i === numDays) return 'Grand Finale, Overnight Concerts & Farewell';
+      return 'Core Immersive Day — Workshops, Talks & Concerts';
+    }
+
+    function getEventStartEndTimes(startDateStr, dayStr, timeRangeStr) {
+      try {
+        const dayMatch = dayStr.match(/\d+/);
+        const dayOffset = dayMatch ? (parseInt(dayMatch[0]) - 1) : 0;
+        
+        const eventDate = new Date(startDateStr);
+        eventDate.setDate(eventDate.getDate() + dayOffset);
+        const datePart = eventDate.toISOString().substring(0, 10);
+        
+        const parts = timeRangeStr.split('-');
+        if (parts.length !== 2) return null;
+        
+        function parseTime(timeStr) {
+          const clean = timeStr.trim().toUpperCase();
+          const match = clean.match(/(\d+):(\d+)\s*(AM|PM)/);
+          if (!match) return null;
+          
+          let hours = parseInt(match[1]);
+          const minutes = parseInt(match[2]);
+          const ampm = match[3];
+          
+          if (ampm === 'PM' && hours < 12) hours += 12;
+          if (ampm === 'AM' && hours === 12) hours = 0;
+          
+          const padHours = String(hours).padStart(2, '0');
+          const padMins = String(minutes).padStart(2, '0');
+          return `${datePart}T${padHours}:${padMins}:00`;
+        }
+        
+        const startISO = parseTime(parts[0]);
+        const endISO = parseTime(parts[1]);
+        if (startISO && endISO) {
+          return { start: startISO, end: endISO };
+        }
+      } catch (err) {
+        console.error("Error parsing event start/end time:", err, timeRangeStr);
+      }
+      return null;
+    }
+
+    function renderScheduleForActiveEvent() {
+      const activeFE = allFlagshipEvents.find(f => f.id === activeFlagshipEventId);
+      const numDays = activeFE ? (activeFE.numDays || 3) : 3;
+      const startDateStr = activeFE ? (activeFE.startDate || '2026-07-25') : '2026-07-25';
+
+      // 1. Generate day tabs and day views dynamically
+      let tabsHtml = '';
+      let viewsHtml = '';
+      const eventsByDay = {};
+
+      for (let i = 1; i <= numDays; i++) {
+        const dayKey = `Day ${i}`;
+        eventsByDay[dayKey] = [];
+        
+        const d = new Date(startDateStr);
+        d.setDate(d.getDate() + (i - 1));
+        const info = formatDate(d);
+
+        tabsHtml += `
+          <button class="day-tab ${i === 1 ? 'active' : ''}" onclick="showDay('day${i}', this)">
+            Day ${i} — ${info.shortDateStr}
+          </button>
+        `;
+
+        viewsHtml += `
+          <div class="day-view ${i === 1 ? 'active' : ''}" id="day${i}">
+            <div class="day-header">
+              <div>
+                <p class="label-sm text-muted">${info.weekday}</p>
+                <h2 class="headline-md">Day ${i} · ${info.dateStr}</h2>
+                <p class="body-md text-muted" style="margin-top:6px;">${getDaySubtitle(i, numDays)}</p>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                <span class="chip" id="day${i}Chip">— Events</span>
+                ${i === numDays && numDays >= 3 ? `<span style="background:rgba(239,194,0,0.15);color:#efc200;padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:700;">OVERNIGHT &amp; FAREWELL</span>` : ''}
+              </div>
+            </div>
+            <div class="event-list" id="eventList-day${i}">
+              <div style="text-align:center; padding:48px; opacity:0.5;">
+                <p>Loading schedule...</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('scheduleTabsContainer').innerHTML = tabsHtml;
+      document.getElementById('dynamicDayViewsContainer').innerHTML = viewsHtml;
+
+      // 2. Filter events
+      const filteredEvents = allScheduleEvents.filter(d => d.flagshipEventId === activeFlagshipEventId);
       filteredEvents.forEach(d => {
         const day = d.day || 'Day 1';
         if (eventsByDay[day]) {
@@ -1131,17 +1191,18 @@
 
       window.activeScheduleEvents = eventsByDay;
 
+      // 3. Populate events in each day view
       for (const [dayKey, events] of Object.entries(eventsByDay)) {
         const dayId = dayKey.toLowerCase().replace(' ', '');
         const dayEl = document.getElementById(dayId);
         if (!dayEl) continue;
 
-        const chipEl = dayEl.querySelector('.day-header .chip');
+        const chipEl = document.getElementById(`${dayId}Chip`);
         if (chipEl) {
           chipEl.textContent = `${events.length} Event${events.length !== 1 ? 's' : ''}`;
         }
 
-        const eventListEl = dayEl.querySelector('.event-list');
+        const eventListEl = document.getElementById(`eventList-${dayId}`);
         if (eventListEl) {
           if (events.length === 0) {
             eventListEl.innerHTML = `
@@ -1157,8 +1218,11 @@
             const statusClass = d.status === 'live' ? 'status-live' : (d.status === 'over' || d.status === 'completed' ? 'status-over' : 'status-upcoming');
             const statusLabel = d.status === 'live' ? 'Live' : (d.status === 'over' || d.status === 'completed' ? 'Over' : 'Upcoming');
             
+            const times = getEventStartEndTimes(startDateStr, d.day || 'Day 1', d.timeRange);
+            const dataAttributes = times ? `data-start="${times.start}" data-end="${times.end}"` : '';
+
             html += `
-              <div class="event-card category-${d.category || 'concert'}">
+              <div class="event-card category-${d.category || 'concert'}" ${dataAttributes}>
                 <span class="status-badge ${statusClass}">${statusLabel}</span>
                 <div class="event-timeline">
                   <span class="event-time-range">${d.timeRange}</span>
@@ -1209,23 +1273,39 @@
         pdfContainer.style.color = '#f5f0e8';
         pdfContainer.style.fontFamily = 'system-ui, -apple-system, sans-serif';
 
+        const numDays = activeEvent.numDays || 3;
+        const startDateStr = activeEvent.startDate || '2026-07-25';
+        const startD = new Date(startDateStr);
+        const endD = new Date(startDateStr);
+        endD.setDate(endD.getDate() + numDays - 1);
+        
+        const startInfo = formatDate(startD);
+        const endInfo = formatDate(endD);
+        const datesHeaderStr = numDays > 1 
+          ? `${startInfo.shortDateStr} – ${endInfo.shortDateStr}, ${startD.getFullYear()}` 
+          : `${startInfo.dateStr}`;
+
         pdfContainer.innerHTML = `
           <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e87722; padding-bottom: 15px;">
             <h1 style="font-family: serif; color: #e87722; margin: 0; font-size: 28px;">SPIC MACAY ${activeEvent.title.toUpperCase()}</h1>
             <p style="margin: 5px 0 0 0; font-size: 14px; color: #a8a29e; letter-spacing: 0.05em; text-transform: uppercase;">Convention Schedule & Timetable</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; color: #78716c;">VNIT Nagpur • July 25 – 27, 2026</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #78716c;">VNIT Nagpur • ${datesHeaderStr}</p>
           </div>
         `;
 
-        const days = ['Day 1', 'Day 2', 'Day 3'];
-        days.forEach(day => {
+        for (let i = 1; i <= numDays; i++) {
+          const day = `Day ${i}`;
           const events = window.activeScheduleEvents ? window.activeScheduleEvents[day] : [];
-          if (!events || !events.length) return;
+          if (!events || !events.length) continue;
+
+          const currD = new Date(startDateStr);
+          currD.setDate(currD.getDate() + (i - 1));
+          const dayInfo = formatDate(currD);
 
           pdfContainer.innerHTML += `
             <div style="margin-top: 30px; page-break-inside: avoid;">
               <h2 style="font-family: serif; color: #e87722; border-bottom: 1px solid rgba(245,240,232,0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 20px;">
-                ${day} — ${day === 'Day 1' ? 'July 25' : day === 'Day 2' ? 'July 26' : 'July 27'}
+                ${day} — ${dayInfo.dateStr}
               </h2>
               <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
                 <thead>
