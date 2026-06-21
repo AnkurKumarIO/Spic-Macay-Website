@@ -817,85 +817,27 @@
         <!-- ══ Tab 4: Archives ═════════════════════════════ -->
         <div class="about-tab-panel" id="tab-archives">
           <div class="reveal" id="past">
-            <h2 class="headline-lg" style="margin-bottom:8px;">Archives</h2>
+            <h2 class="headline-lg" style="margin-bottom:8px;">Past Events</h2>
             <p class="body-md text-muted" style="margin-bottom:40px;max-width:520px;">A look back at the events and workshops organized by the SPIC MACAY chapter at VNIT Nagpur.</p>
 
-            <!-- 2024-25 -->
-            <div style="margin-bottom:48px;">
-              <p class="label-md" style="color:var(--primary-container);margin-bottom:20px;letter-spacing:0.12em;">ACADEMIC YEAR 2024-25</p>
-              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
-                <div class="past-conv-card" style="padding:24px;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip">Workshop</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Mar 2025</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Madhubani Painting</h4>
-                  <p class="body-md text-muted" style="font-size:0.85rem;">Two-day intensive workshop with 60+ participants learning the ancient Mithila art form.</p>
-                </div>
-                <div class="past-conv-card" style="padding:24px;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip">Workshop</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Feb 2025</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Kathak & Tabla</h4>
-                  <p class="body-md text-muted" style="font-size:0.85rem;">Live rhythm workshop exploring the synergy between Kathak footwork and Tabla compositions.</p>
-                </div>
-                <div class="past-conv-card" style="padding:24px;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip">Performance</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Jan 2025</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Hindustani Vocals Evening</h4>
-                  <p class="body-md text-muted" style="font-size:0.85rem;">An enchanting evening of ragas performed by visiting artists from the Gwalior gharana.</p>
-                </div>
-                <div class="past-conv-card" style="padding:24px;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip">Workshop</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Nov 2024</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Warli & Mural Art</h4>
-                  <p class="body-md text-muted" style="font-size:0.85rem;">Hands-on session exploring tribal Warli patterns and large-scale campus mural creation.</p>
-                </div>
-              </div>
+            <!-- Dynamic archives loaded from Firestore -->
+            <div id="archivesContainer">
+              <p class="body-md text-muted" style="text-align:center;padding:40px 0;">Loading past events...</p>
             </div>
 
-            <!-- 2023-24 -->
-            <div style="margin-bottom:48px;">
-              <p class="label-md" style="color:var(--primary-container);margin-bottom:20px;letter-spacing:0.12em;">ACADEMIC YEAR 2023-24</p>
-              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">
-                <div class="past-conv-card" style="padding:24px;border-color:rgba(232,119,34,0.2);">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip" style="background:rgba(232,119,34,0.15);color:var(--primary-container);">Convention</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Dec 2023</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">8th International Convention</h4>
-                  <p class="body-md text-muted" style="font-size:0.85rem;">VNIT Nagpur hosted the 8th SPIC MACAY International Convention — 3 days, 500+ participants, world-class artists.</p>
-                </div>
-                <div class="past-conv-card" style="padding:24px;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip">Performance</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Oct 2023</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Dr. Chaerin Kim — International</h4>
-                  <p class="body-md text-muted" style="font-size:0.85rem;">A captivating international performance bridging global traditions with Indian classical arts.</p>
-                </div>
-                <div class="past-conv-card" style="padding:24px;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip">Workshop</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Sep 2023</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Bharatanatyam & Pottery</h4>
-                  <p class="body-md text-muted" style="font-size:0.85rem;">Back-to-back workshops exploring classical dance and traditional pottery techniques.</p>
-                </div>
-                <div class="past-conv-card" style="padding:24px;">
-                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-                    <span class="chip">Workshop</span>
-                    <span style="font-size:0.75rem;color:var(--outline);">Aug 2023</span>
-                  </div>
-                  <h4 class="headline-sm" style="margin-bottom:6px;">Flute & Folk Music</h4>
-                </div>
-              </div>
+            <!-- CTA -->
+            <div style="padding:32px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(232,119,34,0.15);text-align:center;margin-top:40px;">
+              <p class="headline-sm" style="margin-bottom:8px;">Want to be part of the next chapter?</p>
+              <p class="body-md text-muted" style="margin-bottom:20px;">Register for upcoming events and workshops at VNIT Nagpur.</p>
+              <a href="register.html" class="btn btn-primary">Register Now</a>
             </div>
+          </div>
+        </div>
+
+
+    </div>
+  </div>
+
 
             <!-- CTA -->
             <div style="padding:32px;background:var(--surface-container);border-radius:16px;border:1px solid rgba(232,119,34,0.15);text-align:center;">
@@ -1266,6 +1208,61 @@
     }
 
     loadCoreMembers();
+
+    // ── Load Archives from Firestore ─────────────────────
+    async function loadArchives() {
+      const container = document.getElementById('archivesContainer');
+      if (!container) return;
+      try {
+        const snap = await db.collection('archives').orderBy('order').get();
+        const entries = [];
+        snap.forEach(doc => entries.push({ id: doc.id, ...doc.data() }));
+
+        if (!entries.length) {
+          container.innerHTML = '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">No past events added yet.</p>';
+          return;
+        }
+
+        // Group by academicYear
+        const grouped = {};
+        entries.forEach(e => {
+          const yr = e.academicYear || 'Other';
+          if (!grouped[yr]) grouped[yr] = [];
+          grouped[yr].push(e);
+        });
+
+        // Sort years descending
+        const sortedYears = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+
+        let html = '';
+        sortedYears.forEach(year => {
+          html += `<div style="margin-bottom:48px;">
+            <p class="label-md" style="color:var(--primary-container);margin-bottom:20px;letter-spacing:0.12em;">ACADEMIC YEAR ${year}</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">`;
+          grouped[year].forEach(e => {
+            const isConvention = (e.type || '').toLowerCase() === 'convention';
+            const chipStyle = isConvention ? 'background:rgba(232,119,34,0.15);color:var(--primary-container);' : '';
+            const cardStyle = isConvention ? 'border-color:rgba(232,119,34,0.2);' : '';
+            html += `<div class="past-conv-card" style="padding:24px;${cardStyle}">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <span class="chip" style="${chipStyle}">${e.type || 'Event'}</span>
+                <span style="font-size:0.75rem;color:var(--outline);">${e.month || ''}</span>
+              </div>
+              <h4 class="headline-sm" style="margin-bottom:6px;">${e.title || ''}</h4>
+              ${e.description ? `<p class="body-md text-muted" style="font-size:0.85rem;">${e.description}</p>` : ''}
+            </div>`;
+          });
+          html += `</div></div>`;
+        });
+
+        container.innerHTML = html;
+      } catch (err) {
+        console.error('Error loading archives:', err);
+        container.innerHTML = '<p class="body-md text-muted" style="text-align:center;padding:40px 0;">Unable to load past events.</p>';
+      }
+    }
+
+    loadArchives();
   </script>
 </body>
 </html>
