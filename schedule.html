@@ -1256,8 +1256,8 @@
       btn.style.pointerEvents = 'none';
 
       try {
-        // Load jsPDF (UMD build — no html2canvas dependency at all)
-        if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
+        // Load jsPDF UMD build if not already present
+        if (!window.jspdf) {
           await new Promise((resolve, reject) => {
             const script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
@@ -1267,8 +1267,10 @@
           });
         }
 
-        const { jsPDF } = window.jspdf || window;
-        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        // jsPDF UMD exposes itself as window.jspdf.jsPDF
+        const JsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+        if (!JsPDF) throw new Error('jsPDF library failed to load.');
+        const doc = new JsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
 
         const activeEvent = allFlagshipEvents.find(f => f.id === activeFlagshipEventId) || { title: 'Schedule' };
         const numDays = activeEvent.numDays || 3;
