@@ -1267,97 +1267,119 @@
         }
 
         const activeEvent = allFlagshipEvents.find(f => f.id === activeFlagshipEventId) || { title: 'Schedule' };
-        const pdfContainer = document.createElement('div');
-        pdfContainer.style.padding = '40px';
-        pdfContainer.style.background = '#0f0c0a';
-        pdfContainer.style.color = '#f5f0e8';
-        pdfContainer.style.fontFamily = 'system-ui, -apple-system, sans-serif';
-
         const numDays = activeEvent.numDays || 3;
         const startDateStr = activeEvent.startDate || '2026-07-25';
         const startD = new Date(startDateStr);
         const endD = new Date(startDateStr);
         endD.setDate(endD.getDate() + numDays - 1);
-        
+
         const startInfo = formatDate(startD);
         const endInfo = formatDate(endD);
-        const datesHeaderStr = numDays > 1 
-          ? `${startInfo.shortDateStr} – ${endInfo.shortDateStr}, ${startD.getFullYear()}` 
+        const datesHeaderStr = numDays > 1
+          ? `${startInfo.shortDateStr} – ${endInfo.shortDateStr}, ${startD.getFullYear()}`
           : `${startInfo.dateStr}`;
 
-        pdfContainer.innerHTML = `
-          <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #e87722; padding-bottom: 15px;">
-            <h1 style="font-family: serif; color: #e87722; margin: 0; font-size: 28px;">SPIC MACAY ${activeEvent.title.toUpperCase()}</h1>
-            <p style="margin: 5px 0 0 0; font-size: 14px; color: #a8a29e; letter-spacing: 0.05em; text-transform: uppercase;">Convention Schedule & Timetable</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; color: #78716c;">VNIT Nagpur • ${datesHeaderStr}</p>
-          </div>
-        `;
+        // Build PDF HTML content (white background — html2canvas renders dark bg poorly)
+        let contentHtml = `
+          <div style="font-family: Georgia, serif; padding: 40px; background: #ffffff; color: #1a1a1a; min-width: 700px;">
+            <div style="text-align:center; margin-bottom:30px; border-bottom:3px solid #e87722; padding-bottom:20px;">
+              <h1 style="margin:0; font-size:26px; color:#e87722; letter-spacing:0.05em;">SPIC MACAY — ${activeEvent.title.toUpperCase()}</h1>
+              <p style="margin:6px 0 0; font-size:13px; color:#666; letter-spacing:0.08em; text-transform:uppercase;">Convention Schedule &amp; Timetable</p>
+              <p style="margin:4px 0 0; font-size:12px; color:#888;">VNIT Nagpur &bull; ${datesHeaderStr}</p>
+            </div>`;
+
+        const scheduleData = window.activeScheduleEvents || {};
+        let hasAnyEvents = false;
 
         for (let i = 1; i <= numDays; i++) {
           const day = `Day ${i}`;
-          const events = window.activeScheduleEvents ? window.activeScheduleEvents[day] : [];
-          if (!events || !events.length) continue;
+          const events = scheduleData[day] || [];
 
           const currD = new Date(startDateStr);
           currD.setDate(currD.getDate() + (i - 1));
           const dayInfo = formatDate(currD);
 
-          pdfContainer.innerHTML += `
-            <div style="margin-top: 30px; page-break-inside: avoid;">
-              <h2 style="font-family: serif; color: #e87722; border-bottom: 1px solid rgba(245,240,232,0.15); padding-bottom: 8px; margin-bottom: 15px; font-size: 20px;">
-                ${day} — ${dayInfo.dateStr}
-              </h2>
-              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+          contentHtml += `
+            <div style="margin-top:30px; page-break-inside:avoid;">
+              <h2 style="font-size:18px; color:#e87722; border-bottom:1px solid #e8d5b0; padding-bottom:8px; margin-bottom:14px;">
+                ${day} &mdash; ${dayInfo.dateStr}
+              </h2>`;
+
+          if (!events.length) {
+            contentHtml += `<p style="color:#888; font-size:13px; font-style:italic; padding:10px 0;">No events scheduled for this day.</p>`;
+          } else {
+            hasAnyEvents = true;
+            contentHtml += `
+              <table style="width:100%; border-collapse:collapse; font-size:12px;">
                 <thead>
-                  <tr style="border-bottom: 2px solid rgba(232,119,34,0.3); color: #e87722;">
-                    <th style="padding: 10px; width: 25%;">Time / Duration</th>
-                    <th style="padding: 10px; width: 45%;">Event Details</th>
-                    <th style="padding: 10px; width: 20%;">Artist</th>
-                    <th style="padding: 10px; width: 10%; text-align: right;">Category</th>
+                  <tr style="background:#fdf6ee; border-bottom:2px solid #e87722; color:#e87722;">
+                    <th style="padding:10px 8px; text-align:left; width:22%;">Time</th>
+                    <th style="padding:10px 8px; text-align:left; width:42%;">Event</th>
+                    <th style="padding:10px 8px; text-align:left; width:24%;">Artist / Guru</th>
+                    <th style="padding:10px 8px; text-align:left; width:12%;">Category</th>
                   </tr>
                 </thead>
-                <tbody>
-                  ${events.map(ev => `
-                    <tr style="border-bottom: 1px solid rgba(245,240,232,0.06); page-break-inside: avoid;">
-                      <td style="padding: 12px 10px; vertical-align: top;">
-                        <strong style="color: #f5f0e8;">${ev.timeRange}</strong>
-                        ${ev.duration ? `<br><span style="font-size: 11px; color: #a8a29e;">${ev.duration}</span>` : ''}
-                      </td>
-                      <td style="padding: 12px 10px; vertical-align: top;">
-                        <strong style="font-size: 14px; color: #f5f0e8;">${ev.title}</strong>
-                        ${ev.description ? `<p style="margin: 4px 0 0 0; font-size: 12px; color: #a8a29e; line-height: 1.4;">${ev.description}</p>` : ''}
-                      </td>
-                      <td style="padding: 12px 10px; vertical-align: top; color: #f5f0e8;">
-                        ${ev.artistName || '—'}
-                      </td>
-                      <td style="padding: 12px 10px; vertical-align: top; text-align: right; text-transform: uppercase; font-size: 11px; font-weight: bold; color: #e87722;">
-                        ${ev.category || 'concert'}
-                      </td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          `;
+                <tbody>`;
+
+            events.forEach((ev, idx) => {
+              const rowBg = idx % 2 === 0 ? '#ffffff' : '#fdf9f4';
+              contentHtml += `
+                  <tr style="background:${rowBg}; border-bottom:1px solid #ece5da; page-break-inside:avoid;">
+                    <td style="padding:10px 8px; vertical-align:top; color:#333; font-weight:600;">
+                      ${ev.timeRange || '—'}
+                      ${ev.duration ? `<br><span style="font-size:10px; color:#888; font-weight:400;">${ev.duration}</span>` : ''}
+                    </td>
+                    <td style="padding:10px 8px; vertical-align:top;">
+                      <strong style="font-size:13px; color:#1a1a1a;">${ev.title || '—'}</strong>
+                      ${ev.description ? `<br><span style="font-size:11px; color:#666; line-height:1.4;">${ev.description}</span>` : ''}
+                    </td>
+                    <td style="padding:10px 8px; vertical-align:top; color:#333;">${ev.artistName || '—'}</td>
+                    <td style="padding:10px 8px; vertical-align:top; text-transform:uppercase; font-size:10px; font-weight:700; color:#e87722;">${ev.category || 'concert'}</td>
+                  </tr>`;
+            });
+
+            contentHtml += `</tbody></table>`;
+          }
+          contentHtml += `</div>`;
         }
 
+        contentHtml += `
+            <div style="margin-top:40px; padding-top:16px; border-top:1px solid #ddd; text-align:center; font-size:11px; color:#aaa;">
+              Generated from spicmacay-vnit.web.app &bull; SPIC MACAY VNIT Nagpur Chapter
+            </div>
+          </div>`;
+
+        if (!hasAnyEvents) {
+          alert('No schedule events found. Please make sure events are loaded before downloading.');
+          return;
+        }
+
+        // ⚠️ KEY FIX: Append to DOM off-screen — html2canvas cannot render detached elements
+        const pdfContainer = document.createElement('div');
+        pdfContainer.style.cssText = 'position:fixed; top:-9999px; left:-9999px; z-index:-1; width:794px;';
+        pdfContainer.innerHTML = contentHtml;
+        document.body.appendChild(pdfContainer);
+
         const opt = {
-          margin:       [10, 10, 10, 10],
-          filename:     `${activeEvent.title.replace(/[^a-zA-Z0-9]+/g, '_')}_Schedule.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0f0c0a' },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          margin:      [8, 8, 8, 8],
+          filename:    `${(activeEvent.title || 'Schedule').replace(/[^a-zA-Z0-9]+/g, '_')}_Schedule.pdf`,
+          image:       { type: 'jpeg', quality: 0.97 },
+          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+          jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         await html2pdf().set(opt).from(pdfContainer).save();
+        document.body.removeChild(pdfContainer);
+
       } catch (err) {
-        console.error("PDF generation failed:", err);
-        alert("Failed to generate PDF. You can try printing the page directly.");
+        console.error('PDF generation failed:', err);
+        alert('Failed to generate PDF. Please try again or use your browser\'s Print function (Ctrl+P).');
       } finally {
         btn.innerHTML = originalText;
         btn.style.pointerEvents = 'auto';
       }
     }
+
 
     function showDay(id, btn) {
       document.querySelectorAll('.day-view').forEach(v => v.classList.remove('active'));
