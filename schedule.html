@@ -1256,39 +1256,112 @@
       btn.style.pointerEvents = 'none';
 
       try {
-        if (typeof html2pdf === 'undefined') {
+        // Load jsPDF (UMD build — no html2canvas dependency at all)
+        if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
           await new Promise((resolve, reject) => {
             const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
           });
         }
 
+        const { jsPDF } = window.jspdf || window;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
         const activeEvent = allFlagshipEvents.find(f => f.id === activeFlagshipEventId) || { title: 'Schedule' };
         const numDays = activeEvent.numDays || 3;
         const startDateStr = activeEvent.startDate || '2026-07-25';
+
+        const PAGE_W = 210, PAGE_H = 297;
+        const ML = 14, MR = 14, MT = 14;   // margins
+        const COL_W = PAGE_W - ML - MR;    // usable width = 182mm
+
+        // ── Colours ───────────────────────────────────────
+        const ORANGE   = [232, 119,  34];
+        const DARK     = [ 26,  26,  26];
+        const GREY     = [100, 100, 100];
+        const LGREY    = [200, 200, 200];
+        const ROW_ALT  = [253, 249, 244];
+        const HDR_BG   = [253, 246, 238];
+
+        // ── Helper: clamp text to width ───────────────────
+        function truncate(text, maxW, fontSize) {
+          doc.setFontSize(fontSize);
+          let t = String(text || '');
+          while (t.length > 3 && doc.getTextWidth(t) > maxW) {
+            t = t.slice(0, -1);
+          }
+          return t === String(text || '') ? t : t.slice(0, -1) + '…';
+        }
+
+        // ── Helper: wrapped text height estimate ─────────
+        function wrappedLines(text, maxW, fontSize) {
+          doc.setFontSize(fontSize);
+          return doc.splitTextToSize(String(text || ''), maxW);
+        }
+
+        // ── Helper: new page check ────────────────────────
+        function checkPageBreak(y, needed) {
+          if (y + needed > PAGE_H - 14) {
+            doc.addPage();
+            return MT;
+          }
+          return y;
+        }
+
+        // ══════════════════════════════════════════════════
+        // PAGE 1 HEADER
+        // ══════════════════════════════════════════════════
+        let y = MT;
+
+        // Orange bar at top
+        doc.setFillColor(...ORANGE);
+        doc.rect(0, 0, PAGE_W, 8, 'F');
+
+        // Title
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor(...ORANGE);
+        y = 22;
+        doc.text('SPIC MACAY — ' + (activeEvent.title || 'Schedule').toUpperCase(), PAGE_W / 2, y, { align: 'center' });
+
+        // Sub-title
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(...GREY);
+        y += 6;
+        doc.text('CONVENTION SCHEDULE & TIMETABLE', PAGE_W / 2, y, { align: 'center' });
+
+        // Date line
         const startD = new Date(startDateStr);
-        const endD = new Date(startDateStr);
+        const endD   = new Date(startDateStr);
         endD.setDate(endD.getDate() + numDays - 1);
+        const fmtShort = d => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        const fmtFull  = d => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        const dateStr  = numDays > 1
+          ? `${fmtShort(startD)} – ${fmtShort(endD)}, ${startD.getFullYear()}`
+          : fmtFull(startD);
 
-        const startInfo = formatDate(startD);
-        const endInfo = formatDate(endD);
-        const datesHeaderStr = numDays > 1
-          ? `${startInfo.shortDateStr} – ${endInfo.shortDateStr}, ${startD.getFullYear()}`
-          : `${startInfo.dateStr}`;
+        y += 5;
+        doc.text('VNIT Nagpur  •  ' + dateStr, PAGE_W / 2, y, { align: 'center' });
 
-        // Build PDF HTML content (white background — html2canvas renders dark bg poorly)
-        let contentHtml = `
-          <div style="font-family: Georgia, serif; padding: 40px; background: #ffffff; color: #1a1a1a; min-width: 700px;">
-            <div style="text-align:center; margin-bottom:30px; border-bottom:3px solid #e87722; padding-bottom:20px;">
-              <h1 style="margin:0; font-size:26px; color:#e87722; letter-spacing:0.05em;">SPIC MACAY — ${activeEvent.title.toUpperCase()}</h1>
-              <p style="margin:6px 0 0; font-size:13px; color:#666; letter-spacing:0.08em; text-transform:uppercase;">Convention Schedule &amp; Timetable</p>
-              <p style="margin:4px 0 0; font-size:12px; color:#888;">VNIT Nagpur &bull; ${datesHeaderStr}</p>
-            </div>`;
+        // Divider
+        y += 6;
+        doc.setDrawColor(...ORANGE);
+        doc.setLineWidth(0.6);
+        doc.line(ML, y, PAGE_W - MR, y);
+        y += 8;
 
+        // ══════════════════════════════════════════════════
+        // DAY SECTIONS
+        // ══════════════════════════════════════════════════
         const scheduleData = window.activeScheduleEvents || {};
+        const colWidths = [38, 72, 46, 26]; // Time | Event | Artist | Category
+        const colX = [ML, ML + colWidths[0], ML + colWidths[0] + colWidths[1], ML + colWidths[0] + colWidths[1] + colWidths[2]];
+        const ROW_H_MIN = 9;
+
         let hasAnyEvents = false;
 
         for (let i = 1; i <= numDays; i++) {
@@ -1297,83 +1370,145 @@
 
           const currD = new Date(startDateStr);
           currD.setDate(currD.getDate() + (i - 1));
-          const dayInfo = formatDate(currD);
+          const dayLabel = `${day}  —  ${currD.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`;
 
-          contentHtml += `
-            <div style="margin-top:30px; page-break-inside:avoid;">
-              <h2 style="font-size:18px; color:#e87722; border-bottom:1px solid #e8d5b0; padding-bottom:8px; margin-bottom:14px;">
-                ${day} &mdash; ${dayInfo.dateStr}
-              </h2>`;
+          // Day heading background
+          y = checkPageBreak(y, 18);
+          doc.setFillColor(...ORANGE);
+          doc.roundedRect(ML, y, COL_W, 9, 1.5, 1.5, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11);
+          doc.setTextColor(255, 255, 255);
+          doc.text(dayLabel, ML + 4, y + 6.3);
+          y += 12;
 
           if (!events.length) {
-            contentHtml += `<p style="color:#888; font-size:13px; font-style:italic; padding:10px 0;">No events scheduled for this day.</p>`;
-          } else {
-            hasAnyEvents = true;
-            contentHtml += `
-              <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                <thead>
-                  <tr style="background:#fdf6ee; border-bottom:2px solid #e87722; color:#e87722;">
-                    <th style="padding:10px 8px; text-align:left; width:22%;">Time</th>
-                    <th style="padding:10px 8px; text-align:left; width:42%;">Event</th>
-                    <th style="padding:10px 8px; text-align:left; width:24%;">Artist / Guru</th>
-                    <th style="padding:10px 8px; text-align:left; width:12%;">Category</th>
-                  </tr>
-                </thead>
-                <tbody>`;
-
-            events.forEach((ev, idx) => {
-              const rowBg = idx % 2 === 0 ? '#ffffff' : '#fdf9f4';
-              contentHtml += `
-                  <tr style="background:${rowBg}; border-bottom:1px solid #ece5da; page-break-inside:avoid;">
-                    <td style="padding:10px 8px; vertical-align:top; color:#333; font-weight:600;">
-                      ${ev.timeRange || '—'}
-                      ${ev.duration ? `<br><span style="font-size:10px; color:#888; font-weight:400;">${ev.duration}</span>` : ''}
-                    </td>
-                    <td style="padding:10px 8px; vertical-align:top;">
-                      <strong style="font-size:13px; color:#1a1a1a;">${ev.title || '—'}</strong>
-                      ${ev.description ? `<br><span style="font-size:11px; color:#666; line-height:1.4;">${ev.description}</span>` : ''}
-                    </td>
-                    <td style="padding:10px 8px; vertical-align:top; color:#333;">${ev.artistName || '—'}</td>
-                    <td style="padding:10px 8px; vertical-align:top; text-transform:uppercase; font-size:10px; font-weight:700; color:#e87722;">${ev.category || 'concert'}</td>
-                  </tr>`;
-            });
-
-            contentHtml += `</tbody></table>`;
+            doc.setFont('helvetica', 'italic');
+            doc.setFontSize(9);
+            doc.setTextColor(...GREY);
+            doc.text('No events scheduled for this day.', ML + 4, y + 5);
+            y += 12;
+            continue;
           }
-          contentHtml += `</div>`;
+
+          hasAnyEvents = true;
+
+          // Table header
+          y = checkPageBreak(y, 10);
+          doc.setFillColor(...HDR_BG);
+          doc.rect(ML, y, COL_W, 8, 'F');
+          doc.setDrawColor(...LGREY);
+          doc.setLineWidth(0.1);
+          doc.rect(ML, y, COL_W, 8, 'S');
+
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          doc.setTextColor(...ORANGE);
+          const headers = ['TIME', 'EVENT', 'ARTIST / GURU', 'CATEGORY'];
+          headers.forEach((h, ci) => doc.text(h, colX[ci] + 2, y + 5.5));
+          y += 8;
+
+          // Table rows
+          events.forEach((ev, idx) => {
+            const timeLines  = wrappedLines(ev.timeRange || '—', colWidths[0] - 4, 8.5);
+            const titleLines = wrappedLines(ev.title || '—', colWidths[1] - 4, 8.5);
+            const descLines  = ev.description ? wrappedLines(ev.description, colWidths[1] - 4, 7) : [];
+            const artistLines= wrappedLines(ev.artistName || '—', colWidths[2] - 4, 8.5);
+            const catLines   = wrappedLines((ev.category || 'concert').toUpperCase(), colWidths[3] - 4, 7);
+
+            const lineH   = 4.2;
+            const cellH   = Math.max(
+              timeLines.length,
+              titleLines.length + (descLines.length ? descLines.length + 0.5 : 0),
+              artistLines.length,
+              catLines.length
+            ) * lineH + 5;
+            const rowH = Math.max(ROW_H_MIN, cellH);
+
+            y = checkPageBreak(y, rowH + 2);
+
+            // Row background
+            if (idx % 2 === 1) {
+              doc.setFillColor(...ROW_ALT);
+              doc.rect(ML, y, COL_W, rowH, 'F');
+            }
+
+            // Row border
+            doc.setDrawColor(...LGREY);
+            doc.setLineWidth(0.1);
+            doc.rect(ML, y, COL_W, rowH, 'S');
+
+            const textY = y + 5;
+
+            // Time (bold)
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.5);
+            doc.setTextColor(...DARK);
+            doc.text(timeLines, colX[0] + 2, textY);
+            if (ev.duration) {
+              const durY = textY + timeLines.length * lineH;
+              doc.setFont('helvetica', 'normal');
+              doc.setFontSize(7);
+              doc.setTextColor(...GREY);
+              doc.text(String(ev.duration), colX[0] + 2, durY);
+            }
+
+            // Event title
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8.5);
+            doc.setTextColor(...DARK);
+            doc.text(titleLines, colX[1] + 2, textY);
+            // Description in smaller grey
+            if (descLines.length) {
+              const descY = textY + titleLines.length * lineH + 1;
+              doc.setFont('helvetica', 'italic');
+              doc.setFontSize(7);
+              doc.setTextColor(...GREY);
+              doc.text(descLines, colX[1] + 2, descY);
+            }
+
+            // Artist
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8.5);
+            doc.setTextColor(...DARK);
+            doc.text(artistLines, colX[2] + 2, textY);
+
+            // Category
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7);
+            doc.setTextColor(...ORANGE);
+            doc.text(catLines, colX[3] + 2, textY);
+
+            y += rowH;
+          });
+
+          y += 8; // gap between days
         }
 
-        contentHtml += `
-            <div style="margin-top:40px; padding-top:16px; border-top:1px solid #ddd; text-align:center; font-size:11px; color:#aaa;">
-              Generated from spicmacay-vnit.web.app &bull; SPIC MACAY VNIT Nagpur Chapter
-            </div>
-          </div>`;
-
         if (!hasAnyEvents) {
-          alert('No schedule events found. Please make sure events are loaded before downloading.');
+          alert('No schedule events found. Please make sure the schedule is loaded before downloading.');
           return;
         }
 
-        // ⚠️ KEY FIX: Append to DOM off-screen — html2canvas cannot render detached elements
-        const pdfContainer = document.createElement('div');
-        pdfContainer.style.cssText = 'position:fixed; top:-9999px; left:-9999px; z-index:-1; width:794px;';
-        pdfContainer.innerHTML = contentHtml;
-        document.body.appendChild(pdfContainer);
+        // ── Footer on every page ──────────────────────────
+        const totalPages = doc.getNumberOfPages();
+        for (let p = 1; p <= totalPages; p++) {
+          doc.setPage(p);
+          doc.setFillColor(...ORANGE);
+          doc.rect(0, PAGE_H - 6, PAGE_W, 6, 'F');
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(7);
+          doc.setTextColor(255, 255, 255);
+          doc.text('SPIC MACAY VNIT Nagpur Chapter  •  spicmacay-vnit.web.app', ML, PAGE_H - 1.8);
+          doc.text(`Page ${p} of ${totalPages}`, PAGE_W - MR, PAGE_H - 1.8, { align: 'right' });
+        }
 
-        const opt = {
-          margin:      [8, 8, 8, 8],
-          filename:    `${(activeEvent.title || 'Schedule').replace(/[^a-zA-Z0-9]+/g, '_')}_Schedule.pdf`,
-          image:       { type: 'jpeg', quality: 0.97 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
-          jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        await html2pdf().set(opt).from(pdfContainer).save();
-        document.body.removeChild(pdfContainer);
+        const filename = (activeEvent.title || 'Schedule').replace(/[^a-zA-Z0-9]+/g, '_') + '_Schedule.pdf';
+        doc.save(filename);
 
       } catch (err) {
         console.error('PDF generation failed:', err);
-        alert('Failed to generate PDF. Please try again or use your browser\'s Print function (Ctrl+P).');
+        alert('Failed to generate PDF: ' + err.message);
       } finally {
         btn.innerHTML = originalText;
         btn.style.pointerEvents = 'auto';
@@ -1382,6 +1517,7 @@
 
 
     function showDay(id, btn) {
+
       document.querySelectorAll('.day-view').forEach(v => v.classList.remove('active'));
       document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
       document.getElementById(id).classList.add('active');
