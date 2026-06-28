@@ -121,6 +121,12 @@
     }
     .checkbox-item:hover { border-color: rgba(232,119,34,0.3); }
     .checkbox-item input[type="checkbox"] { accent-color: var(--primary-container); width: 18px; height: 18px; }
+    .concert-thumb {
+      transition: transform var(--transition-fast) ease;
+    }
+    .concert-card:hover .concert-thumb {
+      transform: scale(1.05);
+    }
 
     /* Summary table */
     .summary-row {
@@ -235,12 +241,15 @@
       background: var(--surface-container) !important;
     }
 
-    /* Intensive card light-theme fix */
-    [data-theme="light"] .intensive-card {
+    /* Intensive & Concert card light-theme fix */
+    [data-theme="light"] .intensive-card,
+    [data-theme="light"] .concert-card {
       border-color: rgba(28, 27, 26, 0.12) !important;
     }
-    [data-theme="light"] .intensive-card[style*="primary-container"] {
+    [data-theme="light"] .intensive-card[style*="primary-container"],
+    [data-theme="light"] .concert-card[style*="primary-container"] {
       background: rgba(232,119,34,0.06) !important;
+      border-color: var(--primary-container) !important;
     }
 
     /* Visual Ticket Styles */
@@ -894,6 +903,7 @@
           <div class="step-panel" id="step2">
             <h2 class="headline-md" style="margin-bottom:6px;">Choose Your Intensives</h2>
             <p class="body-md text-muted" style="margin-bottom:8px;">Select up to <strong>3 intensives</strong> in order of preference. Only <strong>1 will be confirmed</strong> based on seat availability (preference 1 first, then 2, then 3).</p>
+            <p class="body-md" style="color:var(--primary);margin-bottom:20px;font-size:0.85rem;font-weight:500;">Note: You will be allotted a single intensive for all 3 days on a first-come, first-served basis based on your preferences.</p>
 
             <!-- Selection counter -->
             <div id="intensiveSelectionInfo" style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding:10px 14px;background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.18);border-radius:8px;">
@@ -914,7 +924,34 @@
               <p style="opacity:0.6;">No intensives have been added yet. Please check back later or contact the organizers.</p>
             </div>
 
+            <!-- Evening Concerts (Optional) -->
+            <div style="margin-top: 40px; margin-bottom: 24px;">
+              <h2 class="headline-md" style="margin-bottom:6px;">Evening Concerts (Optional)</h2>
+              <p class="body-md text-muted" style="margin-bottom:16px;">Select the evening concerts you wish to attend. You can choose any or all days.</p>
+              
+              <!-- Dynamic Concerts Group Container -->
+              <div id="concertsContainer" style="display:flex; flex-direction:column; gap:20px;">
+                <p style="opacity:0.5; text-align:center; padding:16px;">Loading evening concerts...</p>
+              </div>
+            </div>
 
+            <script>
+              function toggleConcertUI(checkbox) {
+                const card = checkbox.closest('.concert-card');
+                if (checkbox.checked) {
+                  card.style.borderColor = 'var(--primary-container)';
+                  card.style.background = 'rgba(232,119,34,0.08)';
+                } else {
+                  card.style.borderColor = 'rgba(245,240,232,0.12)';
+                  card.style.background = '';
+                }
+                
+                // For light theme specifically
+                if (document.documentElement.getAttribute('data-theme') === 'light' && !checkbox.checked) {
+                  card.style.borderColor = 'rgba(28, 27, 26, 0.12)';
+                }
+              }
+            </script>
 
             <div class="input-group" style="margin-top:20px;">
               <label class="input-label" for="message">Any Message / Special Requests</label>
@@ -1025,13 +1062,18 @@
       }
     }
     
-    document.addEventListener('DOMContentLoaded', populatePassingYears);
+    document.addEventListener('DOMContentLoaded', () => {
+      populatePassingYears();
+      loadConcerts();
+    });
 
     let currentStep = 1;
 
     // ── Intensives state ─────────────────────────────
     let allIntensives = [];         // [{id, name, day, time, category, totalSeats, seatsLeft, description}]
     let selectedIntensiveIds = [];  // ordered list of up to 3 ids (preference order)
+    let allConcerts = [];           // cache for concerts
+    const DEFAULT_CONCERT_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'><rect width='300' height='200' fill='%2328221d'/><text x='50%' y='50%' font-family='sans-serif' font-weight='bold' font-size='16' fill='%23887c72' dominant-baseline='middle' text-anchor='middle'>VIRASAT CONCERT</text></svg>";
 
     // Load intensives from Firestore when page loads
     async function loadIntensives() {
@@ -1043,6 +1085,79 @@
         console.error('Failed to load intensives:', err);
         document.getElementById('intensivesLoadingState').innerHTML = '<p style="color:#e05252;">Failed to load intensives. Please refresh.</p>';
       }
+    }
+
+    // Load concerts from Firestore dynamically and listen for real-time updates
+    function loadConcerts() {
+      db.collection('concerts').orderBy('createdAt').onSnapshot(snap => {
+        allConcerts = [];
+        snap.forEach(doc => {
+          allConcerts.push({ id: doc.id, ...doc.data() });
+        });
+        renderConcertsList();
+      }, err => {
+        console.error('Failed to load concerts:', err);
+      });
+    }
+
+    function renderConcertsList() {
+      const container = document.getElementById('concertsContainer');
+      if (!container) return;
+
+      // Capture currently checked values before rendering
+      const checkedVals = Array.from(document.querySelectorAll('.concert-checkbox:checked')).map(cb => cb.value);
+
+      if (allConcerts.length === 0) {
+        container.innerHTML = '<p style="opacity:0.6; text-align:center; padding:16px; background:var(--surface-container-high); border-radius:12px;">No evening concerts scheduled yet.</p>';
+        return;
+      }
+
+      const groups = {
+        'Day 1': [],
+        'Day 2': [],
+        'Day 3': []
+      };
+
+      allConcerts.forEach(c => {
+        const dayKey = c.day || 'Day 1';
+        if (groups[dayKey]) {
+          groups[dayKey].push(c);
+        } else {
+          groups[dayKey] = [c];
+        }
+      });
+
+      let html = '';
+      for (const day in groups) {
+        const list = groups[day];
+        if (list.length > 0) {
+          list.sort((a, b) => a.name.localeCompare(b.name));
+          
+          html += `
+            <div class="concert-day-group" id="group-${day.replace(/\s+/g, '')}">
+              <h3 class="label-md" style="color:var(--primary-container); margin-bottom:12px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;">${day}</h3>
+              <div class="checkbox-group" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+                ${list.map(c => {
+                  const isChecked = checkedVals.includes(c.id);
+                  const borderStyle = isChecked ? 'border-color:var(--primary-container);background:rgba(232,119,34,0.08);' : '';
+                  const coverImg = c.imageUrl || DEFAULT_CONCERT_IMAGE;
+                  return `
+                    <label class="checkbox-item concert-card" style="cursor:pointer; display:flex; align-items:center; gap:16px; padding:12px 16px; ${borderStyle}">
+                      <input type="checkbox" class="concert-checkbox" value="${c.id}" onchange="toggleConcertUI(this)" ${isChecked ? 'checked' : ''} style="margin:0;">
+                      <img src="${coverImg}" class="concert-thumb" alt="${c.name}" style="width:70px; height:46px; object-fit:cover; border-radius:6px; border:1px solid rgba(245,240,232,0.1); flex-shrink:0;" />
+                      <div style="flex:1; min-width:0;">
+                        <div style="font-size:0.9rem;font-weight:600;color:var(--on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${c.day} - ${c.name}">${c.day} - ${c.name}</div>
+                      </div>
+                    </label>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      container.innerHTML = html;
     }
 
     const CATEGORY_LABELS = {
@@ -1294,6 +1409,13 @@
         return iv ? `${i+1}. ${iv.name}` : `${i+1}. ${id}`;
       }).join('  |  ') || '—';
 
+      // Build concert labels
+      const checkedConcerts = Array.from(document.querySelectorAll('.concert-checkbox:checked')).map(cb => {
+        const c = allConcerts.find(x => x.id === cb.value);
+        return c ? `${c.day} - ${c.name}` : cb.value;
+      });
+      const concertLabels = checkedConcerts.length > 0 ? checkedConcerts.join('  |  ') : 'None selected';
+
       const rows = [
         ['Register As',     userType === 'alumni' ? 'Alumni' : 'Student'],
         ['Full Name',       `${fn} ${ln}`],
@@ -1303,6 +1425,7 @@
         ['Branch',          branch || '—'],
         ...(userType === 'student' ? [['Year of Study', year || '—']] : []),
         ['Intensive Preferences', prefLabels],
+        ['Evening Concerts', concertLabels],
         ['Chapter',         'SPIC MACAY — VNIT Nagpur'],
       ];
       document.getElementById('summaryContent').innerHTML = rows.map(([k,v])=>`
@@ -1326,6 +1449,7 @@
       const message = document.getElementById('message').value.trim();
       const userType = document.getElementById('userType').value;
       const passingYear = document.getElementById('passingYear').value;
+      const selectedConcerts = Array.from(document.querySelectorAll('.concert-checkbox:checked')).map(cb => cb.value);
 
       // ── Final validation gate ────────────────────────
       validateEmail();
@@ -1406,6 +1530,7 @@
         phone: ph,
         branch: branch || '—',
         intensivePreferences: selectedIntensiveIds,
+        eveningConcerts: selectedConcerts,
         confirmedIntensiveId,
         confirmedIntensiveName,
         message,
@@ -1429,6 +1554,23 @@
         document.getElementById('ticketEvents').textContent = confirmedIntensiveName;
         document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName;
 
+        // Update evening concerts on ticket
+        const ticketConcerts = document.getElementById('ticketConcerts');
+        if (ticketConcerts) {
+          if (selectedConcerts.length > 0) {
+            const concertNames = selectedConcerts.map(id => {
+              const c = allConcerts.find(x => x.id === id);
+              return c ? `${c.day} - ${c.name}` : id;
+            });
+            ticketConcerts.innerHTML = `
+              <ul style="margin:0; padding-left:8px; list-style-type:disc; font-size:0.52rem; line-height:1.1; color:#c9a898; max-height:24px; overflow:hidden;">
+                ${concertNames.map(name => `<li style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</li>`).join('')}
+              </ul>`;
+          } else {
+            ticketConcerts.innerHTML = '<span style="font-size:0.55rem; opacity:0.6; color:#c9a898;">Evening Concerts: None</span>';
+          }
+        }
+
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
         document.getElementById('ticketQr').src = qrUrl;
 
@@ -1448,6 +1590,10 @@
             const iv = allIntensives.find(x => x.id === id);
             return iv ? iv.name : id;
           }),
+          eveningConcerts: selectedConcerts.length > 0 ? selectedConcerts.map(id => {
+            const c = allConcerts.find(x => x.id === id);
+            return c ? `${c.day} - ${c.name}` : id;
+          }).join(', ') : 'None',
           branch: branch || '—',
           userType: userType
         };
@@ -1532,7 +1678,14 @@
                 <span class="ticket-val-custom" id="ticketRoll">BT22BCE001</span>
               </div>
             </div>
-            <div class="ticket-field-custom preferences-custom">
+            <!-- Evening Access Concerts Section -->
+            <div class="ticket-field-custom evening-access-custom" style="margin-top:2px;">
+              <span class="ticket-lbl-custom">EVENING ACCESS</span>
+              <div class="ticket-val-custom evening-concerts" id="ticketConcerts" style="font-size:0.55rem; line-height:1.2; max-height:26px; overflow:hidden;">
+                Evening Concerts: None
+              </div>
+            </div>
+            <div class="ticket-field-custom preferences-custom" style="margin-top:2px;">
               <span class="ticket-lbl-custom">INTENSIVES</span>
               <span class="ticket-val-custom preferences" id="ticketEvents">Hindustani Vocal, Kathak, Hatha Yoga</span>
             </div>

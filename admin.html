@@ -464,7 +464,9 @@
           <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark" />
           <img src="logo.svg" alt="SPIC MACAY" class="logo-light" />
         </a>
-        <button class="btn btn-secondary btn-sm" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Light/Dark Mode" style="font-size: 1.1rem; padding: 4px 10px; background: transparent; border: 1px solid rgba(245,240,232,0.15);">🌞</button>
+        <button class="btn btn-secondary btn-sm" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Light/Dark Mode" style="display: flex; align-items: center; justify-content: center; padding: 6px; background: transparent; border: 1px solid rgba(245,240,232,0.15); border-radius: 50%; width: 34px; height: 34px; color: var(--on-surface); transition: all 0.2s ease;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </button>
       </div>
       <div class="nav-actions">
         <a href="index.html" class="btn btn-secondary btn-sm">← Back to Site</a>
@@ -541,6 +543,14 @@
               <p class="hub-card-desc">Manage intensives, tracks, category tags, schedules, and monitor seat counts.</p>
             </div>
             <div class="hub-card-metric" id="hubMetricIntensives">Loading stats...</div>
+          </div>
+          <!-- Registration Concerts -->
+          <div class="hub-card" onclick="switchTab('concerts')">
+            <div>
+              <h2 class="hub-card-title">🎵 Evening Concerts</h2>
+              <p class="hub-card-desc">Manage evening concerts for student and alumni registration selection.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricConcerts">Loading stats...</div>
           </div>
           <!-- Artists -->
           <div class="hub-card" onclick="switchTab('artists')">
@@ -633,6 +643,7 @@
                   <th>Roll Number</th>
                   <th>Confirmed Intensive</th>
                   <th>Preferences (1→2→3)</th>
+                  <th>Evening Concerts</th>
                   <th>Check-In</th>
                   <th>Actions</th>
                 </tr>
@@ -669,6 +680,83 @@
                 </tr>
               </thead>
               <tbody id="intensivesTableBody">
+                <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Concerts Section -->
+      <div class="panel-section" id="section-concerts">
+        <div class="dashboard-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+            <div>
+              <h2 class="headline-sm">Manage Evening Concerts</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">Create and edit the evening concerts that users can select during registration.</p>
+            </div>
+          </div>
+          
+          <!-- Concert Add/Edit Form -->
+          <div style="background:rgba(245,240,232,0.04); border:1px solid rgba(245,240,232,0.08); border-radius:12px; padding:20px; margin-bottom:24px;">
+            <h3 id="concertFormTitle" class="label-md" style="margin-bottom:16px; font-weight:700; color:var(--primary-container);">ADD EVENING CONCERT</h3>
+            <input type="hidden" id="concertId" />
+            
+            <div style="display:grid; grid-template-columns:1fr; gap:16px; margin-bottom:20px;">
+              <div style="display:grid; grid-template-columns:1fr 2fr; gap:16px;">
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="concertDay">Day *</label>
+                  <select class="input-field" id="concertDay" style="appearance:none; margin-bottom:0;">
+                    <option value="Day 1">Day 1</option>
+                    <option value="Day 2">Day 2</option>
+                    <option value="Day 3">Day 3</option>
+                  </select>
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="concertName">Artist / Concert Name *</label>
+                  <input class="input-field" type="text" id="concertName" placeholder="e.g. Classical Vocal by Artist Name" style="margin-bottom:0;" />
+                </div>
+              </div>
+              
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items: flex-end;">
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="concertImgUrl">Cover Image URL</label>
+                  <input class="input-field" type="text" id="concertImgUrl" placeholder="https://example.com/image.png" style="margin-bottom:0;" oninput="previewConcertImg()" />
+                </div>
+                <div class="input-group" style="margin-bottom:0;">
+                  <label class="input-label" for="concertImgFile">Or Upload Image File</label>
+                  <input type="file" class="input-field" id="concertImgFile" accept="image/*" style="margin-bottom:0; padding:6px 12px;" onchange="previewConcertImgFile(this)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Image Preview Box -->
+            <div id="concertImgPreview" style="display:none; margin-bottom:20px; align-items:center; gap:16px;">
+              <img id="concertImgPreviewImg" src="" style="width:120px; height:80px; object-fit:cover; border-radius:8px; border:1px solid rgba(245,240,232,0.15);" />
+              <div>
+                <p style="font-size:0.75rem; color:var(--on-surface-variant); margin:0;">Image Preview</p>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="clearConcertImg()" style="margin-top:6px; padding:4px 8px; font-size:0.7rem;">Clear Image</button>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-primary" id="saveConcertBtn" onclick="saveConcert()" style="padding:10px 24px; height:42px;">Add Concert</button>
+              <button class="btn btn-secondary" id="cancelConcertBtn" onclick="resetConcertForm()" style="padding:10px 24px; height:42px; display:none;">Cancel Edit</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Cover Image</th>
+                  <th>Formatted Name</th>
+                  <th>Day</th>
+                  <th>Concert Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="concertsTableBody">
                 <!-- Dynamic Content -->
               </tbody>
             </table>
@@ -1503,19 +1591,22 @@
     const db = firebase.firestore();
 
     // Theme logic
+    const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+    const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+
     function initTheme() {
       const saved = localStorage.getItem('adminTheme');
       if (saved === 'light') {
         document.body.classList.add('light-mode');
         const btn = document.getElementById('themeToggleBtn');
-        if (btn) btn.textContent = '🌙';
+        if (btn) btn.innerHTML = moonSvg;
       }
     }
     function toggleTheme() {
       const isLight = document.body.classList.toggle('light-mode');
       localStorage.setItem('adminTheme', isLight ? 'light' : 'dark');
       const btn = document.getElementById('themeToggleBtn');
-      if (btn) btn.textContent = isLight ? '🌙' : '🌞';
+      if (btn) btn.innerHTML = isLight ? moonSvg : sunSvg;
     }
     initTheme();
 
@@ -1683,6 +1774,7 @@
       hub: { title: 'Admin Dashboard', subtitle: 'Virasat 2026 Management Console' },
       registrations: { title: '🎟 Registrations', subtitle: 'Manage attendee passes and ticket check-ins' },
       intensives: { title: '🎭 Intensives', subtitle: 'Manage workshops, category tags, and seats' },
+      concerts: { title: '🎵 Registration Concerts', subtitle: 'Manage evening concerts for attendee registration' },
       artists: { title: '👨‍🏫 Artists & Gurus', subtitle: 'Manage performing masters and biographies' },
       schedule: { title: '📅 Events & Schedule', subtitle: 'Manage three-day convention timeline events' },
       homeEvents: { title: '🏠 Home Events', subtitle: 'Manage upcoming event highlight cards' },
@@ -1731,6 +1823,7 @@
 
     let allRegistrations = [];
     let allIntensives = []; // cache for name lookups
+    let allConcerts = []; // cache for evening concerts
     let allTeamSections = []; // cache for section lookups
     let allFlagshipEvents = []; // cache for flagship events
     let allScheduleEvents = []; // cache for all schedule events
@@ -1797,6 +1890,7 @@
               </select>
             </td>
             <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${prefNames}"><span style="font-size:0.78rem;opacity:0.75;">${prefNames}</span></td>
+            <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(d.eveningConcerts || []).join(' | ')}"><span style="font-size:0.78rem;opacity:0.75;">${(d.eveningConcerts || []).join(' | ') || '—'}</span></td>
             <td>
               <button class="admin-badge ${checkInClass}" onclick="toggleCheckIn('${d.id}', ${!!d.checkedIn})" style="cursor:pointer; font-size:0.68rem; padding:3px 8px;">
                 ${checkInText}
@@ -1820,7 +1914,7 @@
       const intMap = {};
       allIntensives.forEach(i => { intMap[i.id] = i.name; });
       
-      const headers = ['Registration ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Registered As', 'Roll Number', 'Branch', 'Year of Study', 'Confirmed Intensive', 'Preference 1', 'Preference 2', 'Preference 3', 'Checked In'];
+      const headers = ['Registration ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Registered As', 'Roll Number', 'Branch', 'Year of Study', 'Confirmed Intensive', 'Preference 1', 'Preference 2', 'Preference 3', 'Evening Concerts', 'Checked In'];
       const rows = allRegistrations.map(r => {
         const prefs = r.intensivePreferences || [];
         const confirmed = r.confirmedIntensiveId ? (intMap[r.confirmedIntensiveId] || r.confirmedIntensiveId) : (r.confirmedIntensiveName || '');
@@ -1839,6 +1933,7 @@
           prefs[0] ? (intMap[prefs[0]] || prefs[0]) : '',
           prefs[1] ? (intMap[prefs[1]] || prefs[1]) : '',
           prefs[2] ? (intMap[prefs[2]] || prefs[2]) : '',
+          (r.eveningConcerts || []).join(' | '),
           r.checkedIn ? 'Yes' : 'No'
         ];
       });
@@ -1866,6 +1961,15 @@
         filterRegistrations(); // re-render once names are loaded
         const el = document.getElementById('hubMetricIntensives');
         if (el) el.textContent = `${allIntensives.length} intensive${allIntensives.length !== 1 ? 's' : ''} configured`;
+      });
+
+      // Listen to concerts
+      db.collection('concerts').orderBy('createdAt', 'desc').onSnapshot(snap => {
+        allConcerts = [];
+        snap.forEach(doc => { allConcerts.push({ id: doc.id, ...doc.data() }); });
+        renderConcertsTable();
+        const el = document.getElementById('hubMetricConcerts');
+        if (el) el.textContent = `${allConcerts.length} concert${allConcerts.length !== 1 ? 's' : ''} configured`;
       });
 
       // Listen to real-time registrations
@@ -2410,6 +2514,156 @@
       } catch (err) {
         showToast(err.message, 'error');
       }
+    }
+
+    // ── CONCERTS CRUD ───────────────────────────────────
+    const DEFAULT_CONCERT_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'><rect width='300' height='200' fill='%2328221d'/><text x='50%' y='50%' font-family='sans-serif' font-weight='bold' font-size='16' fill='%23887c72' dominant-baseline='middle' text-anchor='middle'>VIRASAT CONCERT</text></svg>";
+    let concertImageBase64 = '';
+
+    function previewConcertImg() {
+      const url = document.getElementById('concertImgUrl').value.trim();
+      const previewBox = document.getElementById('concertImgPreview');
+      const previewImg = document.getElementById('concertImgPreviewImg');
+      
+      if (url) {
+        previewImg.src = url;
+        previewBox.style.display = 'flex';
+        document.getElementById('concertImgFile').value = '';
+        concertImageBase64 = '';
+      } else if (!concertImageBase64) {
+        previewBox.style.display = 'none';
+      }
+    }
+
+    function previewConcertImgFile(input) {
+      const previewBox = document.getElementById('concertImgPreview');
+      const previewImg = document.getElementById('concertImgPreviewImg');
+      
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          concertImageBase64 = e.target.result;
+          previewImg.src = concertImageBase64;
+          previewBox.style.display = 'flex';
+          document.getElementById('concertImgUrl').value = '';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function clearConcertImg() {
+      document.getElementById('concertImgUrl').value = '';
+      document.getElementById('concertImgFile').value = '';
+      document.getElementById('concertImgPreviewImg').src = '';
+      document.getElementById('concertImgPreview').style.display = 'none';
+      concertImageBase64 = '';
+    }
+
+    function resetConcertForm() {
+      document.getElementById('concertId').value = '';
+      document.getElementById('concertDay').value = 'Day 1';
+      document.getElementById('concertName').value = '';
+      clearConcertImg();
+      
+      document.getElementById('concertFormTitle').textContent = 'ADD EVENING CONCERT';
+      document.getElementById('saveConcertBtn').textContent = 'Add Concert';
+      document.getElementById('cancelConcertBtn').style.display = 'none';
+    }
+
+    function editConcert(id) {
+      const c = allConcerts.find(x => x.id === id);
+      if (!c) return;
+      
+      document.getElementById('concertId').value = c.id;
+      document.getElementById('concertDay').value = c.day || 'Day 1';
+      document.getElementById('concertName').value = c.name || '';
+      
+      if (c.imageUrl && c.imageUrl !== DEFAULT_CONCERT_IMAGE) {
+        if (c.imageUrl.startsWith('data:')) {
+          concertImageBase64 = c.imageUrl;
+          document.getElementById('concertImgPreviewImg').src = c.imageUrl;
+          document.getElementById('concertImgUrl').value = '';
+        } else {
+          document.getElementById('concertImgUrl').value = c.imageUrl;
+          document.getElementById('concertImgPreviewImg').src = c.imageUrl;
+          concertImageBase64 = '';
+        }
+        document.getElementById('concertImgPreview').style.display = 'flex';
+      } else {
+        clearConcertImg();
+      }
+      
+      document.getElementById('concertFormTitle').textContent = 'EDIT EVENING CONCERT';
+      document.getElementById('saveConcertBtn').textContent = 'Update Concert';
+      document.getElementById('cancelConcertBtn').style.display = 'block';
+      
+      document.getElementById('concertFormTitle').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function saveConcert() {
+      const id = document.getElementById('concertId').value;
+      const day = document.getElementById('concertDay').value;
+      const name = document.getElementById('concertName').value.trim();
+      let imageUrl = document.getElementById('concertImgUrl').value.trim();
+      
+      if (!name) {
+        showToast('Please enter a concert/artist name.', 'error');
+        return;
+      }
+      
+      if (concertImageBase64) {
+        imageUrl = concertImageBase64;
+      }
+      
+      const data = {
+        day: day,
+        name: name,
+        imageUrl: imageUrl || DEFAULT_CONCERT_IMAGE,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      
+      try {
+        if (id) {
+          await db.collection('concerts').doc(id).update(data);
+          showToast('Evening concert updated successfully.', 'success');
+        } else {
+          const docId = `${day} - ${name}`;
+          data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+          await db.collection('concerts').doc(docId).set(data);
+          showToast('Evening concert added successfully.', 'success');
+        }
+        resetConcertForm();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    function renderConcertsTable() {
+      let html = '';
+      const sortedConcerts = [...allConcerts].sort((a, b) => {
+        if (a.day !== b.day) return a.day.localeCompare(b.day);
+        return a.name.localeCompare(b.name);
+      });
+      sortedConcerts.forEach(d => {
+        const coverImg = d.imageUrl || DEFAULT_CONCERT_IMAGE;
+        html += `
+          <tr>
+            <td><img src="${coverImg}" style="width:60px; height:40px; object-fit:cover; border-radius:6px; border: 1px solid rgba(245,240,232,0.15);" /></td>
+            <td style="font-weight:600;">${d.day} - ${d.name}</td>
+            <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.day}</span></td>
+            <td>${d.name}</td>
+            <td>
+              <div class="action-btn-group">
+                <button class="btn btn-secondary btn-sm" onclick="editConcert('${d.id}')">Edit</button>
+                <button class="btn btn-secondary btn-sm" onclick="deleteDoc('concerts', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272; display:flex; align-items:center; gap:4px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>`;
+      });
+      document.getElementById('concertsTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;opacity:0.5;">No evening concerts configured yet.</td></tr>';
     }
 
     // ── INTENSIVES CRUD ─────────────────────────────────

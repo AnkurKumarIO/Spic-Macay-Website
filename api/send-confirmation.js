@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // ── PDF ticket generator ─────────────────────────────────────────────────────
-async function generateTicketPdf({ firstName, lastName, registrationId, confirmedIntensiveName, rollNumber }) {
+async function generateTicketPdf({ firstName, lastName, registrationId, confirmedIntensiveName, eveningConcerts, rollNumber }) {
   const pdfDoc = await PDFDocument.create();
   
   // Load template image
@@ -87,18 +87,52 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
     color: rgb(232/255, 229/255, 228/255),
   });
   
-  // 5. INTENSIVES Label & Value
+  // 5. EVENING ACCESS Label & Bullet list
+  page.drawText('EVENING ACCESS', {
+    x,
+    y: 80,
+    size: 6,
+    font: helveticaBold,
+    color: rgb(169/255, 146/255, 133/255),
+  });
+
+  const concertsList = (eveningConcerts && eveningConcerts !== 'None') 
+    ? eveningConcerts.split(', ') 
+    : [];
+
+  if (concertsList.length > 0) {
+    const drawConcerts = concertsList.slice(0, 2);
+    drawConcerts.forEach((c, idx) => {
+      page.drawText(`• ${c}`, {
+        x: x + 4,
+        y: 68 - (idx * 11),
+        size: 7.5,
+        font: helvetica,
+        color: rgb(201/255, 168/255, 152/255),
+      });
+    });
+  } else {
+    page.drawText('Evening Concerts: None', {
+      x,
+      y: 68,
+      size: 7.5,
+      font: helvetica,
+      color: rgb(201/255, 168/255, 152/255),
+    });
+  }
+  
+  // 6. INTENSIVES Label & Value
   page.drawText('INTENSIVES', {
     x,
-    y: 70,
+    y: 42,
     size: 6,
     font: helveticaBold,
     color: rgb(169/255, 146/255, 133/255),
   });
   page.drawText(confirmedIntensiveName || 'General Entry', {
     x,
-    y: 56,
-    size: 9,
+    y: 28,
+    size: 8.5,
     font: helvetica,
     color: rgb(201/255, 168/255, 152/255),
   });
@@ -115,7 +149,7 @@ function setCors(res) {
 }
 
 // ── Email HTML template ──────────────────────────────────────────────────────
-function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiveName, intensivePreferences, rollNumber, branch, yearOfStudy, type }) {
+function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiveName, intensivePreferences, eveningConcerts, rollNumber, branch, yearOfStudy, type }) {
   const prefList = (intensivePreferences || [])
     .map((name, i) => `<li style="margin-bottom:4px;">${i + 1}. ${name}</li>`)
     .join('');
@@ -220,6 +254,15 @@ function buildEmailHtml({ firstName, lastName, registrationId, confirmedIntensiv
                     <span style="font-size:0.875rem;color:#f5f0e8;font-weight:600;">${yearOfStudy}</span>
                   </td>
                 </tr>` : ''}
+                ${eveningConcerts && eveningConcerts !== 'None' ? `
+                <tr>
+                  <td style="padding:10px 0;border-bottom:1px solid rgba(245,240,232,0.07);">
+                    <span style="font-size:0.75rem;color:#7a6a5a;text-transform:uppercase;letter-spacing:0.08em;">Evening Concerts</span>
+                  </td>
+                  <td style="padding:10px 0;border-bottom:1px solid rgba(245,240,232,0.07);text-align:right;">
+                    <span style="font-size:0.875rem;color:#f5f0e8;font-weight:600;">${eveningConcerts}</span>
+                  </td>
+                </tr>` : ''}
                 <tr>
                   <td style="padding:10px 0;">
                     <span style="font-size:0.75rem;color:#7a6a5a;text-transform:uppercase;letter-spacing:0.08em;">Chapter</span>
@@ -299,6 +342,7 @@ module.exports = async function handler(req, res) {
     registrationId,
     confirmedIntensiveName,
     intensivePreferences,   // array of name strings (not IDs)
+    eveningConcerts,
     rollNumber,
     branch,
     yearOfStudy,
@@ -322,6 +366,7 @@ module.exports = async function handler(req, res) {
   const html = buildEmailHtml({
     firstName, lastName, registrationId,
     confirmedIntensiveName, intensivePreferences,
+    eveningConcerts,
     rollNumber, branch, yearOfStudy,
     type,
   });
