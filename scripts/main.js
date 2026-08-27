@@ -102,7 +102,7 @@ function initCountdown() {
   const secs  = document.getElementById('cdSecs');
   if (!days) return;
 
-  const target = new Date('2026-05-25T06:00:00+05:30').getTime();
+  const target = new Date('2026-07-25T06:00:00+05:30').getTime();
 
   function tick() {
     const now  = Date.now();
@@ -300,8 +300,8 @@ function initEventCountdown() {
   const s = document.getElementById('evSecs');
   if (!d) return;
 
-  // Count to May 30, 2026 at 8:45 PM IST (+05:30)
-  const target = new Date('2026-05-30T20:45:00+05:30').getTime();
+  // Count to July 30, 2026 at 8:45 PM IST (+05:30)
+  const target = new Date('2026-07-30T20:45:00+05:30').getTime();
 
   function tickEvent() {
     const diff = target - Date.now();

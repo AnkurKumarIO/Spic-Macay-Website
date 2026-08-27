@@ -1138,9 +1138,9 @@
           <div class="input-group">
             <label class="input-label" for="intDay">Day *</label>
             <select class="input-field" id="intDay" required>
-              <option value="Day 1">Day 1 (July 25)</option>
-              <option value="Day 2">Day 2 (July 26)</option>
-              <option value="Day 3">Day 3 (July 27)</option>
+              <option value="Day 1">Day 1 (Sept 24)</option>
+              <option value="Day 2">Day 2 (Sept 25)</option>
+              <option value="Day 3">Day 3 (Sept 26)</option>
             </select>
           </div>
           <div class="input-group">
@@ -1269,9 +1269,9 @@
           <div class="input-group">
             <label class="input-label" for="evDay">Day *</label>
             <select class="input-field" id="evDay" required>
-              <option value="Day 1">Day 1 (July 25)</option>
-              <option value="Day 2">Day 2 (July 26)</option>
-              <option value="Day 3">Day 3 (July 27)</option>
+              <option value="Day 1">Day 1 (Sept 24)</option>
+              <option value="Day 2">Day 2 (Sept 25)</option>
+              <option value="Day 3">Day 3 (Sept 26)</option>
             </select>
           </div>
           <div class="input-group">
@@ -1499,7 +1499,7 @@
           </div>
           <div class="input-group">
             <label class="input-label" for="feStartDate">Start Date *</label>
-            <input class="input-field" type="date" id="feStartDate" required value="2026-07-25"/>
+            <input class="input-field" type="date" id="feStartDate" required value="2026-09-24"/>
           </div>
           <div class="input-group">
             <label class="input-label" for="feNumDays">Duration (Days) *</label>
@@ -2785,7 +2785,7 @@
       const parentId = document.getElementById('evFlagshipEvent').value || document.getElementById('scheduleFilterParent').value;
       const activeFE = allFlagshipEvents.find(f => f.id === parentId);
       const numDays = activeFE ? (activeFE.numDays || 3) : 3;
-      const startDateStr = activeFE ? (activeFE.startDate || '2026-07-25') : '2026-07-25';
+      const startDateStr = activeFE ? (activeFE.startDate || '2026-09-24') : '2026-09-24';
       
       let html = '';
       for (let i = 1; i <= numDays; i++) {
@@ -3769,7 +3769,7 @@
     function openFlagshipEventModal() {
       document.getElementById('flagshipEventForm').reset();
       document.getElementById('flagshipEventId').value = '';
-      document.getElementById('feStartDate').value = '2026-07-25';
+      document.getElementById('feStartDate').value = '2026-09-24';
       document.getElementById('feNumDays').value = 3;
       document.getElementById('flagshipEventModalTitle').textContent = 'Add Flagship Event';
       document.getElementById('flagshipEventModal').classList.add('active');
@@ -3788,7 +3788,7 @@
         document.getElementById('feDesc').value = d.description || '';
         document.getElementById('feIconUrl').value = d.iconUrl || '';
         document.getElementById('feDisplayType').value = d.displayType || 'schedule';
-        document.getElementById('feStartDate').value = d.startDate || '2026-07-25';
+        document.getElementById('feStartDate').value = d.startDate || '2026-09-24';
         document.getElementById('feNumDays').value = d.numDays || 3;
         document.getElementById('flagshipEventModalTitle').textContent = 'Edit Flagship Event';
         document.getElementById('flagshipEventModal').classList.add('active');
@@ -3830,7 +3830,7 @@
           description: 'Our flagship 3-day cultural immersion. Experience classical concerts, guru-shishya workshops, and heritage arts.',
           iconUrl: 'Reference/sitar-lotus.png',
           displayType: 'schedule',
-          startDate: '2026-07-25',
+          startDate: '2026-09-24',
           numDays: 3
         });
         await db.collection('flagshipEvents').doc('inaugural').set({
@@ -3838,7 +3838,7 @@
           description: 'The grand opening ceremony. Welcoming recitals, lamp lighting, and inaugural addresses by state dignitaries.',
           iconUrl: 'Reference/krishna-flute.png',
           displayType: 'schedule',
-          startDate: '2026-07-25',
+          startDate: '2026-09-24',
           numDays: 1
         });
         showToast('Flagship events seeded!', 'success');
@@ -3851,7 +3851,7 @@
       const parentFilter = document.getElementById('scheduleFilterParent').value;
       const activeFE = allFlagshipEvents.find(f => f.id === parentFilter);
       const numDays = activeFE ? (activeFE.numDays || 3) : 3;
-      const startDateStr = activeFE ? (activeFE.startDate || '2026-07-25') : '2026-07-25';
+      const startDateStr = activeFE ? (activeFE.startDate || '2026-09-24') : '2026-09-24';
 
       // 1. Generate Sub-tabs and panels dynamically
       let tabsHtml = '';
