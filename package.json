@@ -3,9 +3,16 @@
   "version": "1.0.0",
   "description": "SPIC MACAY VNIT Nagpur — Virasat 2026 Portal",
   "private": true,
+  "scripts": {
+    "build": "terser scripts/main.js --compress --mangle --no-annotations -o scripts/main.js",
+    "build:preview": "terser scripts/main.js --compress --mangle --no-annotations --output scripts/main.min.js"
+  },
   "dependencies": {
     "nodemailer": "^8.0.10",
     "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "terser": "5.31.1"
   },
   "engines": {
     "node": ">=18"
