@@ -494,10 +494,6 @@
         </div>
       </div>
       <button class="btn btn-primary w-full" id="loginBtn" onclick="handleSubmitAuth()">Sign In</button>
-      <div style="margin-top: 16px; font-size: 0.85rem; text-align: center;">
-        <span id="authToggleText" style="color: var(--on-surface-variant);">Don't have an account? </span>
-        <a href="#" id="authToggleLink" onclick="toggleAuthMode(event)" style="color: var(--primary); font-weight: 600; text-decoration: none;">Create Account</a>
-      </div>
       <div id="loginError" style="display:none; margin-top:12px; padding:10px 14px; border-radius:8px; background:rgba(196,38,28,0.1); border:1px solid rgba(196,38,28,0.3); color:#f47272; font-size:0.875rem; text-align:left;"></div>
     </div>
 
@@ -1795,43 +1791,9 @@
       }
     });
 
-    // Sign in handling
-    let isLoginMode = true;
-
-    function toggleAuthMode(e) {
-      if (e) e.preventDefault();
-      isLoginMode = !isLoginMode;
-      
-      const titleEl = document.getElementById('authTitle');
-      const subtitleEl = document.getElementById('authSubtitle');
-      const btnEl = document.getElementById('loginBtn');
-      const toggleText = document.getElementById('authToggleText');
-      const toggleLink = document.getElementById('authToggleLink');
-      const errEl = document.getElementById('loginError');
-
-      if (errEl) errEl.style.display = 'none';
-
-      if (isLoginMode) {
-        titleEl.textContent = 'Admin Login';
-        subtitleEl.textContent = 'Sign in to manage SPIC MACAY details.';
-        btnEl.textContent = 'Sign In';
-        toggleText.textContent = "Don't have an account? ";
-        toggleLink.textContent = 'Create Account';
-      } else {
-        titleEl.textContent = 'Create Admin Account';
-        subtitleEl.textContent = 'Register a dedicated email and password to access the portal.';
-        btnEl.textContent = 'Create Account';
-        toggleText.textContent = 'Already have an account? ';
-        toggleLink.textContent = 'Sign In';
-      }
-    }
-
+    // Sign in handling — sign in only, no self-registration
     async function handleSubmitAuth() {
-      if (isLoginMode) {
-        await handleLogin();
-      } else {
-        await handleRegister();
-      }
+      await handleLogin();
     }
 
     async function handleLogin() {
@@ -1859,53 +1821,7 @@
         if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
         showToast(msg, 'error');
       } finally {
-        btn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
-        btn.disabled = false;
-      }
-    }
-
-    async function handleRegister() {
-      const email = document.getElementById('loginEmail').value.trim();
-      const pass = document.getElementById('loginPassword').value;
-      const btn = document.getElementById('loginBtn');
-      const errEl = document.getElementById('loginError');
-
-      if (errEl) errEl.style.display = 'none';
-      if (!email || !pass) {
-        if (errEl) { errEl.textContent = 'Please enter both email and password.'; errEl.style.display = 'block'; }
-        return;
-      }
-
-      // Restrict domain to vnit.ac.in or spicmacay.vnit
-      const allowedDomains = ['vnit.ac.in', 'spicmacay.vnit'];
-      const emailDomain = email.split('@')[1];
-      if (!emailDomain || !allowedDomains.includes(emailDomain.toLowerCase())) {
-        const msg = 'Registration is restricted to @vnit.ac.in and @spicmacay.vnit email addresses.';
-        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
-        showToast(msg, 'error');
-        return;
-      }
-
-      if (pass.length < 6) {
-        const msg = 'Password must be at least 6 characters.';
-        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
-        showToast(msg, 'error');
-        return;
-      }
-
-      btn.textContent = 'Creating account...';
-      btn.disabled = true;
-
-      try {
-        await auth.createUserWithEmailAndPassword(email, pass);
-        showToast('Account created and signed in successfully.', 'success');
-      } catch (err) {
-        console.error(err);
-        const msg = err.message || 'Failed to create account. Please try again.';
-        if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
-        showToast(msg, 'error');
-      } finally {
-        btn.textContent = isLoginMode ? 'Sign In' : 'Create Account';
+        btn.textContent = 'Sign In';
         btn.disabled = false;
       }
     }
