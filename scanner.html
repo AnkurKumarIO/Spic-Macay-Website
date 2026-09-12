@@ -516,6 +516,13 @@
     <!-- ── Step 2: Scanner ────────────────────────────── -->
     <div class="step" id="stepScan">
       <div class="scanner-wrapper">
+        <!-- Back button row -->
+        <div style="width:100%;max-width:480px;padding:10px 16px 0;display:flex;align-items:center;gap:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="goToSessionSelect()" style="padding:8px 16px;font-size:0.82rem;display:flex;align-items:center;gap:6px;">
+            ← Back
+          </button>
+          <span style="font-size:0.78rem;color:var(--on-surface-variant);" id="scannerSessionLabel">—</span>
+        </div>
         <div style="position:relative;width:100%;max-width:480px;">
           <div id="qr-reader"></div>
           <div class="scan-overlay-frame">
@@ -763,6 +770,12 @@
         currentSession.type === 'intensive'
           ? `Intensive · ${currentSession.dayKey}`
           : `Evening Concert · ${currentSession.dayKey}`;
+
+      // Update inline label on scanner screen
+      document.getElementById('scannerSessionLabel').textContent =
+        currentSession.type === 'intensive'
+          ? `${currentSession.name} · ${currentSession.dayKey}`
+          : currentSession.name;
 
       scanCount = 0;
       document.getElementById('scanCount').textContent = '0';
