@@ -521,6 +521,7 @@
             </span>
             <button class="btn btn-sm" onclick="openScanner()" style="background:var(--primary-container);color:var(--on-primary-container);border:none;font-weight:700;letter-spacing:0.04em;padding:6px 14px;">📷 Scanner</button>
           </div>
+          <button class="btn btn-secondary btn-sm" onclick="openRolesModal()" style="padding:6px 14px;">👥 Manage Roles</button>
           <button class="btn btn-secondary btn-sm" onclick="handleLogout()">Sign Out</button>
         </div>
       </div>
@@ -1113,6 +1114,75 @@
   </div>
 
   <!-- ── Modals Section ──────────────────────────────── -->
+
+  <!-- Manage Roles Modal -->
+  <div class="admin-modal" id="rolesModal">
+    <div class="modal-container" style="max-width:580px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <h2 class="headline-sm">👥 Manage Volunteer Roles</h2>
+        <button class="btn btn-secondary btn-sm" onclick="closeRolesModal()" style="padding:6px 12px;">✕</button>
+      </div>
+
+      <!-- Info note -->
+      <div style="background:rgba(232,119,34,0.07);border:1px solid rgba(232,119,34,0.18);border-radius:10px;padding:14px 16px;margin-bottom:24px;font-size:0.82rem;color:var(--on-surface-variant);line-height:1.6;">
+        Roles are recorded here and must be applied via the <strong>Firebase Admin SDK</strong> to activate Firestore security rules.
+        See the <strong>SDK Snippet</strong> section below for the one-time command.
+      </div>
+
+      <!-- Add / update role -->
+      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:24px;">
+        <div class="input-group" style="flex:1;min-width:180px;margin-bottom:0;">
+          <label class="input-label" for="roleTargetEmail">User Email *</label>
+          <input class="input-field" type="email" id="roleTargetEmail" placeholder="volunteer@example.com"/>
+        </div>
+        <div class="input-group" style="min-width:160px;margin-bottom:0;">
+          <label class="input-label" for="roleSelect">Role *</label>
+          <select class="input-field" id="roleSelect" style="appearance:none;">
+            <option value="volunteer">Volunteer</option>
+            <option value="admin">Admin</option>
+            <option value="">Remove Role</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="roleAssignBtn" onclick="assignRoleFromAdmin()" style="padding:10px 20px;white-space:nowrap;">Assign</button>
+      </div>
+      <div id="roleAssignError" style="display:none;padding:8px 12px;border-radius:8px;background:rgba(196,38,28,0.1);border:1px solid rgba(196,38,28,0.3);color:#f47272;font-size:0.82rem;margin-bottom:16px;"></div>
+
+      <!-- Current roles list -->
+      <div style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <p class="label-sm" style="color:var(--primary-container);letter-spacing:0.07em;">CURRENT ASSIGNMENTS</p>
+          <button class="btn btn-secondary btn-sm" onclick="loadRolesInModal()" style="padding:4px 10px;font-size:0.72rem;">Refresh</button>
+        </div>
+        <div id="rolesModalList" style="max-height:220px;overflow-y:auto;">
+          <p style="opacity:0.5;text-align:center;padding:16px;font-size:0.85rem;">Loading…</p>
+        </div>
+      </div>
+
+      <!-- Admin SDK snippet -->
+      <details style="margin-bottom:8px;">
+        <summary style="cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--primary-container);padding:8px 0;user-select:none;">
+          📋 Firebase Admin SDK Snippet (expand)
+        </summary>
+        <div style="margin-top:12px;">
+          <p style="font-size:0.78rem;color:var(--on-surface-variant);margin-bottom:8px;line-height:1.6;">
+            Run once in Node.js (local script or Cloud Function) to activate custom claims. User must sign out and back in after.
+          </p>
+          <pre style="background:var(--surface-container-high);padding:14px;border-radius:10px;font-size:0.75rem;overflow-x:auto;color:var(--on-surface);line-height:1.6;border:1px solid rgba(245,240,232,0.06);white-space:pre-wrap;">const admin = require('firebase-admin');
+admin.initializeApp();
+
+// Volunteer
+await admin.auth().setCustomUserClaims(USER_UID, { role: 'volunteer' });
+
+// Admin
+await admin.auth().setCustomUserClaims(USER_UID, { role: 'admin' });
+
+// Remove role
+await admin.auth().setCustomUserClaims(USER_UID, {});</pre>
+          <p style="font-size:0.72rem;color:var(--outline);margin-top:8px;">Find UID: Firebase Console → Authentication → Users → click user.</p>
+        </div>
+      </details>
+    </div>
+  </div>
 
   <!-- Home Event Modal -->
   <div class="admin-modal" id="homeEventModal">
@@ -4437,6 +4507,92 @@
         }
       });
       _attObserver.observe(_attSection, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // ── Role Management Modal ────────────────────────────────
+    function openRolesModal() {
+      document.getElementById('rolesModal').classList.add('active');
+      loadRolesInModal();
+    }
+    function closeRolesModal() {
+      document.getElementById('rolesModal').classList.remove('active');
+    }
+    document.getElementById('rolesModal').addEventListener('click', function(e) {
+      if (e.target === this) closeRolesModal();
+    });
+
+    async function assignRoleFromAdmin() {
+      const email = document.getElementById('roleTargetEmail').value.trim();
+      const role  = document.getElementById('roleSelect').value;
+      const btn   = document.getElementById('roleAssignBtn');
+      const err   = document.getElementById('roleAssignError');
+      err.style.display = 'none';
+      if (!email) { err.textContent = 'Please enter a user email.'; err.style.display = 'block'; return; }
+      btn.disabled = true; btn.textContent = 'Saving…';
+      try {
+        await db.collection('userRoles').doc(email).set({
+          email,
+          role: role || null,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedBy: auth.currentUser?.email || 'admin'
+        }, { merge: true });
+        showToast(role ? `Role "${role}" saved for ${email}.` : `Role removed for ${email}.`, 'success');
+        document.getElementById('roleTargetEmail').value = '';
+        loadRolesInModal();
+      } catch(e) {
+        err.textContent = 'Error: ' + e.message;
+        err.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Assign';
+      }
+    }
+
+    async function loadRolesInModal() {
+      const list = document.getElementById('rolesModalList');
+      list.innerHTML = '<p style="opacity:0.5;text-align:center;padding:16px;font-size:0.85rem;">Loading…</p>';
+      try {
+        const snap = await db.collection('userRoles').orderBy('updatedAt', 'desc').get();
+        if (snap.empty) {
+          list.innerHTML = '<p style="opacity:0.5;text-align:center;padding:16px;font-size:0.85rem;">No roles assigned yet.</p>';
+          return;
+        }
+        const roleBadge = r =>
+          r === 'admin'
+            ? `<span class="admin-badge" style="background:rgba(232,119,34,0.15);color:var(--primary-container);border:1px solid rgba(232,119,34,0.25);">Admin</span>`
+            : r === 'volunteer'
+            ? `<span class="admin-badge" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.25);">Volunteer</span>`
+            : `<span class="admin-badge" style="background:rgba(245,240,232,0.06);color:var(--outline);border:1px solid rgba(245,240,232,0.12);">No Role</span>`;
+
+        list.innerHTML = snap.docs.map(doc => {
+          const d = doc.data();
+          const time = d.updatedAt?.toDate ? d.updatedAt.toDate().toLocaleDateString('en-IN') : '';
+          return `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(245,240,232,0.06);gap:10px;flex-wrap:wrap;">
+              <div>
+                <div style="font-size:0.875rem;font-weight:600;color:var(--on-surface);">${d.email}</div>
+                <div style="font-size:0.7rem;color:var(--outline);margin-top:2px;">Updated ${time}${d.updatedBy ? ' · by ' + d.updatedBy : ''}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                ${roleBadge(d.role)}
+                <button class="btn btn-secondary btn-sm" style="padding:3px 9px;font-size:0.7rem;border-color:rgba(196,38,28,0.3);color:#f47272;"
+                  onclick="removeRoleFromAdmin('${d.email}')">Remove</button>
+              </div>
+            </div>`;
+        }).join('');
+      } catch(e) {
+        list.innerHTML = '<p style="color:#f47272;text-align:center;padding:16px;font-size:0.85rem;">Failed to load roles.</p>';
+      }
+    }
+
+    async function removeRoleFromAdmin(email) {
+      if (!confirm(`Remove role for ${email}?`)) return;
+      try {
+        await db.collection('userRoles').doc(email).update({ role: null });
+        showToast('Role removed for ' + email, 'success');
+        loadRolesInModal();
+      } catch(e) {
+        showToast('Failed to remove role.', 'error');
+      }
     }
 
   </script>
