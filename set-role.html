@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Volunteer Roles — SPIC MACAY Admin</title>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    body { background: var(--surface-dim); min-height: 100vh; }
+    .page-wrap {
+      max-width: 640px;
+      margin: 80px auto 40px;
+      padding: 24px;
+    }
+    .card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .role-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(245,240,232,0.06);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .role-row:last-child { border-bottom: none; }
+    .role-email {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .role-admin     { background: rgba(232,119,34,0.15); color: var(--primary-container); border: 1px solid rgba(232,119,34,0.25); }
+    .role-volunteer { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25); }
+    .role-none      { background: rgba(245,240,232,0.06); color: var(--outline); border: 1px solid rgba(245,240,232,0.12); }
+    .auth-error {
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(196,38,28,0.1);
+      border: 1px solid rgba(196,38,28,0.3);
+      color: #f47272;
+      font-size: 0.875rem;
+      margin-top: 12px;
+      display: none;
+    }
+    .info-box {
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: rgba(232,119,34,0.07);
+      border: 1px solid rgba(232,119,34,0.18);
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(245,240,232,0.2);
+      border-top-color: var(--primary-container);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <header class="nav" id="mainNav">
+    <div class="container nav-inner">
+      <a href="admin.html" class="nav-logo">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="logo-dark"/>
+        <img src="logo.svg" alt="SPIC MACAY" class="logo-light"/>
+      </a>
+      <div class="nav-actions">
+        <a href="admin.html" class="btn btn-secondary btn-sm">← Admin</a>
+      </div>
+    </div>
+  </header>
+
+  <div style="padding-top:72px;">
+    <!-- ── Auth Gate ────────────────────────────────────── -->
+    <div class="page-wrap" id="authGate">
+      <div class="card" style="text-align:center;">
+        <h1 class="headline-sm" style="margin-bottom:6px;">Role Management</h1>
+        <p class="body-sm text-muted" style="margin-bottom:28px;">Sign in as admin to manage volunteer accounts.</p>
+        <div class="input-group" style="margin-bottom:14px;text-align:left;">
+          <label class="input-label" for="loginEmail">Admin Email</label>
+          <input class="input-field" type="email" id="loginEmail" placeholder="admin@example.com" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()"/>
+        </div>
+        <div class="input-group" style="margin-bottom:20px;text-align:left;">
+          <label class="input-label" for="loginPass">Password</label>
+          <input class="input-field" type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <button class="btn btn-primary w-full" id="loginBtn" onclick="doLogin()">Sign In</button>
+        <div class="auth-error" id="loginError"></div>
+      </div>
+    </div>
+
+    <!-- ── Management Panel ─────────────────────────────── -->
+    <div class="page-wrap" id="mgmtPanel" style="display:none;">
+      <h1 class="headline-sm" style="margin-bottom:6px;">Volunteer Role Management</h1>
+      <p class="body-sm text-muted" style="margin-bottom:24px;">Assign or revoke roles for users. Signed in as <strong id="currentAdminEmail">—</strong>.</p>
+
+      <div class="info-box">
+        <strong>How roles work:</strong> Roles are stored as custom claims on Firebase Auth tokens.
+        Setting a role here calls a Firestore-based lookup — the actual custom claim must be set
+        via the <strong>Firebase Admin SDK</strong> (server-side). This page records the intended
+        role in a <code>userRoles</code> Firestore collection which your backend or a Cloud Function
+        should sync to Auth custom claims.<br/><br/>
+        <strong>Quick setup without Cloud Functions:</strong> Use the Firebase Console →
+        Authentication → find the user → copy their UID → run the Admin SDK snippet below once.
+      </div>
+
+      <!-- Add volunteer form -->
+      <div class="card">
+        <h2 class="headline-sm" style="margin-bottom:20px;">Add / Update User Role</h2>
+        <div class="input-group" style="margin-bottom:14px;">
+          <label class="input-label" for="targetEmail">User Email *</label>
+          <input class="input-field" type="email" id="targetEmail" placeholder="volunteer@example.com"/>
+        </div>
+        <div class="input-group" style="margin-bottom:20px;">
+          <label class="input-label" for="targetRole">Assign Role *</label>
+          <select class="input-field" id="targetRole" style="appearance:none;">
+            <option value="volunteer">Volunteer (scanner only)</option>
+            <option value="admin">Admin (full access)</option>
+            <option value="">Remove Role</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="assignBtn" onclick="assignRole()">Assign Role</button>
+        <div class="auth-error" id="assignError"></div>
+      </div>
+
+      <!-- Existing roles list -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <h2 class="headline-sm">Current Role Assignments</h2>
+          <button class="btn btn-secondary btn-sm" onclick="loadRoles()">Refresh</button>
+        </div>
+        <div id="rolesLoading" style="text-align:center;padding:24px;opacity:0.5;">
+          <span class="spinner"></span> Loading…
+        </div>
+        <div id="rolesList" style="display:none;"></div>
+      </div>
+
+      <!-- Admin SDK snippet -->
+      <div class="card">
+        <h2 class="headline-sm" style="margin-bottom:16px;">Apply Roles via Admin SDK</h2>
+        <p class="body-sm text-muted" style="margin-bottom:12px;">
+          Run this Node.js snippet once (e.g. in a Cloud Function or local script) to actually set the
+          custom claim on Firebase Auth. Without this step, the Firestore rules based on
+          <code>request.auth.token.role</code> will not take effect.
+        </p>
+        <pre style="background:var(--surface-container-high);padding:16px;border-radius:10px;font-size:0.78rem;overflow-x:auto;color:var(--on-surface);line-height:1.6;border:1px solid rgba(245,240,232,0.06);">
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+// Set volunteer role
+await admin.auth().setCustomUserClaims(USER_UID, { role: 'volunteer' });
+
+// Set admin role
+await admin.auth().setCustomUserClaims(USER_UID, { role: 'admin' });
+
+// Remove role
+await admin.auth().setCustomUserClaims(USER_UID, {});
+
+// The user must sign out and sign back in for the claim to take effect.</pre>
+        <p class="body-sm text-muted" style="margin-top:12px;">
+          Find the UID in Firebase Console → Authentication → Users → click any user.
+        </p>
+      </div>
+
+      <div style="text-align:center;margin-top:8px;">
+        <button class="btn btn-secondary btn-sm" onclick="doLogout()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="pageToast" role="alert"></div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+      authDomain: "spic-macay-vnit.firebaseapp.com",
+      projectId: "spic-macay-vnit",
+      storageBucket: "spic-macay-vnit.firebasestorage.app",
+      messagingSenderId: "768698124036",
+      appId: "1:768698124036:web:311cc550bef0ac56133251"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('authGate').style.display = 'none';
+        document.getElementById('mgmtPanel').style.display = 'block';
+        document.getElementById('currentAdminEmail').textContent = user.email;
+        loadRoles();
+      } else {
+        document.getElementById('authGate').style.display = 'block';
+        document.getElementById('mgmtPanel').style.display = 'none';
+      }
+    });
+
+    async function doLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPass').value;
+      const btn   = document.getElementById('loginBtn');
+      const err   = document.getElementById('loginError');
+      err.style.display = 'none';
+      btn.disabled = true; btn.textContent = 'Signing in…';
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch(e) {
+        err.textContent = e.message;
+        err.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Sign In';
+      }
+    }
+
+    function doLogout() { auth.signOut(); }
+
+    async function assignRole() {
+      const email = document.getElementById('targetEmail').value.trim();
+      const role  = document.getElementById('targetRole').value;
+      const btn   = document.getElementById('assignBtn');
+      const err   = document.getElementById('assignError');
+      err.style.display = 'none';
+
+      if (!email) { err.textContent = 'Please enter an email.'; err.style.display = 'block'; return; }
+
+      btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Saving…';
+
+      try {
+        // Store intended role in Firestore (userRoles collection)
+        await db.collection('userRoles').doc(email).set({
+          email,
+          role: role || null,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedBy: auth.currentUser?.email || 'admin'
+        }, { merge: true });
+
+        showToast(role ? `Role "${role}" saved for ${email}. Apply via Admin SDK to activate.` : `Role removed for ${email}.`, 'success');
+        document.getElementById('targetEmail').value = '';
+        loadRoles();
+      } catch(e) {
+        err.textContent = 'Failed: ' + e.message;
+        err.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Assign Role';
+      }
+    }
+
+    async function loadRoles() {
+      const loading = document.getElementById('rolesLoading');
+      const list    = document.getElementById('rolesList');
+      loading.style.display = 'block';
+      list.style.display    = 'none';
+
+      try {
+        const snap = await db.collection('userRoles').orderBy('updatedAt', 'desc').get();
+        if (snap.empty) {
+          list.innerHTML = '<p class="body-sm text-muted" style="text-align:center;padding:16px;">No roles assigned yet.</p>';
+        } else {
+          list.innerHTML = snap.docs.map(doc => {
+            const d = doc.data();
+            const badgeClass = d.role === 'admin' ? 'role-admin' : d.role === 'volunteer' ? 'role-volunteer' : 'role-none';
+            const badgeText  = d.role || 'No Role';
+            const time = d.updatedAt?.toDate
+              ? d.updatedAt.toDate().toLocaleDateString('en-IN')
+              : '';
+            return `
+              <div class="role-row">
+                <div>
+                  <div class="role-email">${d.email}</div>
+                  <div style="font-size:0.72rem;color:var(--outline);margin-top:2px;">Updated ${time}${d.updatedBy ? ' by ' + d.updatedBy : ''}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span class="role-badge ${badgeClass}">${badgeText}</span>
+                  <button class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:0.72rem;border-color:rgba(196,38,28,0.3);color:#f47272;"
+                    onclick="removeRole('${d.email}')">Remove</button>
+                </div>
+              </div>`;
+          }).join('');
+        }
+        loading.style.display = 'none';
+        list.style.display    = 'block';
+      } catch(e) {
+        loading.innerHTML = '<p style="color:#f47272;text-align:center;">Failed to load roles.</p>';
+      }
+    }
+
+    async function removeRole(email) {
+      if (!confirm(`Remove role for ${email}?`)) return;
+      try {
+        await db.collection('userRoles').doc(email).update({ role: null });
+        showToast('Role removed.', 'success');
+        loadRoles();
+      } catch(e) {
+        showToast('Failed to remove role.', 'error');
+      }
+    }
+
+    function showToast(msg, type) {
+      const t = document.getElementById('pageToast');
+      t.textContent = msg;
+      t.className = `toast ${type}`;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 5000);
+    }
+  </script>
+</body>
+</html>

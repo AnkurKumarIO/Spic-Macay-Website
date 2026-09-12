@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Attendance Scanner — SPIC MACAY VNIT</title>
+  <link rel="stylesheet" href="styles/main.css"/>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background: var(--surface-dim);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── Auth Screen ─────────────────────────────────── */
+    .scanner-auth {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .auth-card {
+      background: var(--surface-container);
+      border: 1px solid rgba(245,240,232,0.08);
+      border-radius: 20px;
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .auth-logo {
+      width: 64px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    /* ── App Shell ───────────────────────────────────── */
+    .scanner-app {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      min-height: 100dvh;
+    }
+    .scanner-app.active { display: flex; }
+
+    /* Top bar */
+    .scanner-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--surface-container);
+      border-bottom: 1px solid rgba(245,240,232,0.08);
+      gap: 12px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .scanner-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .topbar-logo {
+      width: 32px;
+      flex-shrink: 0;
+    }
+    .topbar-session-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px;
+    }
+    .topbar-session-day {
+      font-size: 0.72rem;
+      color: var(--primary-container);
+      font-weight: 600;
+    }
+
+    /* ── Steps ───────────────────────────────────────── */
+    .step { display: none; flex: 1; padding: 24px 20px; }
+    .step.active { display: flex; flex-direction: column; }
+
+    /* Session selector */
+    .session-type-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .stype-tab {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px solid rgba(245,240,232,0.12);
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .stype-tab.active {
+      border-color: var(--primary-container);
+      background: rgba(232,119,34,0.1);
+      color: var(--primary-container);
+    }
+
+    /* Session cards */
+    .session-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .session-card {
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid rgba(245,240,232,0.1);
+      background: var(--surface-container);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .session-card:hover {
+      border-color: rgba(232,119,34,0.3);
+      background: rgba(232,119,34,0.05);
+    }
+    .session-card.selected {
+      border-color: var(--primary-container);
+      background: rgba(232,119,34,0.1);
+    }
+    .session-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: 4px;
+    }
+    .session-card-meta {
+      font-size: 0.75rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Day selector for intensives */
+    .day-selector {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .day-btn {
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      border: 2px solid rgba(245,240,232,0.12);
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .day-btn:hover { border-color: rgba(232,119,34,0.3); color: var(--primary); }
+    .day-btn.active {
+      border-color: var(--primary-container);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    /* ── Scanner screen ──────────────────────────────── */
+    .scanner-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #qr-reader {
+      width: 100%;
+      max-width: 480px;
+    }
+    /* Override html5-qrcode default styles */
+    #qr-reader video {
+      width: 100% !important;
+      height: auto !important;
+      border-radius: 0 !important;
+    }
+    #qr-reader img { display: none !important; }
+    #qr-reader__dashboard { display: none !important; }
+    #qr-reader__header_message { display: none !important; }
+
+    .scan-overlay-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(260px, 65vw);
+      height: min(260px, 65vw);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .scan-overlay-frame::before,
+    .scan-overlay-frame::after {
+      content: '';
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-color: var(--primary-container);
+      border-style: solid;
+    }
+    .scan-overlay-frame::before {
+      top: 0; left: 0;
+      border-width: 3px 0 0 3px;
+      border-radius: 4px 0 0 0;
+    }
+    .scan-overlay-frame::after {
+      bottom: 0; right: 0;
+      border-width: 0 3px 3px 0;
+      border-radius: 0 0 4px 0;
+    }
+    .scan-corner-tr, .scan-corner-bl {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      border-color: var(--primary-container);
+      border-style: solid;
+    }
+    .scan-corner-tr {
+      top: 0; right: 0;
+      border-width: 3px 3px 0 0;
+      border-radius: 0 4px 0 0;
+    }
+    .scan-corner-bl {
+      bottom: 0; left: 0;
+      border-width: 0 0 3px 3px;
+      border-radius: 0 0 0 4px;
+    }
+
+    /* Scan counter bar */
+    .scan-counter-bar {
+      width: 100%;
+      max-width: 480px;
+      padding: 10px 20px;
+      background: var(--surface-container);
+      border-top: 1px solid rgba(245,240,232,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .scan-count-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-container);
+      line-height: 1;
+    }
+    .scan-count-label {
+      font-size: 0.72rem;
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Result overlay ──────────────────────────────── */
+    .result-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: none;
+      padding: 0 0 32px;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+    .result-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .result-card {
+      width: calc(100% - 32px);
+      max-width: 440px;
+      border-radius: 20px;
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      animation: slideUpCard 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes slideUpCard {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    .result-card.success {
+      background: #0d2018;
+      border: 2px solid rgba(74,222,128,0.4);
+    }
+    .result-card.already {
+      background: #1a1500;
+      border: 2px solid rgba(232,119,34,0.4);
+    }
+    .result-card.error {
+      background: #200a0a;
+      border: 2px solid rgba(196,38,28,0.4);
+    }
+    .result-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.4rem;
+    }
+    .result-icon.success { background: rgba(74,222,128,0.15); }
+    .result-icon.already { background: rgba(232,119,34,0.15); }
+    .result-icon.error   { background: rgba(196,38,28,0.12); }
+    .result-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: 4px;
+    }
+    .result-detail {
+      font-size: 0.8rem;
+      color: var(--on-surface-variant);
+      line-height: 1.5;
+    }
+    .result-status {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+    .result-status.success { color: #86efac; }
+    .result-status.already { color: var(--primary); }
+    .result-status.error   { color: #f47272; }
+
+    /* ── Error / empty states ────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      opacity: 0.55;
+    }
+    .empty-state-icon { font-size: 2.5rem; margin-bottom: 12px; }
+
+    /* ── Auth error ──────────────────────────────────── */
+    .auth-error {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(196,38,28,0.1);
+      border: 1px solid rgba(196,38,28,0.3);
+      color: #f47272;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    /* ── Spinner ─────────────────────────────────────── */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid rgba(245,240,232,0.2);
+      border-top-color: var(--primary-container);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Scanning pulse ring ─────────────────────────── */
+    .scan-pulse {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 2px solid rgba(232,119,34,0.25);
+      animation: pulseScan 2s ease-out infinite;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    @keyframes pulseScan {
+      0%   { transform: translate(-50%,-50%) scale(0.8); opacity: 0.6; }
+      100% { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+    }
+
+    /* Light theme */
+    [data-theme="light"] .auth-card,
+    [data-theme="light"] .scanner-topbar,
+    [data-theme="light"] .session-card,
+    [data-theme="light"] .scan-counter-bar {
+      border-color: rgba(28,27,26,0.1) !important;
+    }
+    [data-theme="light"] .session-card {
+      background: var(--surface-container) !important;
+    }
+    [data-theme="light"] .result-card.success {
+      background: #e9fdf0 !important;
+      border-color: rgba(22,163,74,0.4) !important;
+    }
+    [data-theme="light"] .result-card.already {
+      background: #fff8ee !important;
+      border-color: rgba(232,119,34,0.4) !important;
+    }
+    [data-theme="light"] .result-card.error {
+      background: #fff0f0 !important;
+      border-color: rgba(196,38,28,0.4) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Auth Screen ════════════════════════════════════ -->
+  <div class="scanner-auth" id="authScreen">
+    <div class="auth-card">
+      <img src="logo-dark.svg" alt="SPIC MACAY" class="auth-logo"/>
+      <h1 class="headline-sm" style="margin-bottom:6px;">Volunteer Scanner</h1>
+      <p class="body-sm text-muted" style="margin-bottom:28px;">Sign in to start marking attendance.</p>
+
+      <div class="input-group" style="margin-bottom:14px;text-align:left;">
+        <label class="input-label" for="authEmail">Email</label>
+        <input class="input-field" type="email" id="authEmail" placeholder="volunteer@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')document.getElementById('authPassword').focus()"/>
+      </div>
+      <div class="input-group" style="margin-bottom:20px;text-align:left;">
+        <label class="input-label" for="authPassword">Password</label>
+        <input class="input-field" type="password" id="authPassword" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/>
+      </div>
+
+      <button class="btn btn-primary w-full" id="signInBtn" onclick="signIn()">Sign In</button>
+      <div class="auth-error" id="authError"></div>
+    </div>
+  </div>
+
+  <!-- ══ Scanner App ════════════════════════════════════ -->
+  <div class="scanner-app" id="scannerApp">
+
+    <!-- Top bar -->
+    <div class="scanner-topbar">
+      <div class="scanner-topbar-left">
+        <img src="logo-dark.svg" alt="SPIC MACAY" class="topbar-logo"/>
+        <div>
+          <div class="topbar-session-name" id="topbarSessionName">No session selected</div>
+          <div class="topbar-session-day" id="topbarSessionDay">Choose a session to begin</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-secondary btn-sm" onclick="goToSessionSelect()" id="changeSesBtn" style="padding:6px 12px;font-size:0.75rem;">Change</button>
+        <button class="btn btn-secondary btn-sm" onclick="signOut()" style="padding:6px 12px;font-size:0.75rem;">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- ── Step 1: Session Selector ───────────────────── -->
+    <div class="step active" id="stepSelect">
+      <h2 class="headline-sm" style="margin-bottom:6px;">Select Session</h2>
+      <p class="body-sm text-muted" style="margin-bottom:20px;">Choose what you are scanning for right now.</p>
+
+      <div class="session-type-tabs">
+        <button class="stype-tab active" id="tabIntensives" onclick="switchSessionType('intensives')">🎭 Intensives</button>
+        <button class="stype-tab" id="tabConcerts" onclick="switchSessionType('concerts')">🎵 Concerts</button>
+      </div>
+
+      <!-- Intensives panel -->
+      <div id="panelIntensives" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <div id="intensivesLoadingState" style="text-align:center;padding:32px;opacity:0.5;">
+          <div class="spinner" style="margin:0 auto 10px;"></div>
+          <p class="body-sm">Loading intensives…</p>
+        </div>
+        <div id="intensiveSessionList" class="session-list" style="display:none;"></div>
+        <div id="intensivesEmpty" class="empty-state" style="display:none;">
+          <div class="empty-state-icon">🎭</div>
+          <p class="body-sm">No intensives found.</p>
+        </div>
+
+        <!-- Day selector (shown after picking an intensive) -->
+        <div id="dayPickerSection" style="display:none;margin-top:16px;">
+          <p class="label-sm text-muted" style="margin-bottom:8px;">SELECT DAY</p>
+          <div class="day-selector" id="daySelector"></div>
+        </div>
+      </div>
+
+      <!-- Concerts panel -->
+      <div id="panelConcerts" style="flex:1;display:none;flex-direction:column;overflow:hidden;">
+        <div id="concertsLoadingState" style="text-align:center;padding:32px;opacity:0.5;">
+          <div class="spinner" style="margin:0 auto 10px;"></div>
+          <p class="body-sm">Loading concerts…</p>
+        </div>
+        <div id="concertSessionList" class="session-list" style="display:none;"></div>
+        <div id="concertsEmpty" class="empty-state" style="display:none;">
+          <div class="empty-state-icon">🎵</div>
+          <p class="body-sm">No concerts found.</p>
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-full btn-lg" style="margin-top:24px;" id="startScanBtn" onclick="startScanning()" disabled>
+        📷 Start Scanning
+      </button>
+    </div>
+
+    <!-- ── Step 2: Scanner ────────────────────────────── -->
+    <div class="step" id="stepScan">
+      <div class="scanner-wrapper">
+        <div style="position:relative;width:100%;max-width:480px;">
+          <div id="qr-reader"></div>
+          <div class="scan-overlay-frame">
+            <div class="scan-corner-tr"></div>
+            <div class="scan-corner-bl"></div>
+          </div>
+          <div class="scan-pulse"></div>
+        </div>
+
+        <div class="scan-counter-bar">
+          <div>
+            <div class="scan-count-num" id="scanCount">0</div>
+            <div class="scan-count-label">Scanned this session</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.75rem;color:var(--on-surface-variant);" id="scannerVolunteerName">—</div>
+            <div style="font-size:0.68rem;color:var(--outline);margin-top:2px;">Volunteer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /scanner-app -->
+
+  <!-- ── Result Overlay ─────────────────────────────────── -->
+  <div class="result-overlay" id="resultOverlay">
+    <div class="result-card" id="resultCard">
+      <div class="result-icon" id="resultIcon"></div>
+      <div>
+        <div class="result-name" id="resultName">—</div>
+        <div class="result-detail" id="resultDetail">—</div>
+        <div class="result-status" id="resultStatus">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- html5-qrcode -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <script>
+    // ── Firebase init ────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyDe-QuFryGyOzLT15itTgGCtSGw7CBuACc",
+      authDomain: "spic-macay-vnit.firebaseapp.com",
+      projectId: "spic-macay-vnit",
+      storageBucket: "spic-macay-vnit.firebasestorage.app",
+      messagingSenderId: "768698124036",
+      appId: "1:768698124036:web:311cc550bef0ac56133251"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db   = firebase.firestore();
+
+    // ── State ────────────────────────────────────────────
+    let currentUser      = null;
+    let currentSession   = null; // { id, name, type: 'intensive'|'concert', dayKey }
+    let allIntensives    = [];
+    let allConcerts      = [];
+    let selectedIntensiveId = null;
+    let selectedDayKey   = null;
+    let selectedConcertId = null;
+    let scanCount        = 0;
+    let scannerInstance  = null;
+    let scanCooldown     = false; // 1.5s cooldown between scans
+
+    // ── Auth ─────────────────────────────────────────────
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        currentUser = user;
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('scannerApp').classList.add('active');
+        document.getElementById('scannerVolunteerName').textContent = user.email;
+        loadSessions();
+      } else {
+        currentUser = null;
+        document.getElementById('authScreen').style.display = 'flex';
+        document.getElementById('scannerApp').classList.remove('active');
+        stopScanner();
+      }
+    });
+
+    async function signIn() {
+      const email = document.getElementById('authEmail').value.trim();
+      const pass  = document.getElementById('authPassword').value;
+      const btn   = document.getElementById('signInBtn');
+      const err   = document.getElementById('authError');
+      err.style.display = 'none';
+      if (!email || !pass) { showAuthError('Please enter email and password.'); return; }
+      btn.textContent = 'Signing in…';
+      btn.disabled = true;
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch (e) {
+        showAuthError(friendlyAuthError(e.code));
+        btn.textContent = 'Sign In';
+        btn.disabled = false;
+      }
+    }
+
+    function signOut() {
+      stopScanner();
+      auth.signOut();
+    }
+
+    function showAuthError(msg) {
+      const el = document.getElementById('authError');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function friendlyAuthError(code) {
+      const map = {
+        'auth/user-not-found': 'No account found with this email.',
+        'auth/wrong-password': 'Incorrect password.',
+        'auth/invalid-email': 'Invalid email address.',
+        'auth/too-many-requests': 'Too many attempts. Please wait and try again.',
+        'auth/invalid-credential': 'Invalid email or password.',
+      };
+      return map[code] || 'Sign in failed. Please try again.';
+    }
+
+    // ── Session loading ──────────────────────────────────
+    async function loadSessions() {
+      try {
+        const [ivSnap, conSnap] = await Promise.all([
+          db.collection('intensives').orderBy('day').get(),
+          db.collection('concerts').orderBy('createdAt').get()
+        ]);
+        allIntensives = ivSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        allConcerts   = conSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderIntensivesList();
+        renderConcertsList();
+      } catch (e) {
+        console.error('Failed to load sessions:', e);
+      }
+    }
+
+    function renderIntensivesList() {
+      const loading = document.getElementById('intensivesLoadingState');
+      const list    = document.getElementById('intensiveSessionList');
+      const empty   = document.getElementById('intensivesEmpty');
+      loading.style.display = 'none';
+      if (!allIntensives.length) { empty.style.display = 'block'; return; }
+      list.style.display = 'flex';
+      list.innerHTML = allIntensives.map(iv => `
+        <div class="session-card" id="iv-card-${iv.id}" onclick="selectIntensive('${iv.id}')">
+          <div class="session-card-title">${iv.name}</div>
+          <div class="session-card-meta">${iv.category || 'Workshop'} · 3-day intensive</div>
+        </div>
+      `).join('');
+    }
+
+    function renderConcertsList() {
+      const loading = document.getElementById('concertsLoadingState');
+      const list    = document.getElementById('concertSessionList');
+      const empty   = document.getElementById('concertsEmpty');
+      loading.style.display = 'none';
+      if (!allConcerts.length) { empty.style.display = 'block'; return; }
+      list.style.display = 'flex';
+      list.innerHTML = allConcerts.map(c => `
+        <div class="session-card" id="con-card-${c.id}" onclick="selectConcert('${c.id}')">
+          <div class="session-card-title">${c.day} — ${c.name}</div>
+          <div class="session-card-meta">Evening Concert · Single attendance</div>
+        </div>
+      `).join('');
+    }
+
+    function switchSessionType(type) {
+      const isIntensive = type === 'intensives';
+      document.getElementById('tabIntensives').classList.toggle('active', isIntensive);
+      document.getElementById('tabConcerts').classList.toggle('active', !isIntensive);
+      document.getElementById('panelIntensives').style.display = isIntensive ? 'flex' : 'none';
+      document.getElementById('panelConcerts').style.display   = isIntensive ? 'none' : 'flex';
+      // reset selection
+      selectedIntensiveId = null;
+      selectedDayKey      = null;
+      selectedConcertId   = null;
+      document.getElementById('startScanBtn').disabled = true;
+      document.getElementById('dayPickerSection').style.display = 'none';
+    }
+
+    function selectIntensive(id) {
+      selectedIntensiveId = id;
+      selectedConcertId   = null;
+      selectedDayKey      = null;
+      // Highlight card
+      document.querySelectorAll('#intensiveSessionList .session-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('iv-card-' + id).classList.add('selected');
+      // Show day picker
+      const iv = allIntensives.find(i => i.id === id);
+      const numDays = iv?.numDays || 3;
+      const daySection = document.getElementById('dayPickerSection');
+      const daySelector = document.getElementById('daySelector');
+      daySection.style.display = 'block';
+      daySelector.innerHTML = Array.from({ length: numDays }, (_, i) => `
+        <button class="day-btn" id="daybtn-${i+1}" onclick="selectDay('Day ${i+1}', ${i+1})">${'Day ' + (i+1)}</button>
+      `).join('');
+      document.getElementById('startScanBtn').disabled = true;
+    }
+
+    function selectDay(dayKey, idx) {
+      selectedDayKey = dayKey;
+      document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('daybtn-' + idx).classList.add('active');
+      document.getElementById('startScanBtn').disabled = false;
+    }
+
+    function selectConcert(id) {
+      selectedConcertId   = id;
+      selectedIntensiveId = null;
+      selectedDayKey      = null;
+      document.querySelectorAll('#concertSessionList .session-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('con-card-' + id).classList.add('selected');
+      document.getElementById('startScanBtn').disabled = false;
+    }
+
+    function startScanning() {
+      // Build session object
+      if (selectedIntensiveId && selectedDayKey) {
+        const iv = allIntensives.find(i => i.id === selectedIntensiveId);
+        currentSession = {
+          id: selectedIntensiveId,
+          name: iv?.name || selectedIntensiveId,
+          type: 'intensive',
+          dayKey: selectedDayKey
+        };
+      } else if (selectedConcertId) {
+        const c = allConcerts.find(x => x.id === selectedConcertId);
+        currentSession = {
+          id: selectedConcertId,
+          name: c ? `${c.day} — ${c.name}` : selectedConcertId,
+          type: 'concert',
+          dayKey: c?.day || 'Day 1'
+        };
+      } else {
+        return;
+      }
+      // Update topbar
+      document.getElementById('topbarSessionName').textContent = currentSession.name;
+      document.getElementById('topbarSessionDay').textContent =
+        currentSession.type === 'intensive'
+          ? `Intensive · ${currentSession.dayKey}`
+          : `Evening Concert · ${currentSession.dayKey}`;
+
+      scanCount = 0;
+      document.getElementById('scanCount').textContent = '0';
+
+      // Switch step
+      document.getElementById('stepSelect').classList.remove('active');
+      document.getElementById('stepScan').classList.add('active');
+      document.getElementById('changeSesBtn').style.display = 'inline-flex';
+
+      initScanner();
+    }
+
+    function goToSessionSelect() {
+      stopScanner();
+      document.getElementById('stepScan').classList.remove('active');
+      document.getElementById('stepSelect').classList.add('active');
+    }
+
+    // ── html5-qrcode scanner ─────────────────────────────
+    function initScanner() {
+      if (scannerInstance) { stopScanner(); }
+      scannerInstance = new Html5Qrcode('qr-reader');
+      const config = {
+        fps: 10,
+        qrbox: { width: 240, height: 240 },
+        aspectRatio: 1.0
+      };
+      scannerInstance.start(
+        { facingMode: 'environment' },
+        config,
+        onQrSuccess,
+        () => {} // ignore non-QR frames silently
+      ).catch(err => {
+        console.error('Camera error:', err);
+        showResult('error', '—', 'Camera access denied or unavailable.', '');
+      });
+    }
+
+    function stopScanner() {
+      if (scannerInstance) {
+        scannerInstance.stop().catch(() => {});
+        scannerInstance = null;
+      }
+    }
+
+    // ── QR code decoded ──────────────────────────────────
+    async function onQrSuccess(decodedText) {
+      if (scanCooldown) return;
+      scanCooldown = true;
+      setTimeout(() => { scanCooldown = false; }, 1500);
+
+      // Vibrate on scan
+      if (navigator.vibrate) navigator.vibrate(80);
+
+      const regId = decodedText.trim();
+      await processAttendance(regId);
+    }
+
+    async function processAttendance(regId) {
+      // 1. Lookup registration
+      let reg;
+      try {
+        const snap = await db.collection('registrations').doc(regId).get();
+        if (!snap.exists) {
+          showResult('error', regId, 'Registration not found in the system.', 'Not Registered');
+          return;
+        }
+        reg = snap.data();
+      } catch (e) {
+        showResult('error', '—', 'Database error. Check connection.', 'Error');
+        return;
+      }
+
+      const fullName = `${reg.firstName} ${reg.lastName}`;
+
+      // 2. Check eligibility
+      if (currentSession.type === 'intensive') {
+        if (reg.confirmedIntensiveId !== currentSession.id) {
+          const enrolledName = reg.confirmedIntensiveName || reg.confirmedIntensiveId || '—';
+          showResult(
+            'error',
+            fullName,
+            `Not enrolled in this intensive.\nConfirmed: ${enrolledName}`,
+            'Not Enrolled'
+          );
+          return;
+        }
+      } else {
+        // concert
+        const enrolledConcerts = reg.eveningConcerts || [];
+        if (!enrolledConcerts.includes(currentSession.id)) {
+          showResult('error', fullName, 'Did not register for this evening concert.', 'Not Registered for this Concert');
+          return;
+        }
+      }
+
+      // 3. Check for duplicate attendance
+      const attendanceDocId = `${regId}_${currentSession.id}_${currentSession.dayKey.replace(/\s/g,'')}`;
+      try {
+        const attSnap = await db.collection('attendance').doc(attendanceDocId).get();
+        if (attSnap.exists) {
+          const t = attSnap.data().markedAt?.toDate();
+          const timeStr = t ? t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '';
+          showResult('already', fullName, `Already marked at ${timeStr}`, 'Already Present');
+          return;
+        }
+      } catch (e) {
+        // non-fatal: proceed to mark
+        console.warn('Duplicate check failed, proceeding:', e);
+      }
+
+      // 4. Write attendance
+      try {
+        await db.collection('attendance').doc(attendanceDocId).set({
+          registrationId: regId,
+          attendeeName: fullName,
+          attendeeEmail: reg.email || '',
+          sessionType: currentSession.type,
+          sessionId: currentSession.id,
+          sessionName: currentSession.name,
+          dayKey: currentSession.dayKey,
+          markedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          markedByUid: currentUser.uid,
+          markedByEmail: currentUser.email
+        });
+        scanCount++;
+        document.getElementById('scanCount').textContent = scanCount;
+        const detail = currentSession.type === 'intensive'
+          ? `${currentSession.name} · ${currentSession.dayKey}`
+          : currentSession.name;
+        showResult('success', fullName, detail, 'Marked Present ✓');
+      } catch (e) {
+        console.error('Write failed:', e);
+        showResult('error', fullName, 'Failed to save attendance. Try again.', 'Write Error');
+      }
+    }
+
+    // ── Result display ───────────────────────────────────
+    let resultTimer = null;
+    function showResult(type, name, detail, status) {
+      const overlay = document.getElementById('resultOverlay');
+      const card    = document.getElementById('resultCard');
+      const icon    = document.getElementById('resultIcon');
+      const nameEl  = document.getElementById('resultName');
+      const detailEl= document.getElementById('resultDetail');
+      const statusEl= document.getElementById('resultStatus');
+
+      const icons = { success: '✅', already: '🔄', error: '❌' };
+
+      // Reset classes
+      card.className    = `result-card ${type}`;
+      icon.className    = `result-icon ${type}`;
+      statusEl.className= `result-status ${type}`;
+
+      icon.textContent   = icons[type];
+      nameEl.textContent = name;
+      detailEl.textContent = detail;
+      statusEl.textContent = status;
+
+      overlay.classList.add('show');
+
+      // Auto-dismiss
+      if (resultTimer) clearTimeout(resultTimer);
+      const delay = type === 'error' ? 4000 : 3000;
+      resultTimer = setTimeout(() => {
+        overlay.classList.remove('show');
+      }, delay);
+    }
+  </script>
+</body>
+</html>

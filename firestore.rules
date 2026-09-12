@@ -1,0 +1,120 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        request.auth.token.get('role', '') == 'admin';
+    }
+
+    function isVolunteer() {
+      return isSignedIn() &&
+        (request.auth.token.get('role', '') == 'volunteer' ||
+         request.auth.token.get('role', '') == 'admin');
+    }
+
+    // ── registrations ─────────────────────────────────────────
+    // Public: anyone can write their own registration (from register.html)
+    // Admin: full access
+    // Volunteer: read-only (to look up registrations during scanning)
+    match /registrations/{docId} {
+      allow read: if isVolunteer();
+      allow write: if isAdmin();
+      // Allow self-registration (unauthenticated write for registration form)
+      allow create: if true;
+    }
+
+    // ── intensives ────────────────────────────────────────────
+    // Public: read (so register.html can load them)
+    // Admin: full access
+    // Volunteer: read-only
+    match /intensives/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+      // Allow seat decrement during registration (unauthenticated)
+      allow update: if true;
+    }
+
+    // ── concerts ─────────────────────────────────────────────
+    // Public: read (register.html loads concert list)
+    // Admin: full access
+    // Volunteer: read-only
+    match /concerts/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── attendance ────────────────────────────────────────────
+    // Volunteer: read + create (no update, no delete — immutable scans)
+    // Admin: full access (can delete to unmark)
+    match /attendance/{docId} {
+      allow read: if isVolunteer();
+      allow create: if isVolunteer();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── artists ───────────────────────────────────────────────
+    match /artists/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── events (schedule) ─────────────────────────────────────
+    match /events/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── flagshipEvents ────────────────────────────────────────
+    match /flagshipEvents/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── homeEvents ────────────────────────────────────────────
+    match /homeEvents/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── homeConcerts ──────────────────────────────────────────
+    match /homeConcerts/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── gallery ───────────────────────────────────────────────
+    match /gallery/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── teamMembers / teamSections ────────────────────────────
+    match /teamMembers/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /teamSections/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── archives ─────────────────────────────────────────────
+    match /archives/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Deny everything else ──────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

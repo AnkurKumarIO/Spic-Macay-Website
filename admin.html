@@ -616,6 +616,14 @@
             </div>
             <div class="hub-card-metric" id="hubMetricFlagshipEvents">Loading stats...</div>
           </div>
+          <!-- Attendance -->
+          <div class="hub-card" onclick="switchTab('attendance')">
+            <div>
+              <h2 class="hub-card-title">📋 Attendance</h2>
+              <p class="hub-card-desc">View QR scan attendance records for all intensives and evening concerts. Manually mark or unmark and export CSV.</p>
+            </div>
+            <div class="hub-card-metric" id="hubMetricAttendance">Loading stats...</div>
+          </div>
         </div>
       </div>
 
@@ -1009,6 +1017,92 @@
               </thead>
               <tbody id="flagshipEventsTableBody">
                 <!-- Dynamic Content -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Attendance Section ══════════════════════════ -->
+      <div class="panel-section" id="section-attendance">
+        <div class="dashboard-card">
+          <!-- Header -->
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+            <div>
+              <h2 class="headline-sm">Attendance Records</h2>
+              <p class="body-sm text-muted" style="margin-top:4px;">QR scan attendance for intensives &amp; evening concerts.</p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <a href="scanner.html" target="_blank" class="btn btn-primary btn-sm">📷 Open Scanner</a>
+              <button class="btn btn-secondary btn-sm" onclick="exportAttendanceCSV()">Export CSV</button>
+            </div>
+          </div>
+
+          <!-- Filters row -->
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px;">
+            <div class="input-group" style="margin-bottom:0;min-width:180px;">
+              <label class="input-label" for="attTypeFilter">Session Type</label>
+              <select class="input-field" id="attTypeFilter" style="appearance:none;" onchange="onAttFilterChange()">
+                <option value="all">All</option>
+                <option value="intensive">Intensives</option>
+                <option value="concert">Evening Concerts</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom:0;min-width:220px;">
+              <label class="input-label" for="attSessionFilter">Session</label>
+              <select class="input-field" id="attSessionFilter" style="appearance:none;" onchange="onAttFilterChange()">
+                <option value="all">All Sessions</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom:0;min-width:140px;" id="attDayFilterGroup">
+              <label class="input-label" for="attDayFilter">Day</label>
+              <select class="input-field" id="attDayFilter" style="appearance:none;" onchange="renderAttendanceTable()">
+                <option value="all">All Days</option>
+                <option value="Day 1">Day 1</option>
+                <option value="Day 2">Day 2</option>
+                <option value="Day 3">Day 3</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Stats bar -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px;">
+            <div style="background:var(--surface-container-high);border-radius:12px;padding:16px;text-align:center;">
+              <div style="font-size:1.75rem;font-weight:800;color:var(--primary-container);" id="attStatTotal">0</div>
+              <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--on-surface-variant);margin-top:4px;">Registered</div>
+            </div>
+            <div style="background:var(--surface-container-high);border-radius:12px;padding:16px;text-align:center;">
+              <div style="font-size:1.75rem;font-weight:800;color:#86efac;" id="attStatPresent">0</div>
+              <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--on-surface-variant);margin-top:4px;">Present</div>
+            </div>
+            <div style="background:var(--surface-container-high);border-radius:12px;padding:16px;text-align:center;">
+              <div style="font-size:1.75rem;font-weight:800;color:#f47272;" id="attStatAbsent">0</div>
+              <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--on-surface-variant);margin-top:4px;">Absent</div>
+            </div>
+            <div style="background:var(--surface-container-high);border-radius:12px;padding:16px;text-align:center;">
+              <div style="font-size:1.75rem;font-weight:800;color:#a78bfa;" id="attStatPct">0%</div>
+              <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--on-surface-variant);margin-top:4px;">Attendance</div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-responsive">
+            <table class="admin-table" id="attTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Ticket ID</th>
+                  <th>Roll / Alumni</th>
+                  <th>Session</th>
+                  <th>Day</th>
+                  <th>Status</th>
+                  <th>Time Marked</th>
+                  <th>Marked By</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="attTableBody">
+                <tr><td colspan="9" style="text-align:center;opacity:0.5;padding:32px;">Select a session to view attendance.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1782,7 +1876,8 @@
       gallery: { title: '🖼 Gallery Moments', subtitle: 'Manage photo gallery moments and categories' },
       coreMembers: { title: '🤝 Core Committee', subtitle: 'Manage organizing student committee members and sections' },
       archives: { title: '📁 Archives', subtitle: 'Manage past conventions and history logs' },
-      flagshipEvents: { title: '🎪 Flagship Events', subtitle: 'Manage main cultural events (Virasat, Inaugural, etc.) and connected schedules' }
+      flagshipEvents: { title: '🎪 Flagship Events', subtitle: 'Manage main cultural events (Virasat, Inaugural, etc.) and connected schedules' },
+      attendance:     { title: '📋 Attendance', subtitle: 'QR scan attendance for intensives & evening concerts' }
     };
 
     function switchTab(tab, el) {
@@ -4095,6 +4190,253 @@
       const selected = allFlagshipEvents[idx];
       if (!confirm(`This will add 28 sample schedule events to "${selected.title}". Existing events will NOT be deleted. Continue?`)) return;
       seedSampleScheduleEvents(selected.id);
+    }
+
+    // ══════════════════════════════════════════════════════
+    // ATTENDANCE MODULE
+    // ══════════════════════════════════════════════════════
+
+    let allAttendanceRecords = []; // cached from Firestore
+    let attUnsubscribe = null;     // real-time listener handle
+
+    // Called when attendance section becomes visible via switchTab
+    function initAttendanceTab() {
+      populateAttSessionFilter();
+      // Start real-time listener for attendance
+      if (attUnsubscribe) attUnsubscribe();
+      attUnsubscribe = db.collection('attendance')
+        .orderBy('markedAt', 'desc')
+        .onSnapshot(snap => {
+          allAttendanceRecords = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          const el = document.getElementById('hubMetricAttendance');
+          if (el) el.textContent = `${allAttendanceRecords.length} attendance record${allAttendanceRecords.length !== 1 ? 's' : ''}`;
+          renderAttendanceTable();
+          updateAttendanceStats();
+        }, err => console.error('Attendance listener error:', err));
+    }
+
+    function populateAttSessionFilter() {
+      const typeFilter    = document.getElementById('attTypeFilter').value;
+      const sessionSelect = document.getElementById('attSessionFilter');
+      const dayGroup      = document.getElementById('attDayFilterGroup');
+
+      sessionSelect.innerHTML = '<option value="all">All Sessions</option>';
+
+      const showIntensives = typeFilter === 'all' || typeFilter === 'intensive';
+      const showConcerts   = typeFilter === 'all' || typeFilter === 'concert';
+
+      if (showIntensives) {
+        allIntensives.forEach(iv => {
+          const opt = document.createElement('option');
+          opt.value = 'intensive__' + iv.id;
+          opt.textContent = '🎭 ' + iv.name;
+          sessionSelect.appendChild(opt);
+        });
+      }
+      if (showConcerts) {
+        allConcerts.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = 'concert__' + c.id;
+          opt.textContent = '🎵 ' + c.day + ' — ' + c.name;
+          sessionSelect.appendChild(opt);
+        });
+      }
+
+      // Show/hide day filter based on type
+      const hasDays = typeFilter === 'all' || typeFilter === 'intensive';
+      dayGroup.style.display = hasDays ? 'block' : 'none';
+    }
+
+    function onAttFilterChange() {
+      populateAttSessionFilter();
+      renderAttendanceTable();
+      updateAttendanceStats();
+    }
+
+    function getFilteredAttendance() {
+      const typeFilter    = document.getElementById('attTypeFilter').value;
+      const sessionVal    = document.getElementById('attSessionFilter').value;
+      const dayFilter     = document.getElementById('attDayFilter').value;
+
+      return allAttendanceRecords.filter(r => {
+        if (typeFilter !== 'all' && r.sessionType !== typeFilter) return false;
+        if (sessionVal !== 'all') {
+          const [sType, sId] = sessionVal.split('__');
+          if (r.sessionType !== sType || r.sessionId !== sId) return false;
+        }
+        if (dayFilter !== 'all' && r.dayKey !== dayFilter) return false;
+        return true;
+      });
+    }
+
+    function updateAttendanceStats() {
+      const filtered = getFilteredAttendance();
+
+      // Determine total registered for the current filter
+      const typeFilter = document.getElementById('attTypeFilter').value;
+      const sessionVal = document.getElementById('attSessionFilter').value;
+      const dayFilter  = document.getElementById('attDayFilter').value;
+
+      let totalRegistered = 0;
+      if (sessionVal !== 'all') {
+        const [sType, sId] = sessionVal.split('__');
+        if (sType === 'intensive') {
+          // Count registrations confirmed for this intensive
+          totalRegistered = allRegistrations.filter(r => r.confirmedIntensiveId === sId).length;
+        } else {
+          // Count registrations that selected this concert
+          totalRegistered = allRegistrations.filter(r => (r.eveningConcerts || []).includes(sId)).length;
+        }
+      } else {
+        // Sum across all filtered — use unique registrationIds
+        const uniqueRegs = new Set(filtered.map(r => r.registrationId));
+        totalRegistered = uniqueRegs.size;
+      }
+
+      const present = filtered.length;
+      const absent  = Math.max(0, totalRegistered - present);
+      const pct     = totalRegistered > 0 ? Math.round((present / totalRegistered) * 100) : 0;
+
+      document.getElementById('attStatTotal').textContent   = totalRegistered;
+      document.getElementById('attStatPresent').textContent = present;
+      document.getElementById('attStatAbsent').textContent  = absent;
+      document.getElementById('attStatPct').textContent     = pct + '%';
+    }
+
+    function renderAttendanceTable() {
+      const filtered = getFilteredAttendance();
+      const tbody = document.getElementById('attTableBody');
+      if (!tbody) return;
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;opacity:0.5;padding:32px;">No attendance records for the selected filters.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => {
+        const time = r.markedAt?.toDate
+          ? r.markedAt.toDate().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })
+          : '—';
+        const rollOrAlumni = (() => {
+          const reg = allRegistrations.find(x => x.registrationId === r.registrationId);
+          if (!reg) return '—';
+          return reg.userType === 'alumni' ? `Alumni '${reg.passingYear || ''}` : (reg.rollNumber || '—');
+        })();
+        const sessionLabel = r.sessionType === 'intensive'
+          ? `<span class="admin-badge" style="background:rgba(232,119,34,0.12);color:var(--primary);border:1px solid rgba(232,119,34,0.2);">Intensive</span>`
+          : `<span class="admin-badge" style="background:rgba(99,102,241,0.12);color:#a5b4fc;border:1px solid rgba(99,102,241,0.2);">Concert</span>`;
+
+        return `
+          <tr>
+            <td style="font-weight:600;">${r.attendeeName || '—'}</td>
+            <td style="font-family:monospace;font-size:0.78rem;color:var(--primary-container);">${r.registrationId}</td>
+            <td style="font-size:0.82rem;">${rollOrAlumni}</td>
+            <td style="font-size:0.82rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.sessionName || '—'}</td>
+            <td>${r.dayKey || '—'}</td>
+            <td><span class="admin-badge badge-success">Present</span></td>
+            <td style="font-size:0.78rem;color:var(--on-surface-variant);">${time}</td>
+            <td style="font-size:0.75rem;color:var(--on-surface-variant);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.markedByEmail || '—'}</td>
+            <td>
+              <button class="btn btn-secondary btn-sm" style="padding:4px 10px;font-size:0.72rem;border-color:rgba(196,38,28,0.3);color:#f47272;"
+                onclick="unmarkAttendance('${r.id}', '${(r.attendeeName || '').replace(/'/g, "\\'")}')">
+                Unmark
+              </button>
+            </td>
+          </tr>`;
+      }).join('');
+
+      updateAttendanceStats();
+    }
+
+    async function unmarkAttendance(docId, name) {
+      if (!confirm(`Remove attendance for ${name}? This cannot be undone.`)) return;
+      try {
+        await db.collection('attendance').doc(docId).delete();
+        showToast(`Attendance removed for ${name}.`, 'success');
+      } catch (e) {
+        showToast('Failed to remove attendance. Please try again.', 'error');
+      }
+    }
+
+    async function manualMarkAttendance(registrationId, sessionId, sessionType, dayKey) {
+      // Used for manual marking from admin — builds same doc ID as scanner
+      const reg = allRegistrations.find(r => r.registrationId === registrationId);
+      if (!reg) { showToast('Registration not found.', 'error'); return; }
+      const sessionName = sessionType === 'intensive'
+        ? (allIntensives.find(i => i.id === sessionId)?.name || sessionId)
+        : (() => { const c = allConcerts.find(x => x.id === sessionId); return c ? `${c.day} — ${c.name}` : sessionId; })();
+      const docId = `${registrationId}_${sessionId}_${dayKey.replace(/\s/g,'')}`;
+      try {
+        await db.collection('attendance').doc(docId).set({
+          registrationId,
+          attendeeName: `${reg.firstName} ${reg.lastName}`,
+          attendeeEmail: reg.email || '',
+          sessionType,
+          sessionId,
+          sessionName,
+          dayKey,
+          markedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          markedByUid: auth.currentUser?.uid || 'admin-manual',
+          markedByEmail: auth.currentUser?.email || 'admin'
+        });
+        showToast('Attendance marked manually.', 'success');
+      } catch (e) {
+        showToast('Failed to mark attendance.', 'error');
+      }
+    }
+
+    function exportAttendanceCSV() {
+      const filtered = getFilteredAttendance();
+      if (!filtered.length) { showToast('No records to export.', 'error'); return; }
+
+      const headers = ['Name', 'Ticket ID', 'Roll/Alumni', 'Session', 'Session Type', 'Day', 'Time Marked', 'Marked By'];
+      const rows = filtered.map(r => {
+        const time = r.markedAt?.toDate
+          ? r.markedAt.toDate().toLocaleString('en-IN')
+          : '';
+        const reg = allRegistrations.find(x => x.registrationId === r.registrationId);
+        const rollOrAlumni = reg
+          ? (reg.userType === 'alumni' ? `Alumni '${reg.passingYear || ''}` : (reg.rollNumber || '—'))
+          : '—';
+        return [
+          r.attendeeName || '',
+          r.registrationId,
+          rollOrAlumni,
+          r.sessionName || '',
+          r.sessionType || '',
+          r.dayKey || '',
+          time,
+          r.markedByEmail || ''
+        ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+      });
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `attendance_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV downloaded.', 'success');
+    }
+
+    // Hook into switchTab to init attendance tab lazily
+    const _origSwitchTab = switchTab;
+    // Extend switchTab to init attendance on first open
+    let attTabInitialized = false;
+    // Override switchTab (defined earlier) by wrapping the section activation
+    document.addEventListener('DOMContentLoaded', () => {});
+    // Patch: intercept section-attendance activation inside the original switchTab
+    // We do this by observing section visibility
+    const _attSection = document.getElementById('section-attendance');
+    if (_attSection) {
+      const _attObserver = new MutationObserver(() => {
+        if (_attSection.classList.contains('active')) {
+          initAttendanceTab();
+        }
+      });
+      _attObserver.observe(_attSection, { attributes: true, attributeFilter: ['class'] });
     }
 
   </script>
