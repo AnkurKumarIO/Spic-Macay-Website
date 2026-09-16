@@ -821,6 +821,7 @@
                 <select class="input-field" id="userType" style="appearance:none;" onchange="toggleUserType()">
                   <option value="student" selected>Student</option>
                   <option value="alumni">Alumni</option>
+                  <option value="faculty">Faculty / Staff</option>
                 </select>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -1055,8 +1056,16 @@
         document.getElementById('passingYearGroup').style.display = 'block';
         document.getElementById('yearGroup').style.display = 'none';
         document.getElementById('rollno').value = '';
-        validateRoll(); 
+        validateRoll();
+      } else if (type === 'faculty') {
+        document.getElementById('rollnoGroup').style.display = 'none';
+        document.getElementById('passingYearGroup').style.display = 'none';
+        document.getElementById('yearGroup').style.display = 'none';
+        document.getElementById('rollno').value = '';
+        document.getElementById('passingYear').value = '';
+        validateRoll();
       } else {
+        // student
         document.getElementById('rollnoGroup').style.display = 'block';
         document.getElementById('passingYearGroup').style.display = 'none';
         document.getElementById('yearGroup').style.display = 'block';
@@ -1418,12 +1427,14 @@
       const concertLabels = checkedConcerts.length > 0 ? checkedConcerts.join('  |  ') : 'None selected';
 
       const rows = [
-        ['Register As',     userType === 'alumni' ? 'Alumni' : 'Student'],
+        ['Register As',     userType === 'alumni' ? 'Alumni' : userType === 'faculty' ? 'Faculty / Staff' : 'Student'],
         ['Full Name',       `${fn} ${ln}`],
         ['Email',           em],
         ['Phone',           ph],
-        userType === 'alumni' ? ['Passing Year', passingYear] : ['Roll Number', roll || '—'],
-        ['Branch',          branch || '—'],
+        ...(userType === 'alumni' ? [['Passing Year', passingYear]] :
+            userType === 'faculty' ? [] :
+            [['Roll Number', roll || '—']]),
+        ['Branch / Department', branch || '—'],
         ...(userType === 'student' ? [['Year of Study', year || '—']] : []),
         ['Intensive Preferences', prefLabels],
         ['Evening Concerts', concertLabels],
@@ -1458,7 +1469,7 @@
       if (!fn || !em || !ph) { showToast('Please fill in Name, Email and Phone.', 'error'); return; }
       if (emailError)        { showToast('Please enter a valid email address.', 'error'); return; }
       if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
-      if (rollNumberError)   { showToast('Invalid Roll Number.', 'error'); return; }
+      if (userType !== 'faculty' && rollNumberError) { showToast('Invalid Roll Number.', 'error'); return; }
       if (selectedIntensiveIds.length === 0) { showToast('Please select at least 1 intensive.', 'error'); return; }
       // ────────────────────────────────────────────────
 
@@ -1540,6 +1551,8 @@
 
       if (userType === 'alumni') {
         registrationData.passingYear = passingYear;
+      } else if (userType === 'faculty') {
+        // faculty: only branch/department stored, no roll or year
       } else {
         registrationData.rollNumber = roll || '—';
         registrationData.yearOfStudy = year || '—';
@@ -1551,7 +1564,7 @@
         // Update ticket UI
         document.getElementById('ticketName').textContent = `${fn} ${ln}`;
         document.getElementById('ticketId').textContent = regId;
-        document.getElementById('ticketRoll').textContent = userType === 'alumni' ? `Alumni '${passingYear}` : (roll || '—');
+        document.getElementById('ticketRoll').textContent = userType === 'alumni' ? `Alumni '${passingYear}` : userType === 'faculty' ? 'Faculty / Staff' : (roll || '—');
         document.getElementById('ticketEvents').textContent = confirmedIntensiveName;
         document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName;
 
@@ -1600,6 +1613,9 @@
         };
         if (userType === 'alumni') {
           emailPayload.passingYear = passingYear;
+          emailPayload.rollNumber = '—';
+          emailPayload.yearOfStudy = '—';
+        } else if (userType === 'faculty') {
           emailPayload.rollNumber = '—';
           emailPayload.yearOfStudy = '—';
         } else {
@@ -1906,7 +1922,7 @@
         return;
       }
 
-      if (roll || ph) {
+      if ((type === 'student' || type === 'alumni') && (roll || ph)) {
         btn.disabled = true; btn.textContent = 'Checking…';
         try {
           // Run both duplicate checks in parallel for speed

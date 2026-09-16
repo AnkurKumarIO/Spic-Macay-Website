@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // ── PDF ticket generator ─────────────────────────────────────────────────────
-async function generateTicketPdf({ firstName, lastName, registrationId, confirmedIntensiveName, eveningConcerts, rollNumber }) {
+async function generateTicketPdf({ firstName, lastName, registrationId, confirmedIntensiveName, eveningConcerts, rollNumber, userType }) {
   const pdfDoc = await PDFDocument.create();
   
   // Load template image
@@ -71,15 +71,17 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
     color: rgb(232/255, 119/255, 34/255),
   });
   
-  // 4. ROLL NUMBER Label & Value
-  page.drawText('ROLL NUMBER', {
+  // 4. ROLL NUMBER / ALUMNI / FACULTY Label & Value
+  const rollLabel = userType === 'faculty' ? 'FACULTY / STAFF' : userType === 'alumni' ? 'ALUMNI' : 'ROLL NUMBER';
+  const rollValue = userType === 'faculty' ? 'Faculty / Staff' : userType === 'alumni' ? (rollNumber || '—') : (rollNumber || '—');
+  page.drawText(rollLabel, {
     x: rollX,
     y: 110,
     size: 6,
     font: helveticaBold,
     color: rgb(169/255, 146/255, 133/255),
   });
-  page.drawText(rollNumber || '—', {
+  page.drawText(rollValue, {
     x: rollX,
     y: 96,
     size: 9,
@@ -347,6 +349,7 @@ module.exports = async function handler(req, res) {
     branch,
     yearOfStudy,
     type,
+    userType,
   } = req.body;
 
   // Basic validation
@@ -388,6 +391,7 @@ module.exports = async function handler(req, res) {
       registrationId,
       confirmedIntensiveName,
       rollNumber,
+      userType,
     });
   } catch (pdfErr) {
     console.error('PDF generation failed:', pdfErr);
