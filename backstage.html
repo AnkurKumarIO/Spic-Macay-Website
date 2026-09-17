@@ -2282,6 +2282,12 @@
     async function deleteRegistration(id, name) {
       if (!confirm(`Are you sure you want to permanently delete the registration for "${name}"? This action cannot be undone.`)) return;
       try {
+        // Restore the seat on the confirmed intensive before deleting
+        const reg = allRegistrations.find(r => r.id === id);
+        if (reg && reg.confirmedIntensiveId) {
+          const intRef = db.collection('intensives').doc(reg.confirmedIntensiveId);
+          await intRef.update({ seatsLeft: firebase.firestore.FieldValue.increment(1) });
+        }
         await db.collection('registrations').doc(id).delete();
         showToast(`Registration for ${name} deleted.`, 'success');
       } catch (err) {
@@ -2296,6 +2302,20 @@
       if (!confirm(`Final confirmation: Delete all ${total} registrations? Type OK to proceed.`)) return;
       try {
         showToast('Deleting all registrations...', 'success');
+        // Restore seats for all confirmed intensives before deleting
+        const seatMap = {};
+        allRegistrations.forEach(r => {
+          if (r.confirmedIntensiveId) {
+            seatMap[r.confirmedIntensiveId] = (seatMap[r.confirmedIntensiveId] || 0) + 1;
+          }
+        });
+        const seatRestorePromises = Object.entries(seatMap).map(([intId, count]) =>
+          db.collection('intensives').doc(intId).update({
+            seatsLeft: firebase.firestore.FieldValue.increment(count)
+          })
+        );
+        await Promise.all(seatRestorePromises);
+
         // Firestore batch allows max 500 ops; chunk into batches
         const chunks = [];
         for (let i = 0; i < allRegistrations.length; i += 400) {

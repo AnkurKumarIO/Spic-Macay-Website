@@ -1370,12 +1370,8 @@
     // ─────────────────────────────────────────────────────────────────────────
 
     function goToStep(step) {
-      // Validate step 2 before proceeding to step 3
+      // No mandatory validation for intensives — they are optional
       if (step === 3) {
-        if (selectedIntensiveIds.length === 0) {
-          showToast('Please select at least 1 intensive.', 'error');
-          return;
-        }
         buildSummary();
       }
 
@@ -1470,7 +1466,6 @@
       if (emailError)        { showToast('Please enter a valid email address.', 'error'); return; }
       if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
       if (userType !== 'faculty' && rollNumberError) { showToast('Invalid Roll Number.', 'error'); return; }
-      if (selectedIntensiveIds.length === 0) { showToast('Please select at least 1 intensive.', 'error'); return; }
       // ────────────────────────────────────────────────
 
       btn.textContent = 'Confirming seat…';
@@ -1480,43 +1475,44 @@
       let confirmedIntensiveId = null;
       let confirmedIntensiveName = null;
 
-      try {
-        // Use a Firestore transaction to atomically check & decrement seat
-        for (const prefId of selectedIntensiveIds) {
-          const intRef = db.collection('intensives').doc(prefId);
-          let confirmed = false;
+      if (selectedIntensiveIds.length > 0) {
+        try {
+          for (const prefId of selectedIntensiveIds) {
+            const intRef = db.collection('intensives').doc(prefId);
+            let confirmed = false;
 
-          await db.runTransaction(async tx => {
-            const intDoc = await tx.get(intRef);
-            if (!intDoc.exists) return;
-            const data = intDoc.data();
-            const seatsLeft = data.seatsLeft !== undefined ? data.seatsLeft : data.totalSeats;
-            if (seatsLeft > 0) {
-              tx.update(intRef, { seatsLeft: seatsLeft - 1 });
-              confirmed = true;
+            await db.runTransaction(async tx => {
+              const intDoc = await tx.get(intRef);
+              if (!intDoc.exists) return;
+              const data = intDoc.data();
+              const seatsLeft = data.seatsLeft !== undefined ? data.seatsLeft : data.totalSeats;
+              if (seatsLeft > 0) {
+                tx.update(intRef, { seatsLeft: seatsLeft - 1 });
+                confirmed = true;
+              }
+            });
+
+            if (confirmed) {
+              confirmedIntensiveId = prefId;
+              const iv = allIntensives.find(x => x.id === prefId);
+              confirmedIntensiveName = iv ? iv.name : prefId;
+              break;
             }
-          });
-
-          if (confirmed) {
-            confirmedIntensiveId = prefId;
-            const iv = allIntensives.find(x => x.id === prefId);
-            confirmedIntensiveName = iv ? iv.name : prefId;
-            break;
           }
-        }
-      } catch (err) {
-        console.error('Seat confirmation failed:', err);
-        showToast('Could not confirm seat. Please try again.', 'error');
-        btn.textContent = originalText;
-        btn.disabled = false;
-        return;
-      }
 
-      if (!confirmedIntensiveId) {
-        showToast('Registrations for all your selected intensives are already full. Please go back and choose different options.', 'error');
-        btn.textContent = originalText;
-        btn.disabled = false;
-        return;
+          if (!confirmedIntensiveId) {
+            showToast('Registrations for all your selected intensives are already full. Please go back and choose different options.', 'error');
+            btn.textContent = originalText;
+            btn.disabled = false;
+            return;
+          }
+        } catch (err) {
+          console.error('Seat confirmation failed:', err);
+          showToast('Could not confirm seat. Please try again.', 'error');
+          btn.textContent = originalText;
+          btn.disabled = false;
+          return;
+        }
       }
 
       btn.textContent = 'Saving registration…';
@@ -1565,8 +1561,8 @@
         document.getElementById('ticketName').textContent = `${fn} ${ln}`;
         document.getElementById('ticketId').textContent = regId;
         document.getElementById('ticketRoll').textContent = userType === 'alumni' ? `Alumni '${passingYear}` : userType === 'faculty' ? 'Faculty / Staff' : (roll || '—');
-        document.getElementById('ticketEvents').textContent = confirmedIntensiveName;
-        document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName;
+        document.getElementById('ticketEvents').textContent = confirmedIntensiveName || 'No Intensive Selected';
+        document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName || 'None';
 
         // Update evening concerts on ticket
         const ticketConcerts = document.getElementById('ticketConcerts');
