@@ -1943,8 +1943,10 @@
 
         // Name / identifier cells differ for school vs individual
         const nameCell    = isSchool ? `<strong>${d.schoolName || '—'}</strong><br/><span style="font-size:0.72rem;opacity:0.7;">Faculty: ${d.facultyName || `${d.firstName} ${d.lastName}`}</span>` : `${d.firstName} ${d.lastName}`;
-        const emailCell   = isSchool ? `<span style="font-size:0.75rem;opacity:0.6;">—</span>` : `<span style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8rem;" title="${d.email}">${d.email}</span>`;
-        const phoneCell   = isSchool ? d.phone : d.phone;
+        const emailCell   = isSchool
+          ? `<span style="font-size:0.75rem;opacity:0.5;">—</span>`
+          : `<span style="font-size:0.8rem;display:block;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${d.email || ''}">${d.email || '—'}</span>`;
+        const phoneCell   = `<span style="font-size:0.8rem;white-space:nowrap;">${d.phone || '—'}</span>`;
         const rollCell    = isSchool
           ? `<span style="font-size:0.75rem;color:var(--primary);">${d.studentCount || 0} student${(d.studentCount||0)!==1?'s':''}</span>`
           : (d.rollNumber || '—');
@@ -1957,9 +1959,9 @@
         html += `
           <tr>
             <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;" title="${d.registrationId}">${d.registrationId.replace('VNIT-2026-', '')}</span></td>
-            <td style="font-weight:600;" ${isSchool && studentsTitle ? `title="${studentsTitle.replace(/"/g,'&quot;')}"` : ''}>${nameCell}</td>
-            <td style="max-width:140px;">${emailCell}</td>
-            <td style="font-size:0.8rem;">${phoneCell}</td>
+            <td style="font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;" ${isSchool && studentsTitle ? `title="${studentsTitle.replace(/"/g,'&quot;')}"` : ''}>${nameCell}</td>
+            <td style="max-width:140px;overflow:hidden;">${emailCell}</td>
+            <td>${phoneCell}</td>
             <td><span class="admin-badge" style="background:${isSchool ? 'rgba(99,179,237,0.12)' : 'rgba(245,240,232,0.06)'};border:1px solid ${isSchool ? 'rgba(99,179,237,0.25)' : 'rgba(245,240,232,0.1)'};">${role}</span></td>
             <td>${rollCell}</td>
             <td>
@@ -3207,7 +3209,7 @@
         card.style.border = '1px solid rgba(74,222,128,0.3)';
         icon.style.background = 'rgba(74,222,128,0.15)';
         icon.textContent = '✅';
-        title.textContent = `${data.firstName} ${data.lastName}`;
+        title.textContent = data.userType === 'school' ? (data.schoolName || `${data.firstName} ${data.lastName}`) : `${data.firstName} ${data.lastName}`;
         title.style.color = '#86efac';
         subtitle.textContent = 'Successfully checked in';
       } else if (type === 'already') {
@@ -3215,7 +3217,7 @@
         card.style.border = '1px solid rgba(255,242,0,0.25)';
         icon.style.background = 'rgba(255,242,0,0.12)';
         icon.textContent = '⚠️';
-        title.textContent = `${data.firstName} ${data.lastName}`;
+        title.textContent = data.userType === 'school' ? (data.schoolName || `${data.firstName} ${data.lastName}`) : `${data.firstName} ${data.lastName}`;
         title.style.color = '#fff200';
         subtitle.textContent = 'Already checked in earlier';
       } else {
@@ -3228,8 +3230,15 @@
         subtitle.textContent = data.message || 'Not found in records';
       }
 
-      if (data.firstName) {
-        details.innerHTML = `
+      if (data.firstName || data.schoolName) {
+        const isSchool = data.userType === 'school';
+        details.innerHTML = isSchool ? `
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Ticket ID</span><span style="font-weight:600;color:var(--primary);font-family:monospace;">${data.registrationId || data.regId || '—'}</span></div>
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">School</span><span style="font-weight:600;color:var(--on-surface);">${data.schoolName || '—'}</span></div>
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Faculty</span><span style="font-weight:600;color:var(--on-surface);">${data.facultyName || `${data.firstName} ${data.lastName}`}</span></div>
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Students</span><span style="font-weight:600;color:var(--on-surface);">${data.studentCount || 0}</span></div>
+          <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Intensive</span><span style="font-weight:600;color:var(--on-surface);">${data.confirmedIntensiveName || '—'}</span></div>
+        ` : `
           <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Ticket ID</span><span style="font-weight:600;color:var(--primary);font-family:monospace;">${data.registrationId || data.regId || '—'}</span></div>
           <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Roll Number</span><span style="font-weight:600;color:var(--on-surface);">${data.rollNumber || '—'}</span></div>
           <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Intensive</span><span style="font-weight:600;color:var(--on-surface);">${data.confirmedIntensiveName || '—'}</span></div>
@@ -3264,15 +3273,19 @@
         }
 
         const data = snap.data();
+        const displayName = data.userType === 'school'
+          ? (data.schoolName || `${data.firstName} ${data.lastName}`)
+          : `${data.firstName} ${data.lastName}`;
+
         if (data.checkedIn) {
-          setStatus('warn', '⚠️', `Already checked in: ${data.firstName} ${data.lastName}`);
+          setStatus('warn', '⚠️', `Already checked in: ${displayName}`);
           showResultCard('already', { ...data, regId });
           return;
         }
 
         await docRef.update({ checkedIn: true });
-        setStatus('success', '✅', `Checked in: ${data.firstName} ${data.lastName}`);
-        showToast(`✅ ${data.firstName} ${data.lastName} checked in!`, 'success');
+        setStatus('success', '✅', `Checked in: ${displayName}`);
+        showToast(`✅ ${displayName} checked in!`, 'success');
         showResultCard('success', { ...data, regId });
 
       } catch (err) {
