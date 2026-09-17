@@ -561,6 +561,34 @@
     </div>
   </div>
 
+  <!-- ── School Attendance Checklist Sheet ──────────────── -->
+  <div id="schoolSheet" style="display:none;position:fixed;inset:0;z-index:600;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0.7);">
+    <div style="width:100%;max-width:480px;background:var(--surface-container);border-radius:20px 20px 0 0;padding:24px 20px 36px;max-height:85dvh;display:flex;flex-direction:column;gap:0;animation:slideUpCard 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;">
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
+        <div>
+          <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--primary-container);margin:0 0 2px;">School Check-In</p>
+          <div id="sheetSchoolName" style="font-size:1.05rem;font-weight:700;color:var(--on-surface);"></div>
+          <div id="sheetFacultyName" style="font-size:0.78rem;color:var(--on-surface-variant);margin-top:2px;"></div>
+        </div>
+        <button onclick="dismissSchoolSheet()" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.3rem;cursor:pointer;padding:0 0 0 12px;line-height:1;">✕</button>
+      </div>
+      <!-- Already checked in notice -->
+      <div id="sheetAlreadyBanner" style="display:none;margin:10px 0;padding:8px 12px;background:rgba(255,242,0,0.08);border:1px solid rgba(255,242,0,0.2);border-radius:8px;font-size:0.78rem;color:#fff200;font-weight:600;">⚠️ Already checked in — you can update the attendance below</div>
+      <!-- Student list -->
+      <p style="font-size:0.72rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--on-surface-variant);margin:14px 0 8px;">Mark Present</p>
+      <div id="sheetStudentList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px;"></div>
+      <!-- Footer -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid rgba(245,240,232,0.08);">
+        <span id="sheetCount" style="font-size:0.82rem;color:var(--on-surface-variant);">0 selected</span>
+        <div style="display:flex;gap:8px;">
+          <button onclick="toggleAllSchoolStudents()" id="sheetToggleAll" style="font-size:0.75rem;padding:7px 12px;border-radius:8px;background:var(--surface-container-high);border:1px solid rgba(245,240,232,0.12);color:var(--on-surface-variant);cursor:pointer;font-weight:600;">Select All</button>
+          <button onclick="confirmSchoolScan()" id="sheetConfirmBtn" style="font-size:0.78rem;padding:7px 16px;border-radius:8px;background:var(--primary-container);color:var(--on-primary-container);border:none;cursor:pointer;font-weight:700;">Confirm ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -852,6 +880,16 @@
       }
 
       const fullName = `${reg.firstName} ${reg.lastName}`;
+      const displayName = reg.userType === 'school'
+        ? (reg.schoolName || fullName)
+        : fullName;
+
+      // ── School: show per-student checklist ──────────────
+      if (reg.userType === 'school') {
+        if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+        showSchoolChecklist(regId, reg);
+        return;
+      }
 
       // 2. Check eligibility
       if (currentSession.type === 'intensive') {
@@ -859,7 +897,7 @@
           const enrolledName = reg.confirmedIntensiveName || reg.confirmedIntensiveId || '—';
           showResult(
             'error',
-            fullName,
+            displayName,
             `Not enrolled in this intensive.\nConfirmed: ${enrolledName}`,
             'Not Enrolled'
           );
@@ -869,7 +907,7 @@
         // concert
         const enrolledConcerts = reg.eveningConcerts || [];
         if (!enrolledConcerts.includes(currentSession.id)) {
-          showResult('error', fullName, 'Did not register for this evening concert.', 'Not Registered for this Concert');
+          showResult('error', displayName, 'Did not register for this evening concert.', 'Not Registered for this Concert');
           return;
         }
       }
@@ -881,7 +919,7 @@
         if (attSnap.exists) {
           const t = attSnap.data().markedAt?.toDate();
           const timeStr = t ? t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '';
-          showResult('already', fullName, `Already marked at ${timeStr}`, 'Already Present');
+          showResult('already', displayName, `Already marked at ${timeStr}`, 'Already Present');
           return;
         }
       } catch (e) {
@@ -908,10 +946,120 @@
         const detail = currentSession.type === 'intensive'
           ? `${currentSession.name} · ${currentSession.dayKey}`
           : currentSession.name;
-        showResult('success', fullName, detail, 'Marked Present ✓');
+        showResult('success', displayName, detail, 'Marked Present ✓');
       } catch (e) {
         console.error('Write failed:', e);
-        showResult('error', fullName, 'Failed to save attendance. Try again.', 'Write Error');
+        showResult('error', displayName, 'Failed to save attendance. Try again.', 'Write Error');
+      }
+    }
+
+    // ── School checklist sheet ───────────────────────────
+    let _sheetRegId   = null;
+    let _sheetStudents = [];
+    let _sheetReg     = null;
+
+    function showSchoolChecklist(regId, reg) {
+      _sheetRegId   = regId;
+      _sheetStudents = reg.students || [];
+      _sheetReg     = reg;
+
+      document.getElementById('sheetSchoolName').textContent  = reg.schoolName || `${reg.firstName} ${reg.lastName}`;
+      document.getElementById('sheetFacultyName').textContent = `Faculty: ${reg.facultyName || `${reg.firstName} ${reg.lastName}`} · ${_sheetStudents.length} student${_sheetStudents.length !== 1 ? 's' : ''} registered`;
+
+      // Already checked in banner
+      const banner = document.getElementById('sheetAlreadyBanner');
+      banner.style.display = reg.checkedIn ? 'block' : 'none';
+
+      // Build student rows — pre-check previously present students
+      const prevPresent = reg.presentStudents || [];
+      const list = document.getElementById('sheetStudentList');
+      list.innerHTML = _sheetStudents.map((s, i) => `
+        <label style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;border:1px solid rgba(245,240,232,0.1);cursor:pointer;background:var(--surface-container-high);" onmouseenter="this.style.borderColor='rgba(232,119,34,0.3)'" onmouseleave="this.style.borderColor='rgba(245,240,232,0.1)'">
+          <input type="checkbox" class="sheet-student-cb" data-name="${s.name}" ${prevPresent.includes(s.name) ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--primary-container);cursor:pointer;flex-shrink:0;" onchange="updateSheetCount()"/>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.9rem;font-weight:600;color:var(--on-surface);">${s.name}</div>
+            <div style="font-size:0.7rem;color:var(--on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Parent: ${s.parent} · 📞 ${s.emergency}</div>
+          </div>
+        </label>
+      `).join('');
+
+      updateSheetCount();
+      document.getElementById('schoolSheet').style.display = 'flex';
+      // pause cooldown while sheet is open
+      scanCooldown = true;
+    }
+
+    function updateSheetCount() {
+      const checked = document.querySelectorAll('.sheet-student-cb:checked').length;
+      const total   = _sheetStudents.length;
+      document.getElementById('sheetCount').textContent = `${checked} of ${total} selected`;
+      document.getElementById('sheetToggleAll').textContent = checked === total ? 'Deselect All' : 'Select All';
+    }
+
+    function toggleAllSchoolStudents() {
+      const cbs   = document.querySelectorAll('.sheet-student-cb');
+      const allOn = Array.from(cbs).every(cb => cb.checked);
+      cbs.forEach(cb => { cb.checked = !allOn; });
+      updateSheetCount();
+    }
+
+    function dismissSchoolSheet() {
+      document.getElementById('schoolSheet').style.display = 'none';
+      _sheetRegId = null; _sheetStudents = []; _sheetReg = null;
+      setTimeout(() => { scanCooldown = false; }, 800);
+    }
+
+    async function confirmSchoolScan() {
+      const presentStudents = Array.from(document.querySelectorAll('.sheet-student-cb:checked'))
+        .map(cb => cb.getAttribute('data-name'));
+      const btn = document.getElementById('sheetConfirmBtn');
+      btn.textContent = 'Saving…'; btn.disabled = true;
+
+      try {
+        // Update registration doc
+        await db.collection('registrations').doc(_sheetRegId).update({
+          checkedIn: true,
+          presentStudents,
+          attendanceMarkedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Write one attendance record per present student to attendance collection
+        const batch = db.batch();
+        presentStudents.forEach(name => {
+          const safeKey = name.replace(/[^a-zA-Z0-9]/g, '_');
+          const docId = `${_sheetRegId}_${currentSession.id}_${currentSession.dayKey.replace(/\s/g,'')}_${safeKey}`;
+          batch.set(db.collection('attendance').doc(docId), {
+            registrationId: _sheetRegId,
+            attendeeName: name,
+            schoolName: _sheetReg.schoolName || '',
+            facultyName: _sheetReg.facultyName || `${_sheetReg.firstName} ${_sheetReg.lastName}`,
+            userType: 'school',
+            sessionType: currentSession.type,
+            sessionId: currentSession.id,
+            sessionName: currentSession.name,
+            dayKey: currentSession.dayKey,
+            markedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            markedByUid: currentUser.uid,
+            markedByEmail: currentUser.email
+          });
+        });
+        await batch.commit();
+
+        scanCount += presentStudents.length;
+        document.getElementById('scanCount').textContent = scanCount;
+
+        document.getElementById('schoolSheet').style.display = 'none';
+        const total = _sheetStudents.length;
+        const schoolName = _sheetReg.schoolName || `${_sheetReg.firstName} ${_sheetReg.lastName}`;
+        showResult('success', schoolName, `${presentStudents.length}/${total} students marked present`, 'School Checked In ✓');
+
+        _sheetRegId = null; _sheetStudents = []; _sheetReg = null;
+        setTimeout(() => { scanCooldown = false; }, 1500);
+      } catch (e) {
+        console.error('School check-in failed:', e);
+        showResult('error', '—', 'Failed to save. Try again.', 'Write Error');
+      } finally {
+        btn.textContent = 'Confirm ✓'; btn.disabled = false;
       }
     }
 

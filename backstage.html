@@ -1706,6 +1706,26 @@
           </div>
         </div>
         <div id="resultDetails" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem;"></div>
+
+        <!-- School student attendance checklist (shown only for school QR scans) -->
+        <div id="schoolChecklist" style="display:none;margin-top:16px;">
+          <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--primary-container);margin-bottom:10px;">Mark Present Students</p>
+          <div id="schoolChecklistItems" style="display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;padding-right:4px;"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(245,240,232,0.08);">
+            <span id="schoolChecklistCount" style="font-size:0.8rem;color:var(--on-surface-variant);">0 selected</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-secondary btn-sm" onclick="toggleAllStudents()" id="toggleAllBtn" style="font-size:0.72rem;padding:5px 10px;">Select All</button>
+              <button class="btn btn-primary btn-sm" onclick="confirmSchoolAttendance()" id="confirmAttendanceBtn" style="font-size:0.72rem;padding:5px 12px;font-weight:700;">Confirm Attendance ✓</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Previous attendance summary (shown on re-scan of already checked-in school) -->
+        <div id="schoolAttendanceSummary" style="display:none;margin-top:14px;background:rgba(245,240,232,0.04);border-radius:10px;padding:14px;">
+          <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--primary-container);margin-bottom:8px;">Previous Attendance</p>
+          <div id="schoolAttendanceSummaryItems" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+
         <button class="btn btn-secondary btn-sm" onclick="dismissResult()" style="margin-top:16px;width:100%;">Scan Next</button>
       </div>
     </div>
@@ -3219,7 +3239,9 @@
         icon.textContent = '⚠️';
         title.textContent = data.userType === 'school' ? (data.schoolName || `${data.firstName} ${data.lastName}`) : `${data.firstName} ${data.lastName}`;
         title.style.color = '#fff200';
-        subtitle.textContent = 'Already checked in earlier';
+        subtitle.textContent = data.userType === 'school'
+          ? `Already checked in — ${(data.presentStudents || []).length} of ${data.studentCount || 0} students marked present`
+          : 'Already checked in earlier';
       } else {
         card.style.background = 'rgba(196,38,28,0.08)';
         card.style.border = '1px solid rgba(196,38,28,0.25)';
@@ -3244,8 +3266,31 @@
           <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Intensive</span><span style="font-weight:600;color:var(--on-surface);">${data.confirmedIntensiveName || '—'}</span></div>
           <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Branch</span><span style="font-weight:600;color:var(--on-surface);">${data.branch || '—'}</span></div>
         `;
+
+        // Show previous attendance summary for already-checked-in schools
+        const summaryEl  = document.getElementById('schoolAttendanceSummary');
+        const checklistEl = document.getElementById('schoolChecklist');
+        summaryEl.style.display  = 'none';
+        checklistEl.style.display = 'none';
+
+        if (type === 'already' && isSchool) {
+          const present = data.presentStudents || [];
+          const all     = data.students || [];
+          const summaryItems = document.getElementById('schoolAttendanceSummaryItems');
+          summaryItems.innerHTML = all.map((s, i) => {
+            const isPresent = present.includes(s.name);
+            return `<div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;">
+              <span style="color:${isPresent ? '#86efac' : '#f47272'};font-size:1rem;">${isPresent ? '✅' : '❌'}</span>
+              <span style="color:var(--on-surface);font-weight:${isPresent ? '600' : '400'};">${s.name}</span>
+              <span style="font-size:0.72rem;color:var(--on-surface-variant);margin-left:auto;">${isPresent ? 'Present' : 'Absent'}</span>
+            </div>`;
+          }).join('') || '<span style="font-size:0.8rem;opacity:0.5;">No student data recorded.</span>';
+          summaryEl.style.display = 'block';
+        }
       } else {
         details.innerHTML = '';
+        document.getElementById('schoolChecklist').style.display = 'none';
+        document.getElementById('schoolAttendanceSummary').style.display = 'none';
       }
 
       card.style.display = 'block';
@@ -3253,9 +3298,114 @@
 
     function dismissResult() {
       document.getElementById('scannerResultCard').style.display = 'none';
+      document.getElementById('schoolChecklist').style.display = 'none';
+      document.getElementById('schoolAttendanceSummary').style.display = 'none';
       document.getElementById('manualTicketId').value = '';
       setStatus('scanning', '🔍', 'Scanning…');
       scannerCooldown = false;
+    }
+
+    // ── School attendance checklist ───────────────────────────────────────────
+    let _currentSchoolRegId = null;
+    let _currentSchoolStudents = [];
+
+    function showSchoolChecklist(data) {
+      _currentSchoolRegId = data.registrationId || data.regId;
+      _currentSchoolStudents = data.students || [];
+
+      // Build result card header (yellow / pending state)
+      const card = document.getElementById('scannerResultCard');
+      card.style.background = 'rgba(232,119,34,0.07)';
+      card.style.border = '1px solid rgba(232,119,34,0.28)';
+      document.getElementById('resultIcon').style.background = 'rgba(232,119,34,0.14)';
+      document.getElementById('resultIcon').textContent = '📋';
+      document.getElementById('resultTitle').textContent = data.schoolName || `${data.firstName} ${data.lastName}`;
+      document.getElementById('resultTitle').style.color = 'var(--primary-container)';
+      document.getElementById('resultSubtitle').textContent = `Faculty: ${data.facultyName || `${data.firstName} ${data.lastName}`} · ${_currentSchoolStudents.length} student${_currentSchoolStudents.length !== 1 ? 's' : ''} registered`;
+
+      // Populate details grid
+      document.getElementById('resultDetails').innerHTML = `
+        <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Ticket ID</span><span style="font-weight:600;color:var(--primary);font-family:monospace;">${_currentSchoolRegId}</span></div>
+        <div><span style="color:var(--on-surface-variant);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:2px;">Intensive</span><span style="font-weight:600;color:var(--on-surface);">${data.confirmedIntensiveName || '—'}</span></div>
+      `;
+
+      // Build student checkboxes
+      const container = document.getElementById('schoolChecklistItems');
+      container.innerHTML = _currentSchoolStudents.map((s, i) => `
+        <label style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;border:1px solid rgba(245,240,232,0.1);cursor:pointer;transition:background 0.15s;" onmouseenter="this.style.background='rgba(232,119,34,0.06)'" onmouseleave="this.style.background=''">
+          <input type="checkbox" class="school-student-cb" data-name="${s.name}" value="${i}" style="width:16px;height:16px;accent-color:var(--primary-container);cursor:pointer;" onchange="updateChecklistCount()"/>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.875rem;font-weight:600;color:var(--on-surface);">${s.name}</div>
+            <div style="font-size:0.72rem;color:var(--on-surface-variant);">Parent: ${s.parent} · Emergency: ${s.emergency}</div>
+          </div>
+        </label>
+      `).join('');
+
+      updateChecklistCount();
+      document.getElementById('schoolChecklist').style.display = 'block';
+      document.getElementById('schoolAttendanceSummary').style.display = 'none';
+      card.style.display = 'block';
+    }
+
+    function updateChecklistCount() {
+      const checked = document.querySelectorAll('.school-student-cb:checked').length;
+      const total   = _currentSchoolStudents.length;
+      document.getElementById('schoolChecklistCount').textContent = `${checked} of ${total} selected`;
+      document.getElementById('toggleAllBtn').textContent = checked === total ? 'Deselect All' : 'Select All';
+    }
+
+    function toggleAllStudents() {
+      const cbs    = document.querySelectorAll('.school-student-cb');
+      const allOn  = Array.from(cbs).every(cb => cb.checked);
+      cbs.forEach(cb => { cb.checked = !allOn; });
+      updateChecklistCount();
+    }
+
+    async function confirmSchoolAttendance() {
+      const presentStudents = Array.from(document.querySelectorAll('.school-student-cb:checked'))
+        .map(cb => cb.getAttribute('data-name'));
+      const btn = document.getElementById('confirmAttendanceBtn');
+      btn.textContent = 'Saving…'; btn.disabled = true;
+
+      try {
+        await db.collection('registrations').doc(_currentSchoolRegId).update({
+          checkedIn: true,
+          presentStudents,
+          attendanceMarkedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        const total = _currentSchoolStudents.length;
+        const count = presentStudents.length;
+
+        // Update card to success state
+        const card = document.getElementById('scannerResultCard');
+        card.style.background = 'rgba(74,222,128,0.08)';
+        card.style.border = '1px solid rgba(74,222,128,0.3)';
+        document.getElementById('resultIcon').style.background = 'rgba(74,222,128,0.15)';
+        document.getElementById('resultIcon').textContent = '✅';
+        document.getElementById('resultTitle').style.color = '#86efac';
+        document.getElementById('resultSubtitle').textContent = `${count} of ${total} student${total !== 1 ? 's' : ''} marked present`;
+
+        // Replace checklist with summary
+        document.getElementById('schoolChecklist').style.display = 'none';
+        const summaryItems = document.getElementById('schoolAttendanceSummaryItems');
+        summaryItems.innerHTML = _currentSchoolStudents.map(s => {
+          const isPresent = presentStudents.includes(s.name);
+          return `<div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;">
+            <span style="color:${isPresent ? '#86efac' : '#f47272'};font-size:1rem;">${isPresent ? '✅' : '❌'}</span>
+            <span style="color:var(--on-surface);font-weight:${isPresent ? '600' : '400'};">${s.name}</span>
+            <span style="font-size:0.72rem;color:var(--on-surface-variant);margin-left:auto;">${isPresent ? 'Present' : 'Absent'}</span>
+          </div>`;
+        }).join('');
+        document.getElementById('schoolAttendanceSummary').style.display = 'block';
+
+        setStatus('success', '✅', `${count}/${total} students checked in`);
+        showToast(`✅ ${count}/${total} students from ${document.getElementById('resultTitle').textContent} checked in!`, 'success');
+      } catch (err) {
+        showToast('Failed to save attendance: ' + err.message, 'error');
+      } finally {
+        btn.textContent = 'Confirm Attendance ✓'; btn.disabled = false;
+      }
     }
 
     async function handleScannedCode(regId) {
@@ -3280,6 +3430,13 @@
         if (data.checkedIn) {
           setStatus('warn', '⚠️', `Already checked in: ${displayName}`);
           showResultCard('already', { ...data, regId });
+          return;
+        }
+
+        // ── School: show student checklist instead of instant check-in ──
+        if (data.userType === 'school') {
+          setStatus('scanning', '📋', `School found: ${displayName} — mark students present`);
+          showSchoolChecklist({ ...data, regId });
           return;
         }
 
