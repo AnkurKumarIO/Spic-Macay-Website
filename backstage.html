@@ -1667,6 +1667,32 @@
 
   <div class="toast" id="adminToast"></div>
 
+  <!-- ── School Students Modal ──────────────────────────── -->
+  <div class="admin-modal" id="schoolStudentsModal">
+    <div class="modal-container" style="max-width:560px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+        <div>
+          <p class="label-sm text-muted" style="margin-bottom:4px;">SCHOOL REGISTRATION</p>
+          <h2 class="headline-sm" id="schoolModalName" style="margin:0;"></h2>
+          <p style="font-size:0.8rem;color:var(--on-surface-variant);margin-top:4px;" id="schoolModalFaculty"></p>
+        </div>
+        <button onclick="closeSchoolStudentsModal()" style="background:none;border:none;color:var(--on-surface-variant);font-size:1.4rem;cursor:pointer;padding:0;line-height:1;flex-shrink:0;margin-left:12px;">✕</button>
+      </div>
+
+      <!-- Attendance summary banner -->
+      <div id="schoolModalAttendanceBanner" style="display:none;margin-bottom:16px;padding:10px 14px;border-radius:10px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);">
+        <span style="font-size:0.8rem;color:#86efac;font-weight:600;" id="schoolModalAttendanceText"></span>
+      </div>
+
+      <!-- Student list -->
+      <div id="schoolModalStudentList" style="display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto;"></div>
+
+      <div style="margin-top:20px;text-align:right;">
+        <button class="btn btn-secondary" onclick="closeSchoolStudentsModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── QR Scanner Modal ─────────────────────────────── -->
   <div id="scannerModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
     <div style="background:var(--surface-container); border-radius:20px; padding:28px; max-width:440px; width:100%; text-align:center; position:relative;">
@@ -1979,7 +2005,7 @@
         html += `
           <tr>
             <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;" title="${d.registrationId}">${d.registrationId.replace('VNIT-2026-', '')}</span></td>
-            <td style="font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;" ${isSchool && studentsTitle ? `title="${studentsTitle.replace(/"/g,'&quot;')}"` : ''}>${nameCell}</td>
+            <td style="font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;">${nameCell}</td>
             <td style="max-width:140px;overflow:hidden;">${emailCell}</td>
             <td>${phoneCell}</td>
             <td><span class="admin-badge" style="background:${isSchool ? 'rgba(99,179,237,0.12)' : 'rgba(245,240,232,0.06)'};border:1px solid ${isSchool ? 'rgba(99,179,237,0.25)' : 'rgba(245,240,232,0.1)'};">${role}</span></td>
@@ -2001,7 +2027,8 @@
               </button>
             </td>
             <td>
-              <button class="btn btn-secondary btn-sm" onclick="deleteRegistration('${d.id}', '${isSchool ? (d.schoolName || d.firstName) : d.firstName + ' ' + d.lastName}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;font-size:0.68rem;padding:3px 8px;">Delete</button>
+              ${isSchool ? `<button class="btn btn-secondary btn-sm" onclick="openSchoolStudentsModal('${d.id}')" style="font-size:0.68rem;padding:3px 8px;margin-bottom:4px;display:block;width:100%;">👥 Students</button>` : ''}
+              <button class="btn btn-secondary btn-sm" onclick="deleteRegistration('${d.id}', '${isSchool ? (d.schoolName || d.firstName) : d.firstName + ' ' + d.lastName}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;font-size:0.68rem;padding:3px 8px;${isSchool ? 'display:block;width:100%;' : ''}">Delete</button>
             </td>
           </tr>
         `;
@@ -2393,6 +2420,72 @@
         showToast('Error deleting registrations: ' + err.message, 'error');
       }
     }
+
+    // ── School Students Modal ────────────────────────────
+    function openSchoolStudentsModal(docId) {
+      const reg = allRegistrations.find(r => r.id === docId);
+      if (!reg) { showToast('Registration not found.', 'error'); return; }
+
+      const students      = reg.students || [];
+      const presentList   = reg.presentStudents || [];
+      const checkedIn     = reg.checkedIn || false;
+
+      document.getElementById('schoolModalName').textContent    = reg.schoolName || `${reg.firstName} ${reg.lastName}`;
+      document.getElementById('schoolModalFaculty').textContent = `Faculty: ${reg.facultyName || `${reg.firstName} ${reg.lastName}`} · Contact: ${reg.phone || '—'} · ${students.length} student${students.length !== 1 ? 's' : ''} registered`;
+
+      // Attendance banner
+      const banner = document.getElementById('schoolModalAttendanceBanner');
+      const bannerText = document.getElementById('schoolModalAttendanceText');
+      if (checkedIn) {
+        banner.style.display = 'block';
+        bannerText.textContent = `✅ Checked in — ${presentList.length} of ${students.length} student${students.length !== 1 ? 's' : ''} marked present`;
+        banner.style.background = 'rgba(74,222,128,0.08)';
+        banner.style.borderColor = 'rgba(74,222,128,0.2)';
+        bannerText.style.color = '#86efac';
+      } else {
+        banner.style.display = 'block';
+        bannerText.textContent = `⏳ Not yet checked in`;
+        banner.style.background = 'rgba(232,119,34,0.07)';
+        banner.style.borderColor = 'rgba(232,119,34,0.2)';
+        bannerText.style.color = 'var(--primary-container)';
+      }
+
+      // Student list
+      const list = document.getElementById('schoolModalStudentList');
+      if (students.length === 0) {
+        list.innerHTML = '<p style="opacity:0.5;text-align:center;padding:20px;">No student data recorded.</p>';
+      } else {
+        list.innerHTML = students.map((s, i) => {
+          const isPresent = presentList.includes(s.name);
+          return `
+            <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:10px;background:var(--surface-container-high);border:1px solid ${isPresent ? 'rgba(74,222,128,0.2)' : 'rgba(245,240,232,0.08)'};">
+              <div style="width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;background:${isPresent ? 'rgba(74,222,128,0.12)' : 'rgba(245,240,232,0.06)'};">
+                ${isPresent ? '✅' : '👤'}
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                  <span style="font-size:0.9rem;font-weight:700;color:var(--on-surface);">${i + 1}. ${s.name}</span>
+                  ${checkedIn ? `<span style="font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:20px;background:${isPresent ? 'rgba(74,222,128,0.12)' : 'rgba(196,38,28,0.1)'};color:${isPresent ? '#86efac' : '#f47272'};border:1px solid ${isPresent ? 'rgba(74,222,128,0.2)' : 'rgba(196,38,28,0.2)'};">${isPresent ? 'Present' : 'Absent'}</span>` : ''}
+                </div>
+                <div style="font-size:0.78rem;color:var(--on-surface-variant);display:flex;flex-wrap:wrap;gap:12px;">
+                  <span>👨‍👩‍👦 Parent: <strong style="color:var(--on-surface);">${s.parent || '—'}</strong></span>
+                  <span>📞 Emergency: <strong style="color:var(--on-surface);">${s.emergency || '—'}</strong></span>
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      document.getElementById('schoolStudentsModal').classList.add('active');
+    }
+
+    function closeSchoolStudentsModal() {
+      document.getElementById('schoolStudentsModal').classList.remove('active');
+    }
+
+    document.getElementById('schoolStudentsModal').addEventListener('click', function(e) {
+      if (e.target === this) closeSchoolStudentsModal();
+    });
 
     // Change Registration Confirmed Intensive
     async function changeConfirmedIntensive(id, newIntensiveId, selectEl) {
