@@ -822,6 +822,7 @@
                   <option value="student" selected>Student</option>
                   <option value="alumni">Alumni</option>
                   <option value="faculty">Faculty / Staff</option>
+                  <option value="school">School / Group</option>
                 </select>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -897,6 +898,54 @@
                   <option>Alumni</option>
                 </select>
               </div>
+            </div>
+
+            <!-- ── School / Group Fields ─────────────────── -->
+            <div id="schoolFields" style="display:none;flex-direction:column;gap:20px;margin-top:0;">
+
+              <div class="input-group">
+                <label class="input-label" for="schoolName">School Name *</label>
+                <input class="input-field" type="text" id="schoolName" placeholder="e.g. Delhi Public School, Nagpur" autocomplete="organization"/>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="input-group">
+                  <label class="input-label" for="schoolFacultyFirst">Faculty First Name *</label>
+                  <input class="input-field" type="text" id="schoolFacultyFirst" placeholder="Ravi" autocomplete="given-name"/>
+                </div>
+                <div class="input-group">
+                  <label class="input-label" for="schoolFacultyLast">Faculty Last Name *</label>
+                  <input class="input-field" type="text" id="schoolFacultyLast" placeholder="Sharma" autocomplete="family-name"/>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="schoolFacultyContact">Faculty Contact Number *</label>
+                <input class="input-field" type="tel" id="schoolFacultyContact" placeholder="Enter 10-digit mobile number" maxlength="10" inputmode="numeric"/>
+                <span id="schoolContactError" style="display:none;font-size:0.78rem;color:#e05252;margin-top:5px;display:block;" aria-live="polite"></span>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label" for="schoolStudentCount">Number of Students *</label>
+                <select class="input-field" id="schoolStudentCount" style="appearance:none;" onchange="renderStudentForms()">
+                  <option value="">Select number of students</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+                <span style="font-size:0.75rem;color:var(--on-surface-variant);margin-top:5px;display:block;">Maximum 10 students per school.</span>
+              </div>
+
+              <!-- Per-student forms rendered dynamically -->
+              <div id="studentFormsContainer" style="display:flex;flex-direction:column;gap:16px;"></div>
+
             </div>
 
             <button class="btn btn-primary w-full btn-lg" style="margin-top:32px;" onclick="handleNext()" id="nextBtn1">Next →</button>
@@ -1051,6 +1100,24 @@
     // Toggle Role fields
     function toggleUserType() {
       const type = document.getElementById('userType').value;
+      const isSchool = type === 'school';
+
+      // Individual-user fields: hide all when school, then selectively show
+      const individualFields = ['firstName', 'lastName', 'email', 'phone', 'rollno', 'branch', 'year', 'passingYear'];
+      ['schoolFields'].forEach(id => {
+        document.getElementById(id).style.display = isSchool ? 'flex' : 'none';
+      });
+
+      // Name / email / phone row visibility (hide for school, show for others)
+      const nameRow = document.getElementById('firstName').closest('div[style*="grid"]');
+      const emailGroup = document.getElementById('email').closest('.input-group');
+      const phoneGroup = document.getElementById('phone').closest('.input-group');
+      const branchGroup = document.getElementById('branch').closest('.input-group');
+      if (nameRow)   nameRow.style.display   = isSchool ? 'none' : 'grid';
+      if (emailGroup) emailGroup.style.display = isSchool ? 'none' : '';
+      if (phoneGroup) phoneGroup.style.display = isSchool ? 'none' : '';
+      if (branchGroup) branchGroup.style.display = isSchool ? 'none' : '';
+
       if (type === 'alumni') {
         document.getElementById('rollnoGroup').style.display = 'none';
         document.getElementById('passingYearGroup').style.display = 'block';
@@ -1064,12 +1131,46 @@
         document.getElementById('rollno').value = '';
         document.getElementById('passingYear').value = '';
         validateRoll();
+      } else if (type === 'school') {
+        document.getElementById('rollnoGroup').style.display = 'none';
+        document.getElementById('passingYearGroup').style.display = 'none';
+        document.getElementById('yearGroup').style.display = 'none';
+        document.getElementById('rollno').value = '';
+        document.getElementById('passingYear').value = '';
+        validateRoll();
       } else {
         // student
         document.getElementById('rollnoGroup').style.display = 'block';
         document.getElementById('passingYearGroup').style.display = 'none';
         document.getElementById('yearGroup').style.display = 'block';
         document.getElementById('passingYear').value = '';
+      }
+    }
+
+    // Render per-student forms dynamically based on count
+    function renderStudentForms() {
+      const count = parseInt(document.getElementById('schoolStudentCount').value) || 0;
+      const container = document.getElementById('studentFormsContainer');
+      container.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const card = document.createElement('div');
+        card.style.cssText = 'background:rgba(245,240,232,0.04);border:1px solid rgba(245,240,232,0.1);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;';
+        card.innerHTML = `
+          <p class="label-md" style="margin:0;color:var(--primary-container);font-weight:700;letter-spacing:0.06em;">STUDENT ${i}</p>
+          <div class="input-group" style="margin:0;">
+            <label class="input-label" for="sName_${i}">Student Name *</label>
+            <input class="input-field" type="text" id="sName_${i}" placeholder="Full name of student" autocomplete="off"/>
+          </div>
+          <div class="input-group" style="margin:0;">
+            <label class="input-label" for="sParent_${i}">Parent Name *</label>
+            <input class="input-field" type="text" id="sParent_${i}" placeholder="Full name of parent / guardian" autocomplete="off"/>
+          </div>
+          <div class="input-group" style="margin:0;">
+            <label class="input-label" for="sEmergency_${i}">Emergency Contact Number *</label>
+            <input class="input-field" type="tel" id="sEmergency_${i}" placeholder="10-digit emergency contact" maxlength="10" inputmode="numeric" autocomplete="off"/>
+          </div>
+        `;
+        container.appendChild(card);
       }
     }
     
@@ -1399,6 +1500,67 @@
     }
 
     function buildSummary() {
+      const userType = document.getElementById('userType').value;
+
+      // ── School summary ───────────────────────────────
+      if (userType === 'school') {
+        const schoolName   = document.getElementById('schoolName').value;
+        const facFirst     = document.getElementById('schoolFacultyFirst').value;
+        const facLast      = document.getElementById('schoolFacultyLast').value;
+        const facContact   = document.getElementById('schoolFacultyContact').value;
+        const studentCount = parseInt(document.getElementById('schoolStudentCount').value) || 0;
+
+        const students = [];
+        for (let i = 1; i <= studentCount; i++) {
+          const name      = document.getElementById(`sName_${i}`)?.value || '';
+          const parent    = document.getElementById(`sParent_${i}`)?.value || '';
+          const emergency = document.getElementById(`sEmergency_${i}`)?.value || '';
+          students.push({ name, parent, emergency });
+        }
+
+        // Build preference labels
+        const prefLabels = selectedIntensiveIds.map((id, i) => {
+          const iv = allIntensives.find(x => x.id === id);
+          return iv ? `${i+1}. ${iv.name}` : `${i+1}. ${id}`;
+        }).join('  |  ') || '—';
+
+        const checkedConcerts = Array.from(document.querySelectorAll('.concert-checkbox:checked')).map(cb => {
+          const c = allConcerts.find(x => x.id === cb.value);
+          return c ? `${c.day} - ${c.name}` : cb.value;
+        });
+        const concertLabels = checkedConcerts.length > 0 ? checkedConcerts.join('  |  ') : 'None selected';
+
+        const rows = [
+          ['Register As',       'School / Group'],
+          ['School Name',       schoolName],
+          ['Faculty Name',      `${facFirst} ${facLast}`],
+          ['Faculty Contact',   facContact],
+          ['No. of Students',   studentCount],
+          ['Intensive Preferences', prefLabels],
+          ['Evening Concerts',  concertLabels],
+          ['Chapter',           'SPIC MACAY — VNIT Nagpur'],
+        ];
+
+        const studentRows = students.map((s, i) => `
+          <div class="summary-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <span class="summary-key" style="color:var(--primary-container);font-weight:700;">STUDENT ${i+1}</span>
+            <div style="display:flex;flex-direction:column;gap:2px;width:100%;">
+              <div style="display:flex;justify-content:space-between;"><span class="summary-key">Name</span><span class="summary-val">${s.name}</span></div>
+              <div style="display:flex;justify-content:space-between;"><span class="summary-key">Parent</span><span class="summary-val">${s.parent}</span></div>
+              <div style="display:flex;justify-content:space-between;"><span class="summary-key">Emergency</span><span class="summary-val">${s.emergency}</span></div>
+            </div>
+          </div>`).join('');
+
+        document.getElementById('summaryContent').innerHTML =
+          rows.map(([k,v]) => `
+            <div class="summary-row">
+              <span class="summary-key">${k}</span>
+              <span class="summary-val">${v}</span>
+            </div>`).join('') + studentRows;
+        return;
+      }
+
+      // ── Individual summary ───────────────────────────
       const fn    = document.getElementById('firstName').value;
       const ln    = document.getElementById('lastName').value;
       const em    = document.getElementById('email').value;
@@ -1406,16 +1568,13 @@
       const roll  = document.getElementById('rollno').value;
       const branch= document.getElementById('branch').value;
       const year  = document.getElementById('year').value;
-      const userType = document.getElementById('userType').value;
       const passingYear = document.getElementById('passingYear').value;
 
-      // Build preference labels
       const prefLabels = selectedIntensiveIds.map((id, i) => {
         const iv = allIntensives.find(x => x.id === id);
         return iv ? `${i+1}. ${iv.name}` : `${i+1}. ${id}`;
       }).join('  |  ') || '—';
 
-      // Build concert labels
       const checkedConcerts = Array.from(document.querySelectorAll('.concert-checkbox:checked')).map(cb => {
         const c = allConcerts.find(x => x.id === cb.value);
         return c ? `${c.day} - ${c.name}` : cb.value;
@@ -1443,10 +1602,117 @@
         </div>`).join('');
     }
 
+    // ── Shared seat-confirmation helper ─────────────────────────────────────
+    async function confirmSeat(btn, originalText) {
+      if (selectedIntensiveIds.length === 0) return { confirmedIntensiveId: null, confirmedIntensiveName: null };
+      try {
+        for (const prefId of selectedIntensiveIds) {
+          const intRef = db.collection('intensives').doc(prefId);
+          let confirmed = false;
+          await db.runTransaction(async tx => {
+            const intDoc = await tx.get(intRef);
+            if (!intDoc.exists) return;
+            const data = intDoc.data();
+            const seatsLeft = data.seatsLeft !== undefined ? data.seatsLeft : data.totalSeats;
+            if (seatsLeft > 0) { tx.update(intRef, { seatsLeft: seatsLeft - 1 }); confirmed = true; }
+          });
+          if (confirmed) {
+            const iv = allIntensives.find(x => x.id === prefId);
+            return { confirmedIntensiveId: prefId, confirmedIntensiveName: iv ? iv.name : prefId };
+          }
+        }
+        showToast('All selected intensives are full. Please go back and choose different options.', 'error');
+        btn.textContent = originalText; btn.disabled = false;
+        return null;
+      } catch (err) {
+        console.error('Seat confirmation failed:', err);
+        showToast('Could not confirm seat. Please try again.', 'error');
+        btn.textContent = originalText; btn.disabled = false;
+        return null;
+      }
+    }
+
+    // ── Shared concert ticket helper ─────────────────────────────────────────
+    function renderConcertTicket(selectedConcerts) {
+      const ticketConcerts = document.getElementById('ticketConcerts');
+      if (!ticketConcerts) return;
+      if (selectedConcerts.length > 0) {
+        const names = selectedConcerts.map(id => { const c = allConcerts.find(x => x.id === id); return c ? `${c.day} - ${c.name}` : id; });
+        ticketConcerts.innerHTML = `<ul style="margin:0;padding-left:8px;list-style-type:disc;font-size:0.52rem;line-height:1.1;color:#c9a898;max-height:24px;overflow:hidden;">${names.map(n => `<li style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</li>`).join('')}</ul>`;
+      } else {
+        ticketConcerts.innerHTML = '<span style="font-size:0.55rem;opacity:0.6;color:#c9a898;">Evening Concerts: None</span>';
+      }
+    }
+
     async function submitRegistration() {
       const btn = document.getElementById('submitBtn');
       const originalText = btn.textContent;
+      const userType = document.getElementById('userType').value;
+      const selectedConcerts = Array.from(document.querySelectorAll('.concert-checkbox:checked')).map(cb => cb.value);
 
+      // ══ SCHOOL PATH ═══════════════════════════════════════════════════════
+      if (userType === 'school') {
+        const schoolName   = document.getElementById('schoolName').value.trim();
+        const facFirst     = document.getElementById('schoolFacultyFirst').value.trim();
+        const facLast      = document.getElementById('schoolFacultyLast').value.trim();
+        const facContact   = document.getElementById('schoolFacultyContact').value.trim();
+        const studentCount = parseInt(document.getElementById('schoolStudentCount').value) || 0;
+        const message      = document.getElementById('message').value.trim();
+
+        const students = [];
+        for (let i = 1; i <= studentCount; i++) {
+          students.push({
+            name:      document.getElementById(`sName_${i}`).value.trim(),
+            parent:    document.getElementById(`sParent_${i}`).value.trim(),
+            emergency: document.getElementById(`sEmergency_${i}`).value.trim(),
+          });
+        }
+
+        btn.textContent = 'Confirming seat…'; btn.disabled = true;
+        const seat = await confirmSeat(btn, originalText);
+        if (seat === null) return; // full or error
+
+        btn.textContent = 'Saving registration…';
+        const regId = 'VNIT-2026-SCH-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+        try {
+          await db.collection('registrations').doc(regId).set({
+            registrationId: regId,
+            userType: 'school',
+            schoolName,
+            firstName: facFirst,
+            lastName: facLast,
+            facultyName: `${facFirst} ${facLast}`,
+            phone: facContact,
+            email: '',
+            studentCount,
+            students,
+            intensivePreferences: selectedIntensiveIds,
+            eveningConcerts: selectedConcerts,
+            confirmedIntensiveId:   seat.confirmedIntensiveId,
+            confirmedIntensiveName: seat.confirmedIntensiveName,
+            message,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+
+          document.getElementById('ticketName').textContent  = schoolName;
+          document.getElementById('ticketId').textContent    = regId;
+          document.getElementById('ticketRoll').textContent  = `${studentCount} Student${studentCount !== 1 ? 's' : ''}`;
+          document.getElementById('ticketEvents').textContent = seat.confirmedIntensiveName || 'No Intensive Selected';
+          document.getElementById('confirmedIntensiveNameBanner').textContent = seat.confirmedIntensiveName || 'None';
+          renderConcertTicket(selectedConcerts);
+          document.getElementById('ticketQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
+          document.getElementById('successOverlay').classList.add('active');
+          showToast('School group registered successfully!', 'success');
+        } catch (error) {
+          console.error('Error saving school registration:', error);
+          showToast('Registration failed. Please try again.', 'error');
+          btn.textContent = originalText; btn.disabled = false;
+        }
+        return;
+      }
+
+      // ══ INDIVIDUAL PATH ════════════════════════════════════════════════════
       const fn = document.getElementById('firstName').value.trim();
       const ln = document.getElementById('lastName').value.trim();
       const em = document.getElementById('email').value.trim();
@@ -1455,175 +1721,71 @@
       const branch = document.getElementById('branch').value;
       const year = document.getElementById('year').value;
       const message = document.getElementById('message').value.trim();
-      const userType = document.getElementById('userType').value;
       const passingYear = document.getElementById('passingYear').value;
-      const selectedConcerts = Array.from(document.querySelectorAll('.concert-checkbox:checked')).map(cb => cb.value);
 
-      // ── Final validation gate ────────────────────────
-      validateEmail();
-      validateRoll();
+      validateEmail(); validateRoll();
       if (!fn || !em || !ph) { showToast('Please fill in Name, Email and Phone.', 'error'); return; }
       if (emailError)        { showToast('Please enter a valid email address.', 'error'); return; }
       if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
       if (userType !== 'faculty' && rollNumberError) { showToast('Invalid Roll Number.', 'error'); return; }
-      // ────────────────────────────────────────────────
 
-      btn.textContent = 'Confirming seat…';
-      btn.disabled = true;
-
-      // ── Seat confirmation: try preferences in order ─
-      let confirmedIntensiveId = null;
-      let confirmedIntensiveName = null;
-
-      if (selectedIntensiveIds.length > 0) {
-        try {
-          for (const prefId of selectedIntensiveIds) {
-            const intRef = db.collection('intensives').doc(prefId);
-            let confirmed = false;
-
-            await db.runTransaction(async tx => {
-              const intDoc = await tx.get(intRef);
-              if (!intDoc.exists) return;
-              const data = intDoc.data();
-              const seatsLeft = data.seatsLeft !== undefined ? data.seatsLeft : data.totalSeats;
-              if (seatsLeft > 0) {
-                tx.update(intRef, { seatsLeft: seatsLeft - 1 });
-                confirmed = true;
-              }
-            });
-
-            if (confirmed) {
-              confirmedIntensiveId = prefId;
-              const iv = allIntensives.find(x => x.id === prefId);
-              confirmedIntensiveName = iv ? iv.name : prefId;
-              break;
-            }
-          }
-
-          if (!confirmedIntensiveId) {
-            showToast('Registrations for all your selected intensives are already full. Please go back and choose different options.', 'error');
-            btn.textContent = originalText;
-            btn.disabled = false;
-            return;
-          }
-        } catch (err) {
-          console.error('Seat confirmation failed:', err);
-          showToast('Could not confirm seat. Please try again.', 'error');
-          btn.textContent = originalText;
-          btn.disabled = false;
-          return;
-        }
-      }
+      btn.textContent = 'Confirming seat…'; btn.disabled = true;
+      const seat = await confirmSeat(btn, originalText);
+      if (seat === null) return;
 
       btn.textContent = 'Saving registration…';
 
-      // ── Generate / reuse reg ID ──────────────────────
       let regId;
       try {
-        const querySnapshot = await db.collection('registrations')
-          .where('email', '==', em).limit(1).get();
-        regId = !querySnapshot.empty
-          ? querySnapshot.docs[0].data().registrationId
-          : 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-      } catch (err) {
-        regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-      }
+        const qs = await db.collection('registrations').where('email', '==', em).limit(1).get();
+        regId = !qs.empty ? qs.docs[0].data().registrationId : 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      } catch { regId = 'VNIT-2026-' + Math.random().toString(36).substr(2, 6).toUpperCase(); }
 
       const registrationData = {
         registrationId: regId,
-        userType: userType,
-        firstName: fn,
-        lastName: ln,
-        email: em,
-        phone: ph,
+        userType,
+        firstName: fn, lastName: ln, email: em, phone: ph,
         branch: branch || '—',
         intensivePreferences: selectedIntensiveIds,
         eveningConcerts: selectedConcerts,
-        confirmedIntensiveId,
-        confirmedIntensiveName,
+        confirmedIntensiveId:   seat.confirmedIntensiveId,
+        confirmedIntensiveName: seat.confirmedIntensiveName,
         message,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
 
-      if (userType === 'alumni') {
-        registrationData.passingYear = passingYear;
-      } else if (userType === 'faculty') {
-        // faculty: only branch/department stored, no roll or year
-      } else {
-        registrationData.rollNumber = roll || '—';
-        registrationData.yearOfStudy = year || '—';
-      }
+      if (userType === 'alumni')       registrationData.passingYear  = passingYear;
+      else if (userType !== 'faculty') { registrationData.rollNumber = roll || '—'; registrationData.yearOfStudy = year || '—'; }
 
       try {
         await db.collection('registrations').doc(regId).set(registrationData);
 
-        // Update ticket UI
-        document.getElementById('ticketName').textContent = `${fn} ${ln}`;
-        document.getElementById('ticketId').textContent = regId;
-        document.getElementById('ticketRoll').textContent = userType === 'alumni' ? `Alumni '${passingYear}` : userType === 'faculty' ? 'Faculty / Staff' : (roll || '—');
-        document.getElementById('ticketEvents').textContent = confirmedIntensiveName || 'No Intensive Selected';
-        document.getElementById('confirmedIntensiveNameBanner').textContent = confirmedIntensiveName || 'None';
-
-        // Update evening concerts on ticket
-        const ticketConcerts = document.getElementById('ticketConcerts');
-        if (ticketConcerts) {
-          if (selectedConcerts.length > 0) {
-            const concertNames = selectedConcerts.map(id => {
-              const c = allConcerts.find(x => x.id === id);
-              return c ? `${c.day} - ${c.name}` : id;
-            });
-            ticketConcerts.innerHTML = `
-              <ul style="margin:0; padding-left:8px; list-style-type:disc; font-size:0.52rem; line-height:1.1; color:#c9a898; max-height:24px; overflow:hidden;">
-                ${concertNames.map(name => `<li style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</li>`).join('')}
-              </ul>`;
-          } else {
-            ticketConcerts.innerHTML = '<span style="font-size:0.55rem; opacity:0.6; color:#c9a898;">Evening Concerts: None</span>';
-          }
-        }
-
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
-        document.getElementById('ticketQr').src = qrUrl;
-
+        document.getElementById('ticketName').textContent  = `${fn} ${ln}`;
+        document.getElementById('ticketId').textContent    = regId;
+        document.getElementById('ticketRoll').textContent  = userType === 'alumni' ? `Alumni '${passingYear}` : userType === 'faculty' ? 'Faculty / Staff' : (roll || '—');
+        document.getElementById('ticketEvents').textContent = seat.confirmedIntensiveName || 'No Intensive Selected';
+        document.getElementById('confirmedIntensiveNameBanner').textContent = seat.confirmedIntensiveName || 'None';
+        renderConcertTicket(selectedConcerts);
+        document.getElementById('ticketQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
         document.getElementById('successOverlay').classList.add('active');
-        showToast('Registered! Intensive pass confirmed.', 'success');
+        showToast('Registered! Pass confirmed.', 'success');
 
-        // Send confirmation email (non-blocking — don't fail registration if email fails)
-        const emailPayload = {
-          to: em,
-          type: 'registration',
-          firstName: fn,
-          lastName: ln,
+        sendConfirmationEmail({
+          to: em, type: 'registration',
+          firstName: fn, lastName: ln,
           registrationId: regId,
-          confirmedIntensiveName,
-          // Pass preference names (not IDs) for the email
-          intensivePreferences: selectedIntensiveIds.map(id => {
-            const iv = allIntensives.find(x => x.id === id);
-            return iv ? iv.name : id;
-          }),
-          eveningConcerts: selectedConcerts.length > 0 ? selectedConcerts.map(id => {
-            const c = allConcerts.find(x => x.id === id);
-            return c ? `${c.day} - ${c.name}` : id;
-          }).join(', ') : 'None',
-          branch: branch || '—',
-          userType: userType
-        };
-        if (userType === 'alumni') {
-          emailPayload.passingYear = passingYear;
-          emailPayload.rollNumber = '—';
-          emailPayload.yearOfStudy = '—';
-        } else if (userType === 'faculty') {
-          emailPayload.rollNumber = '—';
-          emailPayload.yearOfStudy = '—';
-        } else {
-          emailPayload.rollNumber = roll || '—';
-          emailPayload.yearOfStudy = year || '—';
-        }
-        sendConfirmationEmail(emailPayload);
+          confirmedIntensiveName: seat.confirmedIntensiveName,
+          intensivePreferences: selectedIntensiveIds.map(id => { const iv = allIntensives.find(x => x.id === id); return iv ? iv.name : id; }),
+          eveningConcerts: selectedConcerts.length > 0 ? selectedConcerts.map(id => { const c = allConcerts.find(x => x.id === id); return c ? `${c.day} - ${c.name}` : id; }).join(', ') : 'None',
+          branch: branch || '—', userType,
+          rollNumber:   userType === 'alumni' || userType === 'faculty' ? '—' : (roll || '—'),
+          yearOfStudy:  userType === 'alumni' || userType === 'faculty' ? '—' : (year || '—'),
+          ...(userType === 'alumni' ? { passingYear } : {})
+        });
       } catch (error) {
         console.error('Error saving registration:', error);
         showToast('Registration failed. Please try again.', 'error');
-        btn.textContent = originalText;
-        btn.disabled = false;
+        btn.textContent = originalText; btn.disabled = false;
       }
     }
 
@@ -1895,6 +2057,46 @@
     // ── Stage-1 → Stage-2 with async duplicate check ─
     async function handleNext() {
       const btn  = document.getElementById('nextBtn1');
+      const type = document.getElementById('userType').value;
+
+      // ── School / Group validation path ──────────────
+      if (type === 'school') {
+        const schoolName    = document.getElementById('schoolName').value.trim();
+        const facFirst      = document.getElementById('schoolFacultyFirst').value.trim();
+        const facLast       = document.getElementById('schoolFacultyLast').value.trim();
+        const facContact    = document.getElementById('schoolFacultyContact').value.trim();
+        const studentCount  = parseInt(document.getElementById('schoolStudentCount').value) || 0;
+
+        if (!schoolName)              { showToast('Please enter the school name.', 'error'); document.getElementById('schoolName').focus(); return; }
+        if (!facFirst || !facLast)    { showToast('Please enter the faculty name.', 'error'); document.getElementById('schoolFacultyFirst').focus(); return; }
+        if (!facContact)              { showToast('Please enter the faculty contact number.', 'error'); document.getElementById('schoolFacultyContact').focus(); return; }
+        if (!/^\d{10}$/.test(facContact)) {
+          const el = document.getElementById('schoolContactError');
+          el.textContent = 'Please enter a valid 10-digit contact number.';
+          el.style.display = 'block';
+          document.getElementById('schoolFacultyContact').focus();
+          return;
+        } else {
+          document.getElementById('schoolContactError').style.display = 'none';
+        }
+        if (studentCount < 1)         { showToast('Please select the number of students.', 'error'); document.getElementById('schoolStudentCount').focus(); return; }
+
+        // Validate each student's fields
+        for (let i = 1; i <= studentCount; i++) {
+          const name      = document.getElementById(`sName_${i}`).value.trim();
+          const parent    = document.getElementById(`sParent_${i}`).value.trim();
+          const emergency = document.getElementById(`sEmergency_${i}`).value.trim();
+          if (!name)      { showToast(`Please enter the name for Student ${i}.`, 'error'); document.getElementById(`sName_${i}`).focus(); return; }
+          if (!parent)    { showToast(`Please enter the parent name for Student ${i}.`, 'error'); document.getElementById(`sParent_${i}`).focus(); return; }
+          if (!emergency) { showToast(`Please enter the emergency contact for Student ${i}.`, 'error'); document.getElementById(`sEmergency_${i}`).focus(); return; }
+          if (!/^\d{10}$/.test(emergency)) { showToast(`Emergency contact for Student ${i} must be a 10-digit number.`, 'error'); document.getElementById(`sEmergency_${i}`).focus(); return; }
+        }
+
+        goToStep(2);
+        return;
+      }
+
+      // ── Individual user validation path ─────────────
       const fn   = document.getElementById('firstName').value.trim();
       const em   = document.getElementById('email').value.trim();
       const ph   = document.getElementById('phone').value.trim();
@@ -1909,7 +2111,6 @@
       if (!/^\d{10}$/.test(ph)) { showToast('Please enter a valid 10-digit mobile number.', 'error'); return; }
       if (rollNumberError) { showToast('Invalid Roll Number.', 'error'); document.getElementById('rollno').focus(); return; }
 
-      const type = document.getElementById('userType').value;
       const passingYear = document.getElementById('passingYear').value;
 
       if (type === 'alumni' && !passingYear) {
@@ -1921,7 +2122,6 @@
       if ((type === 'student' || type === 'alumni') && (roll || ph)) {
         btn.disabled = true; btn.textContent = 'Checking…';
         try {
-          // Run both duplicate checks in parallel for speed
           const [rollSnap, phoneSnap] = await Promise.all([
             (type === 'student' && roll)
               ? db.collection('registrations').where('rollNumber', '==', roll.toUpperCase()).limit(1).get()

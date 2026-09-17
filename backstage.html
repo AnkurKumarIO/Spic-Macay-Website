@@ -1908,12 +1908,14 @@
         const phone = (r.phone || '').toLowerCase();
         const roll = (r.rollNumber || '').toLowerCase();
         const regId = (r.registrationId || '').toLowerCase();
+        const school = (r.schoolName || '').toLowerCase();
         
         return fullName.includes(query) || 
                email.includes(query) || 
                phone.includes(query) || 
                roll.includes(query) || 
-               regId.includes(query);
+               regId.includes(query) ||
+               school.includes(query);
       });
 
       // Build intensive name lookup
@@ -1936,15 +1938,30 @@
           return `${idx + 1}. ${name}`;
         }).join(' | ') || (d.streams ? [...(d.streams||[]), ...(d.activities||[])].join(', ') : '—');
 
-        const role = d.userType || d.role || (d.passingYear && !d.rollNumber ? 'Alumni' : 'Student');
+        const isSchool = d.userType === 'school';
+        const role = isSchool ? 'School' : (d.userType || d.role || (d.passingYear && !d.rollNumber ? 'Alumni' : 'Student'));
+
+        // Name / identifier cells differ for school vs individual
+        const nameCell    = isSchool ? `<strong>${d.schoolName || '—'}</strong><br/><span style="font-size:0.72rem;opacity:0.7;">Faculty: ${d.facultyName || `${d.firstName} ${d.lastName}`}</span>` : `${d.firstName} ${d.lastName}`;
+        const emailCell   = isSchool ? `<span style="font-size:0.75rem;opacity:0.6;">—</span>` : `<span style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8rem;" title="${d.email}">${d.email}</span>`;
+        const phoneCell   = isSchool ? d.phone : d.phone;
+        const rollCell    = isSchool
+          ? `<span style="font-size:0.75rem;color:var(--primary);">${d.studentCount || 0} student${(d.studentCount||0)!==1?'s':''}</span>`
+          : (d.rollNumber || '—');
+
+        // School students tooltip
+        const studentsTitle = isSchool && d.students
+          ? d.students.map((s,i) => `${i+1}. ${s.name} | Parent: ${s.parent} | Emergency: ${s.emergency}`).join('\n')
+          : '';
+
         html += `
           <tr>
             <td><span class="text-primary-container" style="font-family:monospace;font-weight:700;" title="${d.registrationId}">${d.registrationId.replace('VNIT-2026-', '')}</span></td>
-            <td style="font-weight:600;">${d.firstName} ${d.lastName}</td>
-            <td style="max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.8rem;" title="${d.email}">${d.email}</td>
-            <td style="font-size:0.8rem;">${d.phone}</td>
-            <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${role}</span></td>
-            <td>${d.rollNumber || '—'}</td>
+            <td style="font-weight:600;" ${isSchool && studentsTitle ? `title="${studentsTitle.replace(/"/g,'&quot;')}"` : ''}>${nameCell}</td>
+            <td style="max-width:140px;">${emailCell}</td>
+            <td style="font-size:0.8rem;">${phoneCell}</td>
+            <td><span class="admin-badge" style="background:${isSchool ? 'rgba(99,179,237,0.12)' : 'rgba(245,240,232,0.06)'};border:1px solid ${isSchool ? 'rgba(99,179,237,0.25)' : 'rgba(245,240,232,0.1)'};">${role}</span></td>
+            <td>${rollCell}</td>
             <td>
               <select onchange="changeConfirmedIntensive('${d.id}', this.value, this)" style="font-size:0.72rem; padding:4px 6px; margin:0; max-width:150px; background:var(--surface-container-high); border:1px solid rgba(245,240,232,0.15); border-radius:4px; color:var(--on-surface); cursor:pointer; outline:none;">
                 <option value="">— General Entry / None —</option>
@@ -1962,7 +1979,7 @@
               </button>
             </td>
             <td>
-              <button class="btn btn-secondary btn-sm" onclick="deleteRegistration('${d.id}', '${d.firstName} ${d.lastName}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;font-size:0.68rem;padding:3px 8px;">Delete</button>
+              <button class="btn btn-secondary btn-sm" onclick="deleteRegistration('${d.id}', '${isSchool ? (d.schoolName || d.firstName) : d.firstName + ' ' + d.lastName}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;font-size:0.68rem;padding:3px 8px;">Delete</button>
             </td>
           </tr>
         `;
@@ -1978,29 +1995,52 @@
 
       const intMap = {};
       allIntensives.forEach(i => { intMap[i.id] = i.name; });
-      
-      const headers = ['Registration ID', 'First Name', 'Last Name', 'Email', 'Phone', 'Registered As', 'Roll Number', 'Branch', 'Year of Study', 'Confirmed Intensive', 'Preference 1', 'Preference 2', 'Preference 3', 'Evening Concerts', 'Checked In'];
-      const rows = allRegistrations.map(r => {
+
+      // Two sets of rows: individual + school (expanded per student)
+      const headers = ['Registration ID', 'Type', 'School Name', 'Faculty Name', 'First Name', 'Last Name', 'Email', 'Phone', 'Roll Number', 'Branch', 'Year of Study', 'Student #', 'Student Name', 'Parent Name', 'Emergency Contact', 'Confirmed Intensive', 'Preference 1', 'Preference 2', 'Preference 3', 'Evening Concerts', 'Checked In'];
+
+      const rows = [];
+      allRegistrations.forEach(r => {
         const prefs = r.intensivePreferences || [];
         const confirmed = r.confirmedIntensiveId ? (intMap[r.confirmedIntensiveId] || r.confirmedIntensiveId) : (r.confirmedIntensiveName || '');
-        const role = r.userType || r.role || (r.passingYear && !r.rollNumber ? 'Alumni' : 'Student');
-        return [
-          r.registrationId || '',
-          r.firstName || '',
-          r.lastName || '',
-          r.email || '',
-          r.phone || '',
-          role,
-          r.rollNumber || '',
-          r.branch || '',
-          r.yearOfStudy || '',
-          confirmed,
-          prefs[0] ? (intMap[prefs[0]] || prefs[0]) : '',
-          prefs[1] ? (intMap[prefs[1]] || prefs[1]) : '',
-          prefs[2] ? (intMap[prefs[2]] || prefs[2]) : '',
-          (r.eveningConcerts || []).join(' | '),
-          r.checkedIn ? 'Yes' : 'No'
-        ];
+        const isSchool = r.userType === 'school';
+        const role = isSchool ? 'School' : (r.userType || r.role || (r.passingYear && !r.rollNumber ? 'Alumni' : 'Student'));
+        const concerts = (r.eveningConcerts || []).join(' | ');
+        const checkedIn = r.checkedIn ? 'Yes' : 'No';
+        const p1 = prefs[0] ? (intMap[prefs[0]] || prefs[0]) : '';
+        const p2 = prefs[1] ? (intMap[prefs[1]] || prefs[1]) : '';
+        const p3 = prefs[2] ? (intMap[prefs[2]] || prefs[2]) : '';
+
+        if (isSchool) {
+          const students = r.students || [];
+          // If no students array, emit one row for the school itself
+          if (students.length === 0) {
+            rows.push([r.registrationId || '', 'School', r.schoolName || '', r.facultyName || `${r.firstName} ${r.lastName}`, r.firstName || '', r.lastName || '', '', r.phone || '', '', '', '', '', '', '', '', confirmed, p1, p2, p3, concerts, checkedIn]);
+          } else {
+            students.forEach((s, idx) => {
+              rows.push([
+                r.registrationId || '', 'School',
+                r.schoolName || '',
+                r.facultyName || `${r.firstName} ${r.lastName}`,
+                r.firstName || '', r.lastName || '',
+                '', r.phone || '',
+                '', '', '',
+                idx + 1, s.name || '', s.parent || '', s.emergency || '',
+                confirmed, p1, p2, p3, concerts, checkedIn
+              ]);
+            });
+          }
+        } else {
+          rows.push([
+            r.registrationId || '', role,
+            '', '',
+            r.firstName || '', r.lastName || '',
+            r.email || '', r.phone || '',
+            r.rollNumber || '', r.branch || '', r.yearOfStudy || '',
+            '', '', '', '',
+            confirmed, p1, p2, p3, concerts, checkedIn
+          ]);
+        }
       });
 
       const csvContent = "data:text/csv;charset=utf-8," 
