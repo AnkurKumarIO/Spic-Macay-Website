@@ -35,53 +35,7 @@
       padding: 72px 0 48px;
     }
 
-    /* ── Filter Tabs ─────────────────────────────────────────── */
-    .gallery-filters {
-      padding: 28px 0 0;
-      background: var(--surface-dim);
-      border-bottom: 1px solid rgba(245,240,232,0.06);
-    }
-    .filter-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      padding-bottom: 20px;
-    }
-    .filter-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 18px;
-      border-radius: var(--radius-full);
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      border: 1px solid rgba(245,240,232,0.15);
-      background: rgba(245,240,232,0.05);
-      color: var(--on-surface-variant);
-      transition: all var(--transition-base);
-    }
-    .filter-tab:hover {
-      background: rgba(245,240,232,0.1);
-      color: var(--on-surface);
-      border-color: rgba(245,240,232,0.3);
-    }
-    .filter-tab.active {
-      background: var(--primary-container);
-      color: var(--on-primary-container);
-      border-color: var(--primary-container);
-    }
-    [data-theme="light"] .filter-tab {
-      border-color: rgba(28,27,26,0.15);
-      background: rgba(28,27,26,0.04);
-      color: var(--on-surface-variant);
-    }
-    [data-theme="light"] .filter-tab:hover {
-      background: rgba(28,27,26,0.09);
-      color: var(--on-surface);
-    }
+
 
     /* ── Gallery Section Wrapper ─────────────────────────────── */
     .gallery-section {
@@ -587,18 +541,7 @@
       </div>
     </div>
 
-    <!-- ══ Filter Tabs ════════════════════════════════════════ -->
-    <div class="gallery-filters">
-      <div class="container">
-        <div class="filter-tabs" role="tablist" aria-label="Gallery categories">
-          <button class="filter-tab active" role="tab" aria-selected="true"  id="tab-all"       data-filter="all"      onclick="filterGallery('all', this)">All Moments</button>
-          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-concerts"  data-filter="concerts" onclick="filterGallery('concerts', this)">Evening Concerts</button>
-          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-workshops" data-filter="workshops" onclick="filterGallery('workshops', this)">Workshops</button>
-          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-yoga"      data-filter="yoga"     onclick="filterGallery('yoga', this)">Naad Yoga</button>
-          <button class="filter-tab"        role="tab" aria-selected="false" id="tab-dance"     data-filter="dance"    onclick="filterGallery('dance', this)">Classical Dance</button>
-        </div>
-      </div>
-    </div>
+
 
     <!-- ══ Gallery Grid ═══════════════════════════════════════ -->
     <section class="gallery-section" id="gallery-grid" aria-label="Photo gallery">
@@ -1049,30 +992,7 @@
       if (e.key === 'ArrowLeft')  lightboxNav(-1);
     });
 
-    /* ── Gallery Filter ───────────────────────────────────── */
-    function filterGallery(category, btn) {
-      /* Update active tab */
-      document.querySelectorAll('.filter-tab').forEach(t => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
 
-      /* Show / hide items */
-      const items = document.querySelectorAll('#bentoGrid .bento-item');
-      items.forEach((item, i) => {
-        const cat = galleryItems[i] ? galleryItems[i].category : 'all';
-        if (category === 'all' || cat === category) {
-          item.style.opacity = '0';
-          item.style.display = '';
-          setTimeout(() => { item.style.transition = 'opacity 0.35s ease'; item.style.opacity = '1'; }, 20);
-        } else {
-          item.style.opacity = '0';
-          setTimeout(() => { item.style.display = 'none'; }, 350);
-        }
-      });
-    }
   </script>
 
 </body>
