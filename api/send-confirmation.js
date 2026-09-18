@@ -143,6 +143,155 @@ async function generateTicketPdf({ firstName, lastName, registrationId, confirme
   return Buffer.from(pdfBytes);
 }
 
+// ── School multi-page ticket generator ───────────────────────────────────────
+// Generates one page per attendee: page 1 = faculty, pages 2…N = students.
+// All pages share the same registrationId / QR code.
+async function generateSchoolTicketPdf({
+  facultyFirstName, facultyLastName,
+  registrationId, confirmedIntensiveName, eveningConcerts,
+  students = [],  // [{ name }]
+}) {
+  const pdfDoc = await PDFDocument.create();
+
+  // Pre-load assets shared across all pages
+  const templatePath  = path.join(process.cwd(), 'ticket-template.png');
+  const templateBytes = fs.readFileSync(templatePath);
+  const templateImage = await pdfDoc.embedPng(templateBytes);
+
+  const helvetica      = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaBold  = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const timesRomanBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+
+  // Fetch QR code once (same regId for all pages)
+  let qrImageRef = null;
+  try {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(registrationId)}`;
+    const qrRes = await fetch(qrUrl);
+    if (qrRes.ok) {
+      const qrBytes = Buffer.from(await qrRes.arrayBuffer());
+      qrImageRef = await pdfDoc.embedPng(qrBytes);
+    }
+  } catch (qrErr) {
+    console.error('Failed to fetch QR code for school PDF:', qrErr);
+  }
+
+  // Build list of all attendees: faculty first, then students
+  const attendees = [
+    {
+      name:       `${facultyFirstName} ${facultyLastName}`,
+      roleLabel:  'FACULTY / STAFF',
+      roleValue:  'Faculty / Staff',
+    },
+    ...students.map((s, idx) => ({
+      name:       s.name,
+      roleLabel:  `STUDENT ${idx + 1}`,
+      roleValue:  s.name,
+    })),
+  ];
+
+  // Pre-parse concert list (shared for all pages)
+  const concertsList = (eveningConcerts && eveningConcerts !== 'None')
+    ? eveningConcerts.split(', ')
+    : [];
+
+  const x     = 325;
+  const rollX = 485;
+
+  for (const attendee of attendees) {
+    const page = pdfDoc.addPage([900, 300]);
+
+    // Background template
+    page.drawImage(templateImage, { x: 0, y: 0, width: 900, height: 300 });
+
+    // QR code
+    if (qrImageRef) {
+      page.drawImage(qrImageRef, { x: 659, y: 26, width: 108, height: 108 });
+    }
+
+    // 1. ATTENDEE PASS label
+    page.drawText('ATTENDEE PASS', {
+      x, y: 165, size: 7,
+      font: helveticaBold,
+      color: rgb(169/255, 146/255, 133/255),
+    });
+
+    // 2. Attendee name — truncate to avoid overflow (max ~26 chars at size 16)
+    const displayName = attendee.name.length > 28
+      ? attendee.name.substring(0, 26) + '…'
+      : attendee.name;
+    page.drawText(displayName, {
+      x, y: 145, size: 16,
+      font: timesRomanBold,
+      color: rgb(255/255, 215/255, 0/255),
+    });
+
+    // 3. TICKET ID
+    page.drawText('TICKET ID', {
+      x, y: 110, size: 6,
+      font: helveticaBold,
+      color: rgb(169/255, 146/255, 133/255),
+    });
+    page.drawText(registrationId, {
+      x, y: 96, size: 9,
+      font: helveticaBold,
+      color: rgb(232/255, 119/255, 34/255),
+    });
+
+    // 4. Role label & value (e.g. FACULTY / STAFF or STUDENT 1)
+    page.drawText(attendee.roleLabel, {
+      x: rollX, y: 110, size: 6,
+      font: helveticaBold,
+      color: rgb(169/255, 146/255, 133/255),
+    });
+    // For students show their name again as the value; for faculty show role text
+    const roleValueDisplay = attendee.roleLabel.startsWith('STUDENT')
+      ? 'School Student'
+      : 'Faculty / Staff';
+    page.drawText(roleValueDisplay, {
+      x: rollX, y: 96, size: 9,
+      font: helvetica,
+      color: rgb(232/255, 229/255, 228/255),
+    });
+
+    // 5. EVENING ACCESS
+    page.drawText('EVENING ACCESS', {
+      x, y: 80, size: 6,
+      font: helveticaBold,
+      color: rgb(169/255, 146/255, 133/255),
+    });
+    if (concertsList.length > 0) {
+      concertsList.slice(0, 2).forEach((c, idx) => {
+        page.drawText(`• ${c}`, {
+          x: x + 4, y: 68 - (idx * 11), size: 7.5,
+          font: helvetica,
+          color: rgb(201/255, 168/255, 152/255),
+        });
+      });
+    } else {
+      page.drawText('Evening Concerts: None', {
+        x, y: 68, size: 7.5,
+        font: helvetica,
+        color: rgb(201/255, 168/255, 152/255),
+      });
+    }
+
+    // 6. INTENSIVES
+    page.drawText('INTENSIVES', {
+      x, y: 42, size: 6,
+      font: helveticaBold,
+      color: rgb(169/255, 146/255, 133/255),
+    });
+    page.drawText(confirmedIntensiveName || 'General Entry', {
+      x, y: 28, size: 8.5,
+      font: helvetica,
+      color: rgb(201/255, 168/255, 152/255),
+    });
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  return Buffer.from(pdfBytes);
+}
+
 // ── CORS helper ──────────────────────────────────────────────────────────────
 function setCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -350,6 +499,9 @@ module.exports = async function handler(req, res) {
     yearOfStudy,
     type,
     userType,
+    // School-specific fields
+    schoolName,
+    students,               // [{ name, parent, emergency }]
   } = req.body;
 
   // Basic validation
@@ -375,24 +527,42 @@ module.exports = async function handler(req, res) {
   });
 
   const isUpdate = type === 'update';
+  const isSchool = userType === 'school';
+
   const subject = isUpdate
     ? `Your Intensive Has Been Updated — ${registrationId}`
-    : `Your Virasat 2026 Pass — ${registrationId}`;
+    : isSchool
+      ? `School Group Passes — ${schoolName || 'Your School'} | ${registrationId}`
+      : `Your Virasat 2026 Pass — ${registrationId}`;
 
   const plainText = isUpdate
     ? `Hi ${firstName},\n\nYour confirmed intensive for SPIC MACAY Virasat 2026 has been updated by the organizing team.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`
-    : `Hi ${firstName},\n\nYou are registered for SPIC MACAY Virasat 2026 at VNIT Nagpur.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`;
+    : isSchool
+      ? `Dear ${firstName} ${lastName},\n\nYour school group from ${schoolName || 'your school'} has been successfully registered for SPIC MACAY Virasat 2026 at VNIT Nagpur.\n\nGroup Ticket ID: ${registrationId}\nStudents Registered: ${(students || []).length}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPlease find the multi-page ticket PDF attached. Page 1 is your faculty pass; subsequent pages are the individual student passes.\n\nPresent the respective ticket pages at check-in.\n\nContact: spicmacay@vnit.ac.in`
+      : `Hi ${firstName},\n\nYou are registered for SPIC MACAY Virasat 2026 at VNIT Nagpur.\n\nTicket ID: ${registrationId}\nConfirmed Intensive: ${confirmedIntensiveName || 'General Entry'}\n\nPresent this ticket ID at check-in.\n\nContact: spicmacay@vnit.ac.in`;
 
   let pdfBuffer;
   try {
-    pdfBuffer = await generateTicketPdf({
-      firstName,
-      lastName,
-      registrationId,
-      confirmedIntensiveName,
-      rollNumber,
-      userType,
-    });
+    if (isSchool) {
+      // Generate multi-page PDF: 1 faculty page + 1 page per student
+      pdfBuffer = await generateSchoolTicketPdf({
+        facultyFirstName: firstName,
+        facultyLastName: lastName,
+        registrationId,
+        confirmedIntensiveName,
+        eveningConcerts,
+        students: (students || []).slice(0, 5),  // safety cap at 5
+      });
+    } else {
+      pdfBuffer = await generateTicketPdf({
+        firstName,
+        lastName,
+        registrationId,
+        confirmedIntensiveName,
+        rollNumber,
+        userType,
+      });
+    }
   } catch (pdfErr) {
     console.error('PDF generation failed:', pdfErr);
   }

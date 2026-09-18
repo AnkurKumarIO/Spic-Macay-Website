@@ -920,6 +920,15 @@
               </div>
 
               <div class="input-group">
+                <label class="input-label" for="schoolFacultyEmail">Faculty Email *</label>
+                <input class="input-field" type="email" id="schoolFacultyEmail" placeholder="faculty@school.edu"
+                  autocomplete="email"
+                  oninput="clearSchoolEmailError()"
+                  aria-describedby="schoolEmailError"/>
+                <span id="schoolEmailError" style="display:none;font-size:0.78rem;color:#e05252;margin-top:5px;display:block;" aria-live="polite"></span>
+              </div>
+
+              <div class="input-group">
                 <label class="input-label" for="schoolFacultyContact">Faculty Contact Number *</label>
                 <input class="input-field" type="tel" id="schoolFacultyContact" placeholder="Enter 10-digit mobile number" maxlength="10" inputmode="numeric"/>
                 <span id="schoolContactError" style="display:none;font-size:0.78rem;color:#e05252;margin-top:5px;display:block;" aria-live="polite"></span>
@@ -934,13 +943,8 @@
                   <option value="3">3</option>
                   <option value="4">4</option>
                   <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
                 </select>
-                <span style="font-size:0.75rem;color:var(--on-surface-variant);margin-top:5px;display:block;">Maximum 10 students per school.</span>
+                <span style="font-size:0.75rem;color:var(--on-surface-variant);margin-top:5px;display:block;">Maximum 5 students per school group.</span>
               </div>
 
               <!-- Per-student forms rendered dynamically -->
@@ -1655,6 +1659,7 @@
         const schoolName   = document.getElementById('schoolName').value.trim();
         const facFirst     = document.getElementById('schoolFacultyFirst').value.trim();
         const facLast      = document.getElementById('schoolFacultyLast').value.trim();
+        const facEmail     = document.getElementById('schoolFacultyEmail').value.trim();
         const facContact   = document.getElementById('schoolFacultyContact').value.trim();
         const studentCount = parseInt(document.getElementById('schoolStudentCount').value) || 0;
         const message      = document.getElementById('message').value.trim();
@@ -1683,8 +1688,8 @@
             firstName: facFirst,
             lastName: facLast,
             facultyName: `${facFirst} ${facLast}`,
+            email: facEmail,
             phone: facContact,
-            email: '',
             studentCount,
             students,
             intensivePreferences: selectedIntensiveIds,
@@ -1704,6 +1709,21 @@
           document.getElementById('ticketQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
           document.getElementById('successOverlay').classList.add('active');
           showToast('School group registered successfully!', 'success');
+
+          // Send the multi-page PDF confirmation email to faculty
+          sendConfirmationEmail({
+            to: facEmail,
+            type: 'registration',
+            userType: 'school',
+            firstName: facFirst,
+            lastName: facLast,
+            registrationId: regId,
+            schoolName,
+            confirmedIntensiveName: seat.confirmedIntensiveName,
+            intensivePreferences: selectedIntensiveIds.map(id => { const iv = allIntensives.find(x => x.id === id); return iv ? iv.name : id; }),
+            eveningConcerts: selectedConcerts.length > 0 ? selectedConcerts.map(id => { const c = allConcerts.find(x => x.id === id); return c ? `${c.day} - ${c.name}` : id; }).join(', ') : 'None',
+            students,  // array of { name, parent, emergency }
+          });
         } catch (error) {
           console.error('Error saving school registration:', error);
           showToast('Registration failed. Please try again.', 'error');
@@ -2054,6 +2074,14 @@
       }
     }
 
+    // ── School email error helper ────────────────────
+    function clearSchoolEmailError() {
+      const el  = document.getElementById('schoolEmailError');
+      const inp = document.getElementById('schoolFacultyEmail');
+      if (el) { el.style.display = 'none'; el.textContent = ''; }
+      if (inp) inp.style.borderColor = '';
+    }
+
     // ── Stage-1 → Stage-2 with async duplicate check ─
     async function handleNext() {
       const btn  = document.getElementById('nextBtn1');
@@ -2064,11 +2092,19 @@
         const schoolName    = document.getElementById('schoolName').value.trim();
         const facFirst      = document.getElementById('schoolFacultyFirst').value.trim();
         const facLast       = document.getElementById('schoolFacultyLast').value.trim();
+        const facEmail      = document.getElementById('schoolFacultyEmail').value.trim();
         const facContact    = document.getElementById('schoolFacultyContact').value.trim();
         const studentCount  = parseInt(document.getElementById('schoolStudentCount').value) || 0;
 
         if (!schoolName)              { showToast('Please enter the school name.', 'error'); document.getElementById('schoolName').focus(); return; }
         if (!facFirst || !facLast)    { showToast('Please enter the faculty name.', 'error'); document.getElementById('schoolFacultyFirst').focus(); return; }
+        if (!facEmail || !EMAIL_REGEX.test(facEmail)) {
+          const el = document.getElementById('schoolEmailError');
+          el.textContent = 'Please enter a valid faculty email address.';
+          el.style.display = 'block';
+          document.getElementById('schoolFacultyEmail').focus();
+          return;
+        }
         if (!facContact)              { showToast('Please enter the faculty contact number.', 'error'); document.getElementById('schoolFacultyContact').focus(); return; }
         if (!/^\d{10}$/.test(facContact)) {
           const el = document.getElementById('schoolContactError');
