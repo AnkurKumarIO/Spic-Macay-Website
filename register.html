@@ -493,11 +493,13 @@
         padding: 0 !important;
         max-width: 100% !important;
         width: 100% !important;
-        height: 100% !important;
+        height: auto !important;
         display: flex !important;
-        justify-content: center !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
         align-items: center !important;
       }
+      /* Single-ticket (individual registrations) */
       #ticketPass {
         position: relative !important;
         width: 180mm !important;
@@ -509,6 +511,25 @@
         left: auto !important;
         top: auto !important;
         transform: none !important;
+      }
+      /* School multi-ticket — each card gets its own printed page */
+      .school-ticket-page {
+        position: relative !important;
+        width: 180mm !important;
+        height: 60mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 12px !important;
+        margin: 0 !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+      .school-ticket-page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
       }
       .ticket-bg-img {
         display: block !important;
@@ -1636,6 +1657,71 @@
       }
     }
 
+    // ── School multi-ticket UI renderer ─────────────────────────────────────
+    // Replaces the single ticket-container content with one card per attendee.
+    // Faculty is always page/card 1; each student follows in order.
+    function renderSchoolTicketsUI(facFirst, facLast, regId, students, confirmedIntensive, selectedConcerts) {
+      const container = document.querySelector('.ticket-container');
+      if (!container) return;
+
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
+
+      // Build attendee list
+      const attendees = [
+        { name: `${facFirst} ${facLast}`, roleLabel: 'FACULTY / STAFF', roleValue: 'Faculty / Staff' },
+        ...students.map((s, i) => ({ name: s.name, roleLabel: `STUDENT ${i + 1}`, roleValue: 'School Student' })),
+      ];
+
+      // Shared concert HTML
+      const concertNames = selectedConcerts.map(id => {
+        const c = allConcerts.find(x => x.id === id);
+        return c ? `${c.day} - ${c.name}` : id;
+      });
+      const concertHtml = concertNames.length > 0
+        ? `<ul style="margin:0;padding-left:8px;list-style-type:disc;font-size:0.52rem;line-height:1.1;color:#c9a898;max-height:24px;overflow:hidden;">${concertNames.map(n => `<li style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n}</li>`).join('')}</ul>`
+        : `<span style="font-size:0.55rem;opacity:0.6;color:#c9a898;">Evening Concerts: None</span>`;
+
+      const intensiveText = confirmedIntensive || 'General Entry';
+
+      // Render one card per attendee
+      container.innerHTML = attendees.map((att, idx) => `
+        <div class="ticket-pass school-ticket-page" style="margin-bottom:${idx < attendees.length - 1 ? '24px' : '0'};">
+          <img src="ticket-template.png" class="ticket-bg-img" alt="Ticket Background"/>
+          <div class="ticket-details-overlay">
+            <div class="ticket-field-row name-row">
+              <span class="ticket-lbl-custom">ATTENDEE PASS</span>
+              <span class="ticket-val-custom name">${att.name}</span>
+            </div>
+            <div class="ticket-details-grid">
+              <div class="ticket-field-custom">
+                <span class="ticket-lbl-custom">TICKET ID</span>
+                <span class="ticket-val-custom id">${regId}</span>
+              </div>
+              <div class="ticket-field-custom">
+                <span class="ticket-lbl-custom">${att.roleLabel}</span>
+                <span class="ticket-val-custom">${att.roleValue}</span>
+              </div>
+            </div>
+            <div class="ticket-field-custom evening-access-custom" style="margin-top:2px;">
+              <span class="ticket-lbl-custom">EVENING ACCESS</span>
+              <div class="ticket-val-custom evening-concerts" style="font-size:0.55rem;line-height:1.2;max-height:26px;overflow:hidden;">
+                ${concertHtml}
+              </div>
+            </div>
+            <div class="ticket-field-custom preferences-custom" style="margin-top:2px;">
+              <span class="ticket-lbl-custom">INTENSIVES</span>
+              <span class="ticket-val-custom preferences">${intensiveText}</span>
+            </div>
+          </div>
+          <div class="ticket-qr-overlay">
+            <div class="ticket-qr-frame">
+              <img src="${qrUrl}" alt="Ticket QR Code"/>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
     // ── Shared concert ticket helper ─────────────────────────────────────────
     function renderConcertTicket(selectedConcerts) {
       const ticketConcerts = document.getElementById('ticketConcerts');
@@ -1700,13 +1786,8 @@
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
 
-          document.getElementById('ticketName').textContent  = schoolName;
-          document.getElementById('ticketId').textContent    = regId;
-          document.getElementById('ticketRoll').textContent  = `${studentCount} Student${studentCount !== 1 ? 's' : ''}`;
-          document.getElementById('ticketEvents').textContent = seat.confirmedIntensiveName || 'No Intensive Selected';
+          renderSchoolTicketsUI(facFirst, facLast, regId, students, seat.confirmedIntensiveName, selectedConcerts);
           document.getElementById('confirmedIntensiveNameBanner').textContent = seat.confirmedIntensiveName || 'None';
-          renderConcertTicket(selectedConcerts);
-          document.getElementById('ticketQr').src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(regId)}`;
           document.getElementById('successOverlay').classList.add('active');
           showToast('School group registered successfully!', 'success');
 
