@@ -1215,8 +1215,14 @@
     // Load intensives from Firestore when page loads
     async function loadIntensives() {
       try {
-        const snap = await db.collection('intensives').orderBy('day').get();
-        allIntensives = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const snap = await db.collection('intensives').get();
+        allIntensives = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(iv => {
+            const seats = iv.seatsLeft !== undefined ? iv.seatsLeft : iv.totalSeats;
+            return seats > 0; // hide full intensives
+          })
+          .sort((a, b) => (a.displayOrder ?? 999) - (b.displayOrder ?? 999));
         renderIntensivesList();
       } catch (err) {
         console.error('Failed to load intensives:', err);
@@ -1312,6 +1318,7 @@
 
       if (!allIntensives.length) {
         empty.style.display = 'block';
+        empty.innerHTML = '<p style="opacity:0.6;">All intensives are currently full. Please check back later or contact the organizers.</p>';
         list.style.display = 'none';
         return;
       }

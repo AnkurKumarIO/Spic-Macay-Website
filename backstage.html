@@ -666,17 +666,25 @@
       <!-- Intensives Section -->
       <div class="panel-section" id="section-intensives">
         <div class="dashboard-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <div>
               <h2 class="headline-sm">Manage Intensives</h2>
               <p class="body-sm text-muted" style="margin-top:4px;">Attendees pick up to 3 preferences; 1 is confirmed based on seat availability.</p>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="openIntensiveModal()">+ Add Intensive</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <button class="btn btn-secondary btn-sm" id="saveIntensiveOrderBtn" onclick="saveIntensiveOrder()" style="display:none;">💾 Save Order</button>
+              <button class="btn btn-primary btn-sm" onclick="openIntensiveModal()">+ Add Intensive</button>
+            </div>
           </div>
+          <p class="body-sm text-muted" style="margin-bottom:14px;font-size:0.78rem;opacity:0.7;">
+            ☰ Drag rows to reorder — the order here is shown to registrants. Full intensives are hidden from registration automatically.
+          </p>
           <div class="table-responsive">
             <table class="admin-table">
               <thead>
                 <tr>
+                  <th style="width:32px;"></th>
+                  <th>#</th>
                   <th>Name</th>
                   <th>Day</th>
                   <th>Time</th>
@@ -2909,14 +2917,21 @@
     // ── INTENSIVES CRUD ─────────────────────────────────
     function renderIntensivesTable() {
       const cat = { vocal:'Vocal', instrumental:'Instrumental', dance:'Dance', yoga:'Yoga', craft:'Craft & Folk', heritage:'Heritage Walk', workshop:'Workshop', other:'Other' };
+
+      // Sort by displayOrder before rendering
+      const sorted = [...allIntensives].sort((a, b) => (a.displayOrder ?? 999) - (b.displayOrder ?? 999));
+
       let html = '';
-      allIntensives.forEach(d => {
+      sorted.forEach((d, idx) => {
         const seatsLeft = d.seatsLeft !== undefined ? d.seatsLeft : d.totalSeats;
         const pct = d.totalSeats ? Math.round(((d.totalSeats - seatsLeft) / d.totalSeats) * 100) : 0;
         const seatClass = seatsLeft === 0 ? 'badge-warning' : 'badge-success';
+        const isFull = seatsLeft === 0;
         html += `
-          <tr>
-            <td style="font-weight:600;">${d.name}</td>
+          <tr data-id="${d.id}" style="${isFull ? 'opacity:0.55;' : ''}">
+            <td style="cursor:grab;color:var(--outline);font-size:1.1rem;padding:10px 8px;user-select:none;" title="Drag to reorder">☰</td>
+            <td style="font-family:monospace;font-size:0.8rem;color:var(--primary-container);font-weight:700;">${idx + 1}</td>
+            <td style="font-weight:600;">${d.name}${isFull ? ' <span style="font-size:0.65rem;padding:2px 6px;border-radius:10px;background:rgba(196,38,28,0.12);color:#f47272;border:1px solid rgba(196,38,28,0.2);font-weight:700;">FULL</span>' : ''}</td>
             <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.day || '—'}</span></td>
             <td style="font-size:0.8rem;">${d.time || '—'}</td>
             <td><span class="admin-badge badge-success">${cat[d.category] || d.category}</span></td>
@@ -2930,7 +2945,10 @@
             </td>
           </tr>`;
       });
-      document.getElementById('intensivesTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;opacity:0.5;">No intensives added yet.</td></tr>';
+      document.getElementById('intensivesTableBody').innerHTML = html || '<tr><td colspan="9" style="text-align:center;opacity:0.5;">No intensives added yet.</td></tr>';
+
+      // Wire up drag-and-drop for reordering
+      makeIntensivesDraggable();
     }
 
     function openIntensiveModal() {
@@ -2941,6 +2959,74 @@
     }
     function closeIntensiveModal() {
       document.getElementById('intensiveModal').classList.remove('active');
+    }
+
+    // ── Intensives drag-and-drop reorder ────────────────────────────────────
+    let _ivDragRow = null;
+
+    function makeIntensivesDraggable() {
+      const tbody = document.getElementById('intensivesTableBody');
+      if (!tbody) return;
+      const rows = tbody.querySelectorAll('tr[data-id]');
+      rows.forEach(row => {
+        row.setAttribute('draggable', 'true');
+        row.addEventListener('dragstart', function(e) {
+          _ivDragRow = this;
+          this.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        row.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          this.classList.add('drag-over');
+          e.dataTransfer.dropEffect = 'move';
+        });
+        row.addEventListener('dragleave', function() {
+          this.classList.remove('drag-over');
+        });
+        row.addEventListener('drop', function(e) {
+          e.stopPropagation();
+          this.classList.remove('drag-over');
+          if (_ivDragRow && _ivDragRow !== this) {
+            const children = Array.from(tbody.children);
+            const dragIdx  = children.indexOf(_ivDragRow);
+            const dropIdx  = children.indexOf(this);
+            if (dragIdx < dropIdx) tbody.insertBefore(_ivDragRow, this.nextSibling);
+            else                   tbody.insertBefore(_ivDragRow, this);
+            // Update the # column numbers
+            Array.from(tbody.querySelectorAll('tr[data-id]')).forEach((r, i) => {
+              const numCell = r.cells[1];
+              if (numCell) numCell.textContent = i + 1;
+            });
+            // Show Save Order button
+            document.getElementById('saveIntensiveOrderBtn').style.display = 'inline-flex';
+          }
+          return false;
+        });
+        row.addEventListener('dragend', function() {
+          this.classList.remove('dragging');
+          tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+        });
+      });
+    }
+
+    async function saveIntensiveOrder() {
+      const btn = document.getElementById('saveIntensiveOrderBtn');
+      btn.textContent = 'Saving…'; btn.disabled = true;
+      const rows = document.querySelectorAll('#intensivesTableBody tr[data-id]');
+      const batch = db.batch();
+      rows.forEach((row, idx) => {
+        const id = row.getAttribute('data-id');
+        batch.update(db.collection('intensives').doc(id), { displayOrder: idx });
+      });
+      try {
+        await batch.commit();
+        showToast('Intensive order saved.', 'success');
+        btn.style.display = 'none';
+      } catch (err) {
+        showToast('Failed to save order: ' + err.message, 'error');
+      } finally {
+        btn.textContent = '💾 Save Order'; btn.disabled = false;
+      }
     }
     async function editIntensive(id) {
       try {
@@ -2986,6 +3072,8 @@
           await db.collection('intensives').doc(id).update(data);
         } else {
           data.seatsLeft = totalSeats;
+          // Set displayOrder to end of current list
+          data.displayOrder = allIntensives.length;
           await db.collection('intensives').add(data);
         }
         closeIntensiveModal();
