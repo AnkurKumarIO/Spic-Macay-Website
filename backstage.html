@@ -634,7 +634,8 @@
             <h2 class="headline-sm">Registered Attendees</h2>
             <div style="display:flex; gap:12px; align-items:center;">
               <input type="text" id="regSearchInput" placeholder="Search name, email, roll..." class="input-field" style="width:260px; padding:8px 12px; margin-bottom:0;" oninput="filterRegistrations()" />
-              <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsCSV()">Download CSV</button>
+              <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsCSV(false)" title="Export currently filtered/searched rows">⬇ Export Filtered CSV</button>
+              <button class="btn btn-secondary btn-sm" onclick="downloadRegistrationsCSV(true)" title="Export all registrations regardless of search">⬇ Export All CSV</button>
               <button class="btn btn-secondary btn-sm" onclick="deleteAllRegistrations()" style="border-color:rgba(196,38,28,0.4);color:#f47272;">Delete All</button>
             </div>
           </div>
@@ -1943,6 +1944,7 @@
     let allRegistrations = [];
     let allIntensives = []; // cache for name lookups
     let allConcerts = []; // cache for evening concerts
+    let _filteredRegistrations = []; // tracks current search-filtered subset for CSV export
     let allTeamSections = []; // cache for section lookups
     let allFlagshipEvents = []; // cache for flagship events
     let allScheduleEvents = []; // cache for all schedule events
@@ -1971,6 +1973,9 @@
                regId.includes(query) ||
                school.includes(query);
       });
+
+      // Keep module-level ref in sync for CSV export
+      _filteredRegistrations = filtered;
 
       // Build intensive name lookup
       const intMap = {};
@@ -2044,73 +2049,149 @@
       document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="10" style="text-align:center;">No matching registrations found.</td></tr>';
     }
 
-    function downloadRegistrationsCSV() {
-      if (!allRegistrations.length) {
+    // ── Download Registrations CSV ──────────────────────────────────────────
+    // Exports the currently filtered view by default; pass true to export all.
+    function downloadRegistrationsCSV(exportAll = false) {
+      const source = exportAll ? allRegistrations : _filteredRegistrations;
+      if (!source || !source.length) {
         showToast('No registrations to download.', 'error');
         return;
       }
 
+      // Name lookup maps
       const intMap = {};
       allIntensives.forEach(i => { intMap[i.id] = i.name; });
+      const conMap = {};
+      allConcerts.forEach(c => { conMap[c.id] = `${c.day} – ${c.name}`; });
 
-      // Two sets of rows: individual + school (expanded per student)
-      const headers = ['Registration ID', 'Type', 'School Name', 'Faculty Name', 'First Name', 'Last Name', 'Email', 'Phone', 'Roll Number', 'Branch', 'Year of Study', 'Student #', 'Student Name', 'Parent Name', 'Emergency Contact', 'Confirmed Intensive', 'Preference 1', 'Preference 2', 'Preference 3', 'Evening Concerts', 'Checked In'];
+      const resolveName = (id, map) => map[id] || id || '';
+      const resolveList = (ids, map) => (ids || []).map(id => resolveName(id, map)).filter(Boolean).join(' | ');
+      const fmt = v => v !== undefined && v !== null && v !== '' ? String(v) : '—';
+      const fmtDate = ts => {
+        if (!ts) return '—';
+        try { return ts.toDate().toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' }); }
+        catch { return '—'; }
+      };
+
+      const headers = [
+        'Registration ID',
+        'Registered On',
+        'Type',
+        'School Name',
+        'Faculty Name',
+        'First Name',
+        'Last Name',
+        'Email',
+        'Phone',
+        'Roll Number',
+        'Branch / Dept',
+        'Year of Study',
+        'Passing Year',
+        'Student #',
+        'Student Name',
+        'Parent Name',
+        'Emergency Contact',
+        'Student Intensive',
+        'Confirmed Intensive',
+        'Preference 1',
+        'Preference 2',
+        'Preference 3',
+        'Evening Concerts',
+        'Message / Notes',
+        'Checked In',
+        'Present Students',
+      ];
 
       const rows = [];
-      allRegistrations.forEach(r => {
-        const prefs = r.intensivePreferences || [];
-        const confirmed = r.confirmedIntensiveId ? (intMap[r.confirmedIntensiveId] || r.confirmedIntensiveId) : (r.confirmedIntensiveName || '');
-        const isSchool = r.userType === 'school';
-        const role = isSchool ? 'School' : (r.userType || r.role || (r.passingYear && !r.rollNumber ? 'Alumni' : 'Student'));
-        const concerts = (r.eveningConcerts || []).join(' | ');
+
+      source.forEach(r => {
+        const prefs    = r.intensivePreferences || [];
+        const p1       = resolveName(prefs[0], intMap);
+        const p2       = resolveName(prefs[1], intMap);
+        const p3       = resolveName(prefs[2], intMap);
+        const confirmed = r.confirmedIntensiveId && r.confirmedIntensiveId !== 'MULTI'
+          ? resolveName(r.confirmedIntensiveId, intMap)
+          : (r.confirmedIntensiveName || '—');
+        const concerts  = resolveList(r.eveningConcerts, conMap);
         const checkedIn = r.checkedIn ? 'Yes' : 'No';
-        const p1 = prefs[0] ? (intMap[prefs[0]] || prefs[0]) : '';
-        const p2 = prefs[1] ? (intMap[prefs[1]] || prefs[1]) : '';
-        const p3 = prefs[2] ? (intMap[prefs[2]] || prefs[2]) : '';
+        const regDate   = fmtDate(r.createdAt);
+        const message   = fmt(r.message);
+        const isSchool  = r.userType === 'school';
+        const role      = isSchool ? 'School' :
+          r.userType === 'alumni'  ? 'Alumni' :
+          r.userType === 'faculty' ? 'Faculty / Staff' : 'Student';
 
         if (isSchool) {
-          const students = r.students || [];
-          // If no students array, emit one row for the school itself
+          const students      = r.students || [];
+          const presentList   = (r.presentStudents || []).join(' | ') || '—';
+          const facultyName   = r.facultyName || `${r.firstName} ${r.lastName}`;
+
           if (students.length === 0) {
-            rows.push([r.registrationId || '', 'School', r.schoolName || '', r.facultyName || `${r.firstName} ${r.lastName}`, r.firstName || '', r.lastName || '', '', r.phone || '', '', '', '', '', '', '', '', confirmed, p1, p2, p3, concerts, checkedIn]);
+            // School with no student sub-records
+            rows.push([
+              fmt(r.registrationId), regDate, 'School',
+              fmt(r.schoolName), facultyName,
+              fmt(r.firstName), fmt(r.lastName),
+              '—', fmt(r.phone),
+              '—', '—', '—', '—',
+              '—', '—', '—', '—',
+              '—',
+              confirmed, p1, p2, p3,
+              concerts, message, checkedIn, presentList,
+            ]);
           } else {
             students.forEach((s, idx) => {
+              // Per-student intensive — use student-level field if present (bulk registrations store it)
+              const studentIntensive = s.intensive
+                ? fmt(s.intensive)
+                : (s.intensiveId ? resolveName(s.intensiveId, intMap) : confirmed);
+              const isPresent = (r.presentStudents || []).includes(s.name) ? 'Yes' : (r.checkedIn ? 'No' : '—');
               rows.push([
-                r.registrationId || '', 'School',
-                r.schoolName || '',
-                r.facultyName || `${r.firstName} ${r.lastName}`,
-                r.firstName || '', r.lastName || '',
-                '', r.phone || '',
-                '', '', '',
-                idx + 1, s.name || '', s.parent || '', s.emergency || '',
-                confirmed, p1, p2, p3, concerts, checkedIn
+                fmt(r.registrationId), regDate, 'School',
+                fmt(r.schoolName), facultyName,
+                fmt(r.firstName), fmt(r.lastName),
+                fmt(r.email) || '—', fmt(r.phone),
+                '—', '—', '—', '—',
+                idx + 1, fmt(s.name), fmt(s.parent), fmt(s.emergency),
+                studentIntensive,
+                confirmed, p1, p2, p3,
+                concerts, message, isPresent, presentList,
               ]);
             });
           }
         } else {
           rows.push([
-            r.registrationId || '', role,
-            '', '',
-            r.firstName || '', r.lastName || '',
-            r.email || '', r.phone || '',
-            r.rollNumber || '', r.branch || '', r.yearOfStudy || '',
-            '', '', '', '',
-            confirmed, p1, p2, p3, concerts, checkedIn
+            fmt(r.registrationId), regDate, role,
+            '—', '—',
+            fmt(r.firstName), fmt(r.lastName),
+            fmt(r.email), fmt(r.phone),
+            fmt(r.rollNumber), fmt(r.branch), fmt(r.yearOfStudy), fmt(r.passingYear),
+            '—', '—', '—', '—',
+            '—',
+            confirmed, p1, p2, p3,
+            concerts, message, checkedIn, '—',
           ]);
         }
       });
 
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + [headers.join(','), ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))].join('\n');
-      
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `spic_macay_registrations_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast('CSV downloaded successfully.', 'success');
+      // Use Blob (avoids encodeURI issues with #, &, etc.)
+      const csvLines = [
+        headers.map(h => `"${h}"`).join(','),
+        ...rows.map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+      ].join('\r\n');
+
+      const blob = new Blob(['\uFEFF' + csvLines], { type: 'text/csv;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      const suffix = exportAll ? 'all' : 'filtered';
+      a.download = `spicmacay_registrations_${suffix}_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast(`CSV downloaded — ${rows.length} row${rows.length !== 1 ? 's' : ''}.`, 'success');
     }
 
     // LOAD ALL DATA LISTS
