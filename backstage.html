@@ -2379,11 +2379,30 @@
     async function deleteRegistration(id, name) {
       if (!confirm(`Are you sure you want to permanently delete the registration for "${name}"? This action cannot be undone.`)) return;
       try {
-        // Restore the seat on the confirmed intensive before deleting
+        // Restore the seat on the confirmed intensive before deleting.
+        // Skip if confirmedIntensiveId is 'MULTI' (bulk/multi-intensive groups
+        // track seats per-student via intensivePreferences instead).
         const reg = allRegistrations.find(r => r.id === id);
-        if (reg && reg.confirmedIntensiveId) {
+        if (reg && reg.confirmedIntensiveId && reg.confirmedIntensiveId !== 'MULTI') {
           const intRef = db.collection('intensives').doc(reg.confirmedIntensiveId);
           await intRef.update({ seatsLeft: firebase.firestore.FieldValue.increment(1) });
+        } else if (reg && reg.confirmedIntensiveId === 'MULTI' && Array.isArray(reg.intensivePreferences)) {
+          // Restore one seat per unique intensive used in the group
+          const studentsByIv = {};
+          (reg.students || []).forEach(s => {
+            if (s.intensiveId) studentsByIv[s.intensiveId] = (studentsByIv[s.intensiveId] || 0) + 1;
+          });
+          // Fall back to intensivePreferences with count 1 each if no per-student ids
+          const restoreMap = Object.keys(studentsByIv).length > 0
+            ? studentsByIv
+            : Object.fromEntries(reg.intensivePreferences.map(ivId => [ivId, 1]));
+          await Promise.all(
+            Object.entries(restoreMap).map(([ivId, count]) =>
+              db.collection('intensives').doc(ivId).update({
+                seatsLeft: firebase.firestore.FieldValue.increment(count)
+              }).catch(() => {}) // ignore if intensive no longer exists
+            )
+          );
         }
         await db.collection('registrations').doc(id).delete();
         showToast(`Registration for ${name} deleted.`, 'success');
@@ -2399,17 +2418,33 @@
       if (!confirm(`Final confirmation: Delete all ${total} registrations? Type OK to proceed.`)) return;
       try {
         showToast('Deleting all registrations...', 'success');
-        // Restore seats for all confirmed intensives before deleting
+        // Restore seats for all confirmed intensives before deleting.
+        // For MULTI entries (bulk school groups), restore per-student intensive counts.
         const seatMap = {};
         allRegistrations.forEach(r => {
-          if (r.confirmedIntensiveId) {
+          if (r.confirmedIntensiveId && r.confirmedIntensiveId !== 'MULTI') {
             seatMap[r.confirmedIntensiveId] = (seatMap[r.confirmedIntensiveId] || 0) + 1;
+          } else if (r.confirmedIntensiveId === 'MULTI') {
+            // Use per-student intensiveId if available
+            const studentsByIv = {};
+            (r.students || []).forEach(s => {
+              if (s.intensiveId) studentsByIv[s.intensiveId] = (studentsByIv[s.intensiveId] || 0) + 1;
+            });
+            if (Object.keys(studentsByIv).length > 0) {
+              Object.entries(studentsByIv).forEach(([ivId, count]) => {
+                seatMap[ivId] = (seatMap[ivId] || 0) + count;
+              });
+            } else if (Array.isArray(r.intensivePreferences)) {
+              r.intensivePreferences.forEach(ivId => {
+                seatMap[ivId] = (seatMap[ivId] || 0) + 1;
+              });
+            }
           }
         });
         const seatRestorePromises = Object.entries(seatMap).map(([intId, count]) =>
           db.collection('intensives').doc(intId).update({
             seatsLeft: firebase.firestore.FieldValue.increment(count)
-          })
+          }).catch(() => {}) // ignore if intensive doc no longer exists
         );
         await Promise.all(seatRestorePromises);
 
@@ -2927,11 +2962,21 @@
         const pct = d.totalSeats ? Math.round(((d.totalSeats - seatsLeft) / d.totalSeats) * 100) : 0;
         const seatClass = seatsLeft === 0 ? 'badge-warning' : 'badge-success';
         const isFull = seatsLeft === 0;
+        const isClosed = !!d.registrationClosed;
+        const rowDim = isFull || isClosed ? 'opacity:0.55;' : '';
+        const closedBadge = isClosed
+          ? ' <span style="font-size:0.65rem;padding:2px 6px;border-radius:10px;background:rgba(196,38,28,0.15);color:#f47272;border:1px solid rgba(196,38,28,0.3);font-weight:700;">CLOSED</span>'
+          : '';
+        const fullBadge = isFull && !isClosed
+          ? ' <span style="font-size:0.65rem;padding:2px 6px;border-radius:10px;background:rgba(196,38,28,0.12);color:#f47272;border:1px solid rgba(196,38,28,0.2);font-weight:700;">FULL</span>'
+          : '';
+        const toggleLabel = isClosed ? '🟢 Open' : '🔴 Close';
+        const toggleTitle = isClosed ? 'Re-open registration for this intensive' : 'Close registration for this intensive';
         html += `
-          <tr data-id="${d.id}" style="${isFull ? 'opacity:0.55;' : ''}">
+          <tr data-id="${d.id}" style="${rowDim}">
             <td style="cursor:grab;color:var(--outline);font-size:1.1rem;padding:10px 8px;user-select:none;" title="Drag to reorder">☰</td>
             <td style="font-family:monospace;font-size:0.8rem;color:var(--primary-container);font-weight:700;">${idx + 1}</td>
-            <td style="font-weight:600;">${d.name}${isFull ? ' <span style="font-size:0.65rem;padding:2px 6px;border-radius:10px;background:rgba(196,38,28,0.12);color:#f47272;border:1px solid rgba(196,38,28,0.2);font-weight:700;">FULL</span>' : ''}</td>
+            <td style="font-weight:600;">${d.name}${closedBadge}${fullBadge}</td>
             <td><span class="admin-badge" style="background:rgba(245,240,232,0.06);border:1px solid rgba(245,240,232,0.1);">${d.day || '—'}</span></td>
             <td style="font-size:0.8rem;">${d.time || '—'}</td>
             <td><span class="admin-badge badge-success">${cat[d.category] || d.category}</span></td>
@@ -2939,6 +2984,7 @@
             <td style="text-align:center;"><span class="admin-badge ${seatClass}">${seatsLeft} left (${pct}% full)</span></td>
             <td>
               <div class="action-btn-group">
+                <button class="btn btn-secondary btn-sm" onclick="toggleIntensiveClosed('${d.id}', ${isClosed})" title="${toggleTitle}">${toggleLabel}</button>
                 <button class="btn btn-secondary btn-sm" onclick="editIntensive('${d.id}')">Edit</button>
                 <button class="btn btn-secondary btn-sm" onclick="deleteDoc('intensives', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
               </div>
@@ -3080,6 +3126,21 @@
         showToast('Intensive saved.', 'success');
       } catch (err) {
         showToast(err.message, 'error');
+      }
+    }
+
+    // ── Toggle intensive registration open / closed ──────────────────────────
+    async function toggleIntensiveClosed(id, currentlyClosed) {
+      const newState = !currentlyClosed;
+      const label = newState ? 'close' : 're-open';
+      const iv = allIntensives.find(x => x.id === id);
+      const name = iv ? iv.name : id;
+      if (!confirm(`${newState ? 'Close' : 'Re-open'} registration for "${name}"?\n\n${newState ? 'Students will no longer see this intensive on the registration page.' : 'Students will be able to select this intensive again.'}`)) return;
+      try {
+        await db.collection('intensives').doc(id).update({ registrationClosed: newState });
+        showToast(`"${name}" registration ${newState ? 'closed' : 're-opened'}.`, 'success');
+      } catch (err) {
+        showToast('Failed to update: ' + err.message, 'error');
       }
     }
 

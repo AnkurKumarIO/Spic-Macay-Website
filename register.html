@@ -463,6 +463,8 @@
         padding: 0 !important;
         width: 100% !important;
         height: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       /* Hide navigation, toast notifications, and forms */
       .nav, .toast, .reg-layout {
@@ -511,6 +513,8 @@
         left: auto !important;
         top: auto !important;
         transform: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       /* School multi-ticket — each card gets its own printed page */
       .school-ticket-page {
@@ -526,6 +530,8 @@
         transform: none !important;
         page-break-after: always !important;
         break-after: page !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       .school-ticket-page:last-child {
         page-break-after: avoid !important;
@@ -941,8 +947,8 @@
               </div>
 
               <div class="input-group">
-                <label class="input-label" for="schoolFacultyEmail">Faculty Email *</label>
-                <input class="input-field" type="email" id="schoolFacultyEmail" placeholder="faculty@school.edu"
+                <label class="input-label" for="schoolFacultyEmail">Faculty Email</label>
+                <input class="input-field" type="email" id="schoolFacultyEmail" placeholder="faculty@school.edu (optional)"
                   autocomplete="email"
                   oninput="clearSchoolEmailError()"
                   aria-describedby="schoolEmailError"/>
@@ -964,8 +970,22 @@
                   <option value="3">3</option>
                   <option value="4">4</option>
                   <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                  <option value="18">18</option>
+                  <option value="19">19</option>
                 </select>
-                <span style="font-size:0.75rem;color:var(--on-surface-variant);margin-top:5px;display:block;">Maximum 5 students per school group.</span>
+                <span style="font-size:0.75rem;color:var(--on-surface-variant);margin-top:5px;display:block;">Maximum 19 students per school group.</span>
               </div>
 
               <!-- Per-student forms rendered dynamically -->
@@ -1220,7 +1240,7 @@
           .map(d => ({ id: d.id, ...d.data() }))
           .filter(iv => {
             const seats = iv.seatsLeft !== undefined ? iv.seatsLeft : iv.totalSeats;
-            return seats > 0; // hide full intensives
+            return seats > 0 && !iv.registrationClosed; // hide full or admin-closed intensives
           })
           .sort((a, b) => (a.displayOrder ?? 999) - (b.displayOrder ?? 999));
         renderIntensivesList();
@@ -1799,19 +1819,22 @@
           showToast('School group registered successfully!', 'success');
 
           // Send the multi-page PDF confirmation email to faculty
-          sendConfirmationEmail({
-            to: facEmail,
-            type: 'registration',
-            userType: 'school',
-            firstName: facFirst,
-            lastName: facLast,
-            registrationId: regId,
-            schoolName,
-            confirmedIntensiveName: seat.confirmedIntensiveName,
-            intensivePreferences: selectedIntensiveIds.map(id => { const iv = allIntensives.find(x => x.id === id); return iv ? iv.name : id; }),
-            eveningConcerts: selectedConcerts.length > 0 ? selectedConcerts.map(id => { const c = allConcerts.find(x => x.id === id); return c ? `${c.day} - ${c.name}` : id; }).join(', ') : 'None',
-            students,  // array of { name, parent, emergency }
-          });
+          // Send confirmation email to faculty only if email was provided
+          if (facEmail) {
+            sendConfirmationEmail({
+              to: facEmail,
+              type: 'registration',
+              userType: 'school',
+              firstName: facFirst,
+              lastName: facLast,
+              registrationId: regId,
+              schoolName,
+              confirmedIntensiveName: seat.confirmedIntensiveName,
+              intensivePreferences: selectedIntensiveIds.map(id => { const iv = allIntensives.find(x => x.id === id); return iv ? iv.name : id; }),
+              eveningConcerts: selectedConcerts.length > 0 ? selectedConcerts.map(id => { const c = allConcerts.find(x => x.id === id); return c ? `${c.day} - ${c.name}` : id; }).join(', ') : 'None',
+              students,  // array of { name, parent, emergency }
+            });
+          }
         } catch (error) {
           console.error('Error saving school registration:', error);
           showToast('Registration failed. Please try again.', 'error');
@@ -1984,7 +2007,7 @@
       </div>
       
       <div style="display:flex;gap:16px;justify-content:center;margin-top:36px;">
-        <button onclick="window.print()" class="btn btn-secondary btn-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>Print Pass</button>
+        <button onclick="printPasses()" class="btn btn-secondary btn-sm" id="printPassBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;vertical-align:middle;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>Print Pass</button>
         <a href="index.html" class="btn btn-primary btn-sm">Back to Home</a>
       </div>
     </div>
@@ -2186,9 +2209,9 @@
 
         if (!schoolName)              { showToast('Please enter the school name.', 'error'); document.getElementById('schoolName').focus(); return; }
         if (!facFirst || !facLast)    { showToast('Please enter the faculty name.', 'error'); document.getElementById('schoolFacultyFirst').focus(); return; }
-        if (!facEmail || !EMAIL_REGEX.test(facEmail)) {
+        if (facEmail && !EMAIL_REGEX.test(facEmail)) {
           const el = document.getElementById('schoolEmailError');
-          el.textContent = 'Please enter a valid faculty email address.';
+          el.textContent = 'Please enter a valid email address.';
           el.style.display = 'block';
           document.getElementById('schoolFacultyEmail').focus();
           return;
@@ -2273,7 +2296,50 @@
       goToStep(2);
     }
 
-    // ── Privacy modal ────────────────────────────────
+    // ── Print passes — waits for all QR images to load first ────────────────
+    function printPasses() {
+      const btn = document.getElementById('printPassBtn');
+      const allImgs = Array.from(document.querySelectorAll('.ticket-container img'));
+
+      // Filter out images that are already loaded
+      const pending = allImgs.filter(img => !img.complete || img.naturalWidth === 0);
+
+      if (pending.length === 0) {
+        window.print();
+        return;
+      }
+
+      // Show loading state on button
+      const originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" style="margin-right:6px;vertical-align:middle;animation:spin 0.7s linear infinite;"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="20" stroke-dashoffset="10"/></svg>Preparing ${pending.length} ticket${pending.length > 1 ? 's' : ''}…`;
+
+      let loaded = 0;
+      const onLoad = () => {
+        loaded++;
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 14 14" style="margin-right:6px;vertical-align:middle;animation:spin 0.7s linear infinite;"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="20" stroke-dashoffset="10"/></svg>Loading ${loaded}/${pending.length}…`;
+        if (loaded >= pending.length) {
+          // Small delay to allow browser to render fully
+          setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+            window.print();
+          }, 400);
+        }
+      };
+
+      pending.forEach(img => {
+        if (img.complete && img.naturalWidth > 0) {
+          onLoad();
+        } else {
+          img.addEventListener('load', onLoad, { once: true });
+          img.addEventListener('error', onLoad, { once: true }); // don't hang on broken images
+        }
+      });
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+
     function openPrivacyModal(e) {
       if (e) e.preventDefault();
       document.getElementById('privacyModalBackdrop').classList.add('open');
