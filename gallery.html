@@ -885,9 +885,13 @@
         let html = '';
         galleryItems.length = 0;
         let index = 0;
-        
-        snapshot.forEach(doc => {
-          const d = doc.data();
+
+        // Sort by displayOrder so admin-set order is respected
+        const docs = snapshot.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (a.displayOrder ?? 9999) - (b.displayOrder ?? 9999));
+
+        docs.forEach(d => {
           galleryItems.push({
             src: d.imageUrl,
             caption: d.caption,

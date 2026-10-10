@@ -901,12 +901,18 @@
         <div class="dashboard-card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h2 class="headline-sm">Manage Gallery</h2>
-            <button class="btn btn-primary btn-sm" onclick="openGalleryModal()">+ Add Moment</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <button class="btn btn-secondary btn-sm" id="saveGalleryOrderBtn" onclick="saveGalleryOrder()" style="display:none;">💾 Save Order</button>
+              <button class="btn btn-primary btn-sm" onclick="openGalleryModal()">+ Add Moment</button>
+            </div>
           </div>
+          <p class="body-sm text-muted" style="margin-bottom:14px;font-size:0.78rem;opacity:0.7;">☰ Drag rows to reorder — the order here is the order shown in the gallery page.</p>
           <div class="table-responsive">
             <table class="admin-table">
               <thead>
                 <tr>
+                  <th style="width:32px;"></th>
+                  <th>#</th>
                   <th>Image</th>
                   <th>Caption</th>
                   <th>Category</th>
@@ -2424,29 +2430,33 @@
 
       // Listen to gallery
       db.collection('gallery').onSnapshot(snap => {
+        let items = [];
+        snap.forEach(doc => { items.push({ id: doc.id, ...doc.data() }); });
+        // Sort by displayOrder, then fall back to caption alpha
+        items.sort((a, b) => (a.displayOrder ?? 9999) - (b.displayOrder ?? 9999));
         let html = '';
-        let galCount = 0;
-        snap.forEach(doc => {
-          galCount++;
-          const d = doc.data();
+        items.forEach((d, idx) => {
           html += `
-            <tr>
-              <td><img src="${d.imageUrl || DEFAULT_AVATAR}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;"/></td>
+            <tr data-id="${d.id}">
+              <td style="cursor:grab;color:var(--outline);font-size:1.1rem;padding:10px 8px;user-select:none;" title="Drag to reorder">☰</td>
+              <td style="font-family:monospace;font-size:0.8rem;color:var(--primary-container);font-weight:700;">${idx + 1}</td>
+              <td><img src="${d.imageUrl || ''}" style="width:60px;height:40px;object-fit:cover;border-radius:6px;"/></td>
               <td style="font-weight:600;">${d.caption}</td>
               <td>${d.category}</td>
-              <td><span class="admin-badge badge-warning">${d.tag}</span></td>
+              <td><span class="admin-badge badge-warning">${d.tag || '—'}</span></td>
               <td>
                 <div class="action-btn-group">
-                  <button class="btn btn-secondary btn-sm" onclick="editGallery('${doc.id}')">Edit</button>
-                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('gallery', '${doc.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
+                  <button class="btn btn-secondary btn-sm" onclick="editGallery('${d.id}')">Edit</button>
+                  <button class="btn btn-secondary btn-sm" onclick="deleteDoc('gallery', '${d.id}')" style="border-color:rgba(196,38,28,0.3);color:#f47272;">Delete</button>
                 </div>
               </td>
             </tr>
           `;
         });
-        document.getElementById('galleryTableBody').innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No moments added.</td></tr>';
+        document.getElementById('galleryTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align:center;">No moments added.</td></tr>';
         const galEl = document.getElementById('hubMetricGallery');
-        if (galEl) galEl.textContent = `${galCount} photo${galCount !== 1 ? 's' : ''} in gallery`;
+        if (galEl) galEl.textContent = `${items.length} photo${items.length !== 1 ? 's' : ''} in gallery`;
+        makeGalleryDraggable();
       });
 
       // Listen to teamSections
@@ -3403,6 +3413,73 @@
       }
     }
 
+    // ── Gallery drag-and-drop reorder ──────────────────────────────────────
+    let _galDragRow = null;
+
+    function makeGalleryDraggable() {
+      const tbody = document.getElementById('galleryTableBody');
+      if (!tbody) return;
+      const rows = tbody.querySelectorAll('tr[data-id]');
+      rows.forEach(row => {
+        row.setAttribute('draggable', 'true');
+        row.addEventListener('dragstart', function(e) {
+          _galDragRow = this;
+          this.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        row.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          this.classList.add('drag-over');
+          e.dataTransfer.dropEffect = 'move';
+        });
+        row.addEventListener('dragleave', function() {
+          this.classList.remove('drag-over');
+        });
+        row.addEventListener('drop', function(e) {
+          e.stopPropagation();
+          this.classList.remove('drag-over');
+          if (_galDragRow && _galDragRow !== this) {
+            const children = Array.from(tbody.children);
+            const dragIdx  = children.indexOf(_galDragRow);
+            const dropIdx  = children.indexOf(this);
+            if (dragIdx < dropIdx) tbody.insertBefore(_galDragRow, this.nextSibling);
+            else                   tbody.insertBefore(_galDragRow, this);
+            // Refresh # column
+            Array.from(tbody.querySelectorAll('tr[data-id]')).forEach((r, i) => {
+              const numCell = r.cells[1];
+              if (numCell) numCell.textContent = i + 1;
+            });
+            document.getElementById('saveGalleryOrderBtn').style.display = 'inline-flex';
+          }
+          return false;
+        });
+        row.addEventListener('dragend', function() {
+          this.classList.remove('dragging');
+          tbody.querySelectorAll('tr').forEach(r => r.classList.remove('drag-over'));
+        });
+      });
+    }
+
+    async function saveGalleryOrder() {
+      const btn = document.getElementById('saveGalleryOrderBtn');
+      btn.textContent = 'Saving…'; btn.disabled = true;
+      const rows = document.querySelectorAll('#galleryTableBody tr[data-id]');
+      const batch = db.batch();
+      rows.forEach((row, idx) => {
+        const id = row.getAttribute('data-id');
+        batch.update(db.collection('gallery').doc(id), { displayOrder: idx });
+      });
+      try {
+        await batch.commit();
+        showToast('Gallery order saved.', 'success');
+        btn.style.display = 'none';
+      } catch (err) {
+        showToast('Failed to save order: ' + err.message, 'error');
+      } finally {
+        btn.textContent = '💾 Save Order'; btn.disabled = false;
+      }
+    }
+
     // GALLERY EDIT / SAVE
     function openGalleryModal() {
       document.getElementById('galleryForm').reset();
@@ -3479,6 +3556,9 @@
         if (id) {
           await db.collection('gallery').doc(id).update(data);
         } else {
+          // Assign displayOrder = current count so new items go to the end
+          const countSnap = await db.collection('gallery').get();
+          data.displayOrder = countSnap.size;
           await db.collection('gallery').add(data);
         }
         closeGalleryModal();
