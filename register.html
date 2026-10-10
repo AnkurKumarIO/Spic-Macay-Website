@@ -1222,7 +1222,44 @@
     document.addEventListener('DOMContentLoaded', () => {
       populatePassingYears();
       loadConcerts();
+      checkRegistrationStatus();
     });
+
+    // ── Check if registration is globally open ───────────────────────────────
+    async function checkRegistrationStatus() {
+      try {
+        const snap = await db.collection('config').doc('site').get();
+        if (snap.exists && snap.data().registrationOpen === false) {
+          showRegistrationClosed(snap.data().closedMessage || null);
+        }
+      } catch (e) {
+        // If config doc doesn't exist or fetch fails, default to open
+        console.info('No site config found — registration open by default.');
+      }
+    }
+
+    function showRegistrationClosed(customMsg) {
+      // Hide the entire registration layout
+      const layout = document.querySelector('.reg-layout');
+      if (layout) layout.style.display = 'none';
+
+      // Inject closed banner
+      const msg = customMsg || 'Registrations for Virasat 2026 are now closed. Thank you for your interest in SPIC MACAY at VNIT Nagpur.';
+      const banner = document.createElement('div');
+      banner.style.cssText = 'min-height:80vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;';
+      banner.innerHTML = `
+        <div style="max-width:520px;width:100%;text-align:center;">
+          <div style="width:72px;height:72px;border-radius:50%;background:rgba(232,119,34,0.12);border:2px solid rgba(232,119,34,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2rem;">🎭</div>
+          <h1 style="font-size:1.6rem;font-weight:800;color:var(--on-surface);margin-bottom:12px;">Registrations Closed</h1>
+          <p style="font-size:0.95rem;color:var(--on-surface-variant);line-height:1.7;margin-bottom:28px;">${msg}</p>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <a href="index.html" class="btn btn-primary btn-sm">← Back to Home</a>
+            <a href="mailto:spicmacay@vnit.ac.in" class="btn btn-secondary btn-sm">Contact Us</a>
+          </div>
+          <p style="margin-top:32px;font-size:0.78rem;color:var(--outline);">SPIC MACAY — VNIT Nagpur Chapter</p>
+        </div>`;
+      document.querySelector('div[style*="padding-top:65px"]').appendChild(banner);
+    }
 
     let currentStep = 1;
 

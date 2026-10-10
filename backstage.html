@@ -631,8 +631,16 @@
       <div class="panel-section" id="section-registrations" style="margin-top:8px;">
         <div class="dashboard-card">
           <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; flex-wrap:wrap;">
-            <h2 class="headline-sm">Registered Attendees</h2>
-            <div style="display:flex; gap:12px; align-items:center;">
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <h2 class="headline-sm" style="margin:0;">Registered Attendees</h2>
+              <!-- Global registration open/close toggle -->
+              <div id="regStatusBar" style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:8px;background:rgba(245,240,232,0.04);border:1px solid rgba(245,240,232,0.1);width:fit-content;">
+                <span id="regStatusDot" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#86efac;"></span>
+                <span id="regStatusLabel" style="font-size:0.78rem;font-weight:600;color:var(--on-surface-variant);">Loading…</span>
+                <button id="regToggleBtn" onclick="toggleGlobalRegistration()" style="font-size:0.72rem;padding:4px 12px;border-radius:20px;border:1px solid rgba(245,240,232,0.2);background:transparent;color:var(--on-surface-variant);cursor:pointer;font-weight:700;margin-left:4px;" disabled>…</button>
+              </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;flex-wrap:wrap;">
               <input type="text" id="regSearchInput" placeholder="Search name, email, roll..." class="input-field" style="width:260px; padding:8px 12px; margin-bottom:0;" oninput="filterRegistrations()" />
               <button class="btn btn-primary btn-sm" onclick="downloadRegistrationsCSV(false)" title="Export currently filtered/searched rows">⬇ Export Filtered CSV</button>
               <button class="btn btn-secondary btn-sm" onclick="downloadRegistrationsCSV(true)" title="Export all registrations regardless of search">⬇ Export All CSV</button>
@@ -2049,6 +2057,70 @@
       document.getElementById('registrationsTableBody').innerHTML = html || '<tr><td colspan="10" style="text-align:center;">No matching registrations found.</td></tr>';
     }
 
+    // ── Global registration open / close ────────────────────────────────────
+    let _regCurrentlyOpen = true;
+
+    async function loadGlobalRegStatus() {
+      try {
+        const snap = await db.collection('config').doc('site').get();
+        _regCurrentlyOpen = !snap.exists || snap.data().registrationOpen !== false;
+      } catch (e) {
+        _regCurrentlyOpen = true;
+      }
+      updateRegStatusUI();
+    }
+
+    function updateRegStatusUI() {
+      const dot   = document.getElementById('regStatusDot');
+      const label = document.getElementById('regStatusLabel');
+      const btn   = document.getElementById('regToggleBtn');
+      if (!dot) return;
+      if (_regCurrentlyOpen) {
+        dot.style.background   = '#86efac';
+        label.textContent      = 'Registration is OPEN';
+        label.style.color      = '#86efac';
+        btn.textContent        = '🔴 Close Registration';
+        btn.style.borderColor  = 'rgba(196,38,28,0.4)';
+        btn.style.color        = '#f47272';
+      } else {
+        dot.style.background   = '#f47272';
+        label.textContent      = 'Registration is CLOSED';
+        label.style.color      = '#f47272';
+        btn.textContent        = '🟢 Re-open Registration';
+        btn.style.borderColor  = 'rgba(74,222,128,0.4)';
+        btn.style.color        = '#86efac';
+      }
+      btn.disabled = false;
+    }
+
+    async function toggleGlobalRegistration() {
+      const newState = !_regCurrentlyOpen;
+      const warning  = newState
+        ? 'Re-open registration? Students will be able to register again.'
+        : 'Close registration for Virasat 2026?\n\nStudents will see a "Registrations Closed" page and cannot submit new registrations.';
+      if (!confirm(warning)) return;
+
+      const btn = document.getElementById('regToggleBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+
+      try {
+        await db.collection('config').doc('site').set({
+          registrationOpen: newState,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedBy: auth.currentUser?.email || 'admin',
+        }, { merge: true });
+        _regCurrentlyOpen = newState;
+        updateRegStatusUI();
+        showToast(`Registration ${newState ? 're-opened' : 'closed'} successfully.`, 'success');
+      } catch (e) {
+        showToast('Failed to update: ' + e.message, 'error');
+        btn.disabled = false;
+        updateRegStatusUI();
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     // ── Download Registrations CSV ──────────────────────────────────────────
     // Exports the currently filtered view by default; pass true to export all.
     function downloadRegistrationsCSV(exportAll = false) {
@@ -2196,6 +2268,7 @@
 
     // LOAD ALL DATA LISTS
     function loadAllData() {
+      loadGlobalRegStatus(); // load registration open/close status
       // Listen to intensives first (needed for registration name lookups)
       db.collection('intensives').orderBy('day').onSnapshot(snap => {
         allIntensives = [];

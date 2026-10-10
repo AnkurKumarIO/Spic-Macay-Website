@@ -112,6 +112,14 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ── config (site-wide settings) ──────────────────────────
+    // Public: read (register.html checks registrationOpen flag)
+    // Admin: full write access
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ── Deny everything else ──────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
