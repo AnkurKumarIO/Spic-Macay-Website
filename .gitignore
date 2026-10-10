@@ -9,3 +9,10 @@ Reference/.DS_Store
 # Node
 node_modules/
 package-lock.json
+
+# One-shot admin tools — local only, not for production
+bulk-register.html
+add-student.html
+
+# Stray assets
+Firefly.png
